@@ -1,0 +1,1579 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\usepackage{bbm}
+\end_preamble
+\use_default_options true
+\begin_modules
+logicalmkup
+theorems-ams
+theorems-ams-extended
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date true
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\bullet 0 0 0 -1
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Grove Semantics
+\end_layout
+
+\begin_layout Standard
+TODO: this ignores cursors
+\end_layout
+
+\begin_layout Section
+Background
+\end_layout
+
+\begin_layout Subsection
+Notation
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\left(a,\text{-}\right)\in C$
+\end_inset
+
+ means 
+\begin_inset Formula $\exists b.\left(a,b\right)\in C$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+All types are in mathbb (e.g., 
+\begin_inset Formula $\mathbb{A}$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Itemize
+Types that are identifiers have a hat (e.g., 
+\begin_inset Formula $\hat{\mathbb{A}}$
+\end_inset
+
+ ).
+\end_layout
+
+\begin_layout Itemize
+Variables that are sets or functions use an upper case letter.
+\end_layout
+
+\begin_layout Itemize
+Subscripts are used to distinguish multiple variables.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $A\mapsto B$
+\end_inset
+
+ is a function mapping the value 
+\begin_inset Formula $A$
+\end_inset
+
+ to the value 
+\begin_inset Formula $B$
+\end_inset
+
+ (e.g., 
+\begin_inset Formula $x\mapsto x+1$
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Itemize
+If 
+\begin_inset Formula $f$
+\end_inset
+
+ is a function, then 
+\begin_inset Formula $f\left[a\mapsto b\right]$
+\end_inset
+
+ is that function extended to map 
+\begin_inset Formula $a$
+\end_inset
+
+ to 
+\begin_inset Formula $b$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Constructors:
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+C'tors: 
+\begin_inset Formula $c\in\mathbb{C}=\text{+}\mid\text{true}\mid\text{false}\mid\lambda_{x}\mid\cdots\mid\text{Nat}\mid\text{Bool}\mid\rightarrow\mid\cdots$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+\begin_inset Formula $c^{0}\in\mathbb{C}$
+\end_inset
+
+ (Constructor for the root)
+\end_layout
+
+\end_deeper
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Indexes: 
+\begin_inset Formula $i\in\mathbb{I}=\mathbb{N}$
+\end_inset
+
+ (or other labeling system)
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Sorts: 
+\begin_inset Formula $s\in\mathbb{S}=\text{EXP}|\text{TYP}|\cdots$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+\begin_inset Formula $sort\in\mathbb{C}\rightarrow\mathbb{S}$
+\end_inset
+
+ (overloaded with 
+\begin_inset Formula $sort\left(c,i\right)$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+\begin_inset Formula $sort^{0}\in\mathbb{S}$
+\end_inset
+
+ (Sort for the root)
+\end_layout
+
+\end_deeper
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Arity: 
+\begin_inset Formula $arity\in\mathbb{C}\rightarrow\wp\left(\mathbb{I}\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+\begin_inset Formula $arity\left(c^{0}\right)=\left\{ 0\right\} $
+\end_inset
+
+ (Arity for the root)
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+\begin_inset Formula $sort\in\mathbb{C}\times\mathbb{I}\rightarrow\mathbb{S}$
+\end_inset
+
+ (Overloaded with 
+\begin_inset Formula $sort\left(c\right)$
+\end_inset
+
+)
+\end_layout
+
+\end_deeper
+\begin_layout Subsection
+Types
+\end_layout
+
+\begin_layout Subsubsection*
+States:
+\end_layout
+
+\begin_layout Standard
+We interpret states 
+\begin_inset Formula $g$
+\end_inset
+
+ as a graph, where the graph has edge 
+\begin_inset Formula $E$
+\end_inset
+
+ iff 
+\begin_inset Formula $g\left(E\right)=+$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+States: 
+\begin_inset Formula $g\in\mathbb{G}=\mathbb{E}\rightarrow\mathbb{T}$
+\end_inset
+
+ (TODO:? Add root id?, but g0 needs a root id)
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $g_{0}=\left(E\mapsto\bot\right)$
+\end_inset
+
+ (the initial graph has no edges)
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Trinary: 
+\begin_inset Formula $\begin{alignedat}{2}\mathbb{T}={} & \bot & \text{\ensuremath{\quad}} & \text{(means: not yet created)}\\
+{}\mid{} & + &  & \text{(means: created)}\\
+{}\mid{} & - &  & \text{(means: deleted)}
+\end{alignedat}
+$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Edges: 
+\begin_inset Formula $E\in\mathbb{E}=\hat{\mathbb{E}}\times\mathbb{V}^{0}\times\mathbb{V}\times\mathbb{I}=\left\langle id,start\_vertex,end\_vertex,child\_index\right\rangle $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Edge
+\begin_inset space ~
+\end_inset
+
+ids: 
+\begin_inset Formula $\hat{e}\in\hat{\mathbb{E}}=\mathbb{N}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Vertexes: 
+\begin_inset Formula $v\in\mathbb{V}=\hat{\mathbb{V}}\times\mathbb{C}$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+\begin_inset Formula $v^{0}\in\mathbb{V}^{0}=\left(0,c^{0}\right)\uplus\mathbb{V}$
+\end_inset
+
+ (
+\begin_inset Formula $0$
+\end_inset
+
+ is the global root vertex)
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+\begin_inset space ~
+\end_inset
+
+ (
+\begin_inset Formula $\top$
+\end_inset
+
+ as alternate notation for 0?)
+\end_layout
+
+\end_deeper
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Vertex
+\begin_inset space ~
+\end_inset
+
+ids: 
+\begin_inset Formula $\hat{v}\in\hat{\mathbb{V}}=\mathbb{N}^{+}$
+\end_inset
+
+ (i.e., strictly positive naturals)
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Actions: 
+\begin_inset Formula $\alpha\in A=+\mathbb{E}\mid-\mathbb{E}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Action
+\begin_inset space ~
+\end_inset
+
+composition:
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $\alpha_{1}\alpha_{2}$
+\end_inset
+
+ means do 
+\begin_inset Formula $\alpha_{1}$
+\end_inset
+
+ then 
+\begin_inset Formula $\alpha_{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+
+\series bold
+Semantics
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+\begin_inset Formula $\left\llbracket g\right\rrbracket =\left\llbracket \left(0,c^{0}\right),g\right\rrbracket $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+\begin_inset Formula $\left\llbracket v_{1},g\right\rrbracket =\left\llbracket \left(\hat{v},c\right),g\right\rrbracket =c\left(\overrightarrow{t}\right)$
+\end_inset
+
+ where
+\end_layout
+
+\begin_deeper
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+\begin_inset Formula $\overrightarrow{t}=\underset{i\in arity\left(c\right)}{\prod}t_{i}$
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+and
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+\begin_inset Formula $t_{i}=\left\{ \left\llbracket v_{2},g\right\rrbracket \mid\forall v_{2}.g\left(\left(e,v_{1},v_{2},i\right)\right)=+\right\} $
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+Note that if 
+\begin_inset Formula $\left|t_{i}\right|=0$
+\end_inset
+
+, this is equivalent to an empty hole, and if 
+\begin_inset Formula $\left|t_{i}\right|>1$
+\end_inset
+
+, this is equivalent to a conflict hole.
+\end_layout
+
+\begin_layout Subsection
+
+\series bold
+Invariants
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Unique
+\begin_inset space ~
+\end_inset
+
+ids: Users are able to pick globally unique 
+\begin_inset Formula $\hat{v}$
+\end_inset
+
+ and 
+\begin_inset Formula $\hat{e}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Arity: If 
+\begin_inset Formula $g\left(-,\left(-,c_{1}\right),\left(-,c_{2}\right),i\right)\neq\bot$
+\end_inset
+
+, then 
+\begin_inset Formula $i\in arity\left(c_{1}\right)$
+\end_inset
+
+ and 
+\begin_inset Formula $sort\left(c_{1},i\right)=sort\left(c_{2}\right)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Monotonicity: 
+\begin_inset Formula $\mathbb{T}$
+\end_inset
+
+ is equipped with the lattice 
+\begin_inset Formula $\bot\sqsubset+\sqsubset-$
+\end_inset
+
+, and this is lifted to 
+\begin_inset Formula $\hat{\mathbb{G}}$
+\end_inset
+
+ pointwise.
+ Actions move elements of 
+\begin_inset Formula $\hat{\mathbb{G}}$
+\end_inset
+
+ only monotonically up the lattice.
+\end_layout
+
+\begin_layout Subsection
+Actions
+\end_layout
+
+\begin_layout Subsubsection
+Action Graphs
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Insert: 
+\begin_inset Formula $\left(+E\right)=g_{0}\left[E\mapsto+\right]$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Delete: 
+\begin_inset Formula $\left(-E\right)=g_{0}\left[E\mapsto-\right]$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+
+\series bold
+Action Graph Functions
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Insert: 
+\begin_inset Formula $\left\langle +E\right\rangle =g\mapsto g\sqcup\left(+E\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Delete: 
+\begin_inset Formula $\left\langle -E\right\rangle =g\mapsto g\sqcup\left(-E\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Action Relation
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $g_{1}\stackrel{\alpha}{\rightarrow}g_{2}$
+\end_inset
+
+ iff 
+\begin_inset Formula $\left\langle \alpha\right\rangle g_{1}=g_{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+
+\series bold
+Action inference
+\end_layout
+
+\begin_layout Standard
+TODO: ambiguity between multiple delete
+\end_layout
+
+\begin_layout Standard
+TODO: ambiguity between delete and insert then delete
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Insert: 
+\begin_inset Formula $\left(+E\right)$
+\end_inset
+
+ if 
+\begin_inset Formula $g_{e}\left(E\right)=+$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Delete: 
+\begin_inset Formula $\left(-E\right)$
+\end_inset
+
+ if 
+\begin_inset Formula $g_{e}\left(E\right)=-$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+
+\series bold
+Merge
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+\begin_inset Formula $merge\left(g_{1},g_{2}\right)=g_{1}\sqcup g_{2}=\left(e\mapsto g_{1}\left(e\right)\sqcup g_{2}\left(e\right)\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+
+\series bold
+Theorems
+\end_layout
+
+\begin_layout Standard
+merge: extract merge = merge extract
+\end_layout
+
+\begin_layout Standard
+operations preserve invariants
+\end_layout
+
+\begin_layout Standard
+merge preserves invariants
+\end_layout
+
+\begin_layout Standard
+typing
+\end_layout
+
+\begin_layout Standard
+all valid reorderings commute
+\end_layout
+
+\begin_layout Standard
+if 
+\begin_inset Formula $g\gg\alpha_{1}$
+\end_inset
+
+ well formed and 
+\begin_inset Formula $g\gg\alpha_{2}$
+\end_inset
+
+ well formed and 
+\begin_inset Formula $\alpha_{1}$
+\end_inset
+
+ indep of 
+\begin_inset Formula $\alpha_{2}$
+\end_inset
+
+, then 
+\begin_inset Formula $g\gg\alpha_{1}\gg\alpha_{2}$
+\end_inset
+
+ and 
+\begin_inset Formula $g\gg\alpha_{2}\gg\alpha_{1}$
+\end_inset
+
+ are both well formed
+\end_layout
+
+\begin_layout Standard
+FALSE: if 
+\begin_inset Formula $\alpha_{1}\gg\alpha_{2}$
+\end_inset
+
+ is well typed, then 
+\begin_inset Formula $\alpha_{2}\gg\alpha_{1}$
+\end_inset
+
+ is well typed.
+ Counter example 
+\begin_inset Formula $\alpha_{1}=\left\langle +V\right\rangle $
+\end_inset
+
+ and 
+\begin_inset Formula $\alpha_{2}=\left\langle +E\right\rangle $
+\end_inset
+
+ where 
+\begin_inset Formula $E$
+\end_inset
+
+ mentions 
+\begin_inset Formula $V$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+commuativity: operationsA then operationsB = operationsB then operationsA
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setlist[casenv]{align=left,widest={iiii}}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+setlist[casenv,1]{leftmargin=0em,label={{
+\backslash
+itshape
+\backslash
+ 
+\backslash
+casename} 
+\backslash
+arabic*.},ref=
+\backslash
+arabic*}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+setlist[casenv,2]{label={{
+\backslash
+itshape
+\backslash
+ 
+\backslash
+casename} 
+\backslash
+roman*.},ref=
+\backslash
+roman*}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+setlist[casenv,3]{label={{
+\backslash
+itshape
+\backslash
+ 
+\backslash
+casename
+\backslash
+ 
+\backslash
+alph*.}},ref=
+\backslash
+alph*}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+setlist[casenv,4]{label={{
+\backslash
+itshape
+\backslash
+ 
+\backslash
+casename} 
+\backslash
+arabic*.},ref=
+\backslash
+arabic*}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Theorem
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+Commutativity
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\alpha_{1}\gg\alpha_{2}=\alpha_{2}\gg\alpha_{1}$
+\end_inset
+
+ for all (compatible) 
+\begin_inset Formula $\alpha_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $\alpha_{2}$
+\end_inset
+
+ if 
+\begin_inset Formula $\alpha_{1}\gg\alpha_{2}$
+\end_inset
+
+ and 
+\begin_inset Formula $\alpha_{2}\gg\alpha_{1}$
+\end_inset
+
+ are both well formed.
+\end_layout
+
+\begin_layout Proof
+By extensionality it suffices to prove 
+\begin_inset Formula $g\gg\alpha_{1}\gg\alpha_{2}=g\gg\alpha_{2}\gg\alpha_{1}$
+\end_inset
+
+ for all 
+\begin_inset Formula $g=$
+\end_inset
+
+
+\begin_inset Formula $\left(g_{v},g_{e}\right)$
+\end_inset
+
+.
+\end_layout
+
+\begin_deeper
+\begin_layout Case
+\begin_inset Formula $\alpha_{1}=\left\langle +V_{1}\right\rangle =\left(g_{v},g_{e}\right)\mapsto\left(g_{v}\cup\left\{ V_{1}\right\} ,g_{e}\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Case
+\begin_inset Formula $\alpha_{2}=\left\langle +V_{2}\right\rangle $
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula $g\gg\alpha_{1}\gg\alpha_{2}=\left(g_{v}\cup\left\{ V_{1}\right\} ,g_{e}\right)\gg\alpha_{2}=\left(g_{v}\cup\left\{ V_{1}\right\} \cup\left\{ V_{2}\right\} ,g_{e}\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $g\gg\alpha_{2}\gg\alpha_{1}=\left(g_{v}\cup\left\{ V_{2}\right\} ,g_{e}\right)\gg\alpha_{2}=\left(g_{v}\cup\left\{ V_{2}\right\} \cup\left\{ V_{1}\right\} ,g_{e}\right)$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Case
+\begin_inset Formula $\alpha_{2}=\left\langle +E_{2}\right\rangle =\left(g_{v},g_{e}\right)\mapsto\left(g_{v},g_{e}\left[E_{2}\mapsto+\sqcup g_{e}\left(E_{2}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula $g\gg\alpha_{1}\gg\alpha_{2}=\left(g_{v}\cup\left\{ V_{1}\right\} ,g_{e}\right)\gg\alpha_{2}=\left(g_{v}\cup\left\{ V_{1}\right\} ,g_{e}\left[E_{2}\mapsto+\sqcup g_{e}\left(E_{2}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $g\gg\alpha_{2}\gg\alpha_{2}=\left(g_{v},g_{e}\left[E_{2}\mapsto+\sqcup g_{e}\left(E_{2}\right)\right]\right)\gg\alpha_{2}=\left(g_{v}\cup\left\{ V_{1}\right\} ,g_{e}\left[E_{2}\mapsto+\sqcup g_{e}\left(E_{2}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Case
+\begin_inset Formula $\alpha_{2}=\left\langle -E_{2}\right\rangle =\left(g_{v},g_{e}\right)\mapsto\left(g_{v},g_{e}\left[E_{2}\mapsto-\sqcup g_{e}\left(E_{2}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula $g\gg\alpha_{1}\gg\alpha_{2}=\left(g_{v}\cup\left\{ V_{1}\right\} ,g_{e}\right)\gg\alpha_{2}=\left(g_{v}\cup\left\{ V_{1}\right\} ,g_{e}\left[E_{2}\mapsto-\sqcup g_{e}\left(E_{2}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $g\gg\alpha_{2}\gg\alpha_{2}=\left(g_{v},g_{e}\left[E_{2}\mapsto-\sqcup g_{e}\left(E_{2}\right)\right]\right)\gg\alpha_{2}=\left(g_{v}\cup\left\{ V_{1}\right\} ,g_{e}\left[E_{2}\mapsto-\sqcup g_{e}\left(E_{2}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Case
+\begin_inset Formula $\alpha_{1}=\left\langle +E_{1}\right\rangle =\left(g_{v},g_{e}\right)\mapsto\left(g_{v},g_{e}\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Case
+\begin_inset Formula $\alpha_{2}=\left\langle +V_{2}\right\rangle $
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula $g\gg\alpha_{1}\gg\alpha_{2}=\left(g_{v},g_{e}\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\right)\gg\alpha_{2}=\left(g_{v}\cup\left\{ V_{2}\right\} ,g_{e}\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $g\gg\alpha_{2}\gg\alpha_{1}=\left(g_{v}\cup\left\{ V_{2}\right\} ,g_{e}\right)\gg\alpha_{2}=\left(g_{v}\cup\left\{ V_{2}\right\} ,g_{e}\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Case
+\begin_inset Formula $\alpha_{2}=\left\langle +E_{2}\right\rangle $
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Case
+\begin_inset Formula $E_{1}=E_{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula $g\gg\alpha_{1}\gg\alpha_{2}=\left(g_{v},g_{e}\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\right)\gg\alpha_{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\left[E_{2}\mapsto+\sqcup g_{e}\left(E_{2}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto+\sqcup+\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $g\gg\alpha_{2}\gg\alpha_{1}=\left(g_{v},g_{e}\left[E_{2}\mapsto+\sqcup g_{e}\left(E_{2}\right)\right]\right)\gg\alpha_{1}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{2}\mapsto+\sqcup g_{e}\left(E_{2}\right)\right]\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto+\sqcup+\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Case
+\begin_inset Formula $E_{1}\neq E_{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula $g\gg\alpha_{1}\gg\alpha_{2}=\left(g_{v},g_{e}\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\right)\gg\alpha_{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v},g_{e}\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\left[E_{2}\mapsto+\sqcup g_{e}\left(E_{2}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $g\gg\alpha_{2}\gg\alpha_{1}=\left(g_{v},g_{e}\left[E_{2}\mapsto+\sqcup g_{e}\left(E_{2}\right)\right]\right)\gg\alpha_{1}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v},g_{e}\left[E_{2}\mapsto+\sqcup g_{e}\left(E_{2}\right)\right]\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v},g_{e}\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\left[E_{2}\mapsto+\sqcup g_{e}\left(E_{2}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Case
+\begin_inset Formula $\alpha_{2}=\left\langle -E_{2}\right\rangle $
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Case
+\begin_inset Formula $E_{1}=E_{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula $g\gg\alpha_{1}\gg\alpha_{2}=\left(g_{v},g_{e}\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\right)\gg\alpha_{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\left[E_{2}\mapsto-\sqcup g_{e}\left(E_{2}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto+\sqcup-\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $g\gg\alpha_{2}\gg\alpha_{1}=\left(g_{v},g_{e}\left[E_{2}\mapsto-\sqcup g_{e}\left(E_{2}\right)\right]\right)\gg\alpha_{1}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{2}\mapsto-\sqcup g_{e}\left(E_{2}\right)\right]\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto-\sqcup+\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Case
+\begin_inset Formula $E_{1}\neq E_{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula $g\gg\alpha_{1}\gg\alpha_{2}=\left(g_{v},g_{e}\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\right)\gg\alpha_{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v},g_{e}\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\left[E_{2}\mapsto-\sqcup g_{e}\left(E_{2}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $g\gg\alpha_{2}\gg\alpha_{1}=\left(g_{v},g_{e}\left[E_{2}\mapsto-\sqcup g_{e}\left(E_{2}\right)\right]\right)\gg\alpha_{1}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v},g_{e}\left[E_{2}\mapsto-\sqcup g_{e}\left(E_{2}\right)\right]\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v},g_{e}\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\left[E_{2}\mapsto-\sqcup g_{e}\left(E_{2}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\end_deeper
+\begin_layout Case
+\begin_inset Formula $\alpha_{1}=\left\langle -E_{1}\right\rangle =\left(g_{v},g_{e}\right)\mapsto\left(g_{v},g_{e}\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Case
+\begin_inset Formula $\alpha_{2}=\left\langle +V_{2}\right\rangle $
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula $g\gg\alpha_{1}\gg\alpha_{2}=\left(g_{v},g_{e}\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\right)\gg\alpha_{2}=\left(g_{v}\cup\left\{ V_{2}\right\} ,g_{e}\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $g\gg\alpha_{2}\gg\alpha_{1}=\left(g_{v}\cup\left\{ V_{2}\right\} ,g_{e}\right)\gg\alpha_{2}=\left(g_{v}\cup\left\{ V_{2}\right\} ,g_{e}\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Case
+\begin_inset Formula $\alpha_{2}=\left\langle +E_{2}\right\rangle $
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Case
+\begin_inset Formula $E_{1}=E_{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula $g\gg\alpha_{1}\gg\alpha_{2}=\left(g_{v},g_{e}\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\right)\gg\alpha_{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\left[E_{2}\mapsto+\sqcup g_{e}\left(E_{2}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto-\sqcup+\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $g\gg\alpha_{2}\gg\alpha_{1}=\left(g_{v},g_{e}\left[E_{2}\mapsto+\sqcup g_{e}\left(E_{2}\right)\right]\right)\gg\alpha_{1}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{2}\mapsto+\sqcup g_{e}\left(E_{2}\right)\right]\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto+\sqcup g_{e}\left(E_{1}\right)\right]\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto+\sqcup-\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Case
+\begin_inset Formula $E_{1}\neq E_{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula $g\gg\alpha_{1}\gg\alpha_{2}=\left(g_{v},g_{e}\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\right)\gg\alpha_{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v},g_{e}\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\left[E_{2}\mapsto+\sqcup g_{e}\left(E_{2}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $g\gg\alpha_{2}\gg\alpha_{1}=\left(g_{v},g_{e}\left[E_{2}\mapsto+\sqcup g_{e}\left(E_{2}\right)\right]\right)\gg\alpha_{1}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v},g_{e}\left[E_{2}\mapsto+\sqcup g_{e}\left(E_{2}\right)\right]\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v},g_{e}\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\left[E_{2}\mapsto+\sqcup g_{e}\left(E_{2}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Case
+\begin_inset Formula $\alpha_{2}=\left\langle -E_{2}\right\rangle $
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Case
+\begin_inset Formula $E_{1}=E_{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula $g\gg\alpha_{1}\gg\alpha_{2}=\left(g_{v},g_{e}\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\right)\gg\alpha_{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\left[E_{2}\mapsto-\sqcup g_{e}\left(E_{2}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto-\sqcup-\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $g\gg\alpha_{2}\gg\alpha_{1}=\left(g_{v},g_{e}\left[E_{2}\mapsto-\sqcup g_{e}\left(E_{2}\right)\right]\right)\gg\alpha_{1}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{2}\mapsto-\sqcup g_{e}\left(E_{2}\right)\right]\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto-\sqcup-\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v}\cup,g_{e}\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Case
+\begin_inset Formula $E_{1}\neq E_{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula $g\gg\alpha_{1}\gg\alpha_{2}=\left(g_{v},g_{e}\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\right)\gg\alpha_{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v},g_{e}\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\left[E_{2}\mapsto-\sqcup g_{e}\left(E_{2}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $g\gg\alpha_{2}\gg\alpha_{1}=\left(g_{v},g_{e}\left[E_{2}\mapsto-\sqcup g_{e}\left(E_{2}\right)\right]\right)\gg\alpha_{1}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v},g_{e}\left[E_{2}\mapsto-\sqcup g_{e}\left(E_{2}\right)\right]\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\left(g_{v},g_{e}\left[E_{1}\mapsto-\sqcup g_{e}\left(E_{1}\right)\right]\left[E_{2}\mapsto-\sqcup g_{e}\left(E_{2}\right)\right]\right)$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\end_deeper
+\end_deeper
+\begin_layout Section
+Type checking
+\end_layout
+
+\begin_layout Standard
+(rooted, multi-parent, no-parent, cyclic)
+\end_layout
+
+\end_body
+\end_document
