@@ -15,9 +15,9 @@
 %% use defaults for review submission.
 \acmJournal{PACMPL}
 \acmVolume{1}
-\acmNumber{CONF} % CONF = POPL or ICFP or OOPSLA
+\acmNumber{POPL} % CONF = POPL or ICFP or OOPSLA
 \acmArticle{1}
-\acmYear{2018}
+\acmYear{2021}
 \acmMonth{1}
 \acmDOI{} % \acmDOI{10.1145/nnnnnnn.nnnnnnn}
 \startPage{1}
@@ -32,97 +32,73 @@
 %\setcopyright{rightsretained}
 %\copyrightyear{2018}           %% If different from \acmYear
 
-%% Bibliography style
 \bibliographystyle{ACM-Reference-Format}
-%% Citation style
-%% Note: author/year citations are required for papers published as an
-%% issue of PACMPL.
-\citestyle{acmauthoryear}   %% For author/year citations
+\citestyle{acmauthoryear}
+
+\renewcommand{\topfraction}{1} % Allow floats to take up the page
+\renewcommand{\textfraction}{0}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Note: Authors migrating a paper from PACMPL format to traditional
-%% SIGPLAN proceedings format must update the '\documentclass' and
-%% topmatter commands above; see 'acmart-sigplanproc-template.tex'.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Packages
+\usepackage{booktabs}
+\usepackage{subcaption}
+\usepackage{tikz}
 
+%%%%%%%%
+% TikZ Stuff
+%\usepackage{etex} % Fix "No room for new \dimen" error
+\usepackage{shellesc} % Fix bug that breaks the tikz 'external' library
+\usepackage{tikz}
+\usetikzlibrary{babel} % Ensure compatibility the 'babel' package
 
-%% Some recommended packages.
-\usepackage{booktabs}   %% For formal tables:
-                        %% http://ctan.org/pkg/booktabs
-\usepackage{subcaption} %% For complex figures with subfigures/subcaptions
-                        %% http://ctan.org/pkg/subcaption
+\usetikzlibrary{external}
+%\tikzexternalize % activate!
+%\usepackage{lua-visual-debug}
 
+\usetikzlibrary{arrows.meta} % Arrow Tips
+\tikzset{>=Stealth}
+%\tikzset{<=stealth}
+%\tikzset{arrows={-Stealth[scale=50]}}
+%\tikzset{edge from parent/.style={draw,->,line width=0.6pt}}
+%\tikzset{wideline/.style={line width=0.7pt}}
+%\tikzset{boldline/.style={color=black,line width=1.0pt}}
+
+\usetikzlibrary{
+  graphs,       % Graph *notation*
+  graphdrawing, % Graph *layout*
+}
+
+\usegdlibrary{
+  trees,
+}
 
 \begin{document}
 
 %% Title information
-\title[Short Title]{Grove: A Convergent Collaborative Structure-Editor Calculus}         %% [Short Title] is optional;
-                                        %% when present, will be used in
-                                        %% header instead of Full Title.
-%\titlenote{with title note}             %% \titlenote is optional;
-                                        %% can be repeated if necessary;
-                                        %% contents suppressed with 'anonymous'
-% \subtitle{Subtitle}                     %% \subtitle is optional
-%\subtitlenote{with subtitle note}       %% \subtitlenote is optional;
-                                        %% can be repeated if necessary;
-                                        %% contents suppressed with 'anonymous'
-
+\title[Grove]{Grove: A Convergent Collaborative Structure-Editor Calculus}
+%\subtitle{Subtitle}
 
 %% Author information
-%% Contents and number of authors suppressed with 'anonymous'.
-%% Each author should be introduced by \author, followed by
-%% \authornote (optional), \orcid (optional), \affiliation, and
-%% \email.
-%% An author may have multiple affiliations and/or emails; repeat the
-%% appropriate command.
-%% Many elements are not rendered, but should be provided for metadata
-%% extraction tools.
+\author{Michael D. Adams}
+\orcid{0000-0003-3160-6972}
 
-%% Author with single affiliation.
-\author{First1 Last1}
-\authornote{with author1 note}          %% \authornote is optional;
-                                        %% can be repeated if necessary
-\orcid{nnnn-nnnn-nnnn-nnnn}             %% \orcid is optional
-\affiliation{
-  \position{Position1}
-  \department{Department1}              %% \department is recommended
-  \institution{Institution1}            %% \institution is required
-  \streetaddress{Street1 Address1}
-  \city{City1}
-  \state{State1}
-  \postcode{Post-Code1}
-  \country{Country1}                    %% \country is recommended
-}
-\email{first1.last1@inst1.edu}          %% \email is recommended
+\author{Eric Griffis}
+\orcid{nnnn-nnnn-nnnn-nnnn}
 
-%% Author with two affiliations and emails.
-\author{First2 Last2}
-\authornote{with author2 note}          %% \authornote is optional;
-                                        %% can be repeated if necessary
-\orcid{nnnn-nnnn-nnnn-nnnn}             %% \orcid is optional
+\author{Cyrus Omar}
+\orcid{0000-0003-4502-7971}
 \affiliation{
-  \position{Position2a}
-  \department{Department2a}             %% \department is recommended
-  \institution{Institution2a}           %% \institution is required
-  \streetaddress{Street2a Address2a}
-  \city{City2a}
-  \state{State2a}
-  \postcode{Post-Code2a}
-  \country{Country2a}                   %% \country is recommended
+  \position{Assistant Research Scientist}
+  \department[0]{Computer Science and Engineering}
+  \department[1]{Electrical Engineering and Computer Science}
+  \department[2]{College of Engineering}
+  \institution{University of Michigan}
+  \streetaddress{Bob and Betty Beyster Building, 2260 Hayward Street}
+  \city{Ann Arbor}
+  \state{MI}
+  \postcode{48109-2121}
+  \country{USA}
 }
-\email{first2.last2@inst2a.com}         %% \email is recommended
-\affiliation{
-  \position{Position2b}
-  \department{Department2b}             %% \department is recommended
-  \institution{Institution2b}           %% \institution is required
-  \streetaddress{Street3b Address2b}
-  \city{City2b}
-  \state{State2b}
-  \postcode{Post-Code2b}
-  \country{Country2b}                   %% \country is recommended
-}
-\email{first2.last2@inst2b.org}         %% \email is recommended
 
 
 %% Abstract
@@ -208,17 +184,185 @@ Motivation:
 
 TODO: somewhere in here, maybe multiple places, we want to talk about typing the intermediate states that arise
 
+\subsection{User Interface}
+
+TODO: include mocked-up screenshots
+
+Say: "might not be a popup"
+
 \subsection{Scenario A: Editing Different Parts of the Code}
+
+\begin{figure}
+\centering
+TODO: commutativity diagram of screenshots with two cursors
+\caption{TODO:Caption}
+\label{fig:my_label}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+% TODO: texttt
+% TODO: position the different graphs
+% TODO: ballanced trees
+% TODO: use tikz graph notation? tree notation?
+\path (0cm,0cm) graph[tree layout] {
+  + -> {
+    3[as={\texttt{3}}], % TODO: put a cursor (green) here
+    4 % TODO: put a cursor (red) here
+  }
+};
+\path (-3cm,-2cm) graph[tree layout] {
+  + -> {
+    13, % TODO: put a cursor here
+    4
+  }
+};
+\path (3cm,-2cm) graph[tree layout] {
+  + -> {
+    3,
+    14 % TODO: put a cursor here
+  }
+};
+\path (0cm,-4cm) graph[tree layout] {
+  + -> {
+    13, % TODO: put a cursor here
+    14 % TODO: put a cursor here
+  }
+};
+\end{tikzpicture}
+\caption{Scenario A: Editing Different Parts of the Code}
+\label{fig:Scenario-A}
+\end{figure}
+
 A + B make edits and transmit to C, C is able to resolve without any assistance, 
 order that the edits are received doesn't matter you get the same program state
 at the end
 
 \subsection{Scenario B: Edits to Nested Parts of the Code}
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+% TODO: texttt
+% TODO: position the different graphs
+% TODO: ballanced trees
+% TODO: use tikz graph notation? tree notation?
+\path (0cm,0cm) graph[tree layout] {
+  lam[as={$\mathrm{\lambda}_{\texttt{x}}$}] -> {
+    * -> {
+      2,
+      x
+    }
+  }
+};
+\path (-3cm,-2cm) graph[tree layout] {
+  lam[as={$\mathrm{\lambda}_{\texttt{x}}$}] -> {
+    + -> {
+      1,
+      * -> {
+        2,
+        x
+      }
+    }
+  }
+};
+\path (3cm,-2cm) graph[tree layout] {
+  lam[as={$\mathrm{\lambda}_{\texttt{x}}$}] -> {
+    * -> {
+      3,
+      x
+    }
+  }
+};
+\path (0cm,-4cm) graph[tree layout] {
+  lam[as={$\mathrm{\lambda}_{\texttt{x}}$}] -> {
+    + -> {
+      1,
+      * -> {
+        3,
+        x
+      }
+    }
+  }
+};
+\end{tikzpicture}
+\caption{Scenario B: Edits to Nested Parts of the Code}
+\label{fig:Schenario-B}
+\end{figure}
+
 A edits part of the code
 
 B moves the code surrounding the edits of A to another part of the code
 
 \subsection{Scenario C: Direct Conflicts}
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+% TODO: texttt
+% TODO: position the different graphs
+% TODO: ballanced trees
+% TODO: use tikz graph notation? tree notation?
+\path (0cm,0cm) graph[tree layout] {
+  lam[as={$\mathrm{\lambda}_{\texttt{x}}$}] -> {
+    x
+  }
+};
+\path (-3cm,-2cm) graph[tree layout] {
+  lam[as={$\mathrm{\lambda}_{\texttt{x}}$}] -> {
+    + -> {
+      1,
+      x
+    }
+  }
+};
+\path (3cm,-2cm) graph[tree layout] {
+  lam[as={$\mathrm{\lambda}_{\texttt{x}}$}] -> {
+    * -> {
+      2,
+      x
+    }
+  }
+};
+\path (2cm,-4cm) graph[tree layout] {
+  lam[as={$\mathrm{\lambda}_{\texttt{x}}$}] -> {
+    + -> {
+      1,
+      * -> {
+        3,
+        x
+      }
+    }
+  }
+};
+\path (-2cm,-4cm) graph[tree layout] {
+  lam[as={$\mathrm{\lambda}_{\texttt{x}}$}] -> {
+    * -> {
+      3,
+      + -> {
+        1,
+        x
+      }
+    }
+  }
+};
+\end{tikzpicture}
+\caption{Scenario C: Direct Conflicts}
+\label{fig:Scenario-C}
+\end{figure}
+
+DIAGRAM: lam x. x
+
+DIAGRAM: lam x. 1 + x
+
+DIAGRAM: lam x. 2 * x
+
+DIAGRAM: Merge: diamond with "1 +" and "2 *"
+
+DIAGRAM: Resolution \#1: lam x. 1 + 2 * x
+
+DIAGRAM: Resolution \#2: lam x. 2 * (1 + x)
 
 A and B both insert different expressions into the same hole
 
@@ -229,7 +373,18 @@ diff markers inserted into files and the semantic editor services
 no longer understand the code)
 
 \subsection{Scenario D: Deletion of Code Being Edited}
-B deletes code that A is editing (introduce notion of identity)
+
+DIAGRAM: lam x. 2 + x
+
+DIAGRAM: (lam x. HOLE) (2 + x)
+
+DIAGRAM: lam x. 3 + x
+
+DIAGRAM: Merge: (lam x. HOLE) (3 + x)
+
+A deletes code that B is editing (introduce notion of identity)
+
+
 
 (orphans)
 
@@ -263,7 +418,7 @@ Graph actions
 
 holes are not explicit in the graph
 
-\begin{theorem}[Commutativity (convergency?)]
+\begin{theorem}[Commutativity (convergence?)]
 
 \end{theorem}
 
@@ -289,6 +444,10 @@ Sensibility
 \section{Implementation}
 \label{sec:implementation}
 GRV -- how it is implemented, how it connects to the formalism, describe the graph, 
+
+We implemented GRV as a core OCaml library in approximately 1,500 lines of code, and a basic Web interface in approximately 600 lines of OCaml code and 250 lines of HTML+CSS+Javascript.
+
+Compared to the core language, our implementation lacks support for lists.
 
 \section{Related Work}
 \label{sec:related-work}
