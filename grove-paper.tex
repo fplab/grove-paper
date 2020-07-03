@@ -42,7 +42,7 @@
 %% Packages
 \usepackage{booktabs}
 \usepackage{subcaption}
-\usepackage{tikz}
+\usepackage[pdf]{graphviz}
 
 %%%%%%%%
 % TikZ Stuff
@@ -51,8 +51,8 @@
 \usepackage{tikz}
 \usetikzlibrary{babel} % Ensure compatibility the 'babel' package
 
-\usetikzlibrary{external}
-%\tikzexternalize % activate!
+\usetikzlibrary{external} % Needs to be separately enabled
+%\tikzexternalize % Enable externalization
 %\usepackage{lua-visual-debug}
 
 \usetikzlibrary{arrows.meta} % Arrow Tips
@@ -182,13 +182,57 @@ Motivation:
 \section{Grove By Example}
 \label{sec:grove-by-example}
 
+TODO: gray-scale unchanged parts of diagrams
+
 TODO: somewhere in here, maybe multiple places, we want to talk about typing the intermediate states that arise
 
-\subsection{User Interface}
+TODO: annotate vertexes and edges with ids (gray superscript?)
 
-TODO: include mocked-up screenshots
+Single User Intuition:
+ - manipulating trees,
+ - holes
 
-Say: "might not be a popup"
+Multi User Intuition:
+ - vertexes have unique ids
+ - edits create or delete edges in the tree,
+ - vertexes are automatically created when an edge goes to it
+ 
+Deeper intuition:
+ - edges have unique ids
+ - once deleted an edge can never be recreated (though, a new edge (with a new id) can be created in the same spot as the original)
+
+\subsection{Scenario X: Holes in the Tree}
+\label{sub:Holes in the Tree}
+
+\begin{figure}
+\centering
+\digraph[]{simple-tree-with-hole}{
+  node [shape=Mrecord,fontsize=11,ranksep=0];
+  edge [arrowhead=vee,fontsize=11,weight=2];
+  rankdir = LR;
+  {rank=min; n0 [shape=point]};
+  n0 [label="{0: Root_root|{<root> root}}",style=filled,fillcolor=black];
+  n3 [label="{3: Exp_plus|{<left> left|<right> right}}",style=filled,fillcolor=white];
+  n6 [label="{6: Exp_num(2)|{}}",style=filled,fillcolor="#ddffdd"];
+  n3:left -> n6 [color=black,label="7",edgeURL="#",edgetooltip="id: 7\nsource: 3\nindex: Lang.Index.Exp_plus_left\ntarget: 6",labeltooltip="id: 7\nsource: 3\nindex: Lang.Index.Exp_plus_left\ntarget: 6"];
+  n0:root -> n3 [color=black,label="4",edgeURL="#",edgetooltip="id: 4\nsource: 0\nindex: Lang.Index.Root_root_root\ntarget: 3",labeltooltip="id: 4\nsource: 0\nindex: Lang.Index.Root_root_root\ntarget: 3"]}
+\begin{tikzpicture}
+% TODO: texttt
+% TODO: position the different graphs
+\path (0cm,0cm) graph[tree layout] {
+  + -> {
+    2[as={\texttt{2}}],
+    % <empty>
+  }
+};
+\end{tikzpicture}
+\caption{Scenario X: Holes in the Tree}
+\label{fig:Scenario X: Holes in the Tree}
+\end{figure}
+
+DIAGRAM: 2 + HOLE
+
+NEEDS UI EXAMPLE
 
 \subsection{Scenario A: Editing Different Parts of the Code}
 
@@ -196,7 +240,7 @@ Say: "might not be a popup"
 \centering
 TODO: commutativity diagram of screenshots with two cursors
 \caption{TODO:Caption}
-\label{fig:my_label}
+\label{fig:Screenshot0}
 \end{figure}
 
 \begin{figure}
@@ -204,8 +248,6 @@ TODO: commutativity diagram of screenshots with two cursors
 \begin{tikzpicture}
 % TODO: texttt
 % TODO: position the different graphs
-% TODO: ballanced trees
-% TODO: use tikz graph notation? tree notation?
 \path (0cm,0cm) graph[tree layout] {
   + -> {
     3[as={\texttt{3}}], % TODO: put a cursor (green) here
@@ -232,7 +274,7 @@ TODO: commutativity diagram of screenshots with two cursors
 };
 \end{tikzpicture}
 \caption{Scenario A: Editing Different Parts of the Code}
-\label{fig:Scenario-A}
+\label{fig:Scenario A: Editing Different Parts of the Code}
 \end{figure}
 
 A + B make edits and transmit to C, C is able to resolve without any assistance, 
@@ -246,10 +288,8 @@ at the end
 \begin{tikzpicture}
 % TODO: texttt
 % TODO: position the different graphs
-% TODO: ballanced trees
-% TODO: use tikz graph notation? tree notation?
 \path (0cm,0cm) graph[tree layout] {
-  lam[as={$\mathrm{\lambda}_{\texttt{x}}$}] -> {
+  lam[as={$\lambda_{\texttt{x}}$}] -> {
     * -> {
       2,
       x
@@ -257,7 +297,7 @@ at the end
   }
 };
 \path (-3cm,-2cm) graph[tree layout] {
-  lam[as={$\mathrm{\lambda}_{\texttt{x}}$}] -> {
+  lam[as={$\lambda_{\texttt{x}}$}] -> {
     + -> {
       1,
       * -> {
@@ -268,7 +308,7 @@ at the end
   }
 };
 \path (3cm,-2cm) graph[tree layout] {
-  lam[as={$\mathrm{\lambda}_{\texttt{x}}$}] -> {
+  lam[as={$\lambda_{\texttt{x}}$}] -> {
     * -> {
       3,
       x
@@ -276,7 +316,7 @@ at the end
   }
 };
 \path (0cm,-4cm) graph[tree layout] {
-  lam[as={$\mathrm{\lambda}_{\texttt{x}}$}] -> {
+  lam[as={$\lambda_{\texttt{x}}$}] -> {
     + -> {
       1,
       * -> {
@@ -291,9 +331,15 @@ at the end
 \label{fig:Schenario-B}
 \end{figure}
 
+TODO: REDO to MOVE a SUBTREE
+
+NEEDS UI MOCKUP
+
 A edits part of the code
 
 B moves the code surrounding the edits of A to another part of the code
+
+Contrast with a traditional diff
 
 \subsection{Scenario C: Direct Conflicts}
 
@@ -302,15 +348,13 @@ B moves the code surrounding the edits of A to another part of the code
 \begin{tikzpicture}
 % TODO: texttt
 % TODO: position the different graphs
-% TODO: ballanced trees
-% TODO: use tikz graph notation? tree notation?
 \path (0cm,0cm) graph[tree layout] {
-  lam[as={$\mathrm{\lambda}_{\texttt{x}}$}] -> {
+  lam[as={$\lambda_{\texttt{x}}$}] -> {
     x
   }
 };
 \path (-3cm,-2cm) graph[tree layout] {
-  lam[as={$\mathrm{\lambda}_{\texttt{x}}$}] -> {
+  lam[as={$\lambda_{\texttt{x}}$}] -> {
     + -> {
       1,
       x
@@ -318,32 +362,44 @@ B moves the code surrounding the edits of A to another part of the code
   }
 };
 \path (3cm,-2cm) graph[tree layout] {
-  lam[as={$\mathrm{\lambda}_{\texttt{x}}$}] -> {
+  lam[as={$\lambda_{\texttt{x}}$}] -> {
     * -> {
-      2,
-      x
+      x,
+      2
     }
   }
 };
-\path (2cm,-4cm) graph[tree layout] {
-  lam[as={$\mathrm{\lambda}_{\texttt{x}}$}] -> {
+\path (0cm,-4cm) graph[tree layout] {
+  lam[as={$\lambda_{\texttt{x}}$}] -> {
+    + -> {
+      1,
+      x
+    },
+    * -> {
+      x,
+      2
+    }
+  }
+};
+\path (2cm,-8cm) graph[tree layout] {
+  lam[as={$\lambda_{\texttt{x}}$}] -> {
     + -> {
       1,
       * -> {
-        3,
-        x
+        x,
+        2
       }
     }
   }
 };
-\path (-2cm,-4cm) graph[tree layout] {
-  lam[as={$\mathrm{\lambda}_{\texttt{x}}$}] -> {
+\path (-2cm,-8cm) graph[tree layout] {
+  lam[as={$\lambda_{\texttt{x}}$}] -> {
     * -> {
-      3,
       + -> {
         1,
         x
-      }
+      },
+      2
     }
   }
 };
@@ -360,9 +416,21 @@ DIAGRAM: lam x. 2 * x
 
 DIAGRAM: Merge: diamond with "1 +" and "2 *"
 
+TODO: SHOW intermediate Steps (maybe no graph)
+  Show user's perspective
+  Accept one side = delete others (select this)
+  Delete x in *
+  Move + to x
+  
+UI Level Move = Delete and Add
+
 DIAGRAM: Resolution \#1: lam x. 1 + 2 * x
 
 DIAGRAM: Resolution \#2: lam x. 2 * (1 + x)
+
+NEEDS UI MOCKUP
+
+Say: "might not be a popup"
 
 A and B both insert different expressions into the same hole
 
@@ -374,6 +442,52 @@ no longer understand the code)
 
 \subsection{Scenario D: Deletion of Code Being Edited}
 
+\begin{figure}
+\centering
+\begin{tikzpicture}
+% TODO: texttt
+% TODO: position the different graphs
+\path (0cm,0cm) graph[tree layout] {
+  lam[as={$\lambda_{\texttt{x}}$}] -> {
+    + -> {
+      2,
+      x
+    }
+  }
+};
+\path (-3cm,-2cm) graph[tree layout] {
+  lam[as={$\lambda_{\texttt{x}}$}] -> {
+    + -> {
+      3,
+      x
+    }
+  }
+};
+\path (3cm,-2cm) graph[tree layout] {
+  lam[as={$\lambda_{\texttt{x}}$}] -> {
+    hole
+    },
+  + -> {
+    2,
+    x
+  }
+};
+\path (0cm,-4cm) graph[tree layout] {
+  lam[as={$\lambda_{\texttt{x}}$}] -> {
+    hole
+    },
+  + -> {
+    3,
+    x
+  }
+};
+\end{tikzpicture}
+\caption{Scenario D: Deletion of Code Being Edited}
+\label{fig:Scenario-D}
+\end{figure}
+
+TODO: move into Scenario B
+
 DIAGRAM: lam x. 2 + x
 
 DIAGRAM: (lam x. HOLE) (2 + x)
@@ -381,6 +495,8 @@ DIAGRAM: (lam x. HOLE) (2 + x)
 DIAGRAM: lam x. 3 + x
 
 DIAGRAM: Merge: (lam x. HOLE) (3 + x)
+
+NEEDS UI MOCKUP
 
 A deletes code that B is editing (introduce notion of identity)
 
@@ -391,6 +507,23 @@ A deletes code that B is editing (introduce notion of identity)
 Figure shared between D and E that shows the deleted nodes and restore button
 
 \subsection{Scenario E: Restoring Deleted Code}
+
+Combine with Scenario B (moving code):
+  delete
+  restore
+  cut/paste (i.e., move) = delete then restore
+  copy structure vs copy id
+  paste structure vs paste id
+    (show two or three options at paste time)
+
+DIAGRAM: 1 * 2 + 3 + HOLE
+
+DIAGRAM: HOLE + 3 + HOLE (1 * 2)
+
+DIAGRAM: HOLE + 3 + 1 * 2
+
+NEEDS UI MOCKUP
+
 If only one restore, then it does what you expect (basically a cut and paste)
 
 If multiple replicas restore to different places, then you get some complexity:
@@ -402,6 +535,19 @@ Multi-parent
 Cycles
 
 (Maybe not in initial grove by example) The A and B diamond example
+
+\subsection{Scenario F: Cycles}
+
+Synthetic cycles:
+
+DIAGRAM: restoring into yourself (paste before delete?)
+
+Organic cycles:
+
+DIAGRAM: 
+
+NEEDS UI MOCKUP
+
 
 \section{Formalism}
 \label{sec:formalism}
@@ -447,7 +593,9 @@ GRV -- how it is implemented, how it connects to the formalism, describe the gra
 
 We implemented GRV as a core OCaml library in approximately 1,500 lines of code, and a basic Web interface in approximately 600 lines of OCaml code and 250 lines of HTML+CSS+Javascript.
 
-Compared to the core language, our implementation lacks support for lists.
+Compared to the core language, our implementation lacks support for lists and case expressions.
+
+Optimizations: least fixed point 
 
 \section{Related Work}
 \label{sec:related-work}
