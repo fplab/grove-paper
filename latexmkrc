@@ -185,4 +185,4 @@ if (defined $ENV{'CHKTEX_OPTIONS'}) {
 
 #########################
 
-$lualatex = 'lualatex --shell-escape %O %S'
+$lualatex = 'lualatex -shell-escape %O %S'
