@@ -210,17 +210,7 @@ Deeper intuition:
 
 \begin{figure}
 \centering 
-\includegraphics{graphviz/simple.dot}
-\begin{tikzpicture}
-% TODO: texttt
-% TODO: position the different graphs
-\path (0cm,0cm) graph[tree layout] {
-  + -> {
-    2[as={\texttt{2}}],
-    % <empty>
-  }
-};
-\end{tikzpicture}
+\includegraphics[scale=0.75]{graphviz/simple-tree-with-hole.dot}
 \caption{Scenario X: Holes in the Tree}
 \label{fig:Scenario X: Holes in the Tree}
 \end{figure}
@@ -240,34 +230,10 @@ TODO: commutativity diagram of screenshots with two cursors
 
 \begin{figure}
 \centering
-\begin{tikzpicture}
-% TODO: texttt
-% TODO: position the different graphs
-\path (0cm,0cm) graph[tree layout] {
-  + -> {
-    3[as={\texttt{3}}], % TODO: put a cursor (green) here
-    4 % TODO: put a cursor (red) here
-  }
-};
-\path (-3cm,-2cm) graph[tree layout] {
-  + -> {
-    13, % TODO: put a cursor here
-    4
-  }
-};
-\path (3cm,-2cm) graph[tree layout] {
-  + -> {
-    3,
-    14 % TODO: put a cursor here
-  }
-};
-\path (0cm,-4cm) graph[tree layout] {
-  + -> {
-    13, % TODO: put a cursor here
-    14 % TODO: put a cursor here
-  }
-};
-\end{tikzpicture}
+\includegraphics[scale=0.75]{graphviz/editing-different-parts-of-the-code-1.dot}
+\includegraphics[scale=0.75]{graphviz/editing-different-parts-of-the-code-2.dot}
+\includegraphics[scale=0.75]{graphviz/editing-different-parts-of-the-code-3.dot}
+\includegraphics[scale=0.75]{graphviz/editing-different-parts-of-the-code-4.dot}
 \caption{Scenario A: Editing Different Parts of the Code}
 \label{fig:Scenario A: Editing Different Parts of the Code}
 \end{figure}
