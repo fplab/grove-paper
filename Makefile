@@ -1,5 +1,5 @@
 all:
-	latexmk -pdflatex=lualatex -pdf grove-paper.tex
+	latexmk -lualatex
 
 clean:
 	latexmk -C
