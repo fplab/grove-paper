@@ -1,0 +1,12 @@
+digraph G {
+   node [shape=Mrecord,fontsize=11,ranksep=0];
+   edge [arrowhead=vee,fontsize=11,weight=2];
+   rankdir = LR;
+   {rank=min; n0 [shape=point]};
+   n0 [label="{0: root|{<root> root}}",style=filled,fillcolor=black,color=black];
+n3 [label="{3: lam|{<param> param|<param_type> param_type|<body> body}}",style=filled,fillcolor=white,color=black];
+n6 [label="{6: var(x)|{}}",style=filled,fillcolor=white,color=black];
+n9 [label="{9: var(x)|{}}",style=filled,fillcolor="#D7BBD9",color=black];
+n3:body -> n9 [color=black,label="10",edgeURL="#",edgetooltip="id: 10\nsource: 3\nindex: Lang.Index.Exp_lam_body\ntarget: 9",labeltooltip="id: 10\nsource: 3\nindex: Lang.Index.Exp_lam_body\ntarget: 9"];
+n3:param -> n6 [color=black,label="7",edgeURL="#",edgetooltip="id: 7\nsource: 3\nindex: Lang.Index.Exp_lam_param\ntarget: 6",labeltooltip="id: 7\nsource: 3\nindex: Lang.Index.Exp_lam_param\ntarget: 6"];
+n0:root -> n3 [color=black,label="4",edgeURL="#",edgetooltip="id: 4\nsource: 0\nindex: Lang.Index.Root_root_root\ntarget: 3",labeltooltip="id: 4\nsource: 0\nindex: Lang.Index.Root_root_root\ntarget: 3"]}

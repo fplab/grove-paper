@@ -1,0 +1,21 @@
+digraph G {
+   node [shape=Mrecord,fontsize=11,ranksep=0];
+   edge [arrowhead=vee,fontsize=11,weight=2];
+   rankdir = LR;
+   {rank=min; n0 [shape=point]};
+   n0 [label="{0: root|{<root> root}}",style=filled,fillcolor=black,color=black];
+n3 [label="{3: lam|{<param> param|<param_type> param_type|<body> body}}",style=filled,fillcolor=white,color=black];
+n6 [label="{6: var(x)|{}}",style=filled,fillcolor=white,color=black];
+n9 [label="{9: var(x)|{}}",style=filled,fillcolor=white,color="#FFB643"];
+n12 [label="{12: plus|{<left> left|<right> right}}",style=filled,fillcolor=white,color=black];
+n18 [label="{18: num(1)|{}}",style=filled,fillcolor="#D7BBD9",color=black];
+n21 [label="{21: times|{<left> left|<right> right}}",style=filled,fillcolor=white,color=black];
+n27 [label="{27: num(2)|{}}",style=filled,fillcolor=white,color=black];
+n21:right -> n27 [color=black,label="28",edgeURL="#",edgetooltip="id: 28\nsource: 21\nindex: Lang.Index.Exp_times_right\ntarget: 27",labeltooltip="id: 28\nsource: 21\nindex: Lang.Index.Exp_times_right\ntarget: 27"];
+n21:left -> n9 [color="#FFB643",label="24",edgeURL="#",edgetooltip="id: 24\nsource: 21\nindex: Lang.Index.Exp_times_left\ntarget: 9",labeltooltip="id: 24\nsource: 21\nindex: Lang.Index.Exp_times_left\ntarget: 9"];
+n3:body -> n21 [color="#FF5C56",label="22",edgeURL="#",edgetooltip="id: 22\nsource: 3\nindex: Lang.Index.Exp_lam_body\ntarget: 21",labeltooltip="id: 22\nsource: 3\nindex: Lang.Index.Exp_lam_body\ntarget: 21"];
+n12:right -> n18 [color=black,label="19",edgeURL="#",edgetooltip="id: 19\nsource: 12\nindex: Lang.Index.Exp_plus_right\ntarget: 18",labeltooltip="id: 19\nsource: 12\nindex: Lang.Index.Exp_plus_right\ntarget: 18"];
+n12:left -> n9 [color="#FFB643",label="15",edgeURL="#",edgetooltip="id: 15\nsource: 12\nindex: Lang.Index.Exp_plus_left\ntarget: 9",labeltooltip="id: 15\nsource: 12\nindex: Lang.Index.Exp_plus_left\ntarget: 9"];
+n3:body -> n12 [color="#FF5C56",label="13",edgeURL="#",edgetooltip="id: 13\nsource: 3\nindex: Lang.Index.Exp_lam_body\ntarget: 12",labeltooltip="id: 13\nsource: 3\nindex: Lang.Index.Exp_lam_body\ntarget: 12"];
+n3:param -> n6 [color=black,label="7",edgeURL="#",edgetooltip="id: 7\nsource: 3\nindex: Lang.Index.Exp_lam_param\ntarget: 6",labeltooltip="id: 7\nsource: 3\nindex: Lang.Index.Exp_lam_param\ntarget: 6"];
+n0:root -> n3 [color=black,label="4",edgeURL="#",edgetooltip="id: 4\nsource: 0\nindex: Lang.Index.Root_root_root\ntarget: 3",labeltooltip="id: 4\nsource: 0\nindex: Lang.Index.Root_root_root\ntarget: 3"]}

@@ -1,0 +1,13 @@
+digraph G {
+   node [shape=Mrecord,fontsize=11,ranksep=0];
+   edge [arrowhead=vee,fontsize=11,weight=2];
+   rankdir = LR;
+   {rank=min; n0 [shape=point]};
+   n0 [label="{0: root|{<root> root}}",style=filled,fillcolor=black,color=black];
+n3 [label="{3: plus|{<left> left|<right> right}}",style=filled,fillcolor=white,color=black];
+n6 [label="{6: num(1)|{}}",style=filled,fillcolor=white,color=black];
+n9 [label="{9: num(2)|{}}",style=filled,fillcolor=white,color=black];
+n13 [label="{13: num(3)|{}}",style=filled,fillcolor="#D7BBD9",color=black];
+n3:right -> n13 [color=black,label="14",edgeURL="#",edgetooltip="id: 14\nsource: 3\nindex: Lang.Index.Exp_plus_right\ntarget: 13",labeltooltip="id: 14\nsource: 3\nindex: Lang.Index.Exp_plus_right\ntarget: 13"];
+n3:left -> n6 [color=black,label="7",edgeURL="#",edgetooltip="id: 7\nsource: 3\nindex: Lang.Index.Exp_plus_left\ntarget: 6",labeltooltip="id: 7\nsource: 3\nindex: Lang.Index.Exp_plus_left\ntarget: 6"];
+n0:root -> n3 [color=black,label="4",edgeURL="#",edgetooltip="id: 4\nsource: 0\nindex: Lang.Index.Root_root_root\ntarget: 3",labeltooltip="id: 4\nsource: 0\nindex: Lang.Index.Root_root_root\ntarget: 3"]}

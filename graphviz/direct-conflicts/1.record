@@ -1,0 +1,19 @@
+((1
+  ((id 8)
+   (value
+    ((edge
+      ((id 7)
+       (value
+        ((source ((vertex ((id 3) (value Exp_lam))) (index Exp_lam_param)))
+         (target ((id 6) (value (Pat_var x))))))))
+     (state Created)))))
+ (1
+  ((id 5)
+   (value
+    ((edge
+      ((id 4)
+       (value
+        ((source
+          ((vertex ((id 0) (value Root_root))) (index Root_root_root)))
+         (target ((id 3) (value Exp_lam)))))))
+14:55:19.323 jslib.js:110      (state Created))))))

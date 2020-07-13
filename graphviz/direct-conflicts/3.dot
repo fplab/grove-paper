@@ -1,0 +1,18 @@
+digraph G {
+   node [shape=Mrecord,fontsize=11,ranksep=0];
+   edge [arrowhead=vee,fontsize=11,weight=2];
+   rankdir = LR;
+   {rank=min; n0 [shape=point]};
+   n0 [label="{0: root|{<root> root}}",style=filled,fillcolor=black,color=black];
+n3 [label="{3: lam|{<param> param|<param_type> param_type|<body> body}}",style=filled,fillcolor=white,color=black];
+n6 [label="{6: var(x)|{}}",style=filled,fillcolor=white,color=black];
+n9 [label="{9: num(2)|{}}",style=filled,fillcolor="#D7BBD9",color=black];
+n12 [label="{12: app|{<fun> fun|<arg> arg}}",style=filled,fillcolor="#D7BBD9",color=black];
+n15 [label="{15: var(f)|{}}",style=filled,fillcolor=white,color=black];
+n18 [label="{18: var(x)|{}}",style=filled,fillcolor=white,color=black];
+n12:arg -> n18 [color=black,label="19",edgeURL="#",edgetooltip="id: 19\nsource: 12\nindex: Lang.Index.Exp_app_arg\ntarget: 18",labeltooltip="id: 19\nsource: 12\nindex: Lang.Index.Exp_app_arg\ntarget: 18"];
+n12:fun -> n15 [color=black,label="16",edgeURL="#",edgetooltip="id: 16\nsource: 12\nindex: Lang.Index.Exp_app_fun\ntarget: 15",labeltooltip="id: 16\nsource: 12\nindex: Lang.Index.Exp_app_fun\ntarget: 15"];
+n3:body -> n12 [color="#FF5C56",label="13",edgeURL="#",edgetooltip="id: 13\nsource: 3\nindex: Lang.Index.Exp_lam_body\ntarget: 12",labeltooltip="id: 13\nsource: 3\nindex: Lang.Index.Exp_lam_body\ntarget: 12"];
+n3:body -> n9 [color="#FF5C56",label="10",edgeURL="#",edgetooltip="id: 10\nsource: 3\nindex: Lang.Index.Exp_lam_body\ntarget: 9",labeltooltip="id: 10\nsource: 3\nindex: Lang.Index.Exp_lam_body\ntarget: 9"];
+n3:param -> n6 [color=black,label="7",edgeURL="#",edgetooltip="id: 7\nsource: 3\nindex: Lang.Index.Exp_lam_param\ntarget: 6",labeltooltip="id: 7\nsource: 3\nindex: Lang.Index.Exp_lam_param\ntarget: 6"];
+n0:root -> n3 [color=black,label="4",edgeURL="#",edgetooltip="id: 4\nsource: 0\nindex: Lang.Index.Root_root_root\ntarget: 3",labeltooltip="id: 4\nsource: 0\nindex: Lang.Index.Root_root_root\ntarget: 3"]}

@@ -1,0 +1,28 @@
+((1
+  ((id 11)
+   (value
+    ((edge
+      ((id 10)
+       (value
+        ((source ((vertex ((id 3) (value Exp_lam))) (index Exp_lam_body)))
+         (target ((id 9) (value (Exp_var x))))))))
+     (state Created)))))
+ (1
+  ((id 8)
+   (value
+    ((edge
+      ((id 7)
+       (value
+        ((source ((vertex ((id 3) (value Exp_lam))) (index Exp_lam_param)))
+         (target ((id 6) (value (Pat_var x))))))))
+     (state Created)))))
+ (1
+  ((id 5)
+   (value
+    ((edge
+      ((id 4)
+       (value
+        ((source
+          ((vertex ((id 0) (value Root_root))) (index Root_root_root)))
+         (target ((id 3) (value Exp_lam)))))))
+      (state Created))))))

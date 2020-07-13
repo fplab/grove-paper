@@ -710,7 +710,7 @@
 \pdfglyphtounicode{T_h}{0054 0068}
 \pdfgentounicode=1
 \fi
-\RequirePackage{cmap}
+% Removed by MDA (Michael D. Adams): \RequirePackage{cmap}
 \newif\if@ACM@newfonts
 \@ACM@newfontstrue
 \IfFileExists{libertine.sty}{}{\ClassWarning{\@classname}{You do not

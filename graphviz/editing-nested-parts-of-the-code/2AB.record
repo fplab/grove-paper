@@ -1,0 +1,155 @@
+((1
+  ((id 21)
+   (value
+    ((edge
+      ((id 20)
+       (value
+        ((source
+          ((vertex ((id 6) (value Exp_times))) (index Exp_times_left)))
+         (target ((id 19) (value (Exp_num 3))))))))
+     (state Created)))))
+ (1
+  ((id 18)
+   (value
+    ((edge
+      ((id 10)
+       (value
+        ((source
+          ((vertex ((id 6) (value Exp_times))) (index Exp_times_left)))
+         (target ((id 9) (value (Exp_num 2))))))))
+     (state Destroyed)))))
+ (2
+  ((id 17)
+   (value
+    ((edge
+      ((id 16)
+       (value
+        ((source ((vertex ((id 3) (value Exp_plus))) (index Exp_plus_right)))
+         (target ((id 6) (value Exp_times)))))))
+     (state Created)))))
+ (2
+  ((id 15)
+   (value
+    ((edge
+      ((id 7)
+       (value
+        ((source ((vertex ((id 3) (value Exp_plus))) (index Exp_plus_left)))
+         (target ((id 6) (value Exp_times)))))))
+     (state Destroyed)))))
+ (1
+  ((id 5)
+   (value
+    ((edge
+      ((id 4)
+       (value
+        ((source
+          ((vertex ((id 0) (value Root_root))) (index Root_root_root)))
+         (target ((id 3) (value Exp_plus)))))))
+     (state Created)))))
+ (1
+  ((id 8)
+   (value
+    ((edge
+      ((id 7)
+       (value
+        ((source ((vertex ((id 3) (value Exp_plus))) (index Exp_plus_left)))
+         (target ((id 6) (value Exp_times)))))))
+     (state Created)))))
+ (1
+  ((id 11)
+   (value
+    ((edge
+      ((id 10)
+       (value
+        ((source
+          ((vertex ((id 6) (value Exp_times))) (index Exp_times_left)))
+         (target ((id 9) (value (Exp_num 2))))))))
+     (state Created)))))
+ (1
+  ((id 14)
+   (value
+    ((edge
+      ((id 13)
+       (value
+        ((source
+          ((vertex ((id 6) (value Exp_times))) (index Exp_times_right)))
+         (target ((id 12) (value (Exp_var x))))))))
+     (state Created)))))
+ (1
+  ((id 5)
+   (value
+    ((edge
+      ((id 4)
+       (value
+        ((source
+          ((vertex ((id 0) (value Root_root))) (index Root_root_root)))
+         (target ((id 3) (value Exp_plus)))))))
+     (state Created)))))
+ (1
+  ((id 8)
+   (value
+    ((edge
+      ((id 7)
+       (value
+        ((source ((vertex ((id 3) (value Exp_plus))) (index Exp_plus_left)))
+         (target ((id 6) (value Exp_times)))))))
+     (state Created)))))
+ (1
+  ((id 11)
+   (value
+    ((edge
+      ((id 10)
+       (value
+        ((source
+          ((vertex ((id 6) (value Exp_times))) (index Exp_times_left)))
+         (target ((id 9) (value (Exp_num 2))))))))
+     (state Created)))))
+ (1
+  ((id 14)
+   (value
+    ((edge
+      ((id 13)
+       (value
+        ((source
+          ((vertex ((id 6) (value Exp_times))) (index Exp_times_right)))
+         (target ((id 12) (value (Exp_var x))))))))
+     (state Created)))))
+ (1
+  ((id 14)
+   (value
+    ((edge
+      ((id 13)
+       (value
+        ((source
+          ((vertex ((id 6) (value Exp_times))) (index Exp_times_right)))
+         (target ((id 12) (value (Exp_var x))))))))
+     (state Created)))))
+ (1
+  ((id 11)
+   (value
+    ((edge
+      ((id 10)
+       (value
+        ((source
+          ((vertex ((id 6) (value Exp_times))) (index Exp_times_left)))
+         (target ((id 9) (value (Exp_num 2))))))))
+     (state Created)))))
+ (1
+  ((id 8)
+   (value
+    ((edge
+      ((id 7)
+       (value
+        ((source ((vertex ((id 3) (value Exp_plus))) (index Exp_plus_left)))
+         (target ((id 6) (value Exp_times)))))))
+     (state Created)))))
+ (1
+  ((id 5)
+   (value
+    ((edge
+      ((id 4)
+       (value
+        ((source
+          ((vertex ((id 0) (value Root_root))) (index Root_root_root)))
+         (target ((id 3) (value Exp_plus)))))))
+      (state Created))))))

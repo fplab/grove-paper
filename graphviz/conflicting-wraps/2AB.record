@@ -1,0 +1,159 @@
+((2
+  ((id 29)
+   (value
+    ((edge
+      ((id 28)
+       (value
+        ((source
+          ((vertex ((id 21) (value Exp_times))) (index Exp_times_right)))
+         (target ((id 27) (value (Exp_num 2))))))))
+     (state Created)))))
+ (2
+  ((id 23)
+   (value
+    ((edge
+      ((id 22)
+       (value
+        ((source ((vertex ((id 3) (value Exp_lam))) (index Exp_lam_body)))
+         (target ((id 21) (value Exp_times)))))))
+     (state Created)))))
+ (2
+  ((id 25)
+   (value
+    ((edge
+      ((id 24)
+       (value
+        ((source
+          ((vertex ((id 21) (value Exp_times))) (index Exp_times_left)))
+         (target ((id 9) (value (Exp_var x))))))))
+     (state Created)))))
+ (2
+  ((id 26)
+   (value
+    ((edge
+      ((id 10)
+       (value
+        ((source ((vertex ((id 3) (value Exp_lam))) (index Exp_lam_body)))
+         (target ((id 9) (value (Exp_var x))))))))
+     (state Destroyed)))))
+ (1
+  ((id 20)
+   (value
+    ((edge
+      ((id 19)
+       (value
+        ((source
+          ((vertex ((id 12) (value Exp_plus))) (index Exp_plus_right)))
+         (target ((id 18) (value (Exp_num 1))))))))
+     (state Created)))))
+ (1
+  ((id 14)
+   (value
+    ((edge
+      ((id 13)
+       (value
+        ((source ((vertex ((id 3) (value Exp_lam))) (index Exp_lam_body)))
+         (target ((id 12) (value Exp_plus)))))))
+     (state Created)))))
+ (1
+  ((id 16)
+   (value
+    ((edge
+      ((id 15)
+       (value
+        ((source ((vertex ((id 12) (value Exp_plus))) (index Exp_plus_left)))
+         (target ((id 9) (value (Exp_var x))))))))
+     (state Created)))))
+ (1
+  ((id 17)
+   (value
+    ((edge
+      ((id 10)
+       (value
+        ((source ((vertex ((id 3) (value Exp_lam))) (index Exp_lam_body)))
+         (target ((id 9) (value (Exp_var x))))))))
+     (state Destroyed)))))
+ (1
+  ((id 5)
+   (value
+    ((edge
+      ((id 4)
+       (value
+        ((source
+          ((vertex ((id 0) (value Root_root))) (index Root_root_root)))
+         (target ((id 3) (value Exp_lam)))))))
+     (state Created)))))
+ (1
+  ((id 8)
+   (value
+    ((edge
+      ((id 7)
+       (value
+        ((source ((vertex ((id 3) (value Exp_lam))) (index Exp_lam_param)))
+         (target ((id 6) (value (Pat_var x))))))))
+     (state Created)))))
+ (1
+  ((id 11)
+   (value
+    ((edge
+      ((id 10)
+       (value
+        ((source ((vertex ((id 3) (value Exp_lam))) (index Exp_lam_body)))
+         (target ((id 9) (value (Exp_var x))))))))
+     (state Created)))))
+ (1
+  ((id 5)
+   (value
+    ((edge
+      ((id 4)
+       (value
+        ((source
+          ((vertex ((id 0) (value Root_root))) (index Root_root_root)))
+         (target ((id 3) (value Exp_lam)))))))
+     (state Created)))))
+ (1
+  ((id 8)
+   (value
+    ((edge
+      ((id 7)
+       (value
+        ((source ((vertex ((id 3) (value Exp_lam))) (index Exp_lam_param)))
+         (target ((id 6) (value (Pat_var x))))))))
+     (state Created)))))
+ (1
+  ((id 11)
+   (value
+    ((edge
+      ((id 10)
+       (value
+        ((source ((vertex ((id 3) (value Exp_lam))) (index Exp_lam_body)))
+         (target ((id 9) (value (Exp_var x))))))))
+     (state Created)))))
+ (1
+  ((id 11)
+   (value
+    ((edge
+      ((id 10)
+       (value
+        ((source ((vertex ((id 3) (value Exp_lam))) (index Exp_lam_body)))
+         (target ((id 9) (value (Exp_var x))))))))
+     (state Created)))))
+ (1
+  ((id 8)
+   (value
+    ((edge
+      ((id 7)
+       (value
+        ((source ((vertex ((id 3) (value Exp_lam))) (index Exp_lam_param)))
+         (target ((id 6) (value (Pat_var x))))))))
+     (state Created)))))
+ (1
+  ((id 5)
+   (value
+    ((edge
+      ((id 4)
+       (value
+        ((source
+          ((vertex ((id 0) (value Root_root))) (index Root_root_root)))
+         (target ((id 3) (value Exp_lam)))))))
+      (state Created))))))

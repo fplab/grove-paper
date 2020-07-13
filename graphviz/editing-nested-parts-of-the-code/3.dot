@@ -1,0 +1,15 @@
+digraph G {
+   node [shape=Mrecord,fontsize=11,ranksep=0];
+   edge [arrowhead=vee,fontsize=11,weight=2];
+   rankdir = LR;
+   {rank=min; n0 [shape=point]};
+   n0 [label="{0: root|{<root> root}}",style=filled,fillcolor=black,color=black];
+n3 [label="{3: plus|{<left> left|<right> right}}",style=filled,fillcolor=white,color=black];
+n6 [label="{6: times|{<left> left|<right> right}}",style=filled,fillcolor=white,color=black];
+n9 [label="{9: num(2)|{}}",style=filled,fillcolor=white,color=black];
+n12 [label="{12: var(x)|{}}",style=filled,fillcolor=white,color=black];
+n19 [label="{19: num(3)|{}}",style=filled,fillcolor="#D7BBD9",color=black];
+n6:left -> n19 [color=black,label="20",edgeURL="#",edgetooltip="id: 20\nsource: 6\nindex: Lang.Index.Exp_times_left\ntarget: 19",labeltooltip="id: 20\nsource: 6\nindex: Lang.Index.Exp_times_left\ntarget: 19"];
+n3:right -> n6 [color=black,label="16",edgeURL="#",edgetooltip="id: 16\nsource: 3\nindex: Lang.Index.Exp_plus_right\ntarget: 6",labeltooltip="id: 16\nsource: 3\nindex: Lang.Index.Exp_plus_right\ntarget: 6"];
+n6:right -> n12 [color=black,label="13",edgeURL="#",edgetooltip="id: 13\nsource: 6\nindex: Lang.Index.Exp_times_right\ntarget: 12",labeltooltip="id: 13\nsource: 6\nindex: Lang.Index.Exp_times_right\ntarget: 12"];
+n0:root -> n3 [color=black,label="4",edgeURL="#",edgetooltip="id: 4\nsource: 0\nindex: Lang.Index.Root_root_root\ntarget: 3",labeltooltip="id: 4\nsource: 0\nindex: Lang.Index.Root_root_root\ntarget: 3"]}

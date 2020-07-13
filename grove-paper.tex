@@ -76,6 +76,44 @@
   trees,
 }
 
+%%%%%%%%
+% Lang components
+
+% sets
+\def\E{\mathcal{E}}
+\def\G{\mathcal{G}}
+\def\I{\mathcal{I}}
+\def\K{\mathcal{K}}
+\def\U{\mathcal{U}}
+\def\V{\mathcal{V}}
+
+% constructors
+\def\ExpVar{\mathsf{Exp\_var}}
+\def\ExpLam{\mathsf{Exp\_lam}}
+\def\ExpApp{\mathsf{Exp\_app}}
+\def\ExpNum{\mathsf{Exp\_num}}
+\def\ExpPlus{\mathsf{Exp\_plus}}
+\def\PatVar{\mathsf{Pat\_var}}
+\def\TypNum{\mathsf{Typ\_num}}
+\def\TypArrow{\mathsf{Typ\_arrow}}
+
+% indexes
+\def\Root{\mathsf{Root}}
+\def\LamParam{\mathsf{Lam\_param}}
+\def\LamType{\mathsf{Lam\_type}}
+\def\LamBody{\mathsf{Lam\_body}}
+\def\AppFun{\mathsf{App\_fun}}
+\def\AppArg{\mathsf{App\_arg}}
+\def\PlusLeft{\mathsf{Plus\_left}}
+\def\PlusRight{\mathsf{Plus\_right}}
+\def\ArrowArg{\mathsf{Arrow\_arg}}
+\def\ArrowResult{\mathsf{Arrow\_result}}
+
+% relations
+\DeclareMathOperator{\arity}{\text{arity}}
+
+\newcommand{\hole}{\ensuremath{\square}} %\textcolor{violet}{\llparenthesis}}\textcolor{violet}{\rrparenthesis}}
+
 \begin{document}
 
 %% Title information
@@ -205,21 +243,154 @@ Deeper intuition:
  - edges have unique ids
  - once deleted an edge can never be recreated (though, a new edge (with a new id) can be created in the same spot as the original)
 
-\subsection{Scenario X: Holes in the Tree}
-\label{sub:Holes in the Tree}
+For presentational simplicity we omit param\_type in all lambdas
+
+\subsection{Structure Editing}
+
+We present this at two levels.
+One is the underlying graph model, which
+involves explicit identifiers, graph edges, indexes, and add and delete
+operations.
+
+The other is the interface a user might see,
+which omits these details unless needed.
+
+Throughout these examples the graph model is presented
+as a graph with.
+
+\subsubsection{Trees and Holes}
+\label{sub:Trees and Holes}
+
+TODO: explain holes.
 
 \begin{figure}
 \centering 
-\includegraphics[scale=0.75]{graphviz/simple-tree-with-hole.dot}
-\caption{Scenario X: Holes in the Tree}
-\label{fig:Scenario X: Holes in the Tree}
+\includegraphics[scale=0.75]{graphviz/simple-tree-with-hole/1.dot}
+\caption{A simple tree with a hole}
+\label{fig:A simple tree with a hole}
 \end{figure}
-
-DIAGRAM: 2 + HOLE
-
 NEEDS UI EXAMPLE
 
-\subsection{Scenario A: Editing Different Parts of the Code}
+Consider the tree in Figure~\ref{fig:A simple tree with a hole},
+which represents the code \texttt{2 + \hole}.
+
+Note that this tree contains three vertexes.
+The first is depicted with a simple dot and is the root vertex.
+The other two are labeled \texttt{plus} and \texttt{num(2)}
+and represent the plus operator and the numeric literal 2, respectively.
+
+Each vertex has a unique identifier and a list of positions
+for child vertexes.
+In this figure, the \texttt{plus} and \texttt{num(2)} vertexes have
+identifiers 3 and 6 respectively,
+the \texttt{plus} vertex has positions for its left and right children
+and the \texttt{num(2)} vertex has no positions for any children.
+The root vertex has the distinguished identifier 0
+and has one position for its children.
+
+Also each edge has a unique identifier. In Figure~\ref{fig:A simple tree with a hole},
+these edges have idenifiers 4 and 7.  These are used
+when adding and deleting edges as discussed in the
+next subsubsection.
+
+In this paper we represent variables and numeric constants
+as leaves and represent their names or values as
+arguments to those constructors (e.g., \texttt{2} in \texttt{num(2)}).
+(In TODO:REF, we discuss how to allow edits within these.)
+
+TODO: web page Svg ?
+
+Declarative sentences
+
+Outline refinement
+
+The edge coming out of it to the TODO:word of the expression.
+We call this the \emph{rooted} vertex.
+
+\subsubsection{Delete and Add}
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\path (0,0)    node {\includegraphics[scale=0.75]{graphviz/delete-and-add/1.dot}};
+\path (0,-4cm) node {\includegraphics[scale=0.75]{graphviz/delete-and-add/2.dot}};
+\path (0,-8cm) node {\includegraphics[scale=0.75]{graphviz/delete-and-add/3.dot}};
+\end{tikzpicture}
+\caption{Delete and Add}
+\label{fig:Delete and Add}
+\end{figure}
+NEEDS UI EXAMPLE
+
+We model edits to the code as sequences of deletions and additions of edges to this graph.
+For example, consider the first graph in Figure~\ref{fig:Delete and Add}, which
+represents the expression \texttt{1 + 2}.
+Suppose we want to change the \texttt{2} into a \texttt{3} so the expression
+becomes \textt{1 + 3}.
+We model this by first deleting edge~7.
+This results in the middle graph in Figure~\ref{fig:Delete and Add}, which
+represents the expression \texttt{1 + \hole}.
+Note that vertex~9 still exists and can be manipulated (which we will exploit in the next subsection).
+Vertex~9 is just not reachable from the root.
+
+After that deletion, we then add a new vertex to represent~\texttt{3} and an
+edge to it.  This results in the bottom graph in Figure~\ref{fig:Delete and Add}.
+
+Note that this edge has a new identifier distinct from the one before.
+An edge once deleted cannot be restored.  Instead a new edge (with a new id) is created.
+
+Explain orphans
+
+sNote that we will omit orphans from diagrams if they are not relevant
+(e.g., they are deleted and are not added back later)
+
+\subsubsection{Move}
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\path (0,0)    node {\includegraphics[scale=0.75]{graphviz/move/1.dot}};
+\path (0,-5cm) node {\includegraphics[scale=0.75]{graphviz/move/2.dot}};
+\path (0,-9cm) node {\includegraphics[scale=0.75]{graphviz/move/3.dot}};
+\end{tikzpicture}
+\caption{Move}
+\label{fig:Move}
+\end{figure}
+
+\subsubsection{Cut and Paste}
+
+cut/paste (i.e., move) = delete then add
+copy structure vs copy id
+paste structure vs paste id
+  (show two or three options at paste time)
+
+If only one restore, then it does what you expect (basically a cut and paste)
+
+If multiple replicas restore to different places, then you get some complexity:
+
+Restore isn't a copy, it is a move
+
+\subsection{Collaborative Structure Editing}
+
+\subsubsection{Editing Different Parts of the Code}
+
+\begin{figure}
+\centering
+TODO: add screenshot of code text to each node
+TODO: remove orphans from diagram
+\begin{tikzpicture}
+\path (0,0)       node {\includegraphics[scale=0.5]{graphviz/editing-different-parts-of-the-code/1.dot}};
+\path (-3cm,-3cm) node {\includegraphics[scale=0.5]{graphviz/editing-different-parts-of-the-code/2A.dot}};
+\path (3cm,-3cm)  node {\includegraphics[scale=0.5]{graphviz/editing-different-parts-of-the-code/2B.dot}};
+\path (0cm,-6cm)  node {\includegraphics[scale=0.5]{graphviz/editing-different-parts-of-the-code/3.dot}};
+\end{tikzpicture}
+\caption{Editing Different Parts of the Code}
+\label{fig:Editing Different Parts of the Code}
+\end{figure}
+
+A + B make edits and transmit to C, C is able to resolve without any assistance, 
+order that the edits are received doesn't matter you get the same program state
+at the end
+
+commutativity
 
 \begin{figure}
 \centering
@@ -228,109 +399,159 @@ TODO: commutativity diagram of screenshots with two cursors
 \label{fig:Screenshot0}
 \end{figure}
 
-\begin{figure}
-\centering
-\includegraphics[scale=0.75]{graphviz/editing-different-parts-of-the-code-1.dot}
-\includegraphics[scale=0.75]{graphviz/editing-different-parts-of-the-code-2.dot}
-\includegraphics[scale=0.75]{graphviz/editing-different-parts-of-the-code-3.dot}
-\includegraphics[scale=0.75]{graphviz/editing-different-parts-of-the-code-4.dot}
-\caption{Scenario A: Editing Different Parts of the Code}
-\label{fig:Scenario A: Editing Different Parts of the Code}
-\end{figure}
-
-A + B make edits and transmit to C, C is able to resolve without any assistance, 
-order that the edits are received doesn't matter you get the same program state
-at the end
-
-\subsection{Scenario B: Edits to Nested Parts of the Code}
+\subsubsection{Editing Nested Parts of the Code}
 
 \begin{figure}
 \centering
+TODO: add screenshot of code text to each node
+TODO: remove orphans from diagram
+TODO: annotate edges with delete and restore
 \begin{tikzpicture}
-% TODO: texttt
-% TODO: position the different graphs
-\path (0cm,0cm) graph[tree layout] {
-  lam[as={$\lambda_{\texttt{x}}$}] -> {
-    * -> {
-      2,
-      x
-    }
-  }
-};
-\path (-3cm,-2cm) graph[tree layout] {
-  lam[as={$\lambda_{\texttt{x}}$}] -> {
-    + -> {
-      1,
-      * -> {
-        2,
-        x
-      }
-    }
-  }
-};
-\path (3cm,-2cm) graph[tree layout] {
-  lam[as={$\lambda_{\texttt{x}}$}] -> {
-    * -> {
-      3,
-      x
-    }
-  }
-};
-\path (0cm,-4cm) graph[tree layout] {
-  lam[as={$\lambda_{\texttt{x}}$}] -> {
-    + -> {
-      1,
-      * -> {
-        3,
-        x
-      }
-    }
-  }
-};
+\path (0,0)       node {\includegraphics[scale=0.5]{graphviz/editing-nested-parts-of-the-code/1.dot}};
+\path (-3cm,-3cm) node {\includegraphics[scale=0.5]{graphviz/editing-nested-parts-of-the-code/2A.dot}};
+\path (3cm,-3cm)  node {\includegraphics[scale=0.5]{graphviz/editing-nested-parts-of-the-code/2B.dot}};
+\path (0cm,-6cm)  node {\includegraphics[scale=0.5]{graphviz/editing-nested-parts-of-the-code/3.dot}};
 \end{tikzpicture}
-\caption{Scenario B: Edits to Nested Parts of the Code}
-\label{fig:Schenario-B}
+\caption{Editing Nested Parts of the Code}
+\label{fig:Editing Nested Parts of the Code}
 \end{figure}
 
-TODO: REDO to MOVE a SUBTREE
+A deletes code that B is editing
+Then A pastes it somewhere else
 
-NEEDS UI MOCKUP
-
-A edits part of the code
-
-B moves the code surrounding the edits of A to another part of the code
+Explain that can continue editing orphans
 
 Contrast with a traditional diff
 
-\subsection{Scenario C: Direct Conflicts}
+\subsubsection{Direct conflicts}
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\path (0,0)       node {\includegraphics[scale=0.5]{graphviz/direct-conflicts/1.dot}};
+\path (-3cm,-3cm) node {\includegraphics[scale=0.5]{graphviz/direct-conflicts/2A.dot}};
+\path (3cm,-3cm)  node {\includegraphics[scale=0.5]{graphviz/direct-conflicts/2B.dot}};
+\path (0cm,-6cm)  node {\includegraphics[scale=0.5]{graphviz/direct-conflicts/3.dot}};
+\end{tikzpicture}
+\caption{Direct Conflicts}
+\label{fig:Direct Conflicts}
+\end{figure}
+
+A and B both insert different expressions into the same hole
+
+Formal conflict doesn't nessisarily mean a UI conflict.
+Mention resolution algorithms and that we discuss idioms
+as automatic quick fixes
+
+Multiple adds cause conflicts
+(Not usually presented in the UI)
+
+Resolve by deleting one or the other or deleting both and adding replacement
+
+(think about critiques re: diff)
+
+(compare to what happens when there are conflicts in a VCS, you get 
+diff markers inserted into files and the semantic editor services 
+no longer understand the code)
+
+\subsubsection{Wrapping Code}
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\path (0,0)       node {\includegraphics[scale=0.5]{graphviz/wrapping/1.dot}};
+\path (0cm,-4cm)  node {\includegraphics[scale=0.5]{graphviz/wrapping/2.dot}};
+\path (0cm,-8cm)  node {\includegraphics[scale=0.5]{graphviz/wrapping/3.dot}};
+\path (0cm,-12cm) node {\includegraphics[scale=0.5]{graphviz/wrapping/4.dot}};
+\path (0cm,-16cm) node {\includegraphics[scale=0.5]{graphviz/wrapping/5.dot}};
+\end{tikzpicture}
+\caption{Wrapping}
+\label{fig:Wrapping}
+\end{figure}
+
+\subsubsection{Conflicting wrap operations}
+Multi-parent
 
 \begin{figure}
 \centering
 \begin{tikzpicture}
 % TODO: texttt
 % TODO: position the different graphs
+\path (0,0)       node {\includegraphics[scale=0.5]{graphviz/conflicting-wraps/1.dot}};
+\path (-3cm,-3cm) node {\includegraphics[scale=0.5]{graphviz/conflicting-wraps/2A.dot}};
+\path (3cm,-3cm)  node {\includegraphics[scale=0.5]{graphviz/conflicting-wraps/2B.dot}};
+\path (0cm,-6cm)  node {\includegraphics[scale=0.5]{graphviz/conflicting-wraps/3.dot}};
+% \path (0cm,0cm) graph[tree layout] {
+%   lam[as={$\lambda_{\texttt{x}}$}] -> {
+%     x
+%   }
+% };
+% \path (-3cm,-2cm) graph[tree layout] {
+%   lam[as={$\lambda_{\texttt{x}}$}] -> {
+%     + -> {
+%       1,
+%       x
+%     }
+%   }
+% };
+% \path (3cm,-2cm) graph[tree layout] {
+%   lam[as={$\lambda_{\texttt{x}}$}] -> {
+%     * -> {
+%       x,
+%       2
+%     }
+%   }
+% };
+% \path (0cm,-4cm) graph[tree layout] {
+%   lam[as={$\lambda_{\texttt{x}}$}] -> {
+%     + -> {
+%       1,
+%       x
+%     },
+%     * -> {
+%       x,
+%       2
+%     }
+%   }
+% };
+% \path (2cm,-8cm) graph[tree layout] {
+%   lam[as={$\lambda_{\texttt{x}}$}] -> {
+%     + -> {
+%       1,
+%       * -> {
+%         x,
+%         2
+%       }
+%     }
+%   }
+% };
+% \path (-2cm,-8cm) graph[tree layout] {
+%   lam[as={$\lambda_{\texttt{x}}$}] -> {
+%     * -> {
+%       + -> {
+%         1,
+%         x
+%       },
+%       2
+%     }
+%   }
+% };
+\end{tikzpicture}
+\caption{Conflicting wraps}
+\label{fig:Conflicting wraps}
+\end{figure}
+
+TODO: SHOW intermediate Steps (maybe no graph)
+  Show user's perspective
+  Accept one side = delete others (select this)
+  Delete x in *
+  Move + to x
+
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
 \path (0cm,0cm) graph[tree layout] {
-  lam[as={$\lambda_{\texttt{x}}$}] -> {
-    x
-  }
-};
-\path (-3cm,-2cm) graph[tree layout] {
-  lam[as={$\lambda_{\texttt{x}}$}] -> {
-    + -> {
-      1,
-      x
-    }
-  }
-};
-\path (3cm,-2cm) graph[tree layout] {
-  lam[as={$\lambda_{\texttt{x}}$}] -> {
-    * -> {
-      x,
-      2
-    }
-  }
-};
-\path (0cm,-4cm) graph[tree layout] {
   lam[as={$\lambda_{\texttt{x}}$}] -> {
     + -> {
       1,
@@ -342,7 +563,7 @@ Contrast with a traditional diff
     }
   }
 };
-\path (2cm,-8cm) graph[tree layout] {
+\path (2cm,-4cm) graph[tree layout] {
   lam[as={$\lambda_{\texttt{x}}$}] -> {
     + -> {
       1,
@@ -353,7 +574,7 @@ Contrast with a traditional diff
     }
   }
 };
-\path (-2cm,-8cm) graph[tree layout] {
+\path (-2cm,-4cm) graph[tree layout] {
   lam[as={$\lambda_{\texttt{x}}$}] -> {
     * -> {
       + -> {
@@ -365,139 +586,15 @@ Contrast with a traditional diff
   }
 };
 \end{tikzpicture}
-\caption{Scenario C: Direct Conflicts}
-\label{fig:Scenario-C}
+\caption{Wrap Resolution}
+\label{fig:Wrap Resolution}
 \end{figure}
-
-DIAGRAM: lam x. x
-
-DIAGRAM: lam x. 1 + x
-
-DIAGRAM: lam x. 2 * x
-
-DIAGRAM: Merge: diamond with "1 +" and "2 *"
-
-TODO: SHOW intermediate Steps (maybe no graph)
-  Show user's perspective
-  Accept one side = delete others (select this)
-  Delete x in *
-  Move + to x
-  
-UI Level Move = Delete and Add
-
-DIAGRAM: Resolution \#1: lam x. 1 + 2 * x
-
-DIAGRAM: Resolution \#2: lam x. 2 * (1 + x)
 
 NEEDS UI MOCKUP
 
 Say: "might not be a popup"
 
-A and B both insert different expressions into the same hole
-
-(think about critiques re: diff)
-
-(compare to what happens when there are conflicts in a VCS, you get 
-diff markers inserted into files and the semantic editor services 
-no longer understand the code)
-
-\subsection{Scenario D: Deletion of Code Being Edited}
-
-\begin{figure}
-\centering
-\begin{tikzpicture}
-% TODO: texttt
-% TODO: position the different graphs
-\path (0cm,0cm) graph[tree layout] {
-  lam[as={$\lambda_{\texttt{x}}$}] -> {
-    + -> {
-      2,
-      x
-    }
-  }
-};
-\path (-3cm,-2cm) graph[tree layout] {
-  lam[as={$\lambda_{\texttt{x}}$}] -> {
-    + -> {
-      3,
-      x
-    }
-  }
-};
-\path (3cm,-2cm) graph[tree layout] {
-  lam[as={$\lambda_{\texttt{x}}$}] -> {
-    hole
-    },
-  + -> {
-    2,
-    x
-  }
-};
-\path (0cm,-4cm) graph[tree layout] {
-  lam[as={$\lambda_{\texttt{x}}$}] -> {
-    hole
-    },
-  + -> {
-    3,
-    x
-  }
-};
-\end{tikzpicture}
-\caption{Scenario D: Deletion of Code Being Edited}
-\label{fig:Scenario-D}
-\end{figure}
-
-TODO: move into Scenario B
-
-DIAGRAM: lam x. 2 + x
-
-DIAGRAM: (lam x. HOLE) (2 + x)
-
-DIAGRAM: lam x. 3 + x
-
-DIAGRAM: Merge: (lam x. HOLE) (3 + x)
-
-NEEDS UI MOCKUP
-
-A deletes code that B is editing (introduce notion of identity)
-
-
-
-(orphans)
-
-Figure shared between D and E that shows the deleted nodes and restore button
-
-\subsection{Scenario E: Restoring Deleted Code}
-
-Combine with Scenario B (moving code):
-  delete
-  restore
-  cut/paste (i.e., move) = delete then restore
-  copy structure vs copy id
-  paste structure vs paste id
-    (show two or three options at paste time)
-
-DIAGRAM: 1 * 2 + 3 + HOLE
-
-DIAGRAM: HOLE + 3 + HOLE (1 * 2)
-
-DIAGRAM: HOLE + 3 + 1 * 2
-
-NEEDS UI MOCKUP
-
-If only one restore, then it does what you expect (basically a cut and paste)
-
-If multiple replicas restore to different places, then you get some complexity:
-
- -- restore isn't a copy, it is a move
-
-Multi-parent
-
-Cycles
-
-(Maybe not in initial grove by example) The A and B diamond example
-
-\subsection{Scenario F: Cycles}
+\subsubsection{Cycles}
 
 Synthetic cycles:
 
@@ -505,32 +602,118 @@ DIAGRAM: restoring into yourself (paste before delete?)
 
 Organic cycles:
 
-DIAGRAM: 
+DIAGRAM: if cycles between "1 +" and "2 *" in previous diagrams
 
 NEEDS UI MOCKUP
 
+(Maybe not in initial grove by example) The A and B diamond example
 
 \section{Formalism}
 \label{sec:formalism}
 
 \subsection{Syntax}
 
+% $\arraycolsep=2pt\begin{array}{llcl}
+% \mathsf{Typ} & \tau & ::= & t ~\vert~ \aparr{\tau}{\tau} ~\vert~ \aall{t}{\tau} ~\vert~ \arec{t}{\tau} ~\vert~ \aprod{\labelset}{\mapschema{\tau}{i}{\labelset}} ~\vert~ \asum{\labelset}{\mapschema{\tau}{i}{\labelset}}\\
+% \mathsf{Exp} & e & ::= & x ~\vert~ \aelam{\tau}{x}{e} ~\vert~ \aeap{e}{e} ~\vert~ \aetlam{t}{e} ~\vert~ \aetap{e}{\tau} ~\vert~ \aefold{e} ~\vert~ \aetpl{\labelset}{\mapschema{e}{i}{\labelset}} ~\vert~  \aein{\ell}{e} \\
+% & & \vert & \aematchwith{n}{e}{\seqschemaX{r}}\\
+% \mathsf{Rule} & r & ::= & \aematchrule{p}{e}\\
+% \mathsf{Pat} & p & ::= & x  ~\vert~ \aewildp ~\vert~ \aefoldp{p} ~\vert~ \aetplp{\labelset}{\mapschema{p}{i}{\labelset}} ~\vert~ \aeinjp{\ell}{p}
+% \end{array}$
+
+\begin{figure}
+\[
+\arraycolsep=0pt
+\begin{array}{rlll}
+ p    & {}\in Pat & {}\mathrel{::=}{} & x \mid \_ \\
+ e    & {}\in Exp & {}\mathrel{::=}{} & \lambda p\mathord{:}\tau.e \mid e~e \mid e + e \mid n \mid \_ \\
+ \tau & {}\in Typ & {}\mathrel{::=}{} & \tau \rightarrow \tau \mid Num \mid \_
+\end{array}
+\]
+\caption{Formal syntax (as a grammar) for the lambda calculus that we are considering.}
+\label{fig:formal-syntax}
+\end{figure}
+
+Turn that into a constructor set K + index set I + arity function (has type: K -> $\wp$(I)).
+
+$\K = \{ \Root, \ExpVar, \ExpLam, \ExpApp, \ExpNum, \ExpPlus,$ 
+
+$\qquad\ \ \PatVar, \TypNum, \TypArrow \}$
+
+$\I = \{ \Root, \LamParam, \LamType, \LamBody, \AppFun, \AppArg,$
+
+$\qquad\ \ \PlusLeft, \PlusRight, \ArrowArg, \ArrowResult \}$
+
+\vspace{2ex}
+
+$\arity : \K \rightarrow \wp(\I)$
+
+\vspace{2ex}
+
+\begin{tabular}{ll}
+    $\K$ & $\wp(\I)$ \\
+    \hline
+    $\Root$ & $\{ \Root \}$ \\
+    $\ExpLam$ & $\{ \LamParam, \LamType, \LamBody \}$ \\
+    $\ExpApp$ & $\{ \AppFun, \AppArg \}$ \\
+    $\ExpPlus$ & $\{ \PlusLeft, \PlusRight \}$ \\
+\end{tabular}
+
 \subsection{Convergent Graphs}
 
-Graph CRDT description
+\subsubsection{Graphs}
 
-Mapping of syntax into the graph representation
+Graph is a function from edges to edge states.
 
-Graph actions
+$\G : \E \rightarrow \{ \bot, +, - \}$
 
-holes are not explicit in the graph
+An edge is a uuid * source vertex * index * target vertex.  (We are assuming you can generate globally unique IDs.)
 
-\begin{theorem}[Commutativity (convergence?)]
+\def\e{\varepsilon}
+
+An edge $\e \in \E = \U \times \V \times \I \times \V$ is ...
+
+A vertex is a pair of a uuid and a constructor. (uuid + constructor is the identity)
+
+$\V = \U \times \K$
+
+An edge state is bottom + - . Define the total ordering (forms a lattice).
+
+Define $\sqcup_{edge state}$ (i.e. join)
+
+lattice ordering $\bot < + < -$ LUB e.g., join A B = C
+
+You can map from syntax to graph by selecting
+unique IDs (for both edges and vertexes).
+    - holes are not explicit in the graph
+
+\subsubsection{Graph Actions}
+A graph action is a +E or -E.
+
+Graph action semantics is a transition system
+between graphs. (join with whatever it was before)
+
+G --action--> G'
+
+\subsection{Agda Mechanization}
+\label{sub:agda-mechanization}
+
+Discuss uniqueness of uuid
+
+\begin{theorem}[Commutativity]
+
+G  -- a1 a2 --> G'
+
+------------------
+
+G' -- a2 a1 --> G
 
 \end{theorem}
 
 \subsection{Type System}
 \label{sub:type-system}
+
+editor states:
 
 conflicts (multiple children in the same spot)
 
@@ -540,13 +723,21 @@ cycles
 
 non-empty holes
 
-\subsection{Semantic Actions}
+----------------
+
+User must supply edge selection for multi-parent
+
+
+\subsection{Edit Actions}
 Mapping to graph actions
 
-Sensibility
+Sensibility -- mapping back from graphs
+to well-typed states that fixes holes
 
-\subsection{Agda Mechanization}
-\label{sub:agda-mechanization}
+\section{TODO}
+TODO: leaves
+
+TODO: our model supports treating these as a cons-list of characters
 
 \section{Implementation}
 \label{sec:implementation}
@@ -580,6 +771,11 @@ Unision?
 \section{Discussion and Conclusion}
 \label{sec:conclusion}
 
+\subsection{Variable names, strings, and numbers}
+
+NOTE: we could implement each digit as a separate characters
+
+GUI for string conflicts: use popups
 
 %% Acknowledgments
 \begin{acks}                            %% acks environment is optional
