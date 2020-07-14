@@ -325,7 +325,7 @@ We model edits to the code as sequences of deletions and additions of edges to t
 For example, consider the first graph in Figure~\ref{fig:Delete and Add}, which
 represents the expression \texttt{1 + 2}.
 Suppose we want to change the \texttt{2} into a \texttt{3} so the expression
-becomes \textt{1 + 3}.
+becomes \texttt{1 + 3}.
 We model this by first deleting edge~7.
 This results in the middle graph in Figure~\ref{fig:Delete and Add}, which
 represents the expression \texttt{1 + \hole}.
@@ -340,10 +340,11 @@ An edge once deleted cannot be restored.  Instead a new edge (with a new id) is 
 
 Explain orphans
 
-sNote that we will omit orphans from diagrams if they are not relevant
+Note that we will omit orphans from diagrams if they are not relevant
 (e.g., they are deleted and are not added back later)
 
 \subsubsection{Move}
+
 \begin{figure}
 \centering
 \begin{tikzpicture}
@@ -355,12 +356,34 @@ sNote that we will omit orphans from diagrams if they are not relevant
 \label{fig:Move}
 \end{figure}
 
-\subsubsection{Cut and Paste}
+An interesting consequence of our design is that a move operation
+does not have to delete code from one position and create a copy
+in another position.
+Instead, by deleting just the edge to the code to be moved and then
+adding a new edge to that code somewhere else, the actual code is
+moved, not just a copy.
 
-cut/paste (i.e., move) = delete then add
-copy structure vs copy id
-paste structure vs paste id
-  (show two or three options at paste time)
+For example, consider Figure~\ref{fig:Move}, which represents
+the movement of \texttt{1 * 2} from the left child of \texttt{plus}
+to its right child.  The top graph is the code before the move.
+First, edge~7 is deleted, which results in the middle graph
+where the rooted code is now \texttt{\hole{} + \hole},
+and vertex~6 is orphaned.
+
+Next edge~16 is added, which results in the bottom graph
+where the rooted code is now \texttt{\hole{} + 1 * 2},
+and vertex~6 is no longer orphaned.
+
+This move semantics gives us a richer structure than
+when treating code as a list of lines.  We exploit
+this in Section~REF:TODO in order merge edits that involve moving code.
+
+Of course, if the user wants a genuine copy
+and not just a move, that can easily be achieved
+(TODO: figure for this?)
+
+This is similar to the paste with formatting versus
+paste without formatting.
 
 If only one restore, then it does what you expect (basically a cut and paste)
 
@@ -386,6 +409,11 @@ TODO: remove orphans from diagram
 \label{fig:Editing Different Parts of the Code}
 \end{figure}
 
+When editing different parts of the code
+
+For example, consider the graphs in Figure~\ref{fig:Editing Different Parts of the Code}.
+The 
+
 A + B make edits and transmit to C, C is able to resolve without any assistance, 
 order that the edits are received doesn't matter you get the same program state
 at the end
@@ -400,6 +428,12 @@ TODO: commutativity diagram of screenshots with two cursors
 \end{figure}
 
 \subsubsection{Editing Nested Parts of the Code}
+
+(Similar to how git merged across moves.
+A notable difference though is that \texttt{git} detects
+file moves by structural similarity rather than
+our nominal equality.
+(We exploit this in Subsection~REF:TODO).
 
 \begin{figure}
 \centering
@@ -794,15 +828,13 @@ GUI for string conflicts: use popups
   National Science Foundation.
 \end{acks}
 
-
-%% Bibliography
-%\bibliography{bibfile}
-
-
 %% Appendix
 \appendix
 \section{Appendix}
 
 Text of appendix \ldots
+
+%% Bibliography
+%\bibliography{bibfile}
 
 \end{document}
