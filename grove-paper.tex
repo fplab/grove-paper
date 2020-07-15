@@ -343,6 +343,13 @@ Explain orphans
 Note that we will omit orphans from diagrams if they are not relevant
 (e.g., they are deleted and are not added back later)
 
+Note that we do not explicitly delete or add vertexes.
+Our only actions are deleting or adding \textit{edges}.
+Vertexes are implicitly created whenever an edge
+is created that points to it.
+Deleting vertexes is not necessary, as we can simply
+remove the edge pointing to it.
+
 \subsubsection{Move}
 
 \begin{figure}
@@ -379,7 +386,8 @@ when treating code as a list of lines.  We exploit
 this in Section~REF:TODO in order merge edits that involve moving code.
 
 Of course, if the user wants a genuine copy
-and not just a move, that can easily be achieved
+and not just a move, that can be achieved
+by creating new vertexes with fresh identifiers.
 (TODO: figure for this?)
 
 This is similar to the paste with formatting versus
@@ -388,8 +396,6 @@ paste without formatting.
 If only one restore, then it does what you expect (basically a cut and paste)
 
 If multiple replicas restore to different places, then you get some complexity:
-
-Restore isn't a copy, it is a move
 
 \subsection{Collaborative Structure Editing}
 
@@ -411,20 +417,41 @@ TODO: remove orphans from diagram
 
 When editing different parts of the code
 
-For example, consider the graphs in Figure~\ref{fig:Editing Different Parts of the Code}.
-The 
+For example, suppose there are users, A and B,
+that are synchronized with each other and
+have the code \texttt{3 + 4}.
+That is to say, they both have
+the top graphs in Figure~\ref{fig:Editing Different Parts of the Code}.
 
-A + B make edits and transmit to C, C is able to resolve without any assistance, 
-order that the edits are received doesn't matter you get the same program state
-at the end
+Next, suppose user A changes the \texttt{3} to a \texttt{13},
+and user B changes the \texttt{4} to a \texttt{14}.
+Before transmitting their edits to each other,
+user A thus has left graph and user B has the right graph.
+For user A, this involves deleting edge~7 and creating edge~14.
+For user B, this involves deleting edge~10 and creating edge~18.
 
-commutativity
+To merge these two graphs each user simply replays the edge deletions and additions
+that the other user performed.
+
+Both user then have the bottom graph and are again synchronized with each other.
+
+Note that aside from transmitting the edge deletions and additions,
+no coordination between A and B is needed to coordinate the merge.
+For example, suppose that A and B did not transmit their edits to each other
+but to a third user, C, that has the original graph at the top of Figure~\ref{fig:Editing Different Parts of the Code}.
+User C can replay the edits from A and B in any order and will always get
+the graph at the bottom of Figure~\ref{fig:Editing Different Parts of the Code}.
+
+Stated more formally, our edit model obeys commutativity
+as shown in Figure~\ref{fig:Commutativity}.
+For any two sequences of edits $\vec{\alpha}$ and $\vec{\alpha}^\prime$,
+applying them in either order produces the same results.
 
 \begin{figure}
 \centering
 TODO: commutativity diagram of screenshots with two cursors
-\caption{TODO:Caption}
-\label{fig:Screenshot0}
+\caption{TODO:Commutativity}
+\label{fig:Commutativity}
 \end{figure}
 
 \subsubsection{Editing Nested Parts of the Code}
