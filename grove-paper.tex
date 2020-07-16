@@ -477,8 +477,21 @@ TODO: annotate edges with delete and restore
 \label{fig:Editing Nested Parts of the Code}
 \end{figure}
 
-A deletes code that B is editing
-Then A pastes it somewhere else
+Consider Figure~\ref{fig:Editing Nested Parts of the Code}.
+Alice and Bob both start with the top graph, which represents the code \texttt{2 * x + \hole{}}.
+Alice changes the \texttt{2} to a \texttt{3}, which results in the left graph.
+Bob moves the \texttt{2 * x} from the left of the plus to the right of the plus
+by deleting edge~7 and adding edge~16, which results in the right graph.
+Since vertex and edge identifiers are preserved by these,
+both Alice's and Bob's edits can be applied to the other's graph,
+which results in both Alice and Bob having the bottom graph.
+
+As with Subsection~SEC:TODO, this merge does not require coordination
+between Alice and Bob.  They could independently send their edits
+to a third party, Charley, who could replay their edits in any order
+and will always get the bottom graph.
+
+Supporting this kind of behavior is 
 
 Explain that can continue editing orphans
 
