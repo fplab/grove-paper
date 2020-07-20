@@ -491,9 +491,15 @@ between Alice and Bob.  They could independently send their edits
 to a third party, Charley, who could replay their edits in any order
 and will always get the bottom graph.
 
-Supporting this kind of behavior is 
+A consequence of this design is that we allow users to edit
+parts of the code that have been deleted.  For example,
+Alice might receive Bob's deletion of edge~7 before making her
+edits and before receiving Bob's adding of edge~16.
+Her edits would then be within the code deleted by Bob.
 
-Explain that can continue editing orphans
+TODO:figure
+
+Contrast this 
 
 Contrast with a traditional diff
 
@@ -511,11 +517,40 @@ Contrast with a traditional diff
 \label{fig:Direct Conflicts}
 \end{figure}
 
-A and B both insert different expressions into the same hole
+Finally, we address genuine conflicts between edits.
+Consider the top graph of Figure~\ref{fig:Direct Conflicts}.
+Suppose Alice inserts the number literal \texttt{2} into the body of the lambda
+while Bob inserts the function application \texttt{f x} also into the body of the lambda.
+These results in the left and right graphs of \ref{fig:Direct Conflicts} respectively.
+In particular pay attention to the edges going out of the \texttt{body} index of node~3.
+In the left graph it is edge~10, which points to a number literal,
+and in the right graph it is edge~13, which points to a function application.
 
-Formal conflict doesn't nessisarily mean a UI conflict.
-Mention resolution algorithms and that we discuss idioms
-as automatic quick fixes
+We merge these by including \emph{both} edges as edges going out of the \texttt{body} index
+of node~3.
+This results in the bottom graph of Figure~\ref{fig:Direct Conflicts}.
+The conflict between Alice's and Bob's changes is
+represented by the fact that there are multiple edges going out of one index (i.e. the \texttt{body}
+index of node~3).
+In the graph representation, we flag this conflict by highlighting its edges
+in red.
+In the textual representation, we flag this conflict with the notation \texttt{\{ 2 | f x \}}.
+This is a conflict that much eventually be resolved by the user by deleting
+one of the edges and editing the other to be the merged value.
+For example, one could delete edge~10 and then edit the \texttt{x}
+to be \texttt{x + 2}.
+Note that users can continue to edit the code while in this conflicted state.
+It just must be resolved before the the code can be run.\footnote{
+It may be possible to develop evaluation models that allow these sorts of conflicts,
+but that is beyond the scope of this paper.}.
+
+Note that as a convenience to the user, certain simple
+conflicts might be automatically resolved,
+but we consider this a higher-level, user-interface consideration.
+
+TODO: need example of fully-automatic resolution and semi-automatic resolution
+
+
 
 Multiple adds cause conflicts
 (Not usually presented in the UI)
