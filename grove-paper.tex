@@ -544,24 +544,40 @@ It just must be resolved before the the code can be run.\footnote{
 It may be possible to develop evaluation models that allow these sorts of conflicts,
 but that is beyond the scope of this paper.}.
 
+Compare this to what happens when there are conflicts in a traditional,
+line/diff-based version control system (e.g., \texttt{git}, \texttt{mercurial}, \texttt{svn}, etc.).
+Those systems annotate files with difference markers (e.g., sequences of \texttt{<}, \texttt{>}, or \texttt{=})
+when a merge conflict happens.
+These show alternate versions versions of the code, and it is up to the user
+to replace those alternates with the desired merged result.
+
+Our tree-based model is similar in that it presents alternate versions
+of the code, and it is up to the user to replace those alternates with the desired merged result.
+Our model is different, in that merge conflicts in the line-based model
+prevent some semantic editor services from running
+that could continue to run in the tree-based model because
+code inside and outside the conflict is still valid code.
+It is just the point where they meet the poses a potential problem for editor services.
+Another place our model is different
+is that changes are explicit rather than being inferred.
+Finally, in our model, since all changes are in terms of
+the structure of the code rather than lines,
+all changes respect that structure.
+This is unlike the line-based model where there is no guarantee
+that a merge conflict follows the structure of the code.
+Finally, our model differs from the traditional model
+in that we have explict add and remove actions
+where the traditional model infers these from a differencing algorithm.
+
 Note that as a convenience to the user, certain simple
 conflicts might be automatically resolved,
 but we consider this a higher-level, user-interface consideration.
 
 TODO: need example of fully-automatic resolution and semi-automatic resolution
 
-
-
 Multiple adds cause conflicts
 (Not usually presented in the UI)
 
-Resolve by deleting one or the other or deleting both and adding replacement
-
-(think about critiques re: diff)
-
-(compare to what happens when there are conflicts in a VCS, you get 
-diff markers inserted into files and the semantic editor services 
-no longer understand the code)
 
 \subsubsection{Wrapping Code}
 
@@ -577,6 +593,11 @@ no longer understand the code)
 \caption{Wrapping}
 \label{fig:Wrapping}
 \end{figure}
+
+Before further exploring how to merge changes from multiple users,
+we want to point out a common idiom
+
+Traditional: no relation (and indent might change)
 
 \subsubsection{Conflicting wrap operations}
 Multi-parent
