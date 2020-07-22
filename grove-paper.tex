@@ -499,8 +499,6 @@ Her edits would then be within the code deleted by Bob.
 
 TODO:figure
 
-Contrast this 
-
 Contrast with a traditional diff
 
 \subsubsection{Direct conflicts}
@@ -583,6 +581,7 @@ Multiple adds cause conflicts
 
 \begin{figure}
 \centering
+TODO: naive add that creates a conflict
 \begin{tikzpicture}
 \path (0,0)       node {\includegraphics[scale=0.5]{graphviz/wrapping/1.dot}};
 \path (0cm,-4cm)  node {\includegraphics[scale=0.5]{graphviz/wrapping/2.dot}};
@@ -595,7 +594,27 @@ Multiple adds cause conflicts
 \end{figure}
 
 Before further exploring how to merge changes from multiple users,
-we want to point out a common idiom
+we want to point out a common idiom that we call \emph{wrapping}.
+Consider the first graph in Figure~\ref{fig:Wrapping}, which
+represents the code \texttt{$\lambda$ x . x}, and suppose
+the user's cursor is in the body field of the lambda (i.e., around the variable
+reference to \texttt{x} in the body of the lambda).
+
+If the user requests that a plus be inserted,
+the editor may notice that there is something already in that hole.
+A naive editor could certainly add the plus by creating a new
+edge from the body index of the lambda to a freshly created \texttt{plus} vertex.
+This would result in a conflict between the \texttt{plus} and the existing \texttt{var}
+as shown in Figure~REF:TODO.
+A better user experience
+would be interpret the request for a plus to mean to
+take whatever (if anything) is in the cursor
+and place it as a child of the plus.
+This \emph{wraps} the existing \texttt{var} in the \texttt{plus}
+and results in the code \texttt{$\lambda$ x . x + \hole}.
+(This is similar to the behavior in other structure editors such as in CITE:TODO.)
+Translating this into edge deletes and adds results in the sequence of graphs in Figure~\ref{fig:Wrapping}.
+Note that this is a layer above
 
 Traditional: no relation (and indent might change)
 
