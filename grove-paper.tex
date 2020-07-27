@@ -309,6 +309,10 @@ We call this the \emph{rooted} vertex.
 
 \subsubsection{Delete and Add}
 
+TODO: explain that multiple delete or add are idempotent
+
+TODO: explain that delete overrides add
+
 \begin{figure}
 \centering
 \begin{tikzpicture}
@@ -501,7 +505,7 @@ TODO:figure
 
 Contrast with a traditional diff
 
-\subsubsection{Direct conflicts}
+\subsubsection{Multi-child conflicts}
 
 \begin{figure}
 \centering
@@ -540,7 +544,7 @@ to be \texttt{x + 2}.
 Note that users can continue to edit the code while in this conflicted state.
 It just must be resolved before the the code can be run.\footnote{
 It may be possible to develop evaluation models that allow these sorts of conflicts,
-but that is beyond the scope of this paper.}.
+but that is beyond the scope of this paper.}
 
 Compare this to what happens when there are conflicts in a traditional,
 line/diff-based version control system (e.g., \texttt{git}, \texttt{mercurial}, \texttt{svn}, etc.).
@@ -576,6 +580,41 @@ TODO: need example of fully-automatic resolution and semi-automatic resolution
 Multiple adds cause conflicts
 (Not usually presented in the UI)
 
+\subsubsection{Multi-parent conflicts}
+
+In addition to conflicts due multiple edges coming \emph{out of} an index of a particular vertex,
+conflicts can manifest as multiple edges going \emph{into} a particular vertex.
+We call these \emph{multi-parent conflicts}.
+
+\begin{figure}
+\centering
+
+TODO TOP: +(\hole, +(\hole, x))
+
+TODO LEFT: +(x, +(\hole, \hole))
+
+TODO RIGHT: +(\hole, +(x, \hole))
+
+TODO BOTTOM: Two parents pointing to x
+
+\caption{Multi-parent conflict}
+\label{fig:Multi-parent conflict}
+\end{figure}
+
+An example of this is shown in Figure~\ref{fig:Multi-parent conflict},
+which starts with the top graph, which represents the expression \texttt{\hole + (\hole + x)}.
+Suppose Alice moves the variable \texttt{x} to the left-most hole.
+This results in the left graph, which represents the expression \texttt{x + (\hole + \hole)}.
+At the same time, suppose Bob moves the variable \texttt{x} to the right-most hole.
+This results in the right graph, which represents the expression \texttt{\hole + (x + \hole)}.
+In both cases, these edits are achieved with one edge delete and one edge add.
+Alice deletes edge TODO and adds edge TODO, while Bob deletes edge TODO and adds edge TODO.
+As explained in Subsection~TODO:REF, deletes are idempotent so both Alice and Bob deleting
+edge TODO is not a problem.
+However, both edge TODO (added by Alice) and edge TODO (added by Bob) point to the same vertex.
+This generates the bottom graph, in which vertex TODO as two parents pointing to it.
+We call this situation a multi-parent conflict.
+
 
 \subsubsection{Wrapping Code}
 
@@ -593,7 +632,7 @@ TODO: naive add that creates a conflict
 \label{fig:Wrapping}
 \end{figure}
 
-Before further exploring how to merge changes from multiple users,
+Before \marginpar{DEL?} further exploring how to merge changes from multiple users,
 we want to point out a common idiom that we call \emph{wrapping}.
 Consider the first graph in Figure~\ref{fig:Wrapping}, which
 represents the code \texttt{$\lambda$ x . x}, and suppose
@@ -619,7 +658,6 @@ Note that this is a layer above
 Traditional: no relation (and indent might change)
 
 \subsubsection{Conflicting wrap operations}
-Multi-parent
 
 \begin{figure}
 \centering
@@ -689,6 +727,12 @@ Multi-parent
 \caption{Conflicting wraps}
 \label{fig:Conflicting wraps}
 \end{figure}
+
+If two different 
+As seen in REF:SEC:TODO, conflicting wraps gener
+
+Multi-parent
+
 
 TODO: SHOW intermediate Steps (maybe no graph)
   Show user's perspective
