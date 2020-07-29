@@ -616,80 +616,136 @@ This generates the bottom graph, in which vertex TODO as two parents pointing to
 We call this situation a multi-parent conflict.
 
 
-\subsubsection{Wrapping Code}
 
-\begin{figure}
-\centering
-TODO: naive add that creates a conflict
-\begin{tikzpicture}
-\path (0,0)       node {\includegraphics[scale=0.5]{graphviz/wrapping/1.dot}};
-\path (0cm,-4cm)  node {\includegraphics[scale=0.5]{graphviz/wrapping/2.dot}};
-\path (0cm,-8cm)  node {\includegraphics[scale=0.5]{graphviz/wrapping/3.dot}};
-\path (0cm,-12cm) node {\includegraphics[scale=0.5]{graphviz/wrapping/4.dot}};
-\path (0cm,-16cm) node {\includegraphics[scale=0.5]{graphviz/wrapping/5.dot}};
-\end{tikzpicture}
-\caption{Wrapping}
-\label{fig:Wrapping}
-\end{figure}
+% \subsubsection{Wrapping Code}
 
-Before \marginpar{DEL?} further exploring how to merge changes from multiple users,
-we want to point out a common idiom that we call \emph{wrapping}.
-Consider the first graph in Figure~\ref{fig:Wrapping}, which
-represents the code \texttt{$\lambda$ x . x}, and suppose
-the user's cursor is in the body field of the lambda (i.e., around the variable
-reference to \texttt{x} in the body of the lambda).
+% \begin{figure}
+% \centering
+% TODO: naive add that creates a conflict
+% \begin{tikzpicture}
+% \path (0,0)       node {\includegraphics[scale=0.5]{graphviz/wrapping/1.dot}};
+% \path (0cm,-4cm)  node {\includegraphics[scale=0.5]{graphviz/wrapping/2.dot}};
+% \path (0cm,-8cm)  node {\includegraphics[scale=0.5]{graphviz/wrapping/3.dot}};
+% \path (0cm,-12cm) node {\includegraphics[scale=0.5]{graphviz/wrapping/4.dot}};
+% \path (0cm,-16cm) node {\includegraphics[scale=0.5]{graphviz/wrapping/5.dot}};
+% \end{tikzpicture}
+% \caption{Wrapping}
+% \label{fig:Wrapping}
+% \end{figure}
 
-If the user requests that a plus be inserted,
-the editor may notice that there is something already in that hole.
-A naive editor could certainly add the plus by creating a new
-edge from the body index of the lambda to a freshly created \texttt{plus} vertex.
-This would result in a conflict between the \texttt{plus} and the existing \texttt{var}
-as shown in Figure~REF:TODO.
-A better user experience
-would be interpret the request for a plus to mean to
-take whatever (if anything) is in the cursor
-and place it as a child of the plus.
-This \emph{wraps} the existing \texttt{var} in the \texttt{plus}
-and results in the code \texttt{$\lambda$ x . x + \hole}.
-(This is similar to the behavior in other structure editors such as in CITE:TODO.)
-Translating this into edge deletes and adds results in the sequence of graphs in Figure~\ref{fig:Wrapping}.
-Note that this is a layer above
+% Before \marginpar{DEL?} further exploring how to merge changes from multiple users,
+% we want to point out a common idiom that we call \emph{wrapping}.
+% Consider the first graph in Figure~\ref{fig:Wrapping}, which
+% represents the code \texttt{$\lambda$ x . x}, and suppose
+% the user's cursor is in the body field of the lambda (i.e., around the variable
+% reference to \texttt{x} in the body of the lambda).
 
-Traditional: no relation (and indent might change)
+% If the user requests that a plus be inserted,
+% the editor may notice that there is something already in that hole.
+% A naive editor could certainly add the plus by creating a new
+% edge from the body index of the lambda to a freshly created \texttt{plus} vertex.
+% This would result in a conflict between the \texttt{plus} and the existing \texttt{var}
+% as shown in Figure~REF:TODO.
+% A better user experience
+% would be interpret the request for a plus to mean to
+% take whatever (if anything) is in the cursor
+% and place it as a child of the plus.
+% This \emph{wraps} the existing \texttt{var} in the \texttt{plus}
+% and results in the code \texttt{$\lambda$ x . x + \hole}.
+% (This is similar to the behavior in other structure editors such as in CITE:TODO.)
+% Translating this into edge deletes and adds results in the sequence of graphs in Figure~\ref{fig:Wrapping}.
+% Note that this is a layer above
 
-\subsubsection{Conflicting wrap operations}
+% Traditional: no relation (and indent might change)
 
-\begin{figure}
-\centering
-\begin{tikzpicture}
-% TODO: texttt
-% TODO: position the different graphs
-\path (0,0)       node {\includegraphics[scale=0.5]{graphviz/conflicting-wraps/1.dot}};
-\path (-3cm,-3cm) node {\includegraphics[scale=0.5]{graphviz/conflicting-wraps/2A.dot}};
-\path (3cm,-3cm)  node {\includegraphics[scale=0.5]{graphviz/conflicting-wraps/2B.dot}};
-\path (0cm,-6cm)  node {\includegraphics[scale=0.5]{graphviz/conflicting-wraps/3.dot}};
+% \subsubsection{Conflicting wrap operations}
+
+% \begin{figure}
+% \centering
+% \begin{tikzpicture}
+% % TODO: texttt
+% % TODO: position the different graphs
+% \path (0,0)       node {\includegraphics[scale=0.5]{graphviz/conflicting-wraps/1.dot}};
+% \path (-3cm,-3cm) node {\includegraphics[scale=0.5]{graphviz/conflicting-wraps/2A.dot}};
+% \path (3cm,-3cm)  node {\includegraphics[scale=0.5]{graphviz/conflicting-wraps/2B.dot}};
+% \path (0cm,-6cm)  node {\includegraphics[scale=0.5]{graphviz/conflicting-wraps/3.dot}};
+% % \path (0cm,0cm) graph[tree layout] {
+% %   lam[as={$\lambda_{\texttt{x}}$}] -> {
+% %     x
+% %   }
+% % };
+% % \path (-3cm,-2cm) graph[tree layout] {
+% %   lam[as={$\lambda_{\texttt{x}}$}] -> {
+% %     + -> {
+% %       1,
+% %       x
+% %     }
+% %   }
+% % };
+% % \path (3cm,-2cm) graph[tree layout] {
+% %   lam[as={$\lambda_{\texttt{x}}$}] -> {
+% %     * -> {
+% %       x,
+% %       2
+% %     }
+% %   }
+% % };
+% % \path (0cm,-4cm) graph[tree layout] {
+% %   lam[as={$\lambda_{\texttt{x}}$}] -> {
+% %     + -> {
+% %       1,
+% %       x
+% %     },
+% %     * -> {
+% %       x,
+% %       2
+% %     }
+% %   }
+% % };
+% % \path (2cm,-8cm) graph[tree layout] {
+% %   lam[as={$\lambda_{\texttt{x}}$}] -> {
+% %     + -> {
+% %       1,
+% %       * -> {
+% %         x,
+% %         2
+% %       }
+% %     }
+% %   }
+% % };
+% % \path (-2cm,-8cm) graph[tree layout] {
+% %   lam[as={$\lambda_{\texttt{x}}$}] -> {
+% %     * -> {
+% %       + -> {
+% %         1,
+% %         x
+% %       },
+% %       2
+% %     }
+% %   }
+% % };
+% \end{tikzpicture}
+% \caption{Conflicting wraps}
+% \label{fig:Conflicting wraps}
+% \end{figure}
+
+% If two different 
+% As seen in REF:SEC:TODO, conflicting wraps gener
+
+% Multi-parent
+
+
+% TODO: SHOW intermediate Steps (maybe no graph)
+%   Show user's perspective
+%   Accept one side = delete others (select this)
+%   Delete x in *
+%   Move + to x
+
+
+% \begin{figure}
+% \centering
+% \begin{tikzpicture}
 % \path (0cm,0cm) graph[tree layout] {
-%   lam[as={$\lambda_{\texttt{x}}$}] -> {
-%     x
-%   }
-% };
-% \path (-3cm,-2cm) graph[tree layout] {
-%   lam[as={$\lambda_{\texttt{x}}$}] -> {
-%     + -> {
-%       1,
-%       x
-%     }
-%   }
-% };
-% \path (3cm,-2cm) graph[tree layout] {
-%   lam[as={$\lambda_{\texttt{x}}$}] -> {
-%     * -> {
-%       x,
-%       2
-%     }
-%   }
-% };
-% \path (0cm,-4cm) graph[tree layout] {
 %   lam[as={$\lambda_{\texttt{x}}$}] -> {
 %     + -> {
 %       1,
@@ -701,7 +757,7 @@ Traditional: no relation (and indent might change)
 %     }
 %   }
 % };
-% \path (2cm,-8cm) graph[tree layout] {
+% \path (2cm,-4cm) graph[tree layout] {
 %   lam[as={$\lambda_{\texttt{x}}$}] -> {
 %     + -> {
 %       1,
@@ -712,7 +768,7 @@ Traditional: no relation (and indent might change)
 %     }
 %   }
 % };
-% \path (-2cm,-8cm) graph[tree layout] {
+% \path (-2cm,-4cm) graph[tree layout] {
 %   lam[as={$\lambda_{\texttt{x}}$}] -> {
 %     * -> {
 %       + -> {
@@ -723,69 +779,14 @@ Traditional: no relation (and indent might change)
 %     }
 %   }
 % };
-\end{tikzpicture}
-\caption{Conflicting wraps}
-\label{fig:Conflicting wraps}
-\end{figure}
+% \end{tikzpicture}
+% \caption{Wrap Resolution}
+% \label{fig:Wrap Resolution}
+% \end{figure}
 
-If two different 
-As seen in REF:SEC:TODO, conflicting wraps gener
+% NEEDS UI MOCKUP
 
-Multi-parent
-
-
-TODO: SHOW intermediate Steps (maybe no graph)
-  Show user's perspective
-  Accept one side = delete others (select this)
-  Delete x in *
-  Move + to x
-
-
-\begin{figure}
-\centering
-\begin{tikzpicture}
-\path (0cm,0cm) graph[tree layout] {
-  lam[as={$\lambda_{\texttt{x}}$}] -> {
-    + -> {
-      1,
-      x
-    },
-    * -> {
-      x,
-      2
-    }
-  }
-};
-\path (2cm,-4cm) graph[tree layout] {
-  lam[as={$\lambda_{\texttt{x}}$}] -> {
-    + -> {
-      1,
-      * -> {
-        x,
-        2
-      }
-    }
-  }
-};
-\path (-2cm,-4cm) graph[tree layout] {
-  lam[as={$\lambda_{\texttt{x}}$}] -> {
-    * -> {
-      + -> {
-        1,
-        x
-      },
-      2
-    }
-  }
-};
-\end{tikzpicture}
-\caption{Wrap Resolution}
-\label{fig:Wrap Resolution}
-\end{figure}
-
-NEEDS UI MOCKUP
-
-Say: "might not be a popup"
+% Say: "might not be a popup"
 
 \subsubsection{Cycles}
 
