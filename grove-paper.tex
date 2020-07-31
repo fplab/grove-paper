@@ -805,8 +805,6 @@ NEEDS UI MOCKUP
 \section{Formalism}
 \label{sec:formalism}
 
-\subsection{Syntax}
-
 % $\arraycolsep=2pt\begin{array}{llcl}
 % \mathsf{Typ} & \tau & ::= & t ~\vert~ \aparr{\tau}{\tau} ~\vert~ \aall{t}{\tau} ~\vert~ \arec{t}{\tau} ~\vert~ \aprod{\labelset}{\mapschema{\tau}{i}{\labelset}} ~\vert~ \asum{\labelset}{\mapschema{\tau}{i}{\labelset}}\\
 % \mathsf{Exp} & e & ::= & x ~\vert~ \aelam{\tau}{x}{e} ~\vert~ \aeap{e}{e} ~\vert~ \aetlam{t}{e} ~\vert~ \aetap{e}{\tau} ~\vert~ \aefold{e} ~\vert~ \aetpl{\labelset}{\mapschema{e}{i}{\labelset}} ~\vert~  \aein{\ell}{e} \\
@@ -818,40 +816,49 @@ NEEDS UI MOCKUP
 \begin{figure}
 \[
 \arraycolsep=0pt
-\begin{array}{rlll}
- p    & {}\in Pat & {}\mathrel{::=}{} & x \mid \_ \\
- e    & {}\in Exp & {}\mathrel{::=}{} & \lambda p\mathord{:}\tau.e \mid e~e \mid e + e \mid n \mid \_ \\
- \tau & {}\in Typ & {}\mathrel{::=}{} & \tau \rightarrow \tau \mid Num \mid \_
+\begin{array}{lrlll}
+ \textrm{Patterns:}          & p    & {}\in Pat & {}\mathrel{::=}{} & x \mid \_ \\
+ \textrm{Expressions:\qquad} & e    & {}\in Exp & {}\mathrel{::=}{} & x \mid \lambda p\mathord{:}\tau.e \mid e~e \mid e + e \mid n \mid \_ \\
+ \textrm{Types:}             & \tau & {}\in Typ & {}\mathrel{::=}{} & \tau \rightarrow \tau \mid Num \mid \_ \\
 \end{array}
 \]
-\caption{Formal syntax (as a grammar) for the lambda calculus that we are considering.}
-\label{fig:formal-syntax}
+\caption{Syntax as a grammar for the lambda calculus that we are considering.}
+\label{fig:Syntax as a grammar}
 \end{figure}
+
+\subsection{Syntax}
+
+The language we are modeling is shown in Figure~\ref{fig:Syntax as a grammar}.
+Standard for a simply-typed lambda calculus except that
+all terms have holes (represented by $\_$)
+and the argument to a lambda is its own term.
+The latter of which allows us to express lambdas with a hole for the bound variable.
+
+In order to model this we define 
+
 
 Turn that into a constructor set K + index set I + arity function (has type: K -> $\wp$(I)).
 
-$\K = \{ \Root, \ExpVar, \ExpLam, \ExpApp, \ExpNum, \ExpPlus,$ 
 
-$\qquad\ \ \PatVar, \TypNum, \TypArrow \}$
-
-$\I = \{ \Root, \LamParam, \LamType, \LamBody, \AppFun, \AppArg,$
-
-$\qquad\ \ \PlusLeft, \PlusRight, \ArrowArg, \ArrowResult \}$
-
-\vspace{2ex}
-
-$\arity : \K \rightarrow \wp(\I)$
-
-\vspace{2ex}
-
-\begin{tabular}{ll}
-    $\K$ & $\wp(\I)$ \\
-    \hline
-    $\Root$ & $\{ \Root \}$ \\
-    $\ExpLam$ & $\{ \LamParam, \LamType, \LamBody \}$ \\
-    $\ExpApp$ & $\{ \AppFun, \AppArg \}$ \\
-    $\ExpPlus$ & $\{ \PlusLeft, \PlusRight \}$ \\
-\end{tabular}
+\begin{figure}
+\[
+\arraycolsep=0pt
+\begin{array}{ll}
+ \arity : \K \rightarrow & \wp(\I) \\
+ \hline
+ \arity(\Root)={}     & \left\{ \Root \right\} \\
+ \arity(\PatVar)={}   & \left\{ \right\} \\
+ \arity(\ExpVar)={}   & \left\{ \right\} \\
+ \arity(\ExpLam)={}   & \left\{ \LamParam, \LamType, \LamBody \right\} \\
+ \arity(\ExpApp)={}   & \left\{ \AppFun, \AppArg \right\} \\
+ \arity(\ExpPlus)={}  & \left\{ \PlusLeft, \PlusRight \right\} \\
+ \arity(\TypArrow)={} & \left\{ \ArrowArg, \ArrowResult \right\} \\
+ \arity(\TypNum)={}   & \left\{ \right\} \\
+\end{array}
+\]
+\caption{Constructors, Indexes and Arity}
+\label{fig:Constructors, Indexes and Arity}
+\end{figure}
 
 \subsection{Convergent Graphs}
 
