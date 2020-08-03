@@ -401,6 +401,50 @@ If only one restore, then it does what you expect (basically a cut and paste)
 
 If multiple replicas restore to different places, then you get some complexity:
 
+\subsubsection{Wrapping Code}
+
+TODO: move subsubsection elsewhere?
+
+\begin{figure}
+\centering
+TODO: naive add that creates a conflict
+\begin{tikzpicture}
+\path (0,0)       node {\includegraphics[scale=0.4]{graphviz/wrapping/1.dot}};
+\path (0cm,-4cm)  node {\includegraphics[scale=0.4]{graphviz/wrapping/2.dot}};
+\path (0cm,-8cm)  node {\includegraphics[scale=0.4]{graphviz/wrapping/3.dot}};
+\path (0cm,-12cm) node {\includegraphics[scale=0.4]{graphviz/wrapping/4.dot}};
+\path (0cm,-16cm) node {\includegraphics[scale=0.4]{graphviz/wrapping/5.dot}};
+\end{tikzpicture}
+\caption{Wrapping}
+\label{fig:Wrapping}
+\end{figure}
+
+Before \marginpar{DEL?} further exploring how to merge changes from multiple users,
+we want to point out a common idiom that we call \emph{wrapping}.
+Consider the first graph in Figure~\ref{fig:Wrapping}, which
+represents the code \texttt{$\lambda$ x . x}, and suppose
+the user's cursor is in the body field of the lambda (i.e., around the variable
+reference to \texttt{x} in the body of the lambda).
+
+If the user requests that a plus be inserted,
+the editor may notice that there is something already in that hole.
+A naive editor could certainly add the plus by creating a new
+edge from the body index of the lambda to a freshly created \texttt{plus} vertex.
+This would result in a conflict between the \texttt{plus} and the existing \texttt{var}
+as shown in Figure~REF:TODO.
+A better user experience
+would be interpret the request for a plus to mean to
+take whatever (if anything) is in the cursor
+and place it as a child of the plus.
+This \emph{wraps} the existing \texttt{var} in the \texttt{plus}
+and results in the code \texttt{$\lambda$ x . x + \hole}.
+(This is similar to the behavior in other structure editors such as in CITE:TODO.)
+Translating this into edge deletes and adds results in the sequence of graphs in Figure~\ref{fig:Wrapping}.
+Note that this is a layer above
+
+Traditional: no relation (and indent might change)
+
+
 \subsection{Collaborative Structure Editing}
 
 \subsubsection{Editing Different Parts of the Code}
@@ -615,49 +659,6 @@ However, both edge TODO (added by Alice) and edge TODO (added by Bob) point to t
 This generates the bottom graph, in which vertex TODO as two parents pointing to it.
 We call this situation a multi-parent conflict.
 
-
-
-% \subsubsection{Wrapping Code}
-
-% \begin{figure}
-% \centering
-% TODO: naive add that creates a conflict
-% \begin{tikzpicture}
-% \path (0,0)       node {\includegraphics[scale=0.5]{graphviz/wrapping/1.dot}};
-% \path (0cm,-4cm)  node {\includegraphics[scale=0.5]{graphviz/wrapping/2.dot}};
-% \path (0cm,-8cm)  node {\includegraphics[scale=0.5]{graphviz/wrapping/3.dot}};
-% \path (0cm,-12cm) node {\includegraphics[scale=0.5]{graphviz/wrapping/4.dot}};
-% \path (0cm,-16cm) node {\includegraphics[scale=0.5]{graphviz/wrapping/5.dot}};
-% \end{tikzpicture}
-% \caption{Wrapping}
-% \label{fig:Wrapping}
-% \end{figure}
-
-% Before \marginpar{DEL?} further exploring how to merge changes from multiple users,
-% we want to point out a common idiom that we call \emph{wrapping}.
-% Consider the first graph in Figure~\ref{fig:Wrapping}, which
-% represents the code \texttt{$\lambda$ x . x}, and suppose
-% the user's cursor is in the body field of the lambda (i.e., around the variable
-% reference to \texttt{x} in the body of the lambda).
-
-% If the user requests that a plus be inserted,
-% the editor may notice that there is something already in that hole.
-% A naive editor could certainly add the plus by creating a new
-% edge from the body index of the lambda to a freshly created \texttt{plus} vertex.
-% This would result in a conflict between the \texttt{plus} and the existing \texttt{var}
-% as shown in Figure~REF:TODO.
-% A better user experience
-% would be interpret the request for a plus to mean to
-% take whatever (if anything) is in the cursor
-% and place it as a child of the plus.
-% This \emph{wraps} the existing \texttt{var} in the \texttt{plus}
-% and results in the code \texttt{$\lambda$ x . x + \hole}.
-% (This is similar to the behavior in other structure editors such as in CITE:TODO.)
-% Translating this into edge deletes and adds results in the sequence of graphs in Figure~\ref{fig:Wrapping}.
-% Note that this is a layer above
-
-% Traditional: no relation (and indent might change)
-
 % \subsubsection{Conflicting wrap operations}
 
 % \begin{figure}
@@ -790,13 +791,53 @@ We call this situation a multi-parent conflict.
 
 \subsubsection{Cycles}
 
-Synthetic cycles:
+\begin{figure}
+\centering
+lam x. app(\#1, \hole)
+\caption{Single-User Cycles}
+\label{fig:Single-User Cycles}
+\end{figure}
 
-DIAGRAM: restoring into yourself (paste before delete?)
+Since we are representing programs as graphs,
+we have to consider cycles.
 
-Organic cycles:
+Cycles can occur in a both single-user and multi-user contexts.
 
-DIAGRAM: if cycles between "1 +" and "2 *" in previous diagrams
+In a single user context, a cycle can appear when a user pastes
+a vertex as a child of itself.
+An example of this is shown in Figure~\ref{fig:Single-User Cycles},
+where the user has pasted vertex~TODO as a child of vertex~TODO.
+
+As a user interface consideration, it might be best to either
+disallow such edits to at least warn users that their
+edits would create a cycle.
+
+While a single-user edits can always be checked to see
+whether they create a cycle and thus the system
+multi-user edits may not manifest cycles until after
+the edits are merged.
+there are much more practical reasons why cycles
+may appear when multiple users are editing part of the code.
+
+For example, consider the situation shown in Figure~\ref{fig:Multi-User Cycles}.
+The top graph represents code that is synchronized between Alice and Bob
+and represents the code \texttt{(1 * \hole) * (2 * \hole)}.
+The left graph shows
+
+\begin{figure}
+\centering
+
+TOP: *(*(1, \hole), *(2, \hole))
+
+LEFT: *(*(1, *(2, \hole)), \hole)
+
+RIGHT: *(\hole, *(2, *(1, \hole)))
+
+BOTTOM: *(\hole, \hole) *(1, *(2, \#1))
+
+\caption{Multi-User Cycles}
+\label{fig:Multi-User Cycles}
+\end{figure}
 
 NEEDS UI MOCKUP
 
