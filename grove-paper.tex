@@ -224,94 +224,89 @@ Motivation:
 \section{Grove By Example}
 \label{sec:grove-by-example}
 
+This section introduces collaborative structure editing in Grove by example. 
+We begin in Section~\ref{sub:Program Representation} by introducing basic edit actions
+and the underlying graph representation of expressions with holes.
+We will then discuss scenarios that arise in the collaborative setting in 
+Section~\ref{sub:Collaborative Structure Editing}.
+
 TODO: gray-scale unchanged parts of diagrams
 
-TODO: somewhere in here, maybe multiple places, we want to talk about typing the intermediate states that arise
+TODO: typewritter font in figure graphs
 
-TODO: annotate vertexes and edges with ids (gray superscript?)
-
-Single User Intuition:
- - manipulating trees,
- - holes
-
-Multi User Intuition:
- - vertexes have unique ids
- - edits create or delete edges in the tree,
- - vertexes are automatically created when an edge goes to it
- 
-Deeper intuition:
- - edges have unique ids
- - once deleted an edge can never be recreated (though, a new edge (with a new id) can be created in the same spot as the original)
-
-For presentational simplicity we omit param\_type in all lambdas
-
-\subsection{Structure Editing}
-
-We present this at two levels.
 One is the underlying graph model, which
 involves explicit identifiers, graph edges, indexes, and add and delete
 operations.
 
+We present this at two levels.
 The other is the interface a user might see,
 which omits these details unless needed.
-
 Throughout these examples the graph model is presented
 as a graph with.
 
-\subsubsection{Trees and Holes}
-\label{sub:Trees and Holes}
+TODO: somewhere in here, maybe multiple places, we want to talk about typing the intermediate states that arise (background for structured editing)
 
-TODO: explain holes.
+\subsection{Program Representation}
+\label{sub:Program Representation}
 
 \begin{figure}
-\centering 
+\centering
+TODO: UI
+
 \includegraphics[scale=0.75]{graphviz/simple-tree-with-hole/1.dot}
 \caption{A simple tree with a hole}
 \label{fig:A simple tree with a hole}
 \end{figure}
-NEEDS UI EXAMPLE
 
-Consider the tree in Figure~\ref{fig:A simple tree with a hole},
-which represents the code \texttt{2 + \hole}.
+The editor state for each replica in Grove consists of an expression with holes.
+For example, Figure~TODO:1(a) shows the simple arithmetic expression \texttt{2 + \hole}, which
+has a hole on the right side of the plus operator.
 
-Note that this tree contains three vertexes.
-The first is depicted with a simple dot and is the root vertex.
-The other two are labeled \texttt{plus} and \texttt{num(2)}
-and represent the plus operator and the numeric literal 2, respectively.
+Internally, Grove represents an expression like this as a directed graph with a distinguished root vertex.
+Each vertex represents a term and is labeled with a globally unique identifier and a term constructor.
+In this figure, vertices~3 and~6 have the constructors \texttt{plus} and \texttt{num(2)}, respectively.
+Each term constructor has an associated set of child positions.
+The \texttt{plus} constructor has positions for \texttt{left} and \texttt{right} children
+and the \texttt{num(n)} constructors have no child positions.
+The root vertex has a distinguished identifier and a constructor with a single child position.
+For simplicity, we visually represent the root with a dot.
 
-Each vertex has a unique identifier and a list of positions
-for child vertexes.
-In this figure, the \texttt{plus} and \texttt{num(2)} vertexes have
-identifiers 3 and 6 respectively,
-the \texttt{plus} vertex has positions for its left and right children
-and the \texttt{num(2)} vertex has no positions for any children.
-The root vertex has the distinguished identifier 0
-and has one position for its children.
+Each edge is labeled with a globally unique identifier (e.g.,~4 and~7 in the figure) and a child position.
+An edge indicates that the destination vertex is a child of the origin vertex at the given position.
+Visually, we indicate the position of an edge by the location of its origin.
+For example, Figure~TODO:1(b) shows the graph corresponding to the term in Figure~TODO:1(a).
 
-Also each edge has a unique identifier. In Figure~\ref{fig:A simple tree with a hole},
-these edges have idenifiers 4 and 7.  These are used
-when adding and deleting edges as discussed in the
-next subsubsection.
+TODO: holes
 
-In this paper we represent variables and numeric constants
-as leaves and represent their names or values as
-arguments to those constructors (e.g., \texttt{2} in \texttt{num(2)}).
-(In TODO:REF, we discuss how to allow edits within these.)
+% In this paper we represent variables and numeric constants
+% as leaves and represent their names or values as
+% arguments to those constructors (e.g., \texttt{2} in \texttt{num(2)}).
+% (In TODO:REF, we discuss how to allow edits within these.)
 
-TODO: web page Svg ?
+\subsection{Single User Edits}
+\label{sub:Single User Edits}
 
-Declarative sentences
+TODO: change num(2) in Fig1 to num(1) so Fig1 matches Fig2 (move parts of Fig 2 into Fig 1?)
 
-Outline refinement
+TODO: remove cursor from Fig 1 and Fig 2
 
-The edge coming out of it to the TODO:word of the expression.
-We call this the \emph{rooted} vertex.
+(though as we show in Section~\ref{sec:formalism} creating a vertex is implicit in edge creation)
 
-\subsubsection{Delete and Add}
+Continuity of examples: Add -> Change -> Wrap -> Move
+
+
+\subsubsection{Add}
+TODO: explain add to the right
+
+TODO: continuity of examples
+
+\subsubsection{Change}
 
 TODO: explain that multiple delete or add are idempotent
 
 TODO: explain that delete overrides add
+
+TODO: once deleted an edge can never be recreated (though, a new edge (with a new id) can be created in the same spot as the original)
 
 \begin{figure}
 \centering
@@ -324,6 +319,11 @@ TODO: explain that delete overrides add
 \label{fig:Delete and Add}
 \end{figure}
 NEEDS UI EXAMPLE
+
+\footnote{For the purposes of this paper, we represent identifiers and number literals
+indivisibly.  See Section~TODO:REF, for how we would allow editing individual characters.}
+
+TODO: 2 -> 22
 
 We model edits to the code as sequences of deletions and additions of edges to this graph.
 For example, consider the first graph in Figure~\ref{fig:Delete and Add}, which
@@ -446,6 +446,7 @@ Traditional: no relation (and indent might change)
 
 
 \subsection{Collaborative Structure Editing}
+\label{sub:Collaborative Structure Editing}
 
 \subsubsection{Editing Different Parts of the Code}
 
@@ -793,7 +794,7 @@ We call this situation a multi-parent conflict.
 
 \begin{figure}
 \centering
-lam x. app(\#1, \hole)
+TODO: lam x. app(\#1, \hole)
 \caption{Single-User Cycles}
 \label{fig:Single-User Cycles}
 \end{figure}
@@ -814,15 +815,24 @@ edits would create a cycle.
 
 While a single-user edits can always be checked to see
 whether they create a cycle and thus the system
+can immediately warn the user,
 multi-user edits may not manifest cycles until after
 the edits are merged.
-there are much more practical reasons why cycles
-may appear when multiple users are editing part of the code.
 
 For example, consider the situation shown in Figure~\ref{fig:Multi-User Cycles}.
 The top graph represents code that is synchronized between Alice and Bob
 and represents the code \texttt{(1 * \hole) * (2 * \hole)}.
-The left graph shows
+In the left graph, Alice moves vertex~TODO to the \texttt{right}
+index of vertex~TODO.
+The resulting graph represents the code \texttt{(1 * (2 * \hole)) * \hole}.
+In the right graph, Bob moves vertex~TODO to the \texttt{right} index of vertex~TODO.
+The resulting graph represents the code \texttt{\hole * (2 * (1 * \hole))}.
+On their own, neither edit creates a cycle.
+However, when these edits are merged,
+not only is a cycle created, but
+the vertexes in the cycle
+
+Can also be detected due to neigther original leaving them disconnected.
 
 \begin{figure}
 \centering
