@@ -249,6 +249,8 @@ TODO: somewhere in here, maybe multiple places, we want to talk about typing the
 \subsection{Program Representation}
 \label{sub:Program Representation}
 
+TODO: Screenshot
+
 \begin{figure}
 \centering
 TODO: UI
@@ -257,6 +259,23 @@ TODO: UI
 \caption{A simple tree with a hole}
 \label{fig:A simple tree with a hole}
 \end{figure}
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[tree layout] {
+ root[as={\textbullet}] -> {
+  +[as={$\texttt{+}_1$}] -> [edge label={left}] {
+   22[as={$\texttt{num(22)}_2$}],
+   {}
+  }
+ }
+};
+\end{tikzpicture}
+\caption{A simple tree with a hole (Alternate figure)}
+\label{fig:A simple tree with a hole (Alternate figure)}
+\end{figure}
+
 
 The editor state for each replica in Grove consists of an expression with holes.
 For example, Figure~TODO:1(a) shows the simple arithmetic expression \texttt{2 + \hole}, which
@@ -294,19 +313,108 @@ TODO: remove cursor from Fig 1 and Fig 2
 
 Continuity of examples: Add -> Change -> Wrap -> Move
 
+Now that we have discussed adding holes
+
+TODO: num(22) -> var(x)
 
 \subsubsection{Add}
-TODO: explain add to the right
 
-TODO: continuity of examples
+\tikzset{graphs/graph style/.style={
+ tree layout,
+ level sep=1cm,
+ nodes={draw, rounded corners=1mm},
+ edges={draw, sloped, font={\small}}
+}}
+\tikzset{graphs/root style/.style={
+ draw=none,
+ as={\textbullet}
+}}
+%\tikzset{graphs/every edge/.style={}
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  +[as={$\texttt{+}_1$}] -> {
+   x [> edge label={left}, > edge label'={2}, as={$\texttt{var(x)}_2$}],
+   y [> edge label={right}, > edge label'={3}, as={$\texttt{var(y)}_3$}]
+  }
+ }
+};
+\end{tikzpicture}
+\caption{Addition}
+\label{fig:Addition}
+\end{figure}
+
+When users insert code into a hole, our graph model simply adds a corresponding a vertex and edge.
+For example, suppose the user adds \texttt{y} as the right child of vertex~1 in Figure~\ref{fig:A simple tree with a hole (Alternate figure)}.
+This corresponds to creating a vertex for the variable reference \texttt{y} and adding an edge
+to that vertex from vertex~1.
+Figure~\ref{fig:Addition} shows the result, where the new vertex has identifier~3.
+
+Note that adding an edge implicitly creates.
 
 \subsubsection{Change}
+
+In order to change an existing vertex, we delete the existing edge to that vertex and add the new value.
+For example, in 
+
+Note that while we
+Note that the vertex continues to exist (this is essential for further manipulation)
+Once created a vertex is never deleted.
 
 TODO: explain that multiple delete or add are idempotent
 
 TODO: explain that delete overrides add
 
 TODO: once deleted an edge can never be recreated (though, a new edge (with a new id) can be created in the same spot as the original)
+
+\begin{figure}
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.3\textwidth}
+\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  +[as={$\texttt{+}_1$}] -> {
+   x [> edge label={left}, as={$\texttt{var(x)}_2$}],
+  }
+ }
+};
+\path (1cm,0cm) graph[graph style] {
+ y [as={$\texttt{var(y)}_3$}]
+};
+\end{tikzpicture}
+\caption{TODO}
+\label{fig:Change-a}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.3\textwidth}
+\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  +[as={$\texttt{+}_1$}] -> {
+   x [> edge label={left}, as={$\texttt{var(x)}_2$}],
+   z [> edge label={right}, as={$\texttt{var(z)}_4$}]
+  }
+ }
+};
+\path (1cm,0cm) graph[graph style] {
+ y [as={$\texttt{var(y)}_3$}]
+};
+\end{tikzpicture}
+\caption{TODO}
+\label{fig:Change-b}
+\end{subfigure}
+%%%%%%%%
+\hfill{}
+\caption{Change}
+\label{fig:Change}
+\end{figure}
 
 \begin{figure}
 \centering
@@ -319,6 +427,8 @@ TODO: once deleted an edge can never be recreated (though, a new edge (with a ne
 \label{fig:Delete and Add}
 \end{figure}
 NEEDS UI EXAMPLE
+
+
 
 \footnote{For the purposes of this paper, we represent identifiers and number literals
 indivisibly.  See Section~TODO:REF, for how we would allow editing individual characters.}
@@ -852,6 +962,11 @@ BOTTOM: *(\hole, \hole) *(1, *(2, \#1))
 NEEDS UI MOCKUP
 
 (Maybe not in initial grove by example) The A and B diamond example
+
+\subsection{Cursors}
+\label{sub:Cursors}
+
+TODO: cursors are informational
 
 \section{Formalism}
 \label{sec:formalism}
