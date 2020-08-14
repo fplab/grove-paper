@@ -76,6 +76,18 @@
   trees,
 }
 
+\tikzset{graphs/graph style/.style={
+ tree layout,
+ level sep=1cm,
+ nodes={draw, rounded corners=1mm},
+ edges={draw, sloped, font={\small}}
+}}
+\tikzset{graphs/root style/.style={
+ draw=none,
+ as={\textbullet}
+}}
+%\tikzset{graphs/every edge/.style={}
+
 %%%%%%%%
 % Lang components
 
@@ -249,36 +261,50 @@ TODO: somewhere in here, maybe multiple places, we want to talk about typing the
 \subsection{Program Representation}
 \label{sub:Program Representation}
 
-TODO: Screenshot
+% \begin{figure}
+% \centering
+% TODO: UI
+% \includegraphics[scale=0.75]{graphviz/simple-tree-with-hole/1.dot}
+% \caption{A simple tree with a hole}
+% \label{fig:A simple tree with a hole}
+% \end{figure}
 
 \begin{figure}
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.3\textwidth}
 \centering
-TODO: UI
-
-\includegraphics[scale=0.75]{graphviz/simple-tree-with-hole/1.dot}
-\caption{A simple tree with a hole}
-\label{fig:A simple tree with a hole}
-\end{figure}
-
-\begin{figure}
+TODO
+\caption{User interface}
+\label{fig:A simple tree with a hole-a}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.3\textwidth}
 \centering
 \begin{tikzpicture}
-\path (0cm,0cm) graph[tree layout] {
- root[as={\textbullet}] -> {
-  +[as={$\texttt{+}_1$}] -> [edge label={left}] {
-   22[as={$\texttt{num(22)}_2$}],
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  +[as={$\texttt{+}_1$}] -> [] {
+   22[> edge label={left}, > edge label'={2}, as={$\texttt{var(x)}_3$}],
    {}
   }
  }
 };
 \end{tikzpicture}
-\caption{A simple tree with a hole (Alternate figure)}
-\label{fig:A simple tree with a hole (Alternate figure)}
+\caption{Graph representation}
+\label{fig:A simple tree with a hole-b}
+\end{subfigure}
+%%%%%%%%
+\hfill{}
+\caption{A simple tree with a hole}
+\label{fig:A simple tree with a hole}
 \end{figure}
 
 
 The editor state for each replica in Grove consists of an expression with holes.
-For example, Figure~TODO:1(a) shows the simple arithmetic expression \texttt{2 + \hole}, which
+For example, Figure~\ref{fig:A simple tree with a hole} shows the simple arithmetic expression \texttt{2 + \hole}, which
 has a hole on the right side of the plus operator.
 
 Internally, Grove represents an expression like this as a directed graph with a distinguished root vertex.
@@ -289,6 +315,8 @@ The \texttt{plus} constructor has positions for \texttt{left} and \texttt{right}
 and the \texttt{num(n)} constructors have no child positions.
 The root vertex has a distinguished identifier and a constructor with a single child position.
 For simplicity, we visually represent the root with a dot.
+
+For the sake of presentation clarity, we reserve odd identifiers for vertexes and even identifiers for edges.
 
 Each edge is labeled with a globally unique identifier (e.g.,~4 and~7 in the figure) and a child position.
 An edge indicates that the destination vertex is a child of the origin vertex at the given position.
@@ -305,32 +333,29 @@ TODO: holes
 \subsection{Single User Edits}
 \label{sub:Single User Edits}
 
-TODO: change num(2) in Fig1 to num(1) so Fig1 matches Fig2 (move parts of Fig 2 into Fig 1?)
+% TODO: change num(2) in Fig1 to num(1) so Fig1 matches Fig2 (move parts of Fig 2 into Fig 1?)
 
-TODO: remove cursor from Fig 1 and Fig 2
+% TODO: remove cursor from Fig 1 and Fig 2
 
 (though as we show in Section~\ref{sec:formalism} creating a vertex is implicit in edge creation)
 
-Continuity of examples: Add -> Change -> Wrap -> Move
-
 Now that we have discussed adding holes
-
-TODO: num(22) -> var(x)
 
 \subsubsection{Add}
 
-\tikzset{graphs/graph style/.style={
- tree layout,
- level sep=1cm,
- nodes={draw, rounded corners=1mm},
- edges={draw, sloped, font={\small}}
-}}
-\tikzset{graphs/root style/.style={
- draw=none,
- as={\textbullet}
-}}
-%\tikzset{graphs/every edge/.style={}
 \begin{figure}
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.3\textwidth}
+\centering
+TODO
+\caption{User interface}
+\label{fig:Addition-a}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.3\textwidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
@@ -342,9 +367,20 @@ TODO: num(22) -> var(x)
  }
 };
 \end{tikzpicture}
+\caption{Graph representation}
+\label{fig:Addition-b}
+\end{subfigure}
+%%%%%%%%
+\hfill{}
 \caption{Addition}
 \label{fig:Addition}
 \end{figure}
+
+We model edits to the code as sequences of additions and deletions of edges to this graph.
+For example, consider the graph in Figure~\ref{fig:Delete and Add}, which
+represents the expression \texttt{1 + 2}.
+Suppose we want to change the \texttt{2} into a \texttt{3} so the expression
+becomes \texttt{1 + 3}.
 
 When users insert code into a hole, our graph model simply adds a corresponding a vertex and edge.
 For example, suppose the user adds \texttt{y} as the right child of vertex~1 in Figure~\ref{fig:A simple tree with a hole (Alternate figure)}.
@@ -382,7 +418,7 @@ TODO: once deleted an edge can never be recreated (though, a new edge (with a ne
   }
  }
 };
-\path (1cm,0cm) graph[graph style] {
+\path (2cm,-2cm) graph[graph style] {
  y [as={$\texttt{var(y)}_3$}]
 };
 \end{tikzpicture}
@@ -403,7 +439,7 @@ TODO: once deleted an edge can never be recreated (though, a new edge (with a ne
   }
  }
 };
-\path (1cm,0cm) graph[graph style] {
+\path (2cm,-2cm) graph[graph style] {
  y [as={$\texttt{var(y)}_3$}]
 };
 \end{tikzpicture}
@@ -433,13 +469,6 @@ NEEDS UI EXAMPLE
 \footnote{For the purposes of this paper, we represent identifiers and number literals
 indivisibly.  See Section~TODO:REF, for how we would allow editing individual characters.}
 
-TODO: 2 -> 22
-
-We model edits to the code as sequences of deletions and additions of edges to this graph.
-For example, consider the first graph in Figure~\ref{fig:Delete and Add}, which
-represents the expression \texttt{1 + 2}.
-Suppose we want to change the \texttt{2} into a \texttt{3} so the expression
-becomes \texttt{1 + 3}.
 We model this by first deleting edge~7.
 This results in the middle graph in Figure~\ref{fig:Delete and Add}, which
 represents the expression \texttt{1 + \hole}.
@@ -463,6 +492,50 @@ Vertexes are implicitly created whenever an edge
 is created that points to it.
 Deleting vertexes is not necessary, as we can simply
 remove the edge pointing to it.
+
+\subsubsection{Wrapping Code}
+
+TODO: move subsubsection elsewhere?
+
+\begin{figure}
+\centering
+TODO: naive add that creates a conflict
+\begin{tikzpicture}
+\path (0,0)       node {\includegraphics[scale=0.4]{graphviz/wrapping/1.dot}};
+\path (0cm,-4cm)  node {\includegraphics[scale=0.4]{graphviz/wrapping/2.dot}};
+\path (0cm,-8cm)  node {\includegraphics[scale=0.4]{graphviz/wrapping/3.dot}};
+\path (0cm,-12cm) node {\includegraphics[scale=0.4]{graphviz/wrapping/4.dot}};
+\path (0cm,-16cm) node {\includegraphics[scale=0.4]{graphviz/wrapping/5.dot}};
+\end{tikzpicture}
+\caption{Wrapping}
+\label{fig:Wrapping}
+\end{figure}
+
+Before \marginpar{DEL?} further exploring how to merge changes from multiple users,
+we want to point out a common idiom that we call \emph{wrapping}.
+Consider the first graph in Figure~\ref{fig:Wrapping}, which
+represents the code \texttt{$\lambda$ x . x}, and suppose
+the user's cursor is in the body field of the lambda (i.e., around the variable
+reference to \texttt{x} in the body of the lambda).
+
+If the user requests that a plus be inserted,
+the editor may notice that there is something already in that hole.
+A naive editor could certainly add the plus by creating a new
+edge from the body index of the lambda to a freshly created \texttt{plus} vertex.
+This would result in a conflict between the \texttt{plus} and the existing \texttt{var}
+as shown in Figure~REF:TODO.
+A better user experience
+would be interpret the request for a plus to mean to
+take whatever (if anything) is in the cursor
+and place it as a child of the plus.
+This \emph{wraps} the existing \texttt{var} in the \texttt{plus}
+and results in the code \texttt{$\lambda$ x . x + \hole}.
+(This is similar to the behavior in other structure editors such as in CITE:TODO.)
+Translating this into edge deletes and adds results in the sequence of graphs in Figure~\ref{fig:Wrapping}.
+Note that this is a layer above
+
+Traditional: no relation (and indent might change)
+
 
 \subsubsection{Move}
 
@@ -510,50 +583,6 @@ paste without formatting.
 If only one restore, then it does what you expect (basically a cut and paste)
 
 If multiple replicas restore to different places, then you get some complexity:
-
-\subsubsection{Wrapping Code}
-
-TODO: move subsubsection elsewhere?
-
-\begin{figure}
-\centering
-TODO: naive add that creates a conflict
-\begin{tikzpicture}
-\path (0,0)       node {\includegraphics[scale=0.4]{graphviz/wrapping/1.dot}};
-\path (0cm,-4cm)  node {\includegraphics[scale=0.4]{graphviz/wrapping/2.dot}};
-\path (0cm,-8cm)  node {\includegraphics[scale=0.4]{graphviz/wrapping/3.dot}};
-\path (0cm,-12cm) node {\includegraphics[scale=0.4]{graphviz/wrapping/4.dot}};
-\path (0cm,-16cm) node {\includegraphics[scale=0.4]{graphviz/wrapping/5.dot}};
-\end{tikzpicture}
-\caption{Wrapping}
-\label{fig:Wrapping}
-\end{figure}
-
-Before \marginpar{DEL?} further exploring how to merge changes from multiple users,
-we want to point out a common idiom that we call \emph{wrapping}.
-Consider the first graph in Figure~\ref{fig:Wrapping}, which
-represents the code \texttt{$\lambda$ x . x}, and suppose
-the user's cursor is in the body field of the lambda (i.e., around the variable
-reference to \texttt{x} in the body of the lambda).
-
-If the user requests that a plus be inserted,
-the editor may notice that there is something already in that hole.
-A naive editor could certainly add the plus by creating a new
-edge from the body index of the lambda to a freshly created \texttt{plus} vertex.
-This would result in a conflict between the \texttt{plus} and the existing \texttt{var}
-as shown in Figure~REF:TODO.
-A better user experience
-would be interpret the request for a plus to mean to
-take whatever (if anything) is in the cursor
-and place it as a child of the plus.
-This \emph{wraps} the existing \texttt{var} in the \texttt{plus}
-and results in the code \texttt{$\lambda$ x . x + \hole}.
-(This is similar to the behavior in other structure editors such as in CITE:TODO.)
-Translating this into edge deletes and adds results in the sequence of graphs in Figure~\ref{fig:Wrapping}.
-Note that this is a layer above
-
-Traditional: no relation (and indent might change)
-
 
 \subsection{Collaborative Structure Editing}
 \label{sub:Collaborative Structure Editing}
