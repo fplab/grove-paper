@@ -70,6 +70,7 @@
 \usetikzlibrary{
   graphs,       % Graph *notation*
   graphdrawing, % Graph *layout*
+  quotes,       % Quote syntax (e.g., "foo")
 }
 
 \usegdlibrary{
@@ -286,8 +287,8 @@ TODO
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  +[as={$\texttt{+}_1$}] -> [] {
-   22[> edge label={left}, > edge label'={2}, as={$\texttt{var(x)}_3$}],
+  +[as={$\texttt{+}_1$}] -> {
+   "$\texttt{var(x)}_3$" [> "left", > "2"'],
    {}
   }
  }
@@ -339,9 +340,7 @@ TODO: holes
 
 (though as we show in Section~\ref{sec:formalism} creating a vertex is implicit in edge creation)
 
-Now that we have discussed adding holes
-
-\subsubsection{Add}
+\subsubsection{Additions}
 
 \begin{figure}
 \hfill
@@ -361,8 +360,8 @@ TODO
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   +[as={$\texttt{+}_1$}] -> {
-   x [> edge label={left}, > edge label'={2}, as={$\texttt{var(x)}_2$}],
-   y [> edge label={right}, > edge label'={3}, as={$\texttt{var(y)}_3$}]
+   "$\texttt{var(x)}_3$" [> "left", > "2"'],
+   "$\texttt{var(y)}_5$" [> "right", > "4"']
   }
  }
 };
@@ -377,33 +376,18 @@ TODO
 \end{figure}
 
 We model edits to the code as sequences of additions and deletions of edges to this graph.
-For example, consider the graph in Figure~\ref{fig:Delete and Add}, which
-represents the expression \texttt{1 + 2}.
-Suppose we want to change the \texttt{2} into a \texttt{3} so the expression
-becomes \texttt{1 + 3}.
-
-When users insert code into a hole, our graph model simply adds a corresponding a vertex and edge.
-For example, suppose the user adds \texttt{y} as the right child of vertex~1 in Figure~\ref{fig:A simple tree with a hole (Alternate figure)}.
+For example, suppose the user adds \texttt{y} as the right child of vertex~1 in Figure~\ref{fig:A simple tree with a hole (Alternate figure)}
+so that the expression becomes \texttt{x + y}.
 This corresponds to creating a vertex for the variable reference \texttt{y} and adding an edge
 to that vertex from vertex~1.
 Figure~\ref{fig:Addition} shows the result, where the new vertex has identifier~3.
 
-Note that adding an edge implicitly creates.
+TODO: Note that adding an edge implicitly creates.
 
-\subsubsection{Change}
+For the purposes of this paper, we represent identifiers and number literals
+indivisibly.  See Section~TODO:REF, for how we would allow editing individual characters.
 
-In order to change an existing vertex, we delete the existing edge to that vertex and add the new value.
-For example, in 
-
-Note that while we
-Note that the vertex continues to exist (this is essential for further manipulation)
-Once created a vertex is never deleted.
-
-TODO: explain that multiple delete or add are idempotent
-
-TODO: explain that delete overrides add
-
-TODO: once deleted an edge can never be recreated (though, a new edge (with a new id) can be created in the same spot as the original)
+\subsubsection{Changes}
 
 \begin{figure}
 \hfill
@@ -414,7 +398,8 @@ TODO: once deleted an edge can never be recreated (though, a new edge (with a ne
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   +[as={$\texttt{+}_1$}] -> {
-   x [> edge label={left}, as={$\texttt{var(x)}_2$}],
+   "$\texttt{var(x)}_3$" [> "left", > "2"'],
+   {}
   }
  }
 };
@@ -434,13 +419,13 @@ TODO: once deleted an edge can never be recreated (though, a new edge (with a ne
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   +[as={$\texttt{+}_1$}] -> {
-   x [> edge label={left}, as={$\texttt{var(x)}_2$}],
-   z [> edge label={right}, as={$\texttt{var(z)}_4$}]
+   "$\texttt{var(x)}_3$" [> "left", > "2"'],
+   "$\texttt{var(z)}_7$" [> "right", > "6"']
   }
  }
 };
 \path (2cm,-2cm) graph[graph style] {
- y [as={$\texttt{var(y)}_3$}]
+ "$\texttt{var(y)}_5$" []
 };
 \end{tikzpicture}
 \caption{TODO}
@@ -452,34 +437,37 @@ TODO: once deleted an edge can never be recreated (though, a new edge (with a ne
 \label{fig:Change}
 \end{figure}
 
-\begin{figure}
-\centering
-\begin{tikzpicture}
-\path (0,0)    node {\includegraphics[scale=0.75]{graphviz/delete-and-add/1.dot}};
-\path (0,-4cm) node {\includegraphics[scale=0.75]{graphviz/delete-and-add/2.dot}};
-\path (0,-8cm) node {\includegraphics[scale=0.75]{graphviz/delete-and-add/3.dot}};
-\end{tikzpicture}
-\caption{Delete and Add}
-\label{fig:Delete and Add}
-\end{figure}
-NEEDS UI EXAMPLE
+% \begin{figure}
+% \centering
+% \begin{tikzpicture}
+% \path (0,0)    node {\includegraphics[scale=0.75]{graphviz/delete-and-add/1.dot}};
+% \path (0,-4cm) node {\includegraphics[scale=0.75]{graphviz/delete-and-add/2.dot}};
+% \path (0,-8cm) node {\includegraphics[scale=0.75]{graphviz/delete-and-add/3.dot}};
+% \end{tikzpicture}
+% \caption{Delete and Add}
+% \label{fig:Delete and Add}
+% \end{figure}
 
-
-
-\footnote{For the purposes of this paper, we represent identifiers and number literals
-indivisibly.  See Section~TODO:REF, for how we would allow editing individual characters.}
-
-We model this by first deleting edge~7.
-This results in the middle graph in Figure~\ref{fig:Delete and Add}, which
-represents the expression \texttt{1 + \hole}.
-Note that vertex~9 still exists and can be manipulated (which we will exploit in the next subsection).
-Vertex~9 is just not reachable from the root.
-
-After that deletion, we then add a new vertex to represent~\texttt{3} and an
-edge to it.  This results in the bottom graph in Figure~\ref{fig:Delete and Add}.
+Next suppose we want to replace \texttt{y} with \texttt{z} so that the code becomes \texttt{x + z}.
+This is accomplished by first deleting edge~4.
+This results in Figure~\ref{fig:Change-a}, which represents the expression \texttt{x + \hole{}}.
+After that deletion, we add a new vertex to represent~\texttt{z} and an
+edge from vertex~1 to that vertex.
+This results in the bottom graph in Figure~\ref{fig:Change-b},
+which represents the expression \texttt{x + z}.
 
 Note that this edge has a new identifier distinct from the one before.
 An edge once deleted cannot be restored.  Instead a new edge (with a new id) is created.
+
+Note that vertex~3 continues to exist, and if it had any children, those children could remain connected to it.
+In our system, once a vertex is created it is never deleted.
+This allows further manipulations of those vertexes as shown later in this section.
+
+TODO: explain that multiple delete or add are idempotent
+
+TODO: explain that delete overrides add
+
+TODO: once deleted an edge can never be recreated (though, a new edge (with a new id) can be created in the same spot as the original)
 
 Explain orphans
 
@@ -494,8 +482,6 @@ Deleting vertexes is not necessary, as we can simply
 remove the edge pointing to it.
 
 \subsubsection{Wrapping Code}
-
-TODO: move subsubsection elsewhere?
 
 \begin{figure}
 \centering
