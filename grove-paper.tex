@@ -84,8 +84,8 @@
  edges={draw, sloped, font={\small}}
 }}
 \tikzset{graphs/root style/.style={
- draw=none,
- as={\textbullet}
+ %draw=none,
+ as={\textbullet$_0$}
 }}
 %\tikzset{graphs/every edge/.style={}
 
@@ -287,8 +287,8 @@ TODO
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  +[as={$\texttt{+}_1$}] -> {
-   "$\texttt{var(x)}_3$" [> "left", > "2"'],
+  "$\texttt{*}_2$" [> "root", > "1"'] -> {
+   "$\texttt{var(x)}_4$" [> "left", > "3"'],
    {}
   }
  }
@@ -305,21 +305,22 @@ TODO
 
 
 The editor state for each replica in Grove consists of an expression with holes.
-For example, Figure~\ref{fig:A simple tree with a hole} shows the simple arithmetic expression \texttt{2 + \hole}, which
+For example, Figure~\ref{fig:A simple tree with a hole} shows the simple arithmetic expression \texttt{x * \hole}, which
 has a hole on the right side of the plus operator.
 
 Internally, Grove represents an expression like this as a directed graph with a distinguished root vertex.
 Each vertex represents a term and is labeled with a globally unique identifier and a term constructor.
-In this figure, vertices~3 and~6 have the constructors \texttt{plus} and \texttt{num(2)}, respectively.
+In this figure, vertices~2 and~4 have the constructors \texttt{times} and \texttt{var(x)}, respectively.
 Each term constructor has an associated set of child positions.
-The \texttt{plus} constructor has positions for \texttt{left} and \texttt{right} children
-and the \texttt{num(n)} constructors have no child positions.
+The \texttt{*} constructor has positions for \texttt{left} and \texttt{right} children
+and the \texttt{var} constructors have no child positions but takes an argument naming the particular variable referenced
+(e.g., \texttt{var(x)} for the variable \texttt{x}).
 The root vertex has a distinguished identifier and a constructor with a single child position.
 For simplicity, we visually represent the root with a dot.
 
 For the sake of presentation clarity, we reserve odd identifiers for vertexes and even identifiers for edges.
 
-Each edge is labeled with a globally unique identifier (e.g.,~4 and~7 in the figure) and a child position.
+Each edge is labeled with a globally unique identifier (e.g.,~1 and~3 in the figure) and a child position.
 An edge indicates that the destination vertex is a child of the origin vertex at the given position.
 Visually, we indicate the position of an edge by the location of its origin.
 For example, Figure~TODO:1(b) shows the graph corresponding to the term in Figure~TODO:1(a).
@@ -359,14 +360,14 @@ TODO
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  +[as={$\texttt{+}_1$}] -> {
-   "$\texttt{var(x)}_3$" [> "left", > "2"'],
-   "$\texttt{var(y)}_5$" [> "right", > "4"']
+  "$\texttt{*}_2$" [> "root", > "1"'] -> {
+   "$\texttt{var(x)}_4$" [> "left", > "3"'],
+   "$\texttt{var(y)}_6$" [> "right", > "5"']
   }
  }
 };
 \end{tikzpicture}
-\caption{Graph representation}
+\caption{Figure~\ref{fig:Addition-b} after adding vertex~6 and edge~5}
 \label{fig:Addition-b}
 \end{subfigure}
 %%%%%%%%
@@ -376,11 +377,12 @@ TODO
 \end{figure}
 
 We model edits to the code as sequences of additions and deletions of edges to this graph.
-For example, suppose the user adds \texttt{y} as the right child of vertex~1 in Figure~\ref{fig:A simple tree with a hole (Alternate figure)}
-so that the expression becomes \texttt{x + y}.
+For example, suppose the user adds \texttt{y} as the right child of vertex~2 in
+Figure~\ref{fig:A simple tree with a hole}
+so that the expression becomes \texttt{x * y}.
 This corresponds to creating a vertex for the variable reference \texttt{y} and adding an edge
-to that vertex from vertex~1.
-Figure~\ref{fig:Addition} shows the result, where the new vertex has identifier~3.
+to that vertex from vertex~2.
+Figure~\ref{fig:Addition} shows the result, where the new vertex has identifier~6.
 
 TODO: Note that adding an edge implicitly creates.
 
@@ -397,17 +399,17 @@ indivisibly.  See Section~TODO:REF, for how we would allow editing individual ch
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  +[as={$\texttt{+}_1$}] -> {
-   "$\texttt{var(x)}_3$" [> "left", > "2"'],
+  "$\texttt{*}_2$" [> "root", > "1"'] -> {
+   "$\texttt{var(x)}_4$" [> "left", > "3"'],
    {}
   }
  }
 };
 \path (2cm,-2cm) graph[graph style] {
- y [as={$\texttt{var(y)}_3$}]
+ y [as={$\texttt{var(y)}_6$}]
 };
 \end{tikzpicture}
-\caption{TODO}
+\caption{Figure~\ref{fig:Addition-b} after deleting edge~5}
 \label{fig:Change-a}
 \end{subfigure}
 %%%%%%%%
@@ -418,17 +420,17 @@ indivisibly.  See Section~TODO:REF, for how we would allow editing individual ch
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  +[as={$\texttt{+}_1$}] -> {
-   "$\texttt{var(x)}_3$" [> "left", > "2"'],
-   "$\texttt{var(z)}_7$" [> "right", > "6"']
+  "$\texttt{*}_2$" [> "root", > "1"'] -> {
+   "$\texttt{var(x)}_4$" [> "left", > "3"'],
+   "$\texttt{var(z)}_8$" [> "right", > "7"']
   }
  }
 };
 \path (2cm,-2cm) graph[graph style] {
- "$\texttt{var(y)}_5$" []
+ "$\texttt{var(y)}_6$"
 };
 \end{tikzpicture}
-\caption{TODO}
+\caption{Figure~\ref{fig:Change-a} after adding vertex~8 and edge~7}
 \label{fig:Change-b}
 \end{subfigure}
 %%%%%%%%
@@ -448,13 +450,13 @@ indivisibly.  See Section~TODO:REF, for how we would allow editing individual ch
 % \label{fig:Delete and Add}
 % \end{figure}
 
-Next suppose we want to replace \texttt{y} with \texttt{z} so that the code becomes \texttt{x + z}.
-This is accomplished by first deleting edge~4.
-This results in Figure~\ref{fig:Change-a}, which represents the expression \texttt{x + \hole{}}.
+Next suppose we want to replace \texttt{y} with \texttt{z} so that the code becomes \texttt{x * z}.
+This is accomplished by first deleting edge~5.
+This results in Figure~\ref{fig:Change-a}, which represents the expression \texttt{x * \hole{}}.
 After that deletion, we add a new vertex to represent~\texttt{z} and an
-edge from vertex~1 to that vertex.
+edge from vertex~2 to that vertex.
 This results in the bottom graph in Figure~\ref{fig:Change-b},
-which represents the expression \texttt{x + z}.
+which represents the expression \texttt{x * z}.
 
 Note that this edge has a new identifier distinct from the one before.
 An edge once deleted cannot be restored.  Instead a new edge (with a new id) is created.
@@ -484,18 +486,83 @@ remove the edge pointing to it.
 \subsubsection{Wrapping Code}
 
 \begin{figure}
+% TODO: naive add that creates a conflict
+% \begin{tikzpicture}
+% \path (0,0)       node {\includegraphics[scale=0.4]{graphviz/wrapping/1.dot}};
+% \path (0cm,-4cm)  node {\includegraphics[scale=0.4]{graphviz/wrapping/2.dot}};
+% \path (0cm,-8cm)  node {\includegraphics[scale=0.4]{graphviz/wrapping/3.dot}};
+% \path (0cm,-12cm) node {\includegraphics[scale=0.4]{graphviz/wrapping/4.dot}};
+% \path (0cm,-16cm) node {\includegraphics[scale=0.4]{graphviz/wrapping/5.dot}};
+% \end{tikzpicture}
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.3\textwidth}
 \centering
-TODO: naive add that creates a conflict
 \begin{tikzpicture}
-\path (0,0)       node {\includegraphics[scale=0.4]{graphviz/wrapping/1.dot}};
-\path (0cm,-4cm)  node {\includegraphics[scale=0.4]{graphviz/wrapping/2.dot}};
-\path (0cm,-8cm)  node {\includegraphics[scale=0.4]{graphviz/wrapping/3.dot}};
-\path (0cm,-12cm) node {\includegraphics[scale=0.4]{graphviz/wrapping/4.dot}};
-\path (0cm,-16cm) node {\includegraphics[scale=0.4]{graphviz/wrapping/5.dot}};
+\path (0cm,0cm) graph[graph style] {
+ root[root style]
+};
+\path (-1cm,-3cm) graph[graph style] {
+ "$\texttt{*}_2$" -> {
+  "$\texttt{var(x)}_4$" [> "left", > "3"'],
+  "$\texttt{var(z)}_6$" [> "right", > "5"']
+ }
+};
 \end{tikzpicture}
+\caption{Figure~\ref{fig:Change-b} after deleting edge~1}
+\label{fig:Wrapping-a}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.3\textwidth}
+\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "$\texttt{+}_8$" [> "root", > "7"']
+ }
+};
+\path (-1cm,-3cm) graph[graph style] {
+ "$\texttt{*}_2$" -> {
+  "$\texttt{var(x)}_4$" [> "left", > "3"'],
+  "$\texttt{var(z)}_6$" [> "right", > "5"']
+ }
+};
+\end{tikzpicture}
+\caption{Figure~\ref{fig:Wrapping-a} after adding vertex~8 and edge~7}
+\label{fig:Wrapping-b}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.3\textwidth}
+\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "$\texttt{+}_8$" [> "root", > "7"'] -> {
+   "$\texttt{*}_2$" [> "left", > "9"'] -> {
+    "$\texttt{var(x)}_4$" [> "left", > "3"'],
+    "$\texttt{var(z)}_6$" [> "right", > "5"']
+   },
+   {}
+  }
+ }
+};
+\end{tikzpicture}
+\caption{Figure~\ref{fig:Wrapping-b} after adding edge~9}
+\label{fig:Wrapping-c}
+\end{subfigure}
+%%%%%%%%
+\hfill{}
 \caption{Wrapping}
 \label{fig:Wrapping}
 \end{figure}
+
+TODO: dotted lines for deleted edges
+
+TODO: mention that naive add that creates a multi-child is discussed later
 
 Before \marginpar{DEL?} further exploring how to merge changes from multiple users,
 we want to point out a common idiom that we call \emph{wrapping}.
@@ -526,13 +593,56 @@ Traditional: no relation (and indent might change)
 \subsubsection{Move}
 
 \begin{figure}
+% \centering
+% \begin{tikzpicture}
+% \path (0,0)    node {\includegraphics[scale=0.75]{graphviz/move/1.dot}};
+% \path (0,-5cm) node {\includegraphics[scale=0.75]{graphviz/move/2.dot}};
+% \path (0,-9cm) node {\includegraphics[scale=0.75]{graphviz/move/3.dot}};
+% \end{tikzpicture}
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.3\textwidth}
 \centering
 \begin{tikzpicture}
-\path (0,0)    node {\includegraphics[scale=0.75]{graphviz/move/1.dot}};
-\path (0,-5cm) node {\includegraphics[scale=0.75]{graphviz/move/2.dot}};
-\path (0,-9cm) node {\includegraphics[scale=0.75]{graphviz/move/3.dot}};
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "$\texttt{+}_8$" [> "root", > "7"']
+ }
+};
+\path (0cm,-3cm) graph [graph style] {
+ "$\texttt{*}_2$" -> {
+  "$\texttt{var(x)}_4$" [> "left", > "3"'],
+  "$\texttt{var(z)}_6$" [> "right", > "5"']
+ }
+};
 \end{tikzpicture}
-\caption{Move}
+\caption{Figure~\ref{fig:Wrapping-c} after deleting edge~9}
+\label{fig:Move-a}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.3\textwidth}
+\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "$\texttt{+}_8$" [> "root", > "7"'] -> {
+   {},
+   "$\texttt{*}_2$" [> "right", > "11"'] -> {
+    "$\texttt{var(x)}_4$" [> "left", > "3"'],
+    "$\texttt{var(z)}_6$" [> "right", > "5"']
+   }
+  }
+ }
+};
+\end{tikzpicture}
+\caption{Figure~\ref{fig:Move-a} after adding edge~11}
+\label{fig:Move-b}
+\end{subfigure}
+%%%%%%%%
+\hfill{}
+\caption{Moving vertex~2 from the left child to the right child of vertex~8}
 \label{fig:Move}
 \end{figure}
 
