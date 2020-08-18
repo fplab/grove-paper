@@ -100,7 +100,7 @@
  tree layout,
  level sep=1cm,
  nodes={draw, rounded corners=1mm},
- edges={draw, sloped, font={\small}}
+ edges={draw, sloped, font={\small\ttfamily}}
 }}
 \tikzset{graphs/root style/.style={
  %draw=none,
@@ -262,6 +262,8 @@ Motivation:
 \section{Grove By Example}
 \label{sec:grove-by-example}
 
+TODO: Alice and Bob and narrative continuity
+
 This section introduces collaborative structure editing in Grove by example. 
 We begin in \autoref{sub:Program Representation} by introducing basic edit actions
 and the underlying graph representation of expressions with holes.
@@ -272,17 +274,16 @@ TODO: gray-scale unchanged parts of diagrams; and dashes for removed parts?
 
 TODO: typewritter font in figure graphs
 
+TODO: somewhere in here, maybe multiple places, we want to talk about typing the intermediate states that arise (background for structured editing)
+
+We present this at two levels.
 One is the underlying graph model, which
 involves explicit identifiers, graph edges, indexes, and add and delete
 operations.
-
-We present this at two levels.
 The other is the interface a user might see,
 which omits these details unless needed.
 Throughout these examples the graph model is presented
 as a graph with.
-
-TODO: somewhere in here, maybe multiple places, we want to talk about typing the intermediate states that arise (background for structured editing)
 
 \subsection{Program Representation}
 \label{sub:Program Representation}
@@ -329,33 +330,37 @@ TODO
 \end{figure}
 
 
-The editor state for each replica in Grove consists of an expression with holes.
-For example, \autoref{fig:A simple tree with a hole} shows the simple arithmetic expression~\texttt{x * \hole}, which
-has a hole on the right side of the plus operator.
+The state for each editor instance in Grove consists of an expression containing holes along with a cursor.
+For example, \autoref{fig:A simple tree with a hole} shows the arithmetic expression~\texttt{x * \hole}, which
+has a hole on the right side of the times operator.
 
 Internally, Grove represents an expression like this as a directed graph with a distinguished root vertex.
+For example, \autoref{fig:A simple tree with a hole-b} shows the graph corresponding to the term in \autoref{fig:A simple tree with a hole-a}.
 Each vertex represents a term and is labeled with a globally unique identifier and a term constructor.
-In this figure, \vertex{2} and \vertex{4} have the constructors \texttt{times} and \texttt{var(x)}, respectively.
+In \autoref{fig:A simple tree with a hole}, \vertex{2} and \vertex{4} have the constructors \texttt{times} and \texttt{var(x)}, respectively.
+
 Each term constructor has an associated set of child positions.
 The~\texttt{*} constructor has positions for~\texttt{left} and~\texttt{right} children
-and the~\texttt{var} constructors have no child positions but takes an argument naming the particular variable referenced
-(e.g.,~\texttt{var(x)} for the variable~\texttt{x}).
-The root vertex has a distinguished identifier and a constructor with a single child position.
-For simplicity, we visually represent the root with a dot.
+and the~\texttt{var} constructors have no child positions but takes an argument naming the particular
+variable referenced~(e.g.,~\texttt{x} in \texttt{var(x)}).
+The root vertex has a distinguished identifier~0 and the constructor \textbullet with the single child position \texttt{root}.
 
+Each edge is labeled with a globally unique identifier (e.g.,~1 and~3 in the figure) and a child position (e.g., \texttt{left} and \texttt{root} in the figure).
+An edge indicates that the destination vertex is a child of the origin vertex at the given position.
+%Visually, we indicate the position of an edge by the location of its origin.
 For the sake of presentation clarity, we reserve odd identifiers for vertexes and even identifiers for edges.
 
-Each edge is labeled with a globally unique identifier (e.g.,~1 and~3 in the figure) and a child position.
-An edge indicates that the destination vertex is a child of the origin vertex at the given position.
-Visually, we indicate the position of an edge by the location of its origin.
-For example, Figure~TODO:1(b) shows the graph corresponding to the term in Figure~TODO:1(a).
-
-TODO: holes
+Finally, holes are represented by the absence of a child.
+For example, in \autoref{fig:A simple tree with a hole-b} the absence of a \texttt{right} edge coming from \vertex{2}
+corresponds to the hole on the right of the~\texttt{*} in~\texttt{x * \hole}.
 
 % In this paper we represent variables and numeric constants
 % as leaves and represent their names or values as
 % arguments to those constructors (e.g.,~\texttt{2} in~\texttt{num(2)}).
 % (In TODO:REF, we discuss how to allow edits within these.)
+
+Note that, for the purposes of this paper, we represent identifiers and number literals
+indivisibly.  See Section~TODO:REF, for how we would allow editing individual characters.
 
 \subsection{Single User Edits}
 \label{sub:Single User Edits}
@@ -363,8 +368,6 @@ TODO: holes
 % TODO: change num(2) in Fig1 to num(1) so Fig1 matches Fig2 (move parts of Fig 2 into Fig 1?)
 
 % TODO: remove cursor from Fig 1 and Fig 2
-
-(though as we show in \autoref{sec:formalism} creating a vertex is implicit in edge creation)
 
 \subsubsection{Additions}
 
@@ -409,10 +412,7 @@ This corresponds to creating a vertex for the variable reference~\texttt{y} and 
 to that vertex from \vertex{2}.
 \autoref{fig:Addition} shows the result, where the new vertex has identifier~6.
 
-TODO: Note that adding an edge implicitly creates.
-
-For the purposes of this paper, we represent identifiers and number literals
-indivisibly.  See Section~TODO:REF, for how we would allow editing individual characters.
+TODO: (though as we show in \autoref{sec:formalism} creating a vertex is implicit in edge creation)
 
 \subsubsection{Changes}
 
@@ -587,12 +587,10 @@ remove the edge pointing to it.
 
 TODO: mention that naive add that creates a multi-child is discussed later
 
-Before \marginpar{DEL?} further exploring how to merge changes from multiple users,
-we want to point out a common idiom that we call \emph{wrapping}.
-Consider the first graph in \autoref{fig:Wrapping}, which
-represents the code~\texttt{$\lambda$ x . x}, and suppose
-the user's cursor is in the body field of the lambda (i.e., around the variable
-reference to~\texttt{x} in the body of the lambda).
+Next suppose a user inserts cod at a position already occupied by some code.
+For example, suppose, the user types~\texttt{+} when the cursor is on \vertex{2}.
+If this were a hole, this would simply put a vertex with the~\texttt{+} constructor
+as a child of \vertex{0}.
 
 If the user requests that a plus be inserted,
 the editor may notice that there is something already in that hole.
@@ -610,8 +608,7 @@ and results in the code~\texttt{$\lambda$ x . x + \hole}.
 Translating this into edge deletes and adds results in the sequence of graphs in \autoref{fig:Wrapping}.
 Note that this is a layer above
 
-Traditional: no relation (and indent might change)
-
+Traditional diff: no relation (and indent might change)
 
 \subsubsection{Move}
 
