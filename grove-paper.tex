@@ -104,7 +104,7 @@
 }}
 \tikzset{graphs/root style/.style={
  %draw=none,
- as={\textbullet$_0$}
+ as={\textbullet$_{0}$}
 }}
 %\tikzset{graphs/every edge/.style={}
 
@@ -262,7 +262,11 @@ Motivation:
 \section{Grove By Example}
 \label{sec:grove-by-example}
 
+TODO: "run through several senarios though in practice these occur less frequently than portrayed here"
+
 TODO: Alice and Bob and narrative continuity
+
+TODO: group user-level edits (with user visible)
 
 This section introduces collaborative structure editing in Grove by example. 
 We begin in \autoref{sub:Program Representation} by introducing basic edit actions
@@ -313,8 +317,8 @@ TODO
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{*}_2$" [> "root", > "1"'] -> {
-   "$\texttt{var(x)}_4$" [> "left", > "3"'],
+  "$\texttt{*}_{2}$" [> "root", > "1"'] -> {
+   "$\texttt{var(x)}_{4}$" [> "left", > "3"'],
    {}
   }
  }
@@ -388,14 +392,14 @@ TODO
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{*}_2$" [> "root", > "1"'] -> {
-   "$\texttt{var(x)}_4$" [> "left", > "3"'],
-   "$\texttt{var(y)}_6$" [> "right", > "5"']
+  "$\texttt{*}_{2}$" [> "root", > "1"'] -> {
+   "$\texttt{var(x)}_{4}$" [> "left", > "3"'],
+   "$\texttt{var(y)}_{6}$" [> "right", > "5"']
   }
  }
 };
 \end{tikzpicture}
-\caption{\autoref{fig:Addition-b} after adding \vertex{6} and \edge{5}}
+\caption{\autoref{fig:A simple tree with a hole-b} after adding \vertex{6} and \edge{5}}
 \label{fig:Addition-b}
 \end{subfigure}
 %%%%%%%%
@@ -414,6 +418,8 @@ to that vertex from \vertex{2}.
 
 TODO: (though as we show in \autoref{sec:formalism} creating a vertex is implicit in edge creation)
 
+TODO: z -> foo (or multi-editor)
+
 \subsubsection{Changes}
 
 \begin{figure}
@@ -424,14 +430,14 @@ TODO: (though as we show in \autoref{sec:formalism} creating a vertex is implici
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{*}_2$" [> "root", > "1"'] -> {
-   "$\texttt{var(x)}_4$" [> "left", > "3"'],
+  "$\texttt{*}_{2}$" [> "root", > "1"'] -> {
+   "$\texttt{var(x)}_{4}$" [> "left", > "3"'],
    {}
   }
  }
 };
 \path (2cm,-2cm) graph[graph style] {
- y [as={$\texttt{var(y)}_6$}]
+ y [as={$\texttt{var(y)}_{6}$}]
 };
 \end{tikzpicture}
 \caption{\autoref{fig:Addition-b} after deleting \edge{5}}
@@ -445,14 +451,14 @@ TODO: (though as we show in \autoref{sec:formalism} creating a vertex is implici
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{*}_2$" [> "root", > "1"'] -> {
-   "$\texttt{var(x)}_4$" [> "left", > "3"'],
-   "$\texttt{var(z)}_8$" [> "right", > "7"']
+  "$\texttt{*}_{2}$" [> "root", > "1"'] -> {
+   "$\texttt{var(x)}_{4}$" [> "left", > "3"'],
+   "$\texttt{var(z)}_{8}$" [> "right", > "7"']
   }
  }
 };
 \path (2cm,-2cm) graph[graph style] {
- "$\texttt{var(y)}_6$"
+ "$\texttt{var(y)}_{6}$"
 };
 \end{tikzpicture}
 \caption{\autoref{fig:Change-a} after adding \vertex{8} and \edge{7}}
@@ -528,9 +534,9 @@ remove the edge pointing to it.
  root[root style]
 };
 \path (-1cm,-3cm) graph[graph style] {
- "$\texttt{*}_2$" -> {
-  "$\texttt{var(x)}_4$" [> "left", > "3"'],
-  "$\texttt{var(z)}_6$" [> "right", > "5"']
+ "$\texttt{*}_{2}$" -> {
+  "$\texttt{var(x)}_{4}$" [> "left", > "3"'],
+  "$\texttt{var(z)}_{6}$" [> "right", > "5"']
  }
 };
 \end{tikzpicture}
@@ -545,13 +551,13 @@ remove the edge pointing to it.
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_8$" [> "root", > "7"']
+  "$\texttt{+}_{8}$" [> "root", > "7"']
  }
 };
 \path (-1cm,-3cm) graph[graph style] {
- "$\texttt{*}_2$" -> {
-  "$\texttt{var(x)}_4$" [> "left", > "3"'],
-  "$\texttt{var(z)}_6$" [> "right", > "5"']
+ "$\texttt{*}_{2}$" -> {
+  "$\texttt{var(x)}_{4}$" [> "left", > "3"'],
+  "$\texttt{var(z)}_{6}$" [> "right", > "5"']
  }
 };
 \end{tikzpicture}
@@ -566,10 +572,10 @@ remove the edge pointing to it.
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_8$" [> "root", > "7"'] -> {
-   "$\texttt{*}_2$" [> "left", > "9"'] -> {
-    "$\texttt{var(x)}_4$" [> "left", > "3"'],
-    "$\texttt{var(z)}_6$" [> "right", > "5"']
+  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+   "$\texttt{*}_{2}$" [> "left", > "9"'] -> {
+    "$\texttt{var(x)}_{4}$" [> "left", > "3"'],
+    "$\texttt{var(z)}_{6}$" [> "right", > "5"']
    },
    {}
   }
@@ -626,13 +632,13 @@ Traditional diff: no relation (and indent might change)
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_8$" [> "root", > "7"']
+  "$\texttt{+}_{8}$" [> "root", > "7"']
  }
 };
 \path (0cm,-3cm) graph [graph style] {
- "$\texttt{*}_2$" -> {
-  "$\texttt{var(x)}_4$" [> "left", > "3"'],
-  "$\texttt{var(z)}_6$" [> "right", > "5"']
+ "$\texttt{*}_{2}$" -> {
+  "$\texttt{var(x)}_{4}$" [> "left", > "3"'],
+  "$\texttt{var(z)}_{6}$" [> "right", > "5"']
  }
 };
 \end{tikzpicture}
@@ -647,11 +653,11 @@ Traditional diff: no relation (and indent might change)
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_8$" [> "root", > "7"'] -> {
+  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
    {},
-   "$\texttt{*}_2$" [> "right", > "11"'] -> {
-    "$\texttt{var(x)}_4$" [> "left", > "3"'],
-    "$\texttt{var(z)}_6$" [> "right", > "5"']
+   "$\texttt{*}_{2}$" [> "right", > "11"'] -> {
+    "$\texttt{var(x)}_{4}$" [> "left", > "3"'],
+    "$\texttt{var(z)}_{6}$" [> "right", > "5"']
    }
   }
  }
@@ -703,21 +709,92 @@ If multiple replicas restore to different places, then you get some complexity:
 \subsection{Collaborative Structure Editing}
 \label{sub:Collaborative Structure Editing}
 
+TODO: mention that id numbers are global
+
 \subsubsection{Editing Different Parts of the Code}
 
 \begin{figure}
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.3\textwidth}
 \centering
-TODO: add screenshot of code text to each node
-TODO: remove orphans from diagram
 \begin{tikzpicture}
-\path (0,0)       node {\includegraphics[scale=0.5]{graphviz/editing-different-parts-of-the-code/1.dot}};
-\path (-3cm,-3cm) node {\includegraphics[scale=0.5]{graphviz/editing-different-parts-of-the-code/2A.dot}};
-\path (3cm,-3cm)  node {\includegraphics[scale=0.5]{graphviz/editing-different-parts-of-the-code/2B.dot}};
-\path (0cm,-6cm)  node {\includegraphics[scale=0.5]{graphviz/editing-different-parts-of-the-code/3.dot}};
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+   {},
+   "$\texttt{*}_{2}$" [> "right", > "11"'] -> {
+    "$\texttt{var(u)}_{12}$" [> "left", > "13"'],
+    "$\texttt{var(z)}_{6}$" [> "right", > "5"']
+   }
+  }
+ }
+};
 \end{tikzpicture}
+\caption{\autoref{fig:Move-b} after Alice replaces \vertex{4} with \vertex{12}}
+\label{fig:Editing Different Parts of the Code-a}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.3\textwidth}
+\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+   {},
+   "$\texttt{*}_{2}$" [> "right", > "11"'] -> {
+    "$\texttt{var(x)}_{4}$" [> "left", > "3"'],
+    "$\texttt{var(v)}_{14}$" [> "right", > "15"']
+   }
+  }
+ }
+};
+\end{tikzpicture}
+\caption{\autoref{fig:Move-b} after Bob replaces \vertex{6} with \vertex{14}}
+\label{fig:Editing Different Parts of the Code-b}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.3\textwidth}
+\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+   {},
+   "$\texttt{*}_{2}$" [> "right", > "11"'] -> {
+    "$\texttt{var(u)}_{12}$" [> "left", > "13"'],
+    "$\texttt{var(v)}_{14}$" [> "right", > "15"']
+   }
+  }
+ }
+};
+\end{tikzpicture}
+\caption{The result of merging \autoref{fig:Editing Different Parts of the Code-a} with \autoref{fig:Editing Different Parts of the Code-b}}
+\label{fig:Editing Different Parts of the Code-c}
+\end{subfigure}
+%%%%%%%%
+\hfill{}
 \caption{Editing Different Parts of the Code}
 \label{fig:Editing Different Parts of the Code}
 \end{figure}
+
+% \begin{figure}
+% \centering
+% TODO: add screenshot of code text to each node
+% TODO: remove orphans from diagram
+% \begin{tikzpicture}
+% \path (0,0)       node {\includegraphics[scale=0.5]{graphviz/editing-different-parts-of-the-code/1.dot}};
+% \path (-3cm,-3cm) node {\includegraphics[scale=0.5]{graphviz/editing-different-parts-of-the-code/2A.dot}};
+% \path (3cm,-3cm)  node {\includegraphics[scale=0.5]{graphviz/editing-different-parts-of-the-code/2B.dot}};
+% \path (0cm,-6cm)  node {\includegraphics[scale=0.5]{graphviz/editing-different-parts-of-the-code/3.dot}};
+% \end{tikzpicture}
+% \caption{Editing Different Parts of the Code}
+% \label{fig:Editing Different Parts of the Code}
+% \end{figure}
 
 When editing different parts of the code
 
@@ -767,19 +844,88 @@ our nominal equality.
 (We exploit this in Subsection~REF:TODO).
 
 \begin{figure}
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.3\textwidth}
 \centering
-TODO: add screenshot of code text to each node
-TODO: remove orphans from diagram
-TODO: annotate edges with delete and restore
 \begin{tikzpicture}
-\path (0,0)       node {\includegraphics[scale=0.5]{graphviz/editing-nested-parts-of-the-code/1.dot}};
-\path (-3cm,-3cm) node {\includegraphics[scale=0.5]{graphviz/editing-nested-parts-of-the-code/2A.dot}};
-\path (3cm,-3cm)  node {\includegraphics[scale=0.5]{graphviz/editing-nested-parts-of-the-code/2B.dot}};
-\path (0cm,-6cm)  node {\includegraphics[scale=0.5]{graphviz/editing-nested-parts-of-the-code/3.dot}};
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+   {},
+   "$\texttt{*}_{2}$" [> "right", > "11"'] -> {
+    "$\texttt{var(u)}_{12}$" [> "left", > "13"'],
+    "$\texttt{var(w)}_{16}$" [> "right", > "17"']
+   }
+  }
+ }
+};
 \end{tikzpicture}
+\caption{\autoref{fig:Editing Different Parts of the Code-c} after Alice replaces \vertex{14} with \vertex{16}}
+\label{fig:Editing Nested Parts of the Code-a}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.3\textwidth}
+\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+   "$\texttt{*}_{2}$" [> "left", > "19"'] -> {
+    "$\texttt{var(u)}_{12}$" [> "left", > "13"'],
+    "$\texttt{var(v)}_{14}$" [> "right", > "15"']
+   },
+   {}
+  }
+ }
+};
+\end{tikzpicture}
+\caption{\autoref{fig:Editing Different Parts of the Code-c} after Bob move \vertex{2} to the left child of \vertex{8}}
+\label{fig:Editing Nested Parts of the Code-b}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.3\textwidth}
+\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+   "$\texttt{*}_{2}$" [> "left", > "19"'] -> {
+    "$\texttt{var(u)}_{12}$" [> "left", > "13"'],
+    "$\texttt{var(w)}_{16}$" [> "right", > "17"']
+   },
+   {}
+  }
+ }
+};
+\end{tikzpicture}
+\caption{The result of merging \autoref{fig:Editing Nested Parts of the Code-a} with \autoref{fig:Editing Nested Parts of the Code-b}}
+\label{fig:Editing Nested Parts of the Code-c}
+\end{subfigure}
+%%%%%%%%
+\hfill{}
 \caption{Editing Nested Parts of the Code}
 \label{fig:Editing Nested Parts of the Code}
 \end{figure}
+
+% \begin{figure}
+% \centering
+% TODO: add screenshot of code text to each node
+% TODO: remove orphans from diagram
+% TODO: annotate edges with delete and restore
+% \begin{tikzpicture}
+% \path (0,0)       node {\includegraphics[scale=0.5]{graphviz/editing-nested-parts-of-the-code/1.dot}};
+% \path (-3cm,-3cm) node {\includegraphics[scale=0.5]{graphviz/editing-nested-parts-of-the-code/2A.dot}};
+% \path (3cm,-3cm)  node {\includegraphics[scale=0.5]{graphviz/editing-nested-parts-of-the-code/2B.dot}};
+% \path (0cm,-6cm)  node {\includegraphics[scale=0.5]{graphviz/editing-nested-parts-of-the-code/3.dot}};
+% \end{tikzpicture}
+% \caption{Editing Nested Parts of the Code}
+% \label{fig:Editing Nested Parts of the Code}
+% \end{figure}
 
 Consider \autoref{fig:Editing Nested Parts of the Code}.
 Alice and Bob both start with the top graph, which represents the code~\texttt{2 * x + \hole{}}.
@@ -808,29 +954,111 @@ Contrast with a traditional diff
 \subsubsection{Multi-child conflicts}
 
 \begin{figure}
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.3\textwidth}
 \centering
 \begin{tikzpicture}
-\path (0,0)       node {\includegraphics[scale=0.5]{graphviz/direct-conflicts/1.dot}};
-\path (-3cm,-3cm) node {\includegraphics[scale=0.5]{graphviz/direct-conflicts/2A.dot}};
-\path (3cm,-3cm)  node {\includegraphics[scale=0.5]{graphviz/direct-conflicts/2B.dot}};
-\path (0cm,-6cm)  node {\includegraphics[scale=0.5]{graphviz/direct-conflicts/3.dot}};
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+   "$\texttt{*}_{2}$" [> "left", > "19"'] -> {
+    "$\texttt{var(u)}_{12}$" [> "left", > "13"'],
+    "$\texttt{var(w)}_{16}$" [> "right", > "17"']
+   },
+   {
+    "$\texttt{var(x)}_{20}$" [> "right", > "21"']
+   }
+  }
+ }
+};
 \end{tikzpicture}
-\caption{Direct Conflicts}
-\label{fig:Direct Conflicts}
+\caption{\autoref{fig:Editing Nested Parts of the Code-c} after Alice ... TODO}
+\label{fig:Multi-child-a}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.3\textwidth}
+\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+   "$\texttt{*}_{2}$" [> "left", > "19"'] -> {
+    "$\texttt{var(u)}_{12}$" [> "left", > "13"'],
+    "$\texttt{var(w)}_{16}$" [> "right", > "17"']
+   },
+   {
+    "$\texttt{app}_{22}$" [> "right", > "23"'] -> {
+     "$\texttt{var(f)}_{24}$" [> "fun", > "25"'],
+     "$\texttt{var(y)}_{26}$" [> "arg", > "27"']
+    }
+   }
+  }
+ }
+};
+\end{tikzpicture}
+\caption{\autoref{fig:Editing Nested Parts of the Code-c} after Bob ... TODO}
+\label{fig:Multi-child-b}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.3\textwidth}
+\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+   "$\texttt{*}_{2}$" [> "left", > "19"'] -> {
+    "$\texttt{var(u)}_{12}$" [> "left", > "13"'],
+    "$\texttt{var(w)}_{16}$" [> "right", > "17"']
+   },
+   {
+    "$\texttt{var(x)}_{20}$" [> "right", > "21"'],
+    "$\texttt{app}_{22}$" [> "right", > "23"'] -> {
+     "$\texttt{var(f)}_{24}$" [> "fun", > "25"'],
+     "$\texttt{var(y)}_{26}$" [> "arg", > "27"']
+    }
+   }
+  }
+ }
+};
+\end{tikzpicture}
+\caption{The result of merging \autoref{fig:Multi-child-a} with \autoref{fig:Multi-child-b}}
+\label{fig:Multi-child-c}
+\end{subfigure}
+%%%%%%%%
+\hfill{}
+\caption{Multi-child conflicts}
+\label{fig:Multi-child}
 \end{figure}
 
+% \begin{figure}
+% \centering
+% \begin{tikzpicture}
+% \path (0,0)       node {\includegraphics[scale=0.5]{graphviz/direct-conflicts/1.dot}};
+% \path (-3cm,-3cm) node {\includegraphics[scale=0.5]{graphviz/direct-conflicts/2A.dot}};
+% \path (3cm,-3cm)  node {\includegraphics[scale=0.5]{graphviz/direct-conflicts/2B.dot}};
+% \path (0cm,-6cm)  node {\includegraphics[scale=0.5]{graphviz/direct-conflicts/3.dot}};
+% \end{tikzpicture}
+% \caption{Direct Conflicts}
+% \label{fig:Direct Conflicts}
+% \end{figure}
+
 Finally, we address genuine conflicts between edits.
-Consider the top graph of \autoref{fig:Direct Conflicts}.
+Consider the top graph of \autoref{fig:Multi-child}.
 Suppose Alice inserts the number literal~\texttt{2} into the body of the lambda
 while Bob inserts the function application~\texttt{f x} also into the body of the lambda.
-These results in the left and right graphs of \autoref{fig:Direct Conflicts} respectively.
+These results in the left and right graphs of \autoref{fig:Multi-child} respectively.
 In particular pay attention to the edges going out of the \texttt{body} index of \vertex{3}.
 In the left graph it is \edge{10}, which points to a number literal,
 and in the right graph it is \edge{13}, which points to a function application.
 
 We merge these by including \emph{both} edges as edges going out of the \texttt{body} index
 of \vertex{3}.
-This results in the bottom graph of \autoref{fig:Direct Conflicts}.
+This results in the bottom graph of \autoref{fig:Multi-child}.
 The conflict between Alice's and Bob's changes is
 represented by the fact that there are multiple edges going out of one index (i.e. the \texttt{body}
 index of \vertex{3}).
@@ -887,21 +1115,94 @@ conflicts can manifest as multiple edges going \emph{into} a particular vertex.
 We call these \emph{multi-parent conflicts}.
 
 \begin{figure}
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.24\textwidth}
 \centering
-
-TODO TOP: +(\hole, +(\hole, x))
-
-TODO LEFT: +(x, +(\hole, \hole))
-
-TODO RIGHT: +(\hole, +(x, \hole))
-
-TODO BOTTOM: Two parents pointing to x
-
-\caption{Multi-parent conflict}
-\label{fig:Multi-parent conflict}
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+   "$\texttt{+}_{2}$" [> "left", > "19"'] -> {
+    "$\texttt{var(x)}_{2}$" [> "left", > "19"'],
+    {}
+   },
+   {}
+  }
+ }
+};
+\end{tikzpicture}
+\caption{Initial code}
+\label{fig:Multi-parent-a}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.24\textwidth}
+\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+   "$\texttt{+}_{2}$" [> "left", > "19"'],
+   "$\texttt{var(x)}_{2}$" [> "left", > "19"']
+  }
+ }
+};
+\end{tikzpicture}
+\caption{\autoref{fig:Multi-parent-a} after Alice ... TODO}
+\label{fig:Multi-parent-b}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.24\textwidth}
+\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+   "$\texttt{+}_{2}$" [> "left", > "19"'] -> {
+    {},
+    "$\texttt{var(x)}_{2}$" [> "right", > "19"']
+   },
+   {}
+  }
+ }
+};
+\end{tikzpicture}
+\caption{\autoref{fig:Multi-child-a} after Bob ... TODO}
+\label{fig:Multi-parent-c}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.24\textwidth}
+\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  a/{$\texttt{+}_{8}$} [> "root", > "7"'] -> {
+   "$\texttt{+}_{2}$" [> "left", > "19"'] ->["right", "19"'] {
+    {},
+    b/"$\texttt{var(x)}_{2}$"
+   },
+   {}
+  }
+ },
+ a ->["right", "27"'] b
+};
+\end{tikzpicture}
+\caption{The result of merging \autoref{fig:Multi-parent-b} with \autoref{fig:Multi-parent-c}}
+\label{fig:Multi-parent-d}
+\end{subfigure}
+%%%%%%%%
+\hfill{}
+\caption{Multi-parent conflicts}
+\label{fig:Multi-parent}
 \end{figure}
 
-An example of this is shown in \autoref{fig:Multi-parent conflict},
+An example of this is shown in \autoref{fig:Multi-parent},
 which starts with the top graph, which represents the expression~\texttt{\hole + (\hole + x)}.
 Suppose Alice moves the variable~\texttt{x} to the left-most hole.
 This results in the left graph, which represents the expression~\texttt{x + (\hole + \hole)}.
@@ -1048,11 +1349,39 @@ We call this situation a multi-parent conflict.
 \subsubsection{Cycles}
 
 \begin{figure}
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.24\textwidth}
 \centering
-TODO: lam x. app(\#1, \hole)
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  v8/"$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+   v2/"$\texttt{*}_{2}$" [> "left", > "19"'] -> {
+    "$\texttt{var(x)}_{2}$" [> "left", > "19"'],
+    {}
+   },
+   {}
+  }
+ },
+ v2 -> v8
+};
+\end{tikzpicture}
+\caption{Initial code}
+\label{fig:Single-User Cycles-a}
+\end{subfigure}
+%%%%%%%%
+\hfill{}
 \caption{Single-User Cycles}
 \label{fig:Single-User Cycles}
 \end{figure}
+
+% \begin{figure}
+% \centering
+% TODO: lam x. app(\#1, \hole)
+% \caption{Single-User Cycles}
+% \label{fig:Single-User Cycles}
+% \end{figure}
 
 Since we are representing programs as graphs,
 we have to consider cycles.
@@ -1087,7 +1416,7 @@ However, when these edits are merged,
 not only is a cycle created, but
 the vertexes in the cycle
 
-Can also be detected due to neigther original leaving them disconnected.
+Can also be detected due to neither original leaving them disconnected.
 
 \begin{figure}
 \centering
@@ -1282,6 +1611,8 @@ Unision?
 
 \section{Discussion and Conclusion}
 \label{sec:conclusion}
+
+TODO: memory usage
 
 \subsection{Variable names, strings, and numbers}
 
