@@ -223,9 +223,9 @@ Text of abstract \ldots.
 
 
 \section{Introduction}
-\label{sec:introduction}
+\label{sec:Introduction}
 
-Motivation: 
+Motivation:
 - collaborative editing (both synchronous ala Google Docs and asynchronous version control) 
   is good and important as computing grows
 - semantic structure editing is good because it solves the gap problem (semantic editor services 
@@ -257,37 +257,20 @@ Motivation:
 - Hazel
 
 \subsection{Contributions and Paper Organization}
-\label{sec:paper-organization}
+\label{sec:Contributions and Paper Organization}
 
 \section{Grove By Example}
-\label{sec:grove-by-example}
+\label{sec:Grove By Example}
 
-TODO: "run through several senarios though in practice these occur less frequently than portrayed here"
-
-TODO: Alice and Bob and narrative continuity
+This section introduces collaborative structure editing in Grove.
+We begin in \autoref{sub:Program Representation} by covering how we represent expressions with holes as graphs,
+\autoref{sub:Single User Edits} explores edits by a single user, Alice,
+and \autoref{sub:Collaborative Structure Editing} explores edits by multiple users, Alice and Bob,
+each of whom is editing their own instance of a program.
 
 TODO: group user-level edits (with user visible)
 
-This section introduces collaborative structure editing in Grove by example. 
-We begin in \autoref{sub:Program Representation} by introducing basic edit actions
-and the underlying graph representation of expressions with holes.
-We will then discuss scenarios that arise in the collaborative setting in 
-\autoref{sub:Collaborative Structure Editing}.
-
-TODO: gray-scale unchanged parts of diagrams; and dashes for removed parts?
-
-TODO: typewritter font in figure graphs
-
-TODO: somewhere in here, maybe multiple places, we want to talk about typing the intermediate states that arise (background for structured editing)
-
-We present this at two levels.
-One is the underlying graph model, which
-involves explicit identifiers, graph edges, indexes, and add and delete
-operations.
-The other is the interface a user might see,
-which omits these details unless needed.
-Throughout these examples the graph model is presented
-as a graph with.
+TODO: gray-scale unchanged parts of diagrams; and dashes for removed parts? describe semantic vs presentational in diagrams
 
 \subsection{Program Representation}
 \label{sub:Program Representation}
@@ -333,23 +316,34 @@ TODO
 \label{fig:A simple tree with a hole}
 \end{figure}
 
-
-The state for each editor instance in Grove consists of an expression containing holes along with a cursor.
-For example, \autoref{fig:A simple tree with a hole} shows the arithmetic expression~\texttt{x * \hole}, which
+%We represent expression contain holes as part of the editor state 
+The \textit{program state} for each editor instance in Grove consists of a graph that represents the program being edited.
+This can be presented to the user as an expression containing holes.
+For example, \autoref{fig:A simple tree with a hole-b} shows one such graph,
+and \autoref{fig:A simple tree with a hole-a} shows its corresponding expression,~\texttt{x * \hole}, which
 has a hole on the right side of the times operator.
 
-Internally, Grove represents an expression like this as a directed graph with a distinguished root vertex.
-For example, \autoref{fig:A simple tree with a hole-b} shows the graph corresponding to the term in \autoref{fig:A simple tree with a hole-a}.
+%We present this from two perspectives.
+%One is the underlying graph model, the other is the interface a user might see, which omits these details unless needed.
+
+%which involves explicit graph edges, positions, and add and delete operations.
+
+Program state is a directed graph with a distinguished root vertex.
+%For example, \autoref{fig:A simple tree with a hole-b} shows the graph corresponding to the term in \autoref{fig:A simple tree with a hole-a}.
 Each vertex represents a term and is labeled with a globally unique identifier and a term constructor.
-In \autoref{fig:A simple tree with a hole}, \vertex{2} and \vertex{4} have the constructors \texttt{times} and \texttt{var(x)}, respectively.
+In \autoref{fig:A simple tree with a hole-b}, \vertex{2} and \vertex{4} have the constructors~\texttt{*} and \texttt{var(x)}, respectively.
+The root vertex has the distinguished identifier~0 and the constructor~\textbullet.
 
 Each term constructor has an associated set of child positions.
 The~\texttt{*} constructor has positions for~\texttt{left} and~\texttt{right} children
 and the~\texttt{var} constructors have no child positions but takes an argument naming the particular
-variable referenced~(e.g.,~\texttt{x} in \texttt{var(x)}).
-The root vertex has a distinguished identifier~0 and the constructor \textbullet with the single child position \texttt{root}.
+variable referenced~(e.g.,~\texttt{x} in \texttt{var(x)}).\footnote{Note that,
+for the purposes of this paper, we represent identifiers and number literals
+indivisibly.  See Section~TODO:REF, for how we would allow editing individual characters.}
+The root vertex constructor,~\textbullet, has the single child position \texttt{root}.
 
-Each edge is labeled with a globally unique identifier (e.g.,~1 and~3 in the figure) and a child position (e.g., \texttt{left} and \texttt{root} in the figure).
+Each edge is labeled with a globally unique identifier (e.g.,~1 and~3 in \autoref{fig:A simple tree with a hole-b}) and
+a child position (e.g., \texttt{left} and \texttt{root} in \autoref{fig:A simple tree with a hole-b}).
 An edge indicates that the destination vertex is a child of the origin vertex at the given position.
 %Visually, we indicate the position of an edge by the location of its origin.
 For the sake of presentation clarity, we reserve odd identifiers for vertexes and even identifiers for edges.
@@ -363,8 +357,7 @@ corresponds to the hole on the right of the~\texttt{*} in~\texttt{x * \hole}.
 % arguments to those constructors (e.g.,~\texttt{2} in~\texttt{num(2)}).
 % (In TODO:REF, we discuss how to allow edits within these.)
 
-Note that, for the purposes of this paper, we represent identifiers and number literals
-indivisibly.  See Section~TODO:REF, for how we would allow editing individual characters.
+\marginpar{START REV HERE}
 
 \subsection{Single User Edits}
 \label{sub:Single User Edits}
@@ -374,6 +367,7 @@ indivisibly.  See Section~TODO:REF, for how we would allow editing individual ch
 % TODO: remove cursor from Fig 1 and Fig 2
 
 \subsubsection{Additions}
+\label{sub:Additions}
 
 \begin{figure}
 \hfill
@@ -408,19 +402,23 @@ TODO
 \label{fig:Addition}
 \end{figure}
 
-We model edits to the code as sequences of additions and deletions of edges to this graph.
-For example, suppose the user adds~\texttt{y} as the right child of \vertex{2} in
-\autoref{fig:A simple tree with a hole}
-so that the expression becomes \texttt{x * y}.
-This corresponds to creating a vertex for the variable reference~\texttt{y} and adding an edge
-to that vertex from \vertex{2}.
-\autoref{fig:Addition} shows the result, where the new vertex has identifier~6.
 
-TODO: (though as we show in \autoref{sec:formalism} creating a vertex is implicit in edge creation)
+TODO: Actions act at a cursor.  Each instance also has a cursor that it controls, but this is not part of the graph representation.
+
+Alice starts with the code in \autoref{fig:A simple tree with a hole},
+She moves her cursor to the hole in~\texttt{x * \hole} and enters the variable~\texttt{y}.
+We model edits as sequences of additions and deletions of edges to the graph.
+Alice's edit corresponds to creating a vertex for the variable reference~\texttt{y} and adding an edge
+to that vertex from \vertex{2}.
+\autoref{fig:Addition-b} shows the result, where the new vertex has identifier~6.
+This graph represents the expression \texttt{x * y}.
+
+TODO: (though as we show in \autoref{sec:Formalism} creating a vertex is implicit in edge creation)
 
 TODO: z -> foo (or multi-editor)
 
 \subsubsection{Changes}
+\label{sub:Changes}
 
 \begin{figure}
 \hfill
@@ -481,8 +479,8 @@ TODO: z -> foo (or multi-editor)
 % \label{fig:Delete and Add}
 % \end{figure}
 
-Next suppose we want to replace~\texttt{y} with~\texttt{z} so that the code becomes~\texttt{x * z}.
-This is accomplished by first deleting \edge{5}.
+Next Alice wants to replace~\texttt{y} with~\texttt{z} so that the code becomes~\texttt{x * z}.
+This is modeled by first deleting \edge{5}.
 This results in \autoref{fig:Change-a}, which represents the expression~\texttt{x * \hole{}}.
 After that deletion, we add a new vertex to represent~\texttt{z} and an
 edge from \vertex{2} to that vertex.
@@ -490,19 +488,12 @@ This results in the bottom graph in \autoref{fig:Change-b},
 which represents the expression~\texttt{x * z}.
 
 Note that this edge has a new identifier distinct from the one before.
-An edge once deleted cannot be restored.  Instead a new edge (with a new id) is created.
+In our model, once an edge with a particular identifier is deleted, it cannot be recreated.
+Instead a new edge with a new identifiers is created.
 
 Note that \vertex{3} continues to exist, and if it had any children, those children could remain connected to it.
 In our system, once a vertex is created it is never deleted.
 This allows further manipulations of those vertexes as shown later in this section.
-
-TODO: explain that multiple delete or add are idempotent
-
-TODO: explain that delete overrides add
-
-TODO: once deleted an edge can never be recreated (though, a new edge (with a new id) can be created in the same spot as the original)
-
-Explain orphans
 
 Note that we will omit orphans from diagrams if they are not relevant
 (e.g., they are deleted and are not added back later)
@@ -514,7 +505,16 @@ is created that points to it.
 Deleting vertexes is not necessary, as we can simply
 remove the edge pointing to it.
 
+TODO: explain that multiple delete or add are idempotent
+
+TODO: explain that delete overrides add
+
+TODO: once deleted an edge can never be recreated (though, a new edge (with a new id) can be created in the same spot as the original)
+
+TODO: Explain orphans
+
 \subsubsection{Wrapping Code}
+\label{sub:Wrapping Code}
 
 \begin{figure}
 % TODO: naive add that creates a conflict
@@ -591,32 +591,32 @@ remove the edge pointing to it.
 \label{fig:Wrapping}
 \end{figure}
 
-TODO: mention that naive add that creates a multi-child is discussed later
-
-Next suppose a user inserts cod at a position already occupied by some code.
-For example, suppose, the user types~\texttt{+} when the cursor is on \vertex{2}.
+Next, Alice types~\texttt{+} when the cursor is on \vertex{2}.
 If this were a hole, this would simply put a vertex with the~\texttt{+} constructor
 as a child of \vertex{0}.
+However, this position is already occupied by some code.
 
-If the user requests that a plus be inserted,
-the editor may notice that there is something already in that hole.
-A naive editor could certainly add the plus by creating a new
+A naive editor could add the~\texttt{+} by creating a new
 edge from the body index of the lambda to a freshly created \texttt{plus} vertex.
-This would result in a conflict between the \texttt{plus} and the existing \texttt{var}
+This would result in a conflict between the \texttt{+} and the existing \texttt{var}
 as shown in Figure~REF:TODO.
-A better user experience
+
+How to handle multiple children in the same position is explored in Sec~REF:TODO,
+but for this sort of edit, a better user experience
 would be interpret the request for a plus to mean to
 take whatever (if anything) is in the cursor
 and place it as a child of the plus.
 This \emph{wraps} the existing \texttt{var} in the \texttt{plus}
-and results in the code~\texttt{$\lambda$ x . x + \hole}.
+and results in the code~\texttt{(x * z) + \hole}.
 (This is similar to the behavior in other structure editors such as in CITE:TODO.)
 Translating this into edge deletes and adds results in the sequence of graphs in \autoref{fig:Wrapping}.
-Note that this is a layer above
 
-Traditional diff: no relation (and indent might change)
+TODO: "Note that the logic of to insert or wrap is a layer above graph actions."
+
+TODO: Traditional diff: no relation (and indent might change)
 
 \subsubsection{Move}
+\label{sub:Move}
 
 \begin{figure}
 % \centering
@@ -681,14 +681,14 @@ moved, not just a copy.
 
 For example, consider \autoref{fig:Move}, which represents
 the movement of~\texttt{1 * 2} from the left child of \texttt{plus}
-to its right child.  The top graph is the code before the move.
-First, \edge{7} is deleted, which results in the middle graph
-where the rooted code is now~\texttt{\hole{} + \hole},
-and \vertex{6} is orphaned.
-
-Next \edge{16} is added, which results in the bottom graph
+to its right child.
+\autoref{fig:Editing Nested Parts of the Code-c} is the code before the move.
+First, \edge{7} is deleted, which results in \autoref{fig:Move-a}
+where the rooted code is now~\texttt{\hole{} + \hole{}},
+and \vertex{2} is orphaned.
+Next \edge{11} is added, which results in the bottom graph
 where the rooted code is now~\texttt{\hole{} + 1 * 2},
-and \vertex{6} is no longer orphaned.
+and \vertex{2} is no longer orphaned.
 
 This move semantics gives us a richer structure than
 when treating code as a list of lines.  We exploit
@@ -709,9 +709,12 @@ If multiple replicas restore to different places, then you get some complexity:
 \subsection{Collaborative Structure Editing}
 \label{sub:Collaborative Structure Editing}
 
-TODO: mention that id numbers are global
+TODO: mention that id numbers are global (or maybe use A1 and B1 for different users?)
+
+We assume multiple instances
 
 \subsubsection{Editing Different Parts of the Code}
+\label{sub:Editing Different Parts of the Code}
 
 \begin{figure}
 \hfill
@@ -796,35 +799,31 @@ TODO: mention that id numbers are global
 % \label{fig:Editing Different Parts of the Code}
 % \end{figure}
 
-When editing different parts of the code
+To start, Alice and Bob are synchronized with each other and
+both have the graph in \autoref{fig:Move-b}, which
+represents the code~\texttt{\hole{} + (x + z)}.
 
-For example, suppose there are users, A and B,
-that are synchronized with each other and
-have the code~\texttt{3 + 4}.
-That is to say, they both have
-the top graphs in \autoref{fig:Editing Different Parts of the Code}.
-
-Next, suppose user A changes the~\texttt{3} to a~\texttt{13},
-and user B changes the~\texttt{4} to a~\texttt{14}.
+Alice changes the~\texttt{x} to a~\texttt{u},
+and Bob changes the~\texttt{z} to a~\texttt{v}.
 Before transmitting their edits to each other,
-user A thus has left graph and user B has the right graph.
-For user A, this involves deleting \edge{7} and creating \edge{14}.
-For user B, this involves deleting \edge{10} and creating \edge{18}.
+Alice thus has the graph in \autoref{fig:Editing Different Parts of the Code-a}
+and Bob has the graph in \autoref{fig:Editing Different Parts of the Code-b}.
+For Alice, this involves deleting \edge{3} and creating \edge{13}.
+For Bob, this involves deleting \edge{5} and creating \edge{15}.
 
-To merge these two graphs each user simply replays the edge deletions and additions
-that the other user performed.
-
-Both user then have the bottom graph and are again synchronized with each other.
+Alice and Bob then transmit their graph actions (i.e., edge additions and deletions) to each other
+and applies the other's graph actions to their own copy of the graph.
+By design, graph actions commute, so this results in both Alice and Bob having the graph in
+\autoref{fig:Editing Different Parts of the Code-c}.
 
 Note that aside from transmitting the edge deletions and additions,
-no coordination between A and B is needed to coordinate the merge.
-For example, suppose that A and B did not transmit their edits to each other
-but to a third user, C, that has the original graph at the top of \autoref{fig:Editing Different Parts of the Code}.
-User C can replay the edits from A and B in any order and will always get
-the graph at the bottom of \autoref{fig:Editing Different Parts of the Code}.
+no coordination between Alice and Bob is needed to coordinate the merge.
+For example, suppose that Alice and Bob did not transmit their edits to each other
+but to a third user, Chris, that has the original graph at the top of \autoref{fig:Move-b}.
+Chris can apply the edits from Alice and Bob in any order and will always get
+the graph in \autoref{fig:Editing Different Parts of the Code-c}.
 
-Stated more formally, our edit model obeys commutativity
-as shown in \autoref{fig:Commutativity}.
+Stated more formally, our edit model obeys the commutativity shown in \autoref{fig:Commutativity}.
 For any two sequences of edits $\vec{\alpha}$ and $\vec{\alpha}^\prime$,
 applying them in either order produces the same results.
 
@@ -836,12 +835,7 @@ TODO: commutativity diagram of screenshots with two cursors
 \end{figure}
 
 \subsubsection{Editing Nested Parts of the Code}
-
-(Similar to how git merged across moves.
-A notable difference though is that \texttt{git} detects
-file moves by structural similarity rather than
-our nominal equality.
-(We exploit this in Subsection~REF:TODO).
+\label{sub:Editing Nested Parts of the Code}
 
 \begin{figure}
 \hfill
@@ -927,31 +921,38 @@ our nominal equality.
 % \label{fig:Editing Nested Parts of the Code}
 % \end{figure}
 
-Consider \autoref{fig:Editing Nested Parts of the Code}.
-Alice and Bob both start with the top graph, which represents the code~\texttt{2 * x + \hole{}}.
-Alice changes the~\texttt{2} to a~\texttt{3}, which results in the left graph.
-Bob moves the~\texttt{2 * x} from the left of the plus to the right of the plus
-by deleting \edge{7} and adding \edge{16}, which results in the right graph.
+After the edits in the previous subsection synchronize,
+Alice changes the~\texttt{v} to a~\texttt{w}, which results in the graph in \autoref{fig:Editing Nested Parts of the Code-a}.
+On the other hand, Bob moves the~\texttt{u * v} from the right of the plus to the left of the plus
+by deleting \edge{11} and adding \edge{19}, which results in the graph in \autoref{fig:Editing Nested Parts of the Code-b}.
 Since vertex and edge identifiers are preserved by these,
 both Alice's and Bob's edits can be applied to the other's graph,
-which results in both Alice and Bob having the bottom graph.
+which results in both Alice and Bob having the graph in \autoref{fig:Editing Nested Parts of the Code-c}.
 
-As with Subsection~SEC:TODO, this merge does not require coordination
+As with \autoref{sub:Editing Different Parts of the Code}, this merge does not require coordination
 between Alice and Bob.  They could independently send their edits
 to a third party, Charley, who could replay their edits in any order
-and will always get the bottom graph.
+and will always get the graph in \autoref{fig:Editing Nested Parts of the Code-c}.
 
 A consequence of this design is that we allow users to edit
 parts of the code that have been deleted.  For example,
-Alice might receive Bob's deletion of \edge{7} before making her
-edits and before receiving Bob's adding of \edge{16}.
+Alice might receive Bob's deletion of \edge{11} before making her
+edits and before receiving Bob's addition of \edge{19}.
 Her edits would then be within the code deleted by Bob.
 
 TODO:figure
 
 Contrast with a traditional diff
 
+TODO: put this somewhere.
+(Similar to how git merged across moves.
+A notable difference though is that \texttt{git} detects
+file moves by structural similarity rather than
+our nominal equality.
+(We exploit this in Subsection~REF:TODO).
+
 \subsubsection{Multi-child conflicts}
+\label{sub:Multi-child conflicts}
 
 \begin{figure}
 \hfill
@@ -989,12 +990,7 @@ Contrast with a traditional diff
     "$\texttt{var(u)}_{12}$" [> "left", > "13"'],
     "$\texttt{var(w)}_{16}$" [> "right", > "17"']
    },
-   {
-    "$\texttt{app}_{22}$" [> "right", > "23"'] -> {
-     "$\texttt{var(f)}_{24}$" [> "fun", > "25"'],
-     "$\texttt{var(y)}_{26}$" [> "arg", > "27"']
-    }
-   }
+   "$\texttt{var(y)}_{22}$" [> "right", > "23"']
   }
  }
 };
@@ -1017,10 +1013,7 @@ Contrast with a traditional diff
    },
    {
     "$\texttt{var(x)}_{20}$" [> "right", > "21"'],
-    "$\texttt{app}_{22}$" [> "right", > "23"'] -> {
-     "$\texttt{var(f)}_{24}$" [> "fun", > "25"'],
-     "$\texttt{var(y)}_{26}$" [> "arg", > "27"']
-    }
+    "$\texttt{var(y)}_{22}$" [> "right", > "23"']
    }
   }
  }
@@ -1047,31 +1040,30 @@ Contrast with a traditional diff
 % \label{fig:Direct Conflicts}
 % \end{figure}
 
-Finally, we address genuine conflicts between edits.
-Consider the top graph of \autoref{fig:Multi-child}.
-Suppose Alice inserts the number literal~\texttt{2} into the body of the lambda
-while Bob inserts the function application~\texttt{f x} also into the body of the lambda.
-These results in the left and right graphs of \autoref{fig:Multi-child} respectively.
-In particular pay attention to the edges going out of the \texttt{body} index of \vertex{3}.
-In the left graph it is \edge{10}, which points to a number literal,
-and in the right graph it is \edge{13}, which points to a function application.
+Finally, we address our first kind of genuine conflict between edits.
+Alice inserts the variable~\texttt{x} to the right side of the~\texttt{+}
+while Bob add the variable~\texttt{y} also to the right side of the~\texttt{+}
+These results in the graphs in \autoref{fig:Multi-child-a} and \autoref{fig:Multi-child-b}, respectively.
+In particular pay attention to the edges going out of the \texttt{right} index of \vertex{8}.
+In \autoref{fig:Multi-child-a} it is \edge{21}, which points to the variable~\texttt{x},
+and in \autoref{fig:Multi-child-b} it is \edge{23}, which points to the variable~\texttt{y}.
 
-We merge these by including \emph{both} edges as edges going out of the \texttt{body} index
-of \vertex{3}.
-This results in the bottom graph of \autoref{fig:Multi-child}.
+We merge these by including \emph{both} edges as edges going out of the \texttt{right} index
+of \vertex{8}.
+This results in \autoref{fig:Multi-child-c}.
 The conflict between Alice's and Bob's changes is
-represented by the fact that there are multiple edges going out of one index (i.e. the \texttt{body}
-index of \vertex{3}).
+represented by the fact that there are multiple edges going out of one index (i.e. the \texttt{right}
+index of \vertex{8}).
 In the graph representation, we flag this conflict by highlighting its edges
-in red.
-In the textual representation, we flag this conflict with the notation~\texttt{\{ 2 | f x \}}.
-This is a conflict that much eventually be resolved by the user by deleting
+in red (TODO).
+In the textual representation, we flag this conflict with the notation~\texttt{\{ x | y \}}.
+This is a conflict that must eventually be resolved by the user by deleting
 one of the edges and editing the other to be the merged value.
-For example, one could delete \edge{10} and then edit the~\texttt{x}
-to be~\texttt{x + 2}.
+For example, one could delete \edge{23} and then edit the~\texttt{x}
+to be~\texttt{x * y}.
 Note that users can continue to edit the code while in this conflicted state.
-It just must be resolved before the the code can be run.\footnote{
-It may be possible to develop evaluation models that allow these sorts of conflicts,
+It just must be resolved before the the code is run.\footnote{It
+may be possible to develop evaluation models that allow these sorts of conflicts,
 but that is beyond the scope of this paper.}
 
 Compare this to what happens when there are conflicts in a traditional,
@@ -1109,10 +1101,7 @@ Multiple adds cause conflicts
 (Not usually presented in the UI)
 
 \subsubsection{Multi-parent conflicts}
-
-In addition to conflicts due multiple edges coming \emph{out of} an index of a particular vertex,
-conflicts can manifest as multiple edges going \emph{into} a particular vertex.
-We call these \emph{multi-parent conflicts}.
+\label{sub:Multi-parent conflicts}
 
 \begin{figure}
 \hfill
@@ -1202,6 +1191,14 @@ We call these \emph{multi-parent conflicts}.
 \label{fig:Multi-parent}
 \end{figure}
 
+TODO: alice and bob
+
+TODO: edge and vertex numbers
+
+In addition to conflicts due multiple edges coming \emph{out of} an index of a particular vertex,
+conflicts can manifest as multiple edges going \emph{into} a particular vertex.
+We call these \emph{multi-parent conflicts}.
+
 An example of this is shown in \autoref{fig:Multi-parent},
 which starts with the top graph, which represents the expression~\texttt{\hole + (\hole + x)}.
 Suppose Alice moves the variable~\texttt{x} to the left-most hole.
@@ -1215,6 +1212,8 @@ edge TODO is not a problem.
 However, both edge TODO (added by Alice) and edge TODO (added by Bob) point to the same vertex.
 This generates the bottom graph, in which vertex TODO as two parents pointing to it.
 We call this situation a multi-parent conflict.
+
+TODO: plus(x, \hole) that both Alice and Bob move the "x" to the right -> This results in two edges from plus to x.
 
 % \subsubsection{Conflicting wrap operations}
 
@@ -1347,6 +1346,7 @@ We call this situation a multi-parent conflict.
 % Say: "might not be a popup"
 
 \subsubsection{Cycles}
+\label{sub:Cycles}
 
 \begin{figure}
 \hfill
@@ -1382,6 +1382,12 @@ We call this situation a multi-parent conflict.
 % \caption{Single-User Cycles}
 % \label{fig:Single-User Cycles}
 % \end{figure}
+
+Although this case is likely to be infrequent.
+
+Finally, note that through we present several complex scenarios, this is merely for presentation.
+In practice, these complex scenarios occur less frequently than portrayed here.
+
 
 Since we are representing programs as graphs,
 we have to consider cycles.
@@ -1443,7 +1449,7 @@ NEEDS UI MOCKUP
 TODO: cursors are informational
 
 \section{Formalism}
-\label{sec:formalism}
+\label{sec:Formalism}
 
 % $\arraycolsep=2pt\begin{array}{llcl}
 % \mathsf{Typ} & \tau & ::= & t ~\vert~ \aparr{\tau}{\tau} ~\vert~ \aall{t}{\tau} ~\vert~ \arec{t}{\tau} ~\vert~ \aprod{\labelset}{\mapschema{\tau}{i}{\labelset}} ~\vert~ \asum{\labelset}{\mapschema{\tau}{i}{\labelset}}\\
@@ -1467,6 +1473,7 @@ TODO: cursors are informational
 \end{figure}
 
 \subsection{Syntax}
+\label{sub:Syntax}
 
 The language we are modeling is shown in \autoref{fig:Syntax as a grammar}.
 Standard for a simply-typed lambda calculus except that
@@ -1501,8 +1508,10 @@ Turn that into a constructor set K + index set I + arity function (has type: K -
 \end{figure}
 
 \subsection{Convergent Graphs}
+\label{sub:Convergent Graphs}
 
 \subsubsection{Graphs}
+\label{sub:Graphs}
 
 Graph is a function from edges to edge states.
 
@@ -1529,6 +1538,8 @@ unique IDs (for both edges and vertexes).
     - holes are not explicit in the graph
 
 \subsubsection{Graph Actions}
+\label{sub:Graph Actions}
+
 A graph action is a +E or -E.
 
 Graph action semantics is a transition system
@@ -1537,7 +1548,7 @@ between graphs. (join with whatever it was before)
 G --action--> G'
 
 \subsection{Agda Mechanization}
-\label{sub:agda-mechanization}
+\label{sub:Agda Mechanization}
 
 Discuss uniqueness of uuid
 
@@ -1551,8 +1562,18 @@ G' -- a2 a1 --> G
 
 \end{theorem}
 
-\subsection{Type System}
-\label{sub:type-system}
+\subsection{Edit Actions}
+\label{sub:Edit Actions}
+
+Mapping to graph actions
+
+Sensibility -- mapping back from graphs
+to well-typed states that fixes holes
+
+\section{Type System}
+\label{sec:Type System}
+
+TODO: somewhere in here, maybe multiple places, we want to talk about typing the intermediate states that arise (background for structured editing)
 
 editor states:
 
@@ -1568,20 +1589,13 @@ non-empty holes
 
 User must supply edge selection for multi-parent
 
-
-\subsection{Edit Actions}
-Mapping to graph actions
-
-Sensibility -- mapping back from graphs
-to well-typed states that fixes holes
-
 \section{TODO}
 TODO: leaves
 
 TODO: our model supports treating these as a cons-list of characters
 
 \section{Implementation}
-\label{sec:implementation}
+\label{sec:Implementation}
 GRV -- how it is implemented, how it connects to the formalism, describe the graph, 
 
 We implemented GRV as a core OCaml library in approximately 1,500 lines of code, and a basic Web interface in approximately 600 lines of OCaml code and 250 lines of HTML+CSS+Javascript.
@@ -1591,7 +1605,7 @@ Compared to the core language, our implementation lacks support for lists and ca
 Optimizations: least fixed point 
 
 \section{Related Work}
-\label{sec:related-work}
+\label{sec:Related Work}
 
 Hazel
 
@@ -1610,11 +1624,12 @@ Darcs
 Unision?
 
 \section{Discussion and Conclusion}
-\label{sec:conclusion}
+\label{sec:Discussion and Conclusion}
 
 TODO: memory usage
 
 \subsection{Variable names, strings, and numbers}
+\label{sub:Variable names, strings, and numbers}
 
 NOTE: we could implement each digit as a separate characters
 
@@ -1640,6 +1655,7 @@ GUI for string conflicts: use popups
 %% Appendix
 \appendix
 \section{Appendix}
+\label{apx:Appendix}
 
 Text of appendix \ldots
 
