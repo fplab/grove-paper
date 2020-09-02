@@ -1191,8 +1191,6 @@ Multiple adds cause conflicts
 \label{fig:Multi-parent}
 \end{figure}
 
-TODO: alice and bob
-
 In addition to conflicts due multiple edges coming \emph{out of} an index of a particular vertex,
 conflicts can manifest as multiple edges going \emph{into} a particular vertex.
 We call these \emph{multi-parent conflicts}.
@@ -1343,7 +1341,7 @@ We call this situation a multi-parent conflict.
 
 % Say: "might not be a popup"
 
-\subsubsection{Cycles}
+\subsubsection{Single-User Cycles}
 \label{sub:Cycles}
 
 \begin{figure}
@@ -1401,6 +1399,9 @@ As a user interface consideration, it might be best to either
 disallow such edits to at least warn users that their
 edits would create a cycle.
 
+\subsubsection{Multi-User Cycles}
+\label{sub:Multi-User Cycles}
+
 While a single-user edits can always be checked to see
 whether they create a cycle and thus the system
 can immediately warn the user,
@@ -1425,13 +1426,11 @@ Can also be detected due to neither original leaving them disconnected.
 \begin{figure}
 \centering
 
-TOP: *(*(1, \hole), *(2, \hole))
++(*(x, y), \hole{})
 
-LEFT: *(*(1, *(2, \hole)), \hole)
++(*(\hole, \hole), xy)
 
-RIGHT: *(\hole, *(2, *(1, \hole)))
-
-BOTTOM: *(\hole, \hole) *(1, *(2, \#1))
++(*(\hole, \hole), yx)
 
 \caption{Multi-User Cycles}
 \label{fig:Multi-User Cycles}
@@ -1440,6 +1439,24 @@ BOTTOM: *(\hole, \hole) *(1, *(2, \#1))
 NEEDS UI MOCKUP
 
 (Maybe not in initial grove by example) The A and B diamond example
+
+\subsection{Disconnection}
+\label{sub:Disconnection}
+
+\begin{figure}
+\centering
+
+TOP: *(*(1, \hole), *(2, \hole))
+
+LEFT: *(*(1, *(2, \hole)), \hole)
+
+RIGHT: *(\hole, *(2, *(1, \hole)))
+
+BOTTOM: *(\hole, \hole) *(1, *(2, \#1))
+
+\caption{Disconnection}
+\label{fig:Disconnection}
+\end{figure}
 
 \subsection{Cursors}
 \label{sub:Cursors}
