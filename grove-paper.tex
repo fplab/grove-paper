@@ -1424,14 +1424,98 @@ the vertexes in the cycle
 Can also be detected due to neither original leaving them disconnected.
 
 \begin{figure}
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.24\textwidth}
 \centering
-
-+(*(x, y), \hole{})
-
-+(*(\hole, \hole), xy)
-
-+(*(\hole, \hole), yx)
-
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+   "$\texttt{+}_{2}$" [> "left", > "19"'] -> {
+    "$\texttt{+}_{4}$" [> "left", > "19"'],
+    "$\texttt{*}_{6}$" [> "left", > "19"']
+   },
+   {}
+  }
+ }
+};
+\end{tikzpicture}
+\caption{Initial code}
+\label{fig:Single-User Cycles-a}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.24\textwidth}
+\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+   "$\texttt{+}_{2}$" [> "left", > "19"'] -> {
+   },
+   {
+    "$\texttt{+}_{4}$" [> "left", > "19"'] -> {
+     "$\texttt{*}_{6}$" [> "left", > "19"']
+    }
+   }
+  }
+ }
+};
+\end{tikzpicture}
+\caption{Initial code}
+\label{fig:Single-User Cycles-a}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.24\textwidth}
+\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+   "$\texttt{+}_{2}$" [> "left", > "19"'] -> {
+   },
+   {
+    "$\texttt{*}_{6}$" [> "left", > "19"'] -> {
+     "$\texttt{+}_{4}$" [> "left", > "19"']
+    }
+   }
+  }
+ }
+};
+\end{tikzpicture}
+\caption{Initial code}
+\label{fig:Single-User Cycles-a}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.24\textwidth}
+\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+   "$\texttt{+}_{2}$" [> "left", > "19"'] -> {
+   },
+   {
+    v1/"$\texttt{*}_{6}$" [> "left", > "19"'],
+    v2/"$\texttt{+}_{4}$" [> "left", > "19"']
+   }
+  }
+ }
+};
+\path[draw] (v1) -> (v2);
+\path[draw] (v2) -> (v1);
+\end{tikzpicture}
+\caption{Initial code}
+\label{fig:Single-User Cycles-a}
+\end{subfigure}
+%%%%%%%%
+\hfill{}
 \caption{Multi-User Cycles}
 \label{fig:Multi-User Cycles}
 \end{figure}
@@ -1444,16 +1528,100 @@ NEEDS UI MOCKUP
 \label{sub:Disconnection}
 
 \begin{figure}
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.24\textwidth}
 \centering
-
-TOP: *(*(1, \hole), *(2, \hole))
-
-LEFT: *(*(1, *(2, \hole)), \hole)
-
-RIGHT: *(\hole, *(2, *(1, \hole)))
-
-BOTTOM: *(\hole, \hole) *(1, *(2, \#1))
-
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+   "$\texttt{+}_{2}$" [> "left", > "19"'] -> {
+    "$\texttt{1}_{4}$" [> "left", > "19"'],
+   },
+   "$\texttt{+}_{6}$" [> "left", > "19"'] -> {
+    "$\texttt{2}_{4}$" [> "left", > "19"'],
+   }
+  }
+ }
+};
+\end{tikzpicture}
+\caption{Initial code}
+\label{fig:Single-User Cycles-a}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.24\textwidth}
+\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+   "$\texttt{+}_{2}$" [> "left", > "19"'] -> {
+    "$\texttt{1}_{4}$" [> "left", > "19"'],
+    "$\texttt{+}_{6}$" [> "left", > "19"'] -> {
+     "$\texttt{2}_{4}$" [> "left", > "19"'],
+    }
+   },
+   {}
+  }
+ }
+};
+\end{tikzpicture}
+\caption{Initial code}
+\label{fig:Single-User Cycles-a}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.24\textwidth}
+\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+   {},
+   "$\texttt{+}_{6}$" [> "left", > "19"'] -> {
+    "$\texttt{2}_{4}$" [> "left", > "19"'],
+    "$\texttt{+}_{2}$" [> "left", > "19"'] -> {
+     "$\texttt{1}_{4}$" [> "left", > "19"'],
+    }
+   }
+  }
+ }
+};
+\end{tikzpicture}
+\caption{Initial code}
+\label{fig:Single-User Cycles-a}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.24\textwidth}
+\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "$\texttt{+}_{8}$" [> "root", > "7"']
+ }
+};
+\path (-1cm,-2cm) graph[graph style] {
+ "$\texttt{+}_{6}$" [> "left", > "19"'] -> {
+  "$\texttt{2}_{4}$" [> "left", > "19"'],
+ }
+};
+\path (1cm,-2cm) graph[graph style] {
+ "$\texttt{+}_{2}$" [> "left", > "19"'] -> {
+  "$\texttt{1}_{4}$" [> "left", > "19"'],
+ }
+};
+\end{tikzpicture}
+\caption{Initial code}
+\label{fig:Single-User Cycles-a}
+\end{subfigure}
+%%%%%%%%
+\hfill{}
 \caption{Disconnection}
 \label{fig:Disconnection}
 \end{figure}
