@@ -1,5 +1,6 @@
 %% For double-blind review submission, w/o CCS and ACM Reference (max submission space)
-\documentclass[acmsmall,review,anonymous,nonacm]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
+%\documentclass[acmsmall,review,anonymous,nonacm]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
+\documentclass[sigplan,10pt,review,anonymous]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
 %% For double-blind review submission, w/ CCS and ACM Reference
 %\documentclass[acmsmall,review,anonymous]{acmart}\settopmatter{printfolios=true}
 %% For single-blind review submission, w/o CCS and ACM Reference (max submission space)
@@ -33,7 +34,8 @@
 %\copyrightyear{2018}           %% If different from \acmYear
 
 \bibliographystyle{ACM-Reference-Format}
-\citestyle{acmauthoryear}
+%\citestyle{acmauthoryear}
+\citestyle{acmnumeric}
 
 %%%%%%%%
 
@@ -168,7 +170,7 @@
 \author{Cyrus Omar}
 \orcid{0000-0003-4502-7971}
 \affiliation{
-  \position{Assistant Research Scientist}
+  %\position{Assistant Research Scientist}
   \department[0]{Computer Science and Engineering}
   \department[1]{Electrical Engineering and Computer Science}
   \department[2]{College of Engineering}
@@ -224,6 +226,8 @@ Text of abstract \ldots.
 
 \section{Introduction}
 \label{sec:Introduction}
+
+TODO: PLDI: two column format
 
 Motivation:
 - collaborative editing (both synchronous ala Google Docs and asynchronous version control) 
@@ -799,6 +803,12 @@ We assume multiple instances
 % \label{fig:Editing Different Parts of the Code}
 % \end{figure}
 
+TODO: have star or dot dot arrows for skipping steps
+
+Arrow coming from 5b to 6a and 6b
+
+Diamond diagram referencing diagrams
+
 To start, Alice and Bob are synchronized with each other and
 both have the graph in \autoref{fig:Move-b}, which
 represents the code~\texttt{\hole{} + (x + z)}.
@@ -1019,6 +1029,8 @@ our nominal equality.
  }
 };
 \end{tikzpicture}
+
+TODO: show UI
 \caption{The result of merging \autoref{fig:Multi-child-a} with \autoref{fig:Multi-child-b}}
 \label{fig:Multi-child-c}
 \end{subfigure}
@@ -1121,6 +1133,10 @@ Multiple adds cause conflicts
  }
 };
 \end{tikzpicture}
+
+TODO: use * and +
+
+TODO: UI (at least moc up)
 \caption{Initial code}
 \label{fig:Multi-parent-a}
 \end{subfigure}
@@ -1524,7 +1540,7 @@ NEEDS UI MOCKUP
 
 (Maybe not in initial grove by example) The A and B diamond example
 
-\subsection{Disconnection}
+\subsubsection{Disconnection}
 \label{sub:Disconnection}
 
 \begin{figure}
@@ -1791,10 +1807,13 @@ Optimizations: least fixed point
 \label{sec:Related Work}
 
 Hazel
+\citep{Omar:2019:10.1145/3290327}
 
 CRDTs
 
-Pidjul
+Operational Transforms
+
+Pijul
 
 Etherpad
 
@@ -1837,12 +1856,16 @@ GUI for string conflicts: use popups
 
 %% Appendix
 \appendix
+
+%% Appendixes that will be published  go **BEFORE** the bibliography and count towards the page count
 \section{Appendix}
 \label{apx:Appendix}
 
 Text of appendix \ldots
 
 %% Bibliography
-%\bibliography{bibfile}
+\bibliography{grove-paper}
+
+%% Temporary appendixes that will not be published go **AFTER** the bibliography and do not count towards the page count
 
 \end{document}

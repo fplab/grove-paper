@@ -37,7 +37,7 @@
 %%   Right brace   \}     Tilde         \~}
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{acmart}
-[2020/06/13 v1.72 Typesetting articles for the Association for Computing Machinery]
+[2020/09/13 v1.73 Typesetting articles for the Association for Computing Machinery]
 \def\@classname{acmart}
 \InputIfFileExists{acmart-preload-hook.tex}{%
   \ClassWarning{\@classname}{%
@@ -526,6 +526,7 @@
   \fi
   \hypersetup{pdflang={en},
     pdfdisplaydoctitle}}
+\RequirePackage{hyperxmp}
 \if@ACM@natbib
   \let\citeN\cite
   \let\cite\citep
@@ -698,7 +699,6 @@
   \flushbottom
 \or % sigchi-a
 \fi
-\RequirePackage{iftex}
 \ifPDFTeX
 \input{glyphtounicode}
 \pdfglyphtounicode{f_f}{FB00}
@@ -709,8 +709,8 @@
 \pdfglyphtounicode{f_t}{0066 0074}
 \pdfglyphtounicode{T_h}{0054 0068}
 \pdfgentounicode=1
+\RequirePackage{cmap}
 \fi
-% Removed by MDA (Michael D. Adams): \RequirePackage{cmap}
 \newif\if@ACM@newfonts
 \@ACM@newfontstrue
 \IfFileExists{libertine.sty}{}{\ClassWarning{\@classname}{You do not
@@ -724,6 +724,7 @@
     TeX}\@ACM@newfontsfalse}
 \if@ACM@newfonts
   \RequirePackage[T1]{fontenc}
+  \RequirePackage[libertine]{newtxmath}
   \ifxetex
     \RequirePackage[tt=false]{libertine}
     \setmonofont[StylisticSet=3]{inconsolata}
@@ -736,7 +737,6 @@
        \RequirePackage[varqu]{zi4}
     \fi
   \fi
-  \RequirePackage[libertine]{newtxmath}
 \fi
 \let\liningnums\@undefined
 \AtEndPreamble{%
@@ -774,6 +774,14 @@
 \AtBeginEnvironment{lstlisting}{\let\@vspace\@vspace@orig
   \let\@vspacer\@vspacer@orig}
 \AtBeginEnvironment{lstlisting*}{\let\@vspace\@vspace@orig
+  \let\@vspacer\@vspacer@orig}
+\AtBeginEnvironment{minted}{\let\@vspace\@vspace@orig
+  \let\@vspacer\@vspacer@orig}
+\AtBeginEnvironment{minted*}{\let\@vspace\@vspace@orig
+  \let\@vspacer\@vspacer@orig}
+\AtBeginEnvironment{listing}{\let\@vspace\@vspace@orig
+  \let\@vspacer\@vspacer@orig}
+\AtBeginEnvironment{listing*}{\let\@vspace\@vspace@orig
   \let\@vspacer\@vspacer@orig}
 
 \RequirePackage{caption, float}
@@ -1873,6 +1881,7 @@
    \fi
   \let\metadata@authors=\authors
   \nxandlist{, }{, }{, }\metadata@authors
+  \def\@ACM@checkaffil{}%
   \hypersetup{%
     pdfauthor={\metadata@authors},
     pdftitle={\@title},
@@ -2099,19 +2108,22 @@
 \def\postcode#1{\unskip\ignorespaces}
 \if@ACM@journal
   \def\position#1{\unskip\ignorespaces}
-  \def\institution#1{\unskip~#1\ignorespaces}
-  \def\city#1{\unskip\ignorespaces}
+  \def\institution#1{\global\@ACM@instpresenttrue
+    \unskip~#1\ignorespaces}
+  \def\city#1{\global\@ACM@citypresenttrue\unskip\ignorespaces}
   \def\state#1{\unskip\ignorespaces}
   \newcommand\department[2][0]{\unskip\ignorespaces}
-  \def\country#1{\if@ACM@affiliation@obeypunctuation\else, \fi#1\ignorespaces}
+  \def\country#1{\global\@ACM@countrypresenttrue
+    \if@ACM@affiliation@obeypunctuation\else, \fi#1\ignorespaces}
 \else
   \def\position#1{\if@ACM@affiliation@obeypunctuation#1\else#1\par\fi}%
-  \def\institution#1{\if@ACM@affiliation@obeypunctuation#1\else#1\par\fi}%
+  \def\institution#1{\global\@ACM@instpresenttrue
+    \if@ACM@affiliation@obeypunctuation#1\else#1\par\fi}%
   \newcommand\department[2][0]{\if@ACM@affiliation@obeypunctuation
     #2\else#2\par\fi}%
-  \let\city\@ACM@addtoaddress
+  \def\city#1{\global\@ACM@citypresenttrue\@ACM@addtoaddress{#1}}%
   \let\state\@ACM@addtoaddress
-  \let\country\@ACM@addtoaddress
+  \def\country#1{\global\@ACM@countrypresenttrue\@ACM@addtoaddress{#1}}%
 \fi
 \def\@mkauthors{\begingroup
   \hsize=\textwidth
@@ -2172,6 +2184,28 @@
       \unskip, {\@currentaffiliations}\par
   \fi
   \def\@currentaffiliations{}}
+\newif\if@ACM@instpresent
+\@ACM@instpresenttrue
+\newif\if@ACM@citypresent
+\@ACM@citypresenttrue
+\newif\if@ACM@countrypresent
+\@ACM@countrypresenttrue
+\def\@ACM@resetaffil{%
+  \global\@ACM@instpresentfalse
+  \global\@ACM@citypresentfalse
+  \global\@ACM@countrypresentfalse
+}
+\def\@ACM@checkaffil{%
+  \if@ACM@instpresent\else
+  \ClassWarningNoLine{\@classname}{No institution present for an affiliation}%
+  \fi
+  \if@ACM@citypresent\else
+  \ClassWarningNoLine{\@classname}{No city present for an affiliation}%
+  \fi
+  \if@ACM@countrypresent\else
+  \ClassWarningNoLine{\@classname}{No country present for an affiliation}%
+  \fi
+}
 \def\@mkauthors@i{%
   \def\@currentauthors{}%
   \def\@currentaffiliations{}%
@@ -2190,11 +2224,13 @@
           \gdef\@currentaffiliations{%
             \setkeys{@ACM@affiliation@}{obeypunctuation=false}%
             \setkeys{@ACM@affiliation@}{##1}%
-            \@affiliationfont##2}%
+            \@ACM@resetaffil
+            \@affiliationfont##2\@ACM@checkaffil}%
        \else
          \g@addto@macro{\@currentaffiliations}{\and
            \setkeys{@ACM@affiliation@}{obeypunctuation=false}%
-           \setkeys{@ACM@affiliation@}{##1}##2}%
+           \setkeys{@ACM@affiliation@}{##1}\@ACM@resetaffil
+           ##2\@ACM@checkaffil}%
       \fi
     \fi
      \global\let\and\@typeset@author@line}%
@@ -2252,11 +2288,13 @@
   \def\affiliation##1##2{\ifx\@currentaffiliation\@empty
     \gdef\@currentaffiliation{%
       \setkeys{@ACM@affiliation@}{obeypunctuation=false}%
-      \setkeys{@ACM@affiliation@}{##1}##2}%
+      \setkeys{@ACM@affiliation@}{##1}\@ACM@resetaffil
+      ##2\@ACM@checkaffil}%
   \else
     \g@addto@macro\@currentaffiliation{\par
       \setkeys{@ACM@affiliation@}{obeypunctuation=false}%
-      \setkeys{@ACM@affiliation@}{##1}##2}%
+      \setkeys{@ACM@affiliation@}{##1}\@ACM@resetaffil
+      ##2\@ACM@checkaffil}%
   \fi
   \global\let\and\@typeset@author@bx
 }%
@@ -2295,11 +2333,13 @@
   \def\affiliation##1##2{\ifx\@currentaffiliation\@empty
     \gdef\@currentaffiliation{%
       \setkeys{@ACM@affiliation@}{obeypunctuation=false}%
-           \setkeys{@ACM@affiliation@}{##1}##2}%
+      \setkeys{@ACM@affiliation@}{##1}\@ACM@resetaffil
+      ##2\@ACM@checkaffil}%
   \else
     \g@addto@macro\@currentaffiliation{\par
       \setkeys{@ACM@affiliation@}{obeypunctuation=false}%
-      \setkeys{@ACM@affiliation@}{##1}##2}%
+      \setkeys{@ACM@affiliation@}{##1}\@ACM@resetaffil
+      ##2\@ACM@checkaffil}%
   \fi
   \global\let\and\@typeset@author@bx}%
     \bgroup\hsize=\columnwidth
