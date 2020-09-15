@@ -227,7 +227,8 @@ Text of abstract \ldots.
 \section{Introduction}
 \label{sec:Introduction}
 
-TODO: PLDI: two column format
+TODO: fix the following warning which are reported by LaTeX but not Overleaf: Class acmart Warning: A possible image without description on input line 321.
+
 
 Motivation:
 - collaborative editing (both synchronous ala Google Docs and asynchronous version control) 
@@ -1458,7 +1459,7 @@ Can also be detected due to neither original leaving them disconnected.
 };
 \end{tikzpicture}
 \caption{Initial code}
-\label{fig:Single-User Cycles-a}
+\label{fig:Multi-User Cycles-a}
 \end{subfigure}
 %%%%%%%%
 \hfill
@@ -1481,7 +1482,7 @@ Can also be detected due to neither original leaving them disconnected.
 };
 \end{tikzpicture}
 \caption{Initial code}
-\label{fig:Single-User Cycles-a}
+\label{fig:Multi-User Cycles-b}
 \end{subfigure}
 %%%%%%%%
 \hfill
@@ -1504,7 +1505,7 @@ Can also be detected due to neither original leaving them disconnected.
 };
 \end{tikzpicture}
 \caption{Initial code}
-\label{fig:Single-User Cycles-a}
+\label{fig:Multi-User Cycles-c}
 \end{subfigure}
 %%%%%%%%
 \hfill
@@ -1528,7 +1529,7 @@ Can also be detected due to neither original leaving them disconnected.
 \path[draw] (v2) -> (v1);
 \end{tikzpicture}
 \caption{Initial code}
-\label{fig:Single-User Cycles-a}
+\label{fig:Multi-User Cycles-d}
 \end{subfigure}
 %%%%%%%%
 \hfill{}
@@ -1543,7 +1544,7 @@ NEEDS UI MOCKUP
 \subsubsection{Disconnection}
 \label{sub:Disconnection}
 
-\begin{figure}
+\begin{figure*}
 \hfill
 %%%%%%%%
 \begin{subfigure}{0.24\textwidth}
@@ -1563,7 +1564,7 @@ NEEDS UI MOCKUP
 };
 \end{tikzpicture}
 \caption{Initial code}
-\label{fig:Single-User Cycles-a}
+\label{fig:Disconnection-a}
 \end{subfigure}
 %%%%%%%%
 \hfill
@@ -1586,7 +1587,7 @@ NEEDS UI MOCKUP
 };
 \end{tikzpicture}
 \caption{Initial code}
-\label{fig:Single-User Cycles-a}
+\label{fig:Disconnection-b}
 \end{subfigure}
 %%%%%%%%
 \hfill
@@ -1609,7 +1610,7 @@ NEEDS UI MOCKUP
 };
 \end{tikzpicture}
 \caption{Initial code}
-\label{fig:Single-User Cycles-a}
+\label{fig:Disconnection-c}
 \end{subfigure}
 %%%%%%%%
 \hfill
@@ -1634,13 +1635,13 @@ NEEDS UI MOCKUP
 };
 \end{tikzpicture}
 \caption{Initial code}
-\label{fig:Single-User Cycles-a}
+\label{fig:Disconnection-d}
 \end{subfigure}
 %%%%%%%%
 \hfill{}
 \caption{Disconnection}
 \label{fig:Disconnection}
-\end{figure}
+\end{figure*}
 
 \subsection{Cursors}
 \label{sub:Cursors}
@@ -1858,14 +1859,148 @@ GUI for string conflicts: use popups
 \appendix
 
 %% Appendixes that will be published  go **BEFORE** the bibliography and count towards the page count
-\section{Appendix}
-\label{apx:Appendix}
-
-Text of appendix \ldots
 
 %% Bibliography
 \bibliography{grove-paper}
 
 %% Temporary appendixes that will not be published go **AFTER** the bibliography and do not count towards the page count
+
+\clearpage % Put these appendixes on separate pages so we can easily remove them from the document.  Also ensure all figures have been placed.
+
+\section{Appendix}
+\label{apx:Appendix}
+
+\subsection{Concepts}
+
+\begin{tabular}{cl@{\hspace{1.5cm}}cl@{\hspace{1.5cm}}cl@{\hspace{1.5cm}}cl}
+  $\mathcal{A}$ & Actions & $\mathcal{S}$ & Edge States  \\
+  $\mathcal{C}$ & Cursors & $\mathcal{U}$ & UUIDs        \\
+  $\mathcal{E}$ & Edges   & $\mathcal{V}$ & Vertexes     \\
+  $\mathcal{G}$ & Graphs  & $\textbf{A}$ & Graph Actions \\
+  $\mathcal{I}$ & Indices & $\textbf{E}$ & Editors       \\
+  $\mathcal{K}$ & Constructors \\
+\end{tabular}
+
+A \emph{UUID} $u \in \mathcal{U}$ is a universally unique identifier.
+
+\subsubsection{The Target Language}
+
+\paragraph{Constructor} ~
+
+A \emph{constructor} $k \in \mathcal{K}$ represents a node in the target language's abstract syntax tree (AST). Let $k_{root}$ be the root AST node.
+
+\paragraph{Index} ~
+
+An \emph{index} $i \in \mathcal{I}$ identifies a position, relative to some parent constructor, of a potential child node in the target language's AST. Let $i_{root}$ be the hyper-position of all rooted constructors.
+
+\subsubsection{The Graph}
+\label{sec:concepts:the-graph}
+
+\paragraph{Vertex} ~
+
+A \emph{vertex} $v = (k, u) \in \mathcal{V} = \mathcal{K} \times \mathcal{U}$ is a distinct instance of constructor $k$; that is, one that can be identified by UUID $u$. Let $v_{root} = (k_{root}, u_{root})$ be the root vertex of a graph. The \emph{rooted vertexes} of a graph are the immediate children of its $v_{root}$.
+
+\paragraph{Cursor} ~
+
+A \emph{cursor} $c = (v,i) \in \mathcal{C} = \mathcal{V} \times \mathcal{I}$ is a reference to the (possibly empty) set of all vertexes with parent vertex $v$ and child index $i$. Let $c_{root} = (v_{root}, i_{root})$ be the \emph{root cursor}, a reference
+to all of the rooted vertexes, of a graph.
+
+\paragraph{Edge} ~
+
+An \emph{edge} $\e = (c, v, u) \in \mathcal{E} = \mathcal{C} \times \mathcal{V} \times \mathcal{U}$ adds vertex $v$ with the set of vertexes referenced by cursor $c$.
+
+\paragraph{Edge State} ~
+
+An \emph{edge state} $s \in \mathcal{S} = \{\bot,+,-\}$ determines whether an edge does not exist ($\bot$), has been created (+), or has been destroyed (-).
+
+\paragraph{Graph Action} ~
+
+A \emph{graph action} $A = (\varepsilon,s,u) \in \mathcal{A} = \mathcal{E} \times \mathcal{S} \times \mathcal{U}$ is an instance of a binding from edge $\varepsilon$ to edge state $s$ that can be identified by UUID $u$. Denote by $[\varepsilon :-> s]_{u}$ a binding from edge $\varepsilon$ to edge state $s$ (identified by UUID $u$).
+
+\paragraph{Graph} ~
+
+A \emph{graph} $G = [\varepsilon :-> s]_{u}^{*} \in \mathcal{G} = \mathcal{A}^{*}$ is a function from edges to edge states. Denote by $G(\varepsilon) = s$ the state $s$ of edge $\varepsilon$ in graph $G$, and by $G A$ the extension of graph $G$ by graph action $A$.
+
+\subsubsection{The Editor}
+
+\paragraph{Move Action} ~
+
+A \emph{move action} $a \in \mathcal{A}^{move} = \{ \text{Left},\text{Right},\text{Up},\text{Down} \} \cup \{ \text{Select} \} \times \mathcal{C}$ re-positions the cursor.
+
+\paragraph{Edit Action} ~
+
+An \emph{edit action} $a \in \mathcal{A}^{edit}= \{ \text{Create} \} \times \mathcal{K} \cup \{ \text{Destroy} \} \cup \{ \text{Restore} \} \times \mathcal{V}$ adds or removes an edge at the cursor.
+
+\paragraph{Communication Action} ~
+
+A \emph{communication action} $a = (\text{Send}, A^{*}, u^{*}) \in \mathcal{A}^{comm} = \{ \text{Send} \} \times \textbf{A}^{*} \times \mathcal{U}^{*}$ applies the graph action sequence $A^{*}$ to the editors identified by UUIDs $u^{*}$.
+
+\paragraph{Action} ~
+
+An \emph{action} $a \in \mathcal{A} = \mathcal{A}^{move} \cup \mathcal{A}^{edit} \cup \mathcal{A}^{comm}$ describes a change to one or more editors.
+
+\paragraph{Editor} ~
+
+An \emph{editor} $E = (G,c,A_{Q}^{*},A_{H}^{*},u) \in \textbf{E} = \mathcal{G} \times \mathcal{C} \times \textbf{A}^{*} \times \textbf{A}^{*} \times \mathcal{U}$ is an instance of graph $G$ with cursor $c$, queued graph actions $A_{Q}^{*}$, and known graph action history $A_{H}^{*}$, that can be identified by UUID $u$.
+
+\subsubsection{The Environment}
+
+An \emph{environment} $(E^{*}, A^{*}) \in \textbf{E}^{*} \times \textbf{A}^{*}$ is a set of communicating editors $E^{*}$ that share a global graph action history $A^{*}$.
+
+\subsection{The Target Language}
+
+\paragraph{Formal Syntax}
+
+$e ::= \lambda p : \tau.e \mid e~e \mid e+e \mid n \mid \_ $
+
+$p ::= x $
+
+$\tau ::= \tau \rightarrow \tau \mid \text{Num}$
+
+\subsection{Sets and Relations}
+
+\paragraph{Edges}
+
+\newcommand{\edges}[1]{TODO:#1}
+\newcommand{\vertexes}[1]{TODO:#1}
+\newcommand{\liveEdges}[1]{TODO:#1}
+\newcommand{\vertexChildren}[1]{TODO:#1}
+\newcommand{\cursorChildren}[1]{TODO:#1}
+\newcommand{\parents}[1]{TODO:#1}
+\newcommand{\dom}[1]{TODO:#1}
+\newcommand{\childVertexes}[1]{TODO:#1}
+\newcommand{\liveVertexes}[1]{TODO:#1}
+\newcommand{\multiparents}[1]{TODO:#1}
+\newcommand{\known}[1]{TODO:#1}
+\newcommand{\orphans}[1]{TODO:#1}
+
+$\edges(G) = \dom(G)$
+
+$\liveEdges(G) = \{ \e \in \edges(G) | G(\e)=+ \}              \\
+  \vertexChildren(G,v) = \{ ((v',i),v'',u) \in \liveEdges(G) | v'=v \} \\
+  \cursorChildren(G,c) = \{ (c',v,u) \in \liveEdges(G) | c'=c \}       \\
+         \parents(G,v) = \{ (c,v',u) \in \liveEdges(G) | v'=v \}
+$
+
+\paragraph{Vertexes} ~
+
+\[
+\begin{array}{lr}
+\vertexes(G) &= \{ v \in \V | \exists (c,v,u) \in \edges(G) \}               \\
+    \liveVertexes(G) &= \{ v \in \V | \exists (c,v,u) \in \liveEdges(G) \}           \\
+ \childVertexes(G,v) &= \{ v' \in \V | \exists (c,v',u) \in \vertexChildren(G,v) \}  \\
+         \orphans(G) &= \{ v \in \liveVertexes(G) | || \parents(G,v) || = 0 \}       \\
+    \multiparents(G) &= \{ v \in \liveVertexes(G) | || \parents(G,v) || > 1 \}       \\
+        \vertex(G,u) &= v \in \vertexes(G) \iff (\exists k \in \K)(v = (k,u))
+    %    \reachable(G) &= \orphans(G) \cup \multiparents(G) \cup \childVertexes(G,v \in \reachable(G)) \\
+    % \deleted(G) &= (\orphans(G) \setminus \{ v_{root} \})
+    %                \cup (\vertexes(G) \setminus  \\
+\end{array}
+\]
+
+\paragraph{Graph Actions} ~
+
+$\known(E_1 \cdots E_n) = A_{H1}^{*} \cdots A_{Hn}^{*}
+\iff (\forall j=1,\ldots,n)(E_j = (G_j,c_j,A_{Qj}^{*},A_{Hj}^{*},u_j))$
 
 \end{document}
