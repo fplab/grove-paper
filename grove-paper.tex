@@ -68,6 +68,21 @@
 \usepackage{booktabs}
 \usepackage{subcaption}
 \usepackage{graphicx}
+\usepackage{semantic}
+\usepackage{colonequals}
+\usepackage{mathpartir}
+
+% math ligatures
+\mathlig{::=}{\coloncolonequals}
+\mathlig{|-}{\vdash}
+\mathlig{:->}{\mapsto}
+\mathlig{-->a}{\overset{a}{\longrightarrow}}
+\mathlig{||}{|}
+\mathlig{|}{:}
+\mathlig{:}{\!:\!}
+
+\def\_{\texttt{\textunderscore}}
+
 
 %%%%%%%%
 % TikZ Stuff
@@ -114,12 +129,18 @@
 % Lang components
 
 % sets
+\def\A{\mathcal{A}}
+\def\C{\mathcal{C}}
 \def\E{\mathcal{E}}
 \def\G{\mathcal{G}}
 \def\I{\mathcal{I}}
 \def\K{\mathcal{K}}
+\def\S{\mathcal{S}}
 \def\U{\mathcal{U}}
 \def\V{\mathcal{V}}
+\def\e{\varepsilon}
+\def\AA{\textbf{A}}
+\def\EE{\textbf{E}}
 
 % constructors
 \def\ExpVar{\mathsf{Exp\_var}}
@@ -143,8 +164,45 @@
 \def\ArrowArg{\mathsf{Arrow\_arg}}
 \def\ArrowResult{\mathsf{Arrow\_result}}
 
+% actions
+\def\Create{\text{Create}}
+\def\Destroy{\text{Destroy}}
+\def\Down{\text{Down}}
+\def\Enqueue{\text{Enqueue}}
+\def\Left{\text{Left}}
+\def\Move{\text{Move}}
+\def\Num{\text{Num}}
+\def\Restore{\text{Restore}}
+\def\Right{\text{Right}}
+\def\Select{\text{Select}}
+\def\Send{\text{Send}}
+\def\Up{\text{Up}}
+
 % relations
 \DeclareMathOperator{\arity}{\text{arity}}
+\DeclareMathOperator{\childVertexes}{\text{childVertexes}}
+\DeclareMathOperator{\cursorChildren}{\text{cursorChildren}}
+\DeclareMathOperator{\vertexChildren}{\text{vertexChildren}}
+\DeclareMathOperator{\deleted}{\text{deleted}}
+\DeclareMathOperator{\dom}{\text{dom}}
+\DeclareMathOperator{\edges}{\text{edges}}
+\DeclareMathOperator{\known}{\text{known}}
+\DeclareMathOperator{\liveEdges}{\text{liveEdges}}
+\DeclareMathOperator{\liveVertexes}{\text{liveVertexes}}
+\DeclareMathOperator{\multiparents}{\text{multiparents}}
+\DeclareMathOperator{\orphans}{\text{orphans}}
+\DeclareMathOperator{\parents}{\text{parents}}
+\DeclareMathOperator{\parentVertexes}{\text{parentVertexes}}
+\DeclareMathOperator{\reachable}{\text{reachable}}
+\DeclareMathOperator{\seen}{\text{seen}}
+\DeclareMathOperator{\unseen}{\text{unseen}}
+\DeclareMathOperator{\vertexes}{\text{vertexes}}
+\DeclareMathOperator{\vertex}{\text{vertex}}
+\DeclareMathOperator{\publish}{\text{publish}}
+\DeclareMathOperator{\leftIndex}{\text{leftIndex}}
+\DeclareMathOperator{\rightIndex}{\text{rightIndex}}
+\DeclareMathOperator{\downIndex}{\text{downIndex}}
+\DeclareMathOperator{\defaultIndex}{\text{defaultIndex}}
 
 \newcommand{\hole}{\ensuremath{\square}} %\textcolor{violet}{\llparenthesis}}\textcolor{violet}{\rrparenthesis}}
 
@@ -1873,134 +1931,240 @@ GUI for string conflicts: use popups
 \subsection{Concepts}
 
 \begin{tabular}{cl@{\hspace{1.5cm}}cl@{\hspace{1.5cm}}cl@{\hspace{1.5cm}}cl}
-  $\mathcal{A}$ & Actions & $\mathcal{S}$ & Edge States  \\
-  $\mathcal{C}$ & Cursors & $\mathcal{U}$ & UUIDs        \\
-  $\mathcal{E}$ & Edges   & $\mathcal{V}$ & Vertexes     \\
-  $\mathcal{G}$ & Graphs  & $\textbf{A}$ & Graph Actions \\
-  $\mathcal{I}$ & Indices & $\textbf{E}$ & Editors       \\
-  $\mathcal{K}$ & Constructors \\
+  $\A$ & Actions & $\S$ & Edge States  \\
+  $\C$ & Cursors & $\U$ & UUIDs        \\
+  $\E$ & Edges   & $\V$ & Vertexes     \\
+  $\G$ & Graphs  & $\A$ & Graph Actions \\
+  $\I$ & Indices & $\E$ & Editors       \\
+  $\K$ & Constructors \\
 \end{tabular}
 
-A \emph{UUID} $u \in \mathcal{U}$ is a universally unique identifier.
+A \emph{UUID} $u \in \U$ is a universally unique identifier.
 
 \subsubsection{The Target Language}
 
 \paragraph{Constructor} ~
 
-A \emph{constructor} $k \in \mathcal{K}$ represents a node in the target language's abstract syntax tree (AST). Let $k_{root}$ be the root AST node.
+A \emph{constructor} $k \in \K$ represents a node in the target language's abstract syntax tree (AST). Let $k_{root}$ be the root AST node.
 
 \paragraph{Index} ~
 
-An \emph{index} $i \in \mathcal{I}$ identifies a position, relative to some parent constructor, of a potential child node in the target language's AST. Let $i_{root}$ be the hyper-position of all rooted constructors.
+An \emph{index} $i \in \I$ identifies a position, relative to some parent constructor, of a potential child node in the target language's AST. Let $i_{root}$ be the hyper-position of all rooted constructors.
 
 \subsubsection{The Graph}
-\label{sec:concepts:the-graph}
 
 \paragraph{Vertex} ~
 
-A \emph{vertex} $v = (k, u) \in \mathcal{V} = \mathcal{K} \times \mathcal{U}$ is a distinct instance of constructor $k$; that is, one that can be identified by UUID $u$. Let $v_{root} = (k_{root}, u_{root})$ be the root vertex of a graph. The \emph{rooted vertexes} of a graph are the immediate children of its $v_{root}$.
+A \emph{vertex} $v = (k, u) \in \V = \K \times \U$ is a distinct instance of constructor $k$; that is, one that can be identified by UUID $u$. Let $v_{root} = (k_{root}, u_{root})$ be the root vertex of a graph. The \emph{rooted vertexes} of a graph are the immediate children of its $v_{root}$.
 
 \paragraph{Cursor} ~
 
-A \emph{cursor} $c = (v,i) \in \mathcal{C} = \mathcal{V} \times \mathcal{I}$ is a reference to the (possibly empty) set of all vertexes with parent vertex $v$ and child index $i$. Let $c_{root} = (v_{root}, i_{root})$ be the \emph{root cursor}, a reference
-to all of the rooted vertexes, of a graph.
+A \emph{cursor} $c = (v,i) \in \C = \V \times \I$ is a reference to the (possibly empty) set of all vertexes with parent vertex $v$ and child index $i$. Let $c_{root} = (v_{root}, i_{root})$ be the \emph{root cursor}, a reference to all of the rooted vertexes, of a graph.
 
 \paragraph{Edge} ~
 
-An \emph{edge} $\e = (c, v, u) \in \mathcal{E} = \mathcal{C} \times \mathcal{V} \times \mathcal{U}$ adds vertex $v$ with the set of vertexes referenced by cursor $c$.
+An \emph{edge} $\e = (c, v, u) \in \E = \C \times \V \times \U$ adds vertex $v$ with the set of vertexes referenced by cursor $c$.
 
 \paragraph{Edge State} ~
 
-An \emph{edge state} $s \in \mathcal{S} = \{\bot,+,-\}$ determines whether an edge does not exist ($\bot$), has been created (+), or has been destroyed (-).
+An \emph{edge state} $s \in \S = \{\bot,+,-\}$ determines whether an edge does not exist ($\bot$), has been created (+), or has been destroyed (-).
 
 \paragraph{Graph Action} ~
 
-A \emph{graph action} $A = (\varepsilon,s,u) \in \mathcal{A} = \mathcal{E} \times \mathcal{S} \times \mathcal{U}$ is an instance of a binding from edge $\varepsilon$ to edge state $s$ that can be identified by UUID $u$. Denote by $[\varepsilon :-> s]_{u}$ a binding from edge $\varepsilon$ to edge state $s$ (identified by UUID $u$).
+A \emph{graph action} $A = (\e,s,u) \in \A = \E \times \S \times \U$ is an instance of a binding from edge $\e$ to edge state $s$ that can be identified by UUID $u$. Denote by $[\e :-> s]_{u}$ a binding from edge $\e$ to edge state $s$ (identified by UUID $u$).
 
 \paragraph{Graph} ~
 
-A \emph{graph} $G = [\varepsilon :-> s]_{u}^{*} \in \mathcal{G} = \mathcal{A}^{*}$ is a function from edges to edge states. Denote by $G(\varepsilon) = s$ the state $s$ of edge $\varepsilon$ in graph $G$, and by $G A$ the extension of graph $G$ by graph action $A$.
+A \emph{graph} $G = [\e :-> s]_{u}^{*} \in \G = \A^{*}$ is a function from edges to edge states. Denote by $G(\e) = s$ the state $s$ of edge $\e$ in graph $G$, and by $G A$ the extension of graph $G$ by graph action $A$.
 
 \subsubsection{The Editor}
 
 \paragraph{Move Action} ~
 
-A \emph{move action} $a \in \mathcal{A}^{move} = \{ \text{Left},\text{Right},\text{Up},\text{Down} \} \cup \{ \text{Select} \} \times \mathcal{C}$ re-positions the cursor.
+A \emph{move action} $a \in \A^{move} = \{ \Left,\Right,\Up,\Down \} \cup \{ \Select \} \times \C$ re-positions the cursor.
 
 \paragraph{Edit Action} ~
 
-An \emph{edit action} $a \in \mathcal{A}^{edit}= \{ \text{Create} \} \times \mathcal{K} \cup \{ \text{Destroy} \} \cup \{ \text{Restore} \} \times \mathcal{V}$ adds or removes an edge at the cursor.
+An \emph{edit action} $a \in \A^{edit}= \{ \Create \} \times \K \cup \{ \Destroy \} \cup \{ \Restore \} \times \V$ adds or removes an edge at the cursor.
 
 \paragraph{Communication Action} ~
 
-A \emph{communication action} $a = (\text{Send}, A^{*}, u^{*}) \in \mathcal{A}^{comm} = \{ \text{Send} \} \times \textbf{A}^{*} \times \mathcal{U}^{*}$ applies the graph action sequence $A^{*}$ to the editors identified by UUIDs $u^{*}$.
+A \emph{communication action} $a = (\Send, A^{*}, u^{*}) \in \A^{comm} = \{ \Send \} \times \A^{*} \times \U^{*}$ applies the graph action sequence $A^{*}$ to the editors identified by UUIDs $u^{*}$.
 
 \paragraph{Action} ~
 
-An \emph{action} $a \in \mathcal{A} = \mathcal{A}^{move} \cup \mathcal{A}^{edit} \cup \mathcal{A}^{comm}$ describes a change to one or more editors.
+An \emph{action} $a \in \A = \A^{move} \cup \A^{edit} \cup \A^{comm}$ describes a change to one or more editors.
 
 \paragraph{Editor} ~
 
-An \emph{editor} $E = (G,c,A_{Q}^{*},A_{H}^{*},u) \in \textbf{E} = \mathcal{G} \times \mathcal{C} \times \textbf{A}^{*} \times \textbf{A}^{*} \times \mathcal{U}$ is an instance of graph $G$ with cursor $c$, queued graph actions $A_{Q}^{*}$, and known graph action history $A_{H}^{*}$, that can be identified by UUID $u$.
+An \emph{editor} $E = (G,c,A_{Q}^{*},A_{H}^{*},u) \in \EE = \mathcal{G} \times \C \times \AA^{*} \times \AA^{*} \times \U$ is an instance of graph $G$ with cursor $c$, queued graph actions $A_{Q}^{*}$, and known graph action history $A_{H}^{*}$, that can be identified by UUID $u$.
 
 \subsubsection{The Environment}
 
-An \emph{environment} $(E^{*}, A^{*}) \in \textbf{E}^{*} \times \textbf{A}^{*}$ is a set of communicating editors $E^{*}$ that share a global graph action history $A^{*}$.
+An \emph{environment} $(E^{*}, A^{*}) \in \EE^{*} \times \AA^{*}$ is a set of communicating editors $E^{*}$ that share a global graph action history $A^{*}$.
 
 \subsection{The Target Language}
 
-\paragraph{Formal Syntax}
+\paragraph{Formal Syntax} ~
 
 $e ::= \lambda p : \tau.e \mid e~e \mid e+e \mid n \mid \_ $
 
 $p ::= x $
 
-$\tau ::= \tau \rightarrow \tau \mid \text{Num}$
+$\tau ::= \tau -> \tau \mid \Num$
 
 \subsection{Sets and Relations}
 
-\paragraph{Edges}
+\paragraph{Edges} ~
 
-\newcommand{\edges}[1]{TODO:#1}
-\newcommand{\vertexes}[1]{TODO:#1}
-\newcommand{\liveEdges}[1]{TODO:#1}
-\newcommand{\vertexChildren}[1]{TODO:#1}
-\newcommand{\cursorChildren}[1]{TODO:#1}
-\newcommand{\parents}[1]{TODO:#1}
-\newcommand{\dom}[1]{TODO:#1}
-\newcommand{\childVertexes}[1]{TODO:#1}
-\newcommand{\liveVertexes}[1]{TODO:#1}
-\newcommand{\multiparents}[1]{TODO:#1}
-\newcommand{\known}[1]{TODO:#1}
-\newcommand{\orphans}[1]{TODO:#1}
-
-$\edges(G) = \dom(G)$
-
-$\liveEdges(G) = \{ \e \in \edges(G) | G(\e)=+ \}              \\
-  \vertexChildren(G,v) = \{ ((v',i),v'',u) \in \liveEdges(G) | v'=v \} \\
-  \cursorChildren(G,c) = \{ (c',v,u) \in \liveEdges(G) | c'=c \}       \\
-         \parents(G,v) = \{ (c,v',u) \in \liveEdges(G) | v'=v \}
-$
+\begin{align*}
+             \edges(G) &= \dom(G) \\
+         \liveEdges(G) &= \{ \e \in \edges(G) | G(\e)=+ \}              \\
+  \vertexChildren(G,v) &= \{ ((v',i),v'',u) \in \liveEdges(G) | v'=v \} \\
+  \cursorChildren(G,c) &= \{ (c',v,u) \in \liveEdges(G) | c'=c \}       \\
+         \parents(G,v) &= \{ (c,v',u) \in \liveEdges(G) | v'=v \}
+\end{align*}
 
 \paragraph{Vertexes} ~
 
-\[
-\begin{array}{lr}
-\vertexes(G) &= \{ v \in \V | \exists (c,v,u) \in \edges(G) \}               \\
+\begin{align*}
+        \vertexes(G) &= \{ v \in \V | \exists (c,v,u) \in \edges(G) \}               \\
     \liveVertexes(G) &= \{ v \in \V | \exists (c,v,u) \in \liveEdges(G) \}           \\
  \childVertexes(G,v) &= \{ v' \in \V | \exists (c,v',u) \in \vertexChildren(G,v) \}  \\
          \orphans(G) &= \{ v \in \liveVertexes(G) | || \parents(G,v) || = 0 \}       \\
     \multiparents(G) &= \{ v \in \liveVertexes(G) | || \parents(G,v) || > 1 \}       \\
         \vertex(G,u) &= v \in \vertexes(G) \iff (\exists k \in \K)(v = (k,u))
-    %    \reachable(G) &= \orphans(G) \cup \multiparents(G) \cup \childVertexes(G,v \in \reachable(G)) \\
-    % \deleted(G) &= (\orphans(G) \setminus \{ v_{root} \})
-    %                \cup (\vertexes(G) \setminus  \\
-\end{array}
-\]
+\end{align*}
 
 \paragraph{Graph Actions} ~
 
 $\known(E_1 \cdots E_n) = A_{H1}^{*} \cdots A_{Hn}^{*}
 \iff (\forall j=1,\ldots,n)(E_j = (G_j,c_j,A_{Qj}^{*},A_{Hj}^{*},u_j))$
+
+\section{Operational Semantics}
+
+\subsection{Movement}
+
+$\boxed{E,A -->a E,A}$
+
+\begin{mathpar}
+  \inferrule{
+    \leftIndex(i) = i'
+  }{
+    (G,(v,i),A_Q^{*},A_H^{*},u),A \xrightarrow{\Left} (G,(v,i'),A_Q^{*},A_H^{*},u),A
+  }
+
+  \inferrule{
+    \rightIndex(i) = i'
+  }{
+    (G,(v,i),A_Q^{*},A_H^{*},u),A \xrightarrow{\Right} (G,(v,i'),A_Q^{*},A_H^{*},u),A
+  }
+
+  \inferrule{
+    \parents(v) = \{(c',v',u')\}
+  }{
+    (G,(v,i),A_Q^{*},A_H^{*},u),A \xrightarrow{\Up} (G,c',A_Q^{*},A_H^{*},u),A
+  }
+
+  \inferrule{
+    \cursorChildren(c) = \{(c',(k,u_k),u')\} \\
+    \downIndex(k) = i
+  }{
+    (G,c,A_Q^{*},A_H^{*},u),A \xrightarrow{\Down} (G,((k,u_k),i),A_Q^{*},A_H^{*},u),A
+  }
+
+  \inferrule{}{
+    (G,c,A_Q^{*},A_H^{*},u),A \xrightarrow{\Select~c'} (G,c',A_Q^{*},A_H^{*},u),A
+  }
+\end{mathpar}
+
+\subsection{Editing}
+
+\begin{mathpar}
+  \inferrule{
+    \defaultIndex(c) = \None \\
+    u, u_k \in \U \text{ fresh} \\
+    A_H' = [(c,(k,u_k),u) :-> +]
+  }{
+    (G,c,A_Q^{*},A_H^{*},u),A \xrightarrow{\Create~k} (G A_H',c,A_Q^{*},A_H^{*}A_H',u),A
+  }
+
+  \inferrule{
+    \defaultIndex(c) = i' \\
+    c' = ((k,u_k),i') \\
+    u, u_k \in \U \text{ fresh} \\
+    \\\\
+    \cursorChildren(G,c) = \{(c_j,v_j,u_j')\}_{j=1}^n \\
+    A_H'^{*} =
+    [(c  ,(k,u_k),u  ) :-> +]
+    [(c' ,v_j    ,u_j') :-> +]_{j=1}^n
+    [(c_j,v_j    ,u_j') :-> -]_{j=1}^n
+  }{
+    (G,c,A_Q^{*},A_H^{*},u),A \xrightarrow{\Create~k}
+    (G A_H'^{*},c',A_Q^{*},A_H^{*}A_H'^{*},u),A
+  }
+
+  \inferrule{
+    \cursorChildren(G,c) = \{\e_j\}_{j=1}^n \\
+    A_H'^{*} = [\e_j :-> -]_{j=1}^n
+  }{
+    (G,c,A_Q^{*},A_H^{*},u),A \xrightarrow{\Destroy}
+    (G A_H'^{*},c,A_Q^{*},A_H^{*}A_H'^{*},u),A
+  }
+
+  \inferrule{
+    A_H = [(c,v,u') :-> +] \\
+    u' \text{ fresh}
+  }{
+    (G,c,A_Q^{*},A_H^{*},u),A \xrightarrow{\Restore~v} (G A_H,c,A_Q^{*},A_H^{*}A_H,u),A %
+  }
+\end{mathpar}
+
+\subsection{Communication}
+
+\paragraph{Record} ~
+%
+\begin{mathpar}
+  \inferrule{
+    a \in \A^{edit} \\
+    (G,c,A_Q^{*},A_H^{*},u),A -->a (G',c',A_Q^{*},A_H'^{*},u),A
+  }{
+    (G,c,A_Q^{*},A_H^{*},u),A -->a (G',c',A_Q^{*}a,A_H'^{*},u),A
+  }
+\end{mathpar}
+
+\paragraph{Replay} ~
+
+$\boxed{E,A \xrightarrow{a^{*}} E,A}$
+%
+\begin{mathpar}
+  \inferrule{
+    E,A -->a E'',A'' \\
+    E'',A'' \xrightarrow{a^{*}} E',A' \\
+  }{
+    E,A \xrightarrow{aa^{*}} E',A'
+  }
+\end{mathpar}
+
+\paragraph{Publish} ~
+
+$\boxed{(E,A)^{*} -->a (E,A)^{*}}$
+%
+\begin{mathpar}
+  \inferrule{
+    E_j = (G_j,c_j,A_{Qj}^{*},A_{Hj}^{*},u_j) \\
+    E_j,A_j \xrightarrow{a'^{*}} (G_j',c_j',A_{Qj}'^{*}, A_{Hj}'^{*},u_j),A_j' \\
+    E_j' =
+    ( G_j'
+    , c_j'
+    , A_{Qj}'^{*} \setminus a'^{*}
+    , A_{Hj}'^{*} \setminus \known(E_1 \cdots E_n),u_j) \\
+    j = 1,\ldots,n
+  }{
+    (E_1,A_1) \cdots (E_n,A_n) \xrightarrow{\Send~ a'^{*} } (E_1',A_1') \cdots (E_n',A_n')
+  }
+\end{mathpar}
+
+Missing Action.env members: Record / Report / Stop / Replay, Dump / Load, Clone / Drop
 
 \end{document}
