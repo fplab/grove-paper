@@ -73,6 +73,7 @@
 \let\colonsim\undefined % Avoid redefinition error in `colonequals`
 \usepackage{colonequals}
 \usepackage{mathpartir}
+\usepackage{stmaryrd}
 
 % math ligatures
 \mathlig{::=}{\coloncolonequals}
@@ -582,7 +583,7 @@ TODO: Explain orphans
 \subsubsection{Wrapping Code}
 \label{sub:Wrapping Code}
 
-\begin{figure}
+\begin{figure*}
 % TODO: naive add that creates a conflict
 % \begin{tikzpicture}
 % \path (0,0)       node {\includegraphics[scale=0.4]{graphviz/wrapping/1.dot}};
@@ -655,7 +656,7 @@ TODO: Explain orphans
 \hfill{}
 \caption{Wrapping}
 \label{fig:Wrapping}
-\end{figure}
+\end{figure*}
 
 Next, Alice types~\texttt{+} when the cursor is on \Vertex{2}.
 If this were a hole, this would simply put a vertex with the~\texttt{+} constructor
@@ -782,7 +783,7 @@ We assume multiple instances
 \subsubsection{Editing Different Parts of the Code}
 \label{sub:Editing Different Parts of the Code}
 
-\begin{figure}
+\begin{figure*}
 \hfill
 %%%%%%%%
 \begin{subfigure}{0.3\textwidth}
@@ -849,7 +850,7 @@ We assume multiple instances
 \hfill{}
 \caption{Editing Different Parts of the Code}
 \label{fig:Editing Different Parts of the Code}
-\end{figure}
+\end{figure*}
 
 % \begin{figure}
 % \centering
@@ -909,7 +910,7 @@ TODO: commutativity diagram of screenshots with two cursors
 \subsubsection{Editing Nested Parts of the Code}
 \label{sub:Editing Nested Parts of the Code}
 
-\begin{figure}
+\begin{figure*}
 \hfill
 %%%%%%%%
 \begin{subfigure}{0.3\textwidth}
@@ -976,7 +977,7 @@ TODO: commutativity diagram of screenshots with two cursors
 \hfill{}
 \caption{Editing Nested Parts of the Code}
 \label{fig:Editing Nested Parts of the Code}
-\end{figure}
+\end{figure*}
 
 % \begin{figure}
 % \centering
@@ -1026,7 +1027,7 @@ our nominal equality.
 \subsubsection{Multi-child conflicts}
 \label{sub:Multi-child conflicts}
 
-\begin{figure}
+\begin{figure*}
 \hfill
 %%%%%%%%
 \begin{subfigure}{0.3\textwidth}
@@ -1100,7 +1101,7 @@ TODO: show UI
 \hfill{}
 \caption{Multi-child conflicts}
 \label{fig:Multi-child}
-\end{figure}
+\end{figure*}
 
 % \begin{figure}
 % \centering
@@ -1177,7 +1178,7 @@ Multiple adds cause conflicts
 \subsubsection{Multi-parent conflicts}
 \label{sub:Multi-parent conflicts}
 
-\begin{figure}
+\begin{figure*}
 \hfill
 %%%%%%%%
 \begin{subfigure}{0.24\textwidth}
@@ -1267,7 +1268,7 @@ TODO: UI (at least moc up)
 \hfill{}
 \caption{Multi-parent conflicts}
 \label{fig:Multi-parent}
-\end{figure}
+\end{figure*}
 
 In addition to conflicts due multiple edges coming \emph{out of} an index of a particular vertex,
 conflicts can manifest as multiple edges going \emph{into} a particular vertex.
@@ -1501,7 +1502,7 @@ the vertexes in the cycle
 
 Can also be detected due to neither original leaving them disconnected.
 
-\begin{figure}
+\begin{figure*}
 \hfill
 %%%%%%%%
 \begin{subfigure}{0.24\textwidth}
@@ -1596,7 +1597,7 @@ Can also be detected due to neither original leaving them disconnected.
 \hfill{}
 \caption{Multi-User Cycles}
 \label{fig:Multi-User Cycles}
-\end{figure}
+\end{figure*}
 
 NEEDS UI MOCKUP
 
@@ -1712,6 +1713,19 @@ TODO: cursors are informational
 \section{Formalism}
 \label{sec:Formalism}
 
+We will now make the intuitions developed in the previous section precise
+by defining a collaborative structure editor calculus called Grove.
+We begin in Sec.~\ref{sub:Syntax} with the syntax, then discuss
+the internal graph representation in Sec.~\ref{sub:Convergent Graphs},
+...
+
+
+TODO: point of this section is commutativity theorem
+
+The formalism is rather simple, \autoref{sec:Grove By Example} shows
+that it is sufficient to handle many common situations,
+and this simplicity aids in the predictability.
+
 % $\arraycolsep=2pt\begin{array}{llcl}
 % \mathsf{Typ} & \tau & ::= & t ~\vert~ \aparr{\tau}{\tau} ~\vert~ \aall{t}{\tau} ~\vert~ \arec{t}{\tau} ~\vert~ \aprod{\labelset}{\mapschema{\tau}{i}{\labelset}} ~\vert~ \asum{\labelset}{\mapschema{\tau}{i}{\labelset}}\\
 % \mathsf{Exp} & e & ::= & x ~\vert~ \aelam{\tau}{x}{e} ~\vert~ \aeap{e}{e} ~\vert~ \aetlam{t}{e} ~\vert~ \aetap{e}{\tau} ~\vert~ \aefold{e} ~\vert~ \aetpl{\labelset}{\mapschema{e}{i}{\labelset}} ~\vert~  \aein{\ell}{e} \\
@@ -1808,20 +1822,50 @@ between graphs. (join with whatever it was before)
 
 G --action--> G'
 
-\subsection{Agda Mechanization}
-\label{sub:Agda Mechanization}
+\subsection{Commutativity}
+
+In order to define commutativity, we first define a lattice over $G$.
+Then we show that for any graphs $G$ and $G'$ and graph action $\alpha$,
+$G \overset{\alpha}\rightarrow G'$
+iff $G \sqcup \llbracket\alpha\rrbracket = G'$.
+Thus the commutativity of graph actions is established
+by the commutativity of the join operations defining those graph actions.
+
 
 Discuss uniqueness of uuid
 
+\begin{lemma}[Join Commutativity]
+\label{lem:Join Commutativity}
+\end{lemma}
+
+\begin{lemma}[Joining]
+\label{lem:Joining}
+For all graphs $G$ and $G'$ and all edit actions $\alpha$,
+$G \overset{\alpha}{\longrightarrow} G'$
+iff $G \sqcup \llbracket\alpha_1\rrbracket = G'$.
+\end{lemma}
+\begin{proof}
+If $G \overset{\alpha_1\alpha_2}{\longrightarrow} G'$
+\end{proof}
+
+
 \begin{theorem}[Commutativity]
-
-G  -- a1 a2 --> G'
-
-------------------
-
-G' -- a2 a1 --> G
-
+\label{thm:Commutativity}
+For all graphs $G$ and $G'$ and all edit actions $\alpha_1$ and $\alpha_2$,
+if $G \overset{\alpha_1\alpha_2}{\longrightarrow} G'$,
+then $G \overset{\alpha_2\alpha_1}{\longrightarrow} G'$.
 \end{theorem}
+\begin{proof}
+Using \autoref{lem:Joining} to unfold $\rightarrow$ into $\sqcup$,
+$G \sqcup \llbracket\alpha_1 \sqcup \llbracket \sqcup \alpha_2 \rrbracket = G'$.
+Then by \autoref{lem:Join Commutativity},
+$G \sqcup \llbracket\alpha_2 \sqcup \llbracket \sqcup \alpha_1 \rrbracket = G'$.
+Finally using \autoref{lem:Joining} to fold $\sqcup$ into $\rightarrow$,
+$G \overset{\alpha_2\alpha_1}{\longrightarrow} G'$.
+\end{proof}
+
+\subsubsection{Agda Mechanization}
+\label{sub:Agda Mechanization}
 
 \subsection{Edit Actions}
 \label{sub:Edit Actions}
@@ -2005,16 +2049,6 @@ An \emph{editor} $E = (G,c,A_{Q}^{*},A_{H}^{*},u) \in \EE = \mathcal{G} \times \
 \subsubsection{The Environment} \par
 
 An \emph{environment} $(E^{*}, A^{*}) \in \EE^{*} \times \AA^{*}$ is a set of communicating editors $E^{*}$ that share a global graph action history $A^{*}$.
-
-\subsection{The Target Language}
-
-\paragraph{Formal Syntax} \par
-
-$e ::= \lambda p : \tau.e \mid e~e \mid e+e \mid n \mid \_ $
-
-$p ::= x $
-
-$\tau ::= \tau -> \tau \mid \Num$
 
 \subsection{Sets and Relations}
 
