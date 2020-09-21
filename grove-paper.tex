@@ -556,7 +556,7 @@ which represents the expression~\texttt{x * z}.
 
 Note that this edge has a new identifier distinct from the one before.
 In our model, once an edge with a particular identifier is deleted, it cannot be recreated.
-Instead a new edge with a new identifiers is created.
+Instead a new edge with a new identifier is created.
 
 Note that \Vertex{3} continues to exist, and if it had any children, those children could remain connected to it.
 In our system, once a vertex is created it is never deleted.
@@ -1423,7 +1423,55 @@ We call this situation a multi-parent conflict.
 \subsubsection{Single-User Cycles}
 \label{sub:Cycles}
 
-\begin{figure}
+\begin{figure*}
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.24\textwidth}
+\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  v8/"$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+   v2/"$\texttt{*}_{2}$" [> "left", > "19"'] -> {
+    "$\texttt{var(x)}_{2}$" [> "left", > "19"'],
+    {}
+   },
+   {}
+  }
+ }
+};
+\end{tikzpicture}
+\caption{Initial code}
+\label{fig:Single-User Cycles-a}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.24\textwidth}
+\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  v8/"$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+   v2/"$\texttt{*}_{2}$" [> "left", > "19"'] -> {
+    "$\texttt{var(x)}_{2}$" [> "left", > "19"'],
+    {}
+   },
+   "$\texttt{+}_{18}$" [> "right", > "7"'] -> {
+    "$\texttt{*}_{10}$" [> "left", > "19"'] -> {
+     "$\texttt{var(x)}_{12}$" [> "left", > "19"'],
+     {}
+    },
+    {}
+   }
+  }
+ },
+};
+\end{tikzpicture}
+\caption{\autoref{fig:Single-User Cycles-a} after Alice copy and pastes \Vertex{TODO} by copy as the right child of \Vertex{TODO}}
+\label{fig:Single-User Cycles-b}
+\end{subfigure}
+%%%%%%%%
 \hfill
 %%%%%%%%
 \begin{subfigure}{0.24\textwidth}
@@ -1442,14 +1490,14 @@ We call this situation a multi-parent conflict.
  v2 -> v8
 };
 \end{tikzpicture}
-\caption{Initial code}
-\label{fig:Single-User Cycles-a}
+\caption{\autoref{fig:Single-User Cycles-a} after Alice copy and pastes \Vertex{TODO} by reference as the right child of \Vertex{TODO}}
+\label{fig:Single-User Cycles-c}
 \end{subfigure}
 %%%%%%%%
 \hfill{}
 \caption{Single-User Cycles}
 \label{fig:Single-User Cycles}
-\end{figure}
+\end{figure*}
 
 % \begin{figure}
 % \centering
@@ -1458,23 +1506,34 @@ We call this situation a multi-parent conflict.
 % \label{fig:Single-User Cycles}
 % \end{figure}
 
-Although this case is likely to be infrequent.
+Another case we must consider is when cycles appear in the graph.
+We categorize these into cycles caused by the action of a single user
+and cycles caused by the interaction of the actions of multiple users.
 
-Finally, note that through we present several complex scenarios, this is merely for presentation.
-In practice, these complex scenarios occur less frequently than portrayed here.
+In a single user context,
+normal insertion and deletion of code by the user cannot create cycles.
+However, it is possible with certain kinds of copy and paste.
+For example, suppose Alice is editing the code in \autoref{fig:Single-User Cycles-a}
+and uses copy and paste to copy \Vertex{TODO} to the right child of \Vertex{TODO}.
+There are two ways to interpret the paste action.
+The first interpretation is to create a deep copy of \Vertex{TODO}.
+This results in \autoref{fig:Single-User Cycles-b} and
+does not cause a cycle.
+The second interpretation is to simply add an edge to \Vertex{TODO}.
+This results in \autoref{fig:Single-User Cycles-b}
+and causes a cycle.
 
+Note that not all pastes should be deep copies.
+For example, Alice may have accomplished code move in \autoref{sub:Editing Nested Parts of the Code}
+done by a cutting from the old position and pasting to the new position.
+Preserving Bob's nested edits requires that the paste be by reference instead of by copy.
+Distinguishing when a paste should be by reference versus by copy
+is ultimately a user interface question.
+Cycles caused by the local user's edits be detected as soon as a user enters them
+by noting either that the graph would contain a cycle or the vertex
+already has a parent somewhere in the graph.
 
-Since we are representing programs as graphs,
-we have to consider cycles.
-
-Cycles can occur in a both single-user and multi-user contexts.
-
-In a single user context, a cycle can appear when a user pastes
-a vertex as a child of itself.
-An example of this is shown in \autoref{fig:Single-User Cycles},
-where the user has pasted vertex~TODO as a child of vertex~TODO.
-
-As a user interface consideration, it might be best to either
+Thus, as a user interface consideration, it might be best to either
 disallow such edits to at least warn users that their
 edits would create a cycle.
 
@@ -1709,6 +1768,13 @@ NEEDS UI MOCKUP
 \label{sub:Cursors}
 
 TODO: cursors are informational
+
+\subsection{Summary}
+
+Finally, note that through we present several complex scenarios, this is merely for presentation.
+In practice, these complex scenarios occur less frequently than portrayed here.
+
+
 
 \section{Formalism}
 \label{sec:Formalism}
