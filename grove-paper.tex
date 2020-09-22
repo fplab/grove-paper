@@ -1854,21 +1854,25 @@ Turn that into a constructor set K + index set I + arity function (has type: K -
 \subsubsection{Graphs}
 \label{sub:Graphs}
 
-Graph is a function from edges to edge states.
+TODO: rename indices to positions
+TODO: look into using bold plus and minus (google results)
 
-$\G : \E \rightarrow \{ \bot, +, - \}$
+A graph $\G : \E \rightarrow \Sigma$ is a function from edges to edge states, 
+where $\E = \U \times \V \times \I \times \V$ 
+and   unique IDs are drawn from some suitable set $\U$
+and   vertices are drawn from $\V$, 
+and   indices are drawn from $\I$, 
+and   edge states are drawn from $\Sigma$, all defined below.
 
-An edge is a uuid * source vertex * index * target vertex.  (We are assuming you can generate globally unique IDs.)
+Each edge, $\e = (u, v_s, p, v_t)$, has a unique name, $u \in \U$, and connects the child position $p$ of a source vertex $v_s$ to a target vertex $v_t$.
+The state of each edge, $\e$, is determined by the corresponding edge state, $\G(\e) \in \Sigma = \{ \bot, +, - \}$. 
+If $\G(\e) = \bot$, then $\e$ does not yet exist.
+If $\G(\e)$ is $\mathbf{+}$, the edge has been created.
+If $\G(\e)$ is -, the edge has been destroyed.
+The total ordering $\bot \sqsubseteq \mathbb{+} \sqsubseteq -$ forms a lattice over $\Sigma$.
 
-\def\e{\varepsilon}
+A vertex $v = (u, k) \in \U \times \K$ is a pair of a globally unique identifier $u$ and a constructor $k$. We say $u$ identifies vertex $v$ as a distinct instance of constructor $k$.
 
-An edge $\e \in \E = \U \times \V \times \I \times \V$ is ...
-
-A vertex is a pair of a uuid and a constructor. (uuid + constructor is the identity)
-
-$\V = \U \times \K$
-
-An edge state is bottom + - . Define the total ordering (forms a lattice).
 
 Define $\sqcup_{edge state}$ (i.e. join)
 
