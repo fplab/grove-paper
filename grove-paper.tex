@@ -74,6 +74,7 @@
 \usepackage{colonequals}
 \usepackage{mathpartir}
 \usepackage{stmaryrd}
+\usepackage{fontawesome}
 
 % math ligatures
 \mathlig{::=}{\coloncolonequals}
@@ -207,6 +208,42 @@
 \DeclareMathOperator{\downIndex}{\text{downIndex}}
 \DeclareMathOperator{\defaultIndex}{\text{defaultIndex}}
 
+% Define outline versions of + and -
+\def\outlinepad{0.4pt}
+\def\outlinestroke{0.4pt}
+\newcommand{\Plus}{\mathord{
+\begin{tikzpicture}[anchor=base, baseline]
+%\node at (0,0) {+};
+\path[draw, line width=\outlinestroke]
+   ( 0.333em+\outlinestroke/2+\outlinepad,  0.270em+\outlinestroke/2+\outlinepad)
+ --( 0.333em+\outlinestroke/2+\outlinepad,  0.229em-\outlinestroke/2-\outlinepad)
+ --( 0.021em+\outlinestroke/2+\outlinepad,  0.229em-\outlinestroke/2-\outlinepad)
+ --( 0.021em+\outlinestroke/2+\outlinepad, -0.084em-\outlinestroke/2-\outlinepad)
+ --(-0.020em-\outlinestroke/2-\outlinepad, -0.084em-\outlinestroke/2-\outlinepad)
+ --(-0.020em-\outlinestroke/2-\outlinepad,  0.229em-\outlinestroke/2-\outlinepad)
+ --(-0.333em-\outlinestroke/2-\outlinepad,  0.229em-\outlinestroke/2-\outlinepad)
+ --(-0.333em-\outlinestroke/2-\outlinepad,  0.270em+\outlinestroke/2+\outlinepad)
+ --(-0.020em-\outlinestroke/2-\outlinepad,  0.270em+\outlinestroke/2+\outlinepad)
+ --(-0.020em-\outlinestroke/2-\outlinepad,  0.583em+\outlinestroke/2+\outlinepad)
+ --( 0.021em+\outlinestroke/2+\outlinepad,  0.583em+\outlinestroke/2+\outlinepad)
+ --( 0.021em+\outlinestroke/2+\outlinepad,  0.270em+\outlinestroke/2+\outlinepad)
+ --cycle
+ ;
+\end{tikzpicture}
+}}
+\newcommand{\Minus}{\mathord{
+\begin{tikzpicture}[anchor=base, baseline]
+%\node at (0,0) {$-$};
+\path[draw, line width=\outlinestroke]
+   ( 0.306em+\outlinestroke/2+\outlinepad,  0.270em+\outlinestroke/2+\outlinepad)
+ --( 0.306em+\outlinestroke/2+\outlinepad,  0.229em-\outlinestroke/2-\outlinepad)
+ --(-0.306em-\outlinestroke/2-\outlinepad,  0.229em-\outlinestroke/2-\outlinepad)
+ --(-0.306em-\outlinestroke/2-\outlinepad,  0.270em+\outlinestroke/2+\outlinepad)
+ --cycle
+ ;
+\end{tikzpicture}
+}}
+
 \newcommand{\hole}{\ensuremath{\square}} %\textcolor{violet}{\llparenthesis}}\textcolor{violet}{\rrparenthesis}}
 
 % Support \includegraphics of .dot files
@@ -287,7 +324,6 @@ Text of abstract \ldots.
 
 \section{Introduction}
 \label{sec:Introduction}
-
 
 TODO: fix the following warning which are reported by LaTeX but not Overleaf: Class acmart Warning: A possible image without description on input line 321.
 
@@ -1865,11 +1901,11 @@ and   indices are drawn from $\I$,
 and   edge states are drawn from $\Sigma$, all defined below.
 
 Each edge, $\e = (u, v_s, p, v_t)$, has a unique name, $u \in \U$, and connects the child position $p$ of a source vertex $v_s$ to a target vertex $v_t$.
-The state of each edge, $\e$, is determined by the corresponding edge state, $\G(\e) \in \Sigma = \{ \bot, +, - \}$. 
+The state of each edge, $\e$, is determined by the corresponding edge state, $\G(\e) \in \Sigma = \{ \bot, \Plus, \Minus \}$. 
 If $\G(\e) = \bot$, then $\e$ does not yet exist.
 If $\G(\e)$ is $\mathbf{+}$, the edge has been created.
 If $\G(\e)$ is -, the edge has been destroyed.
-The total ordering $\bot \sqsubseteq \mathbb{+} \sqsubseteq -$ forms a lattice over $\Sigma$.
+The total ordering $\bot \sqsubset \Plus \sqsubset \Minus$ forms a lattice over $\Sigma$.
 
 A vertex $v = (u, k) \in \U \times \K$ is a pair of a globally unique identifier $u$ and a constructor $k$. We say $u$ identifies vertex $v$ as a distinct instance of constructor $k$.
 
