@@ -139,6 +139,7 @@
 \def\G{\mathcal{G}}
 \def\I{\mathcal{I}}
 \def\K{\mathcal{K}}
+\def\P{\mathcal{P}}
 \def\S{\mathcal{S}}
 \def\U{\mathcal{U}}
 \def\V{\mathcal{V}}
@@ -1911,25 +1912,31 @@ TODO: rename indices to positions
 TODO: look into using bold plus and minus (google results)
 
 A graph $\G : \E \rightarrow \Sigma$ is a function from edges to edge states, 
-where $\E = \U \times \V \times \I \times \V$ 
-and   unique IDs are drawn from some suitable set $\U$
+where $\E = \U \times \V \times \P \times \V$,
+and   unique IDs are drawn from some suitable set $\U$,
 and   vertices are drawn from $\V$, 
-and   indices are drawn from $\I$, 
+and   positions are drawn from $\P$, 
 and   edge states are drawn from $\Sigma$, all defined below.
 
-Each edge, $\e = (u, v_s, p, v_t)$, has a unique name, $u \in \U$, and connects the child position $p$ of a source vertex $v_s$ to a target vertex $v_t$.
-The state of each edge, $\e$, is determined by the corresponding edge state, $\G(\e) \in \Sigma = \{ \bot, \Plus, \Minus \}$. 
+Each edge $\e = (u, v, p, v^\prime)$ has a unique name, $u \in \U$, and connects the child position $p$ of a source vertex $v$ to a target vertex $v^\prime$.
+The state of each edge, $\e$, is determined by the corresponding edge state, $\G(\e) \in \Sigma = \{ \bot, \Plus, \Minus \}$.
 If $\G(\e) = \bot$, then $\e$ does not yet exist.
 If $\G(\e)$ is $\Plus$, the edge has been created.
 If $\G(\e)$ is $\Minus$, the edge has been destroyed.
 The total ordering $\bot \sqsubset \Plus \sqsubset \Minus$ forms a lattice over $\Sigma$.
 
-A vertex $v = (u, k) \in \U \times \K$ is a pair of a globally unique identifier $u$ and a constructor $k$. We say $u$ identifies vertex $v$ as a distinct instance of constructor $k$.
+A vertex $v = (u, k)$ identifies a distinct instance of the constructor $k$.
+Each constructor represents a different type of node in the target language's abstract syntax tree.
+
+A position $p$ identifies a location adjacent to some parent vertex.
+
+Every graph contains a distinguished root vertex, root constructor, and root position, respectively named $v_0$, $k_0$, and $p_0$.
 
 
-Define $\sqcup_{edge state}$ (i.e. join)
 
-lattice ordering $\bot < + < -$ LUB e.g., join A B = C
+% Define $\sqcup_{edge state}$ (i.e. join)
+
+% lattice ordering $\bot < + < -$ LUB e.g., join A B = C
 
 You can map from syntax to graph by selecting
 unique IDs (for both edges and vertexes).
@@ -2109,8 +2116,8 @@ TODO: put all intermediate states for all graphs along with the edge actions
   $\A$ & Actions & $\S$ & Edge States   \\
   $\C$ & Cursors & $\U$ & UUIDs         \\
   $\E$ & Edges   & $\V$ & Vertexes      \\
-  $\G$ & Graphs  & $\A$ & Graph Actions \\
-  $\I$ & Indices & $\E$ & Editors       \\
+  $\G$ & Graphs  & $\AA$ & Graph Actions \\
+  $\I$ & Indices & $\EE$ & Editors       \\
   $\K$ & Constructors                   \\
 \end{tabular}
 
