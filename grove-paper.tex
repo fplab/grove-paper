@@ -1576,26 +1576,41 @@ edits would create a cycle.
 \subsubsection{Multi-User Cycles}
 \label{sub:Multi-User Cycles}
 
-While a single-user edits can always be checked to see
+While single-user edits can be checked to see
 whether they create a cycle and thus the system
 can immediately warn the user,
 multi-user edits may not manifest cycles until after
-the edits are merged.
+the edits from multiple users are merged.
 
-For example, consider the situation shown in \autoref{fig:Multi-User Cycles}.
-The top graph represents code that is synchronized between Alice and Bob
-and represents the code~\texttt{(1 * \hole) * (2 * \hole)}.
-In the left graph, Alice moves vertex~TODO to the \texttt{right}
-index of vertex~TODO.
-The resulting graph represents the code~\texttt{(1 * (2 * \hole)) * \hole}.
-In the right graph, Bob moves vertex~TODO to the \texttt{right} index of vertex~TODO.
-The resulting graph represents the code~\texttt{\hole * (2 * (1 * \hole))}.
-On their own, neither edit creates a cycle.
-However, when these edits are merged,
-not only is a cycle created, but
-the vertexes in the cycle
+For example, consider the situation in \autoref{fig:Multi-User Cycles}.
+\autoref{fig:Multi-User Cycles-a} shows the graph after Alice and Bob have made some more edits,
+and Alice and Bob's editors are synchronized with each other.
+This graph represents the expression~\texttt{((\hole+\hole)+(\hole*\hole))+\hole}.
+Alice moves the leftmost \texttt{+} into the rightmost hold
+and then the \texttt{*} underneath that.
+This results in \autoref{fig:Multi-User Cycles-b},
+which represents the expression~\texttt{(\hole+\hole)+((\hole*\hole)+\hole)}.
+On the other hand, Bob does the same move
+but puts the \texttt{+} and under the \texttt{*}.
+This results in \autoref{fig:Multi-User Cycles-c},
+which represents the expression~\texttt{(\hole+\hole)+((\hole+\hole)*\hole)}.
 
-Can also be detected due to neither original leaving them disconnected.
+On their own, neither of these edits creates a cycle.
+However, merging the edit actions of both Alice and Bob results in the graph
+in \autoref{fig:Multi-User Cycles-d}, which has a cycle
+between \Vertex{TODO} and \Vertex{TODO}.
+This situation is akin to a merge conflict in traditional version control systems.
+Resolving it requires user input, but is as simple as
+either deleting \Edge{TODO} and \Edge{TODO} (thus favoring Alice's version)
+or deleting \Edge{TODO} and \Edge{TODO} (thus favoring Bob's version).
+Since a cycle like this that is connected to the root vertex always
+contains vertexes with multiple parents that if removed would break the cycle,
+we use the user interface described in \autoref{sub:Multi-parent conflicts}
+to display these kinds of programs.
+For example, \autoref{fig:Multi-User Cycles-d} would be displayed
+as shown in TODO:FIGURE.
+We leave the user interface considerations of resolving the conflict such a
+cycle represents to future work.
 
 \begin{figure*}
 \hfill
@@ -1608,7 +1623,7 @@ Can also be detected due to neither original leaving them disconnected.
   "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
    "$\texttt{+}_{2}$" [> "left", > "19"'] -> {
     "$\texttt{+}_{4}$" [> "left", > "19"'],
-    "$\texttt{*}_{6}$" [> "left", > "19"']
+    "$\texttt{*}_{6}$" [> "right", > "19"']
    },
    {}
   }
@@ -1631,7 +1646,8 @@ Can also be detected due to neither original leaving them disconnected.
    },
    {
     "$\texttt{+}_{4}$" [> "left", > "19"'] -> {
-     "$\texttt{*}_{6}$" [> "left", > "19"']
+     "$\texttt{*}_{6}$" [> "left", > "19"'],
+     {}
     }
    }
   }
@@ -1654,7 +1670,8 @@ Can also be detected due to neither original leaving them disconnected.
    },
    {
     "$\texttt{*}_{6}$" [> "left", > "19"'] -> {
-     "$\texttt{+}_{4}$" [> "left", > "19"']
+     "$\texttt{+}_{4}$" [> "left", > "19"'],
+     {}
     }
    }
   }
@@ -1682,8 +1699,8 @@ Can also be detected due to neither original leaving them disconnected.
   }
  }
 };
-\path[draw] (v1) -> (v2);
-\path[draw] (v2) -> (v1);
+\path[draw,->] (v1) to [out=-45,in=-135] (v2);
+\path[draw,->] (v2) to [out=-90,in=-90] (v1);
 \end{tikzpicture}
 \caption{Initial code}
 \label{fig:Multi-User Cycles-d}
@@ -1903,8 +1920,8 @@ and   edge states are drawn from $\Sigma$, all defined below.
 Each edge, $\e = (u, v_s, p, v_t)$, has a unique name, $u \in \U$, and connects the child position $p$ of a source vertex $v_s$ to a target vertex $v_t$.
 The state of each edge, $\e$, is determined by the corresponding edge state, $\G(\e) \in \Sigma = \{ \bot, \Plus, \Minus \}$. 
 If $\G(\e) = \bot$, then $\e$ does not yet exist.
-If $\G(\e)$ is $\mathbf{+}$, the edge has been created.
-If $\G(\e)$ is -, the edge has been destroyed.
+If $\G(\e)$ is $\Plus$, the edge has been created.
+If $\G(\e)$ is $\Minus$, the edge has been destroyed.
 The total ordering $\bot \sqsubset \Plus \sqsubset \Minus$ forms a lattice over $\Sigma$.
 
 A vertex $v = (u, k) \in \U \times \K$ is a pair of a globally unique identifier $u$ and a constructor $k$. We say $u$ identifies vertex $v$ as a distinct instance of constructor $k$.
@@ -2077,6 +2094,11 @@ GUI for string conflicts: use popups
 %% Temporary appendixes that will not be published go **AFTER** the bibliography and do not count towards the page count
 
 \clearpage % Put these appendixes on separate pages so we can easily remove them from the document.  Also ensure all figures have been placed.
+
+\section{Supplemental Material: Complete Graph Sequences for All Figures}
+\label{apx:Supplemental Material: Complete Graph Sequences for All Figures}
+
+TODO: put all intermediate states for all graphs along with the edge actions
 
 \section{Appendix}
 \label{apx:Appendix}
