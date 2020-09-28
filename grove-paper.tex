@@ -81,9 +81,10 @@
 \mathlig{|-}{\vdash}
 \mathlig{:->}{\mapsto}
 \mathlig{-->a}{\overset{a}{\longrightarrow}}
-\mathlig{||}{|}
-\mathlig{|}{:}
-\mathlig{:}{\!:\!}
+%\mathlig{||}{|}
+%\mathlig{|}{:}
+%\mathlig{:}{\!:\!}
+\newcommand{\abs}[1]{\left|{#1}\right|}
 
 \def\_{\texttt{\textunderscore}}
 
@@ -1577,41 +1578,6 @@ edits would create a cycle.
 \subsubsection{Multi-User Cycles}
 \label{sub:Multi-User Cycles}
 
-While single-user edits can be checked to see
-whether they create a cycle and thus the system
-can immediately warn the user,
-multi-user edits may not manifest cycles until after
-the edits from multiple users are merged.
-
-For example, consider the situation in \autoref{fig:Multi-User Cycles}.
-\autoref{fig:Multi-User Cycles-a} shows the graph after Alice and Bob have made some more edits,
-and Alice and Bob's editors are synchronized with each other.
-This graph represents the expression~\texttt{((\hole+\hole)+(\hole*\hole))+\hole}.
-Alice moves the leftmost \texttt{+} into the rightmost hold
-and then the \texttt{*} underneath that.
-This results in \autoref{fig:Multi-User Cycles-b},
-which represents the expression~\texttt{(\hole+\hole)+((\hole*\hole)+\hole)}.
-On the other hand, Bob does the same move
-but puts the \texttt{+} and under the \texttt{*}.
-This results in \autoref{fig:Multi-User Cycles-c},
-which represents the expression~\texttt{(\hole+\hole)+((\hole+\hole)*\hole)}.
-
-On their own, neither of these edits creates a cycle.
-However, merging the edit actions of both Alice and Bob results in the graph
-in \autoref{fig:Multi-User Cycles-d}, which has a cycle
-between \Vertex{TODO} and \Vertex{TODO}.
-This situation is akin to a merge conflict in traditional version control systems.
-Resolving it requires user input, but is as simple as
-either deleting \Edge{TODO} and \Edge{TODO} (thus favoring Alice's version)
-or deleting \Edge{TODO} and \Edge{TODO} (thus favoring Bob's version).
-Since a cycle like this that is connected to the root vertex always
-contains vertexes with multiple parents that if removed would break the cycle,
-we use the user interface described in \autoref{sub:Multi-parent conflicts}
-to display these kinds of programs.
-For example, \autoref{fig:Multi-User Cycles-d} would be displayed
-as shown in TODO:FIGURE.
-We leave the user interface considerations of resolving the conflict such a
-cycle represents to future work.
 
 \begin{figure*}
 \hfill
@@ -1712,9 +1678,44 @@ cycle represents to future work.
 \label{fig:Multi-User Cycles}
 \end{figure*}
 
-NEEDS UI MOCKUP
+TODO: NEEDS UI MOCKUP
 
-(Maybe not in initial grove by example) The A and B diamond example
+While single-user edits can be checked to see
+whether they create a cycle and thus the system
+can immediately warn the user,
+multi-user edits may not manifest cycles until after
+the edits from multiple users are merged.
+
+For example, consider the situation in \autoref{fig:Multi-User Cycles}.
+\autoref{fig:Multi-User Cycles-a} shows the graph after Alice and Bob have made some more edits,
+and Alice and Bob's editors are synchronized with each other.
+This graph represents the expression~\texttt{((\hole+\hole)+(\hole*\hole))+\hole}.
+Alice moves the leftmost \texttt{+} into the rightmost hold
+and then the \texttt{*} underneath that.
+This results in \autoref{fig:Multi-User Cycles-b},
+which represents the expression~\texttt{(\hole+\hole)+((\hole*\hole)+\hole)}.
+On the other hand, Bob does the same move
+but puts the \texttt{+} and under the \texttt{*}.
+This results in \autoref{fig:Multi-User Cycles-c},
+which represents the expression~\texttt{(\hole+\hole)+((\hole+\hole)*\hole)}.
+
+On their own, neither of these edits creates a cycle.
+However, merging the edit actions of both Alice and Bob results in the graph
+in \autoref{fig:Multi-User Cycles-d}, which has a cycle
+between \Vertex{TODO} and \Vertex{TODO}.
+This situation is akin to a merge conflict in traditional version control systems.
+Resolving it requires user input, but is as simple as
+either deleting \Edge{TODO} and \Edge{TODO} (thus favoring Alice's version)
+or deleting \Edge{TODO} and \Edge{TODO} (thus favoring Bob's version).
+Since a cycle like this that is connected to the root vertex always
+contains vertexes with multiple parents that if removed would break the cycle,
+we use the user interface described in \autoref{sub:Multi-parent conflicts}
+to display these kinds of programs.
+For example, \autoref{fig:Multi-User Cycles-d} would be displayed
+as shown in TODO:FIGURE.
+We leave the user interface considerations of resolving the conflict such a
+cycle represents to future work.
+
 
 \subsubsection{Disconnection}
 \label{sub:Disconnection}
@@ -1728,12 +1729,8 @@ NEEDS UI MOCKUP
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
-   "$\texttt{+}_{2}$" [> "left", > "19"'] -> {
-    "$\texttt{1}_{4}$" [> "left", > "19"'],
-   },
-   "$\texttt{+}_{6}$" [> "left", > "19"'] -> {
-    "$\texttt{2}_{4}$" [> "left", > "19"'],
-   }
+   "$\texttt{+}_{2}$" [> "left", > "19"'],
+   "$\texttt{*}_{6}$" [> "left", > "19"']
   }
  }
 };
@@ -1751,10 +1748,8 @@ NEEDS UI MOCKUP
  root[root style] -> {
   "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
    "$\texttt{+}_{2}$" [> "left", > "19"'] -> {
-    "$\texttt{1}_{4}$" [> "left", > "19"'],
-    "$\texttt{+}_{6}$" [> "left", > "19"'] -> {
-     "$\texttt{2}_{4}$" [> "left", > "19"'],
-    }
+    "$\texttt{*}_{6}$" [> "left", > "19"'],
+    {}
    },
    {}
   }
@@ -1774,11 +1769,9 @@ NEEDS UI MOCKUP
  root[root style] -> {
   "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
    {},
-   "$\texttt{+}_{6}$" [> "left", > "19"'] -> {
-    "$\texttt{2}_{4}$" [> "left", > "19"'],
-    "$\texttt{+}_{2}$" [> "left", > "19"'] -> {
-     "$\texttt{1}_{4}$" [> "left", > "19"'],
-    }
+   "$\texttt{*}_{6}$" [> "left", > "19"'] -> {
+    "$\texttt{+}_{2}$" [> "left", > "19"'],
+    {}
    }
   }
  }
@@ -1798,16 +1791,14 @@ NEEDS UI MOCKUP
   "$\texttt{+}_{8}$" [> "root", > "7"']
  }
 };
-\path (-1cm,-2cm) graph[graph style] {
- "$\texttt{+}_{6}$" [> "left", > "19"'] -> {
-  "$\texttt{2}_{4}$" [> "left", > "19"'],
- }
+\path (-1cm,-3cm) graph[graph style] {
+ times/"$\texttt{*}_{6}$" [> "left", > "19"']
 };
-\path (1cm,-2cm) graph[graph style] {
- "$\texttt{+}_{2}$" [> "left", > "19"'] -> {
-  "$\texttt{1}_{4}$" [> "left", > "19"'],
- }
+\path (1cm,-3cm) graph[graph style] {
+ plus/"$\texttt{+}_{2}$" [> "left", > "19"']
 };
+\path[draw,->] (times) to [out=45,in=135] (plus);
+\path[draw,->] (plus) to [out=-135,in=-45] (times);
 \end{tikzpicture}
 \caption{Initial code}
 \label{fig:Disconnection-d}
@@ -1817,6 +1808,37 @@ NEEDS UI MOCKUP
 \caption{Disconnection}
 \label{fig:Disconnection}
 \end{figure*}
+
+Finally, when multi-user edits are merged,
+parts of the graph can become disconnected
+even though they are connected in each user's
+copy of the graph before the merge.
+
+For example, consider the situation in \autoref{fig:Disconnection}.
+\autoref{fig:Disconnection-a} shows the graph after Alice and Bob have made some more edits,
+and Alice and Bob's editors are synchronized with each other.
+This graph represents the expression~\texttt{(\hole+\hole)+(\hole*\hole)}.
+Alice moves the \texttt{*} under \texttt{+}$_2$.
+This results in \autoref{fig:Disconnection-b},
+which represents the expression~\texttt{((\hole*\hole)+\hole)+\hole}.
+On the other hand, Bob puts \texttt{+}$_2$ and under the \texttt{*}.
+This results in \autoref{fig:Disconnection-c},
+which represents the expression~\texttt{\hole+((\hole+\hole)*\hole)}.
+
+When these edits are merged, the result is the graph in \autoref{fig:Disconnection-d}.
+Since Alice deleted the edge from \Vertex{TODO} to \Vertex{TODO}
+and Bob deleted the edge from \Vertex{TODO} to \Vertex{TODO},
+when these are merged \Vertex{TODO} and \Vertex{TODO}
+are completely disconnected from the root.
+
+This is similar to the type of merge conflict
+that can arise in traditional version control systems
+when two users delete different functions that
+are duplicates of the other.
+
+Fortunately, we can detect this situation and warn the user
+since the disconnection appears after merging two graphs
+that did not have disconnected vertexes.
 
 \subsection{Cursors}
 \label{sub:Cursors}
@@ -2203,8 +2225,8 @@ An \emph{environment} $(E^{*}, A^{*}) \in \EE^{*} \times \AA^{*}$ is a set of co
         \vertexes(G) &= \{ v \in \V | \exists (c,v,u) \in \edges(G) \}               \\
     \liveVertexes(G) &= \{ v \in \V | \exists (c,v,u) \in \liveEdges(G) \}           \\
  \childVertexes(G,v) &= \{ v' \in \V | \exists (c,v',u) \in \vertexChildren(G,v) \}  \\
-         \orphans(G) &= \{ v \in \liveVertexes(G) | || \parents(G,v) || = 0 \}       \\
-    \multiparents(G) &= \{ v \in \liveVertexes(G) | || \parents(G,v) || > 1 \}       \\
+         \orphans(G) &= \{ v \in \liveVertexes(G) | \abs{\parents(G,v)} = 0 \}       \\
+    \multiparents(G) &= \{ v \in \liveVertexes(G) | \abs{\parents(G,v)} > 1 \}       \\
         \vertex(G,u) &= v \in \vertexes(G) \iff (\exists k \in \K)(v = (k,u))
 \end{align*}
 
