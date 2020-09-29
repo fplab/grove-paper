@@ -122,7 +122,7 @@
  tree layout,
  level sep=1cm,
  nodes={draw, rounded corners=1mm},
- edges={draw, sloped, font={\small\ttfamily}}
+ edges={draw, font={\small\ttfamily}}
 }}
 \tikzset{graphs/root style/.style={
  %draw=none,
@@ -373,9 +373,16 @@ We begin in \autoref{sub:Program Representation} by covering how we represent ex
 and \autoref{sub:Collaborative Structure Editing} explores edits by multiple users, Alice and Bob,
 each of whom is editing their own instance of a program.
 
+do not model cursors
+but model later in \autoref{sub:Cursors} 
+they are not involved in the communication of graph edits
+though their representation is slightly subtly
+
 TODO: group user-level edits (with user visible)
 
 TODO: gray-scale unchanged parts of diagrams; and dashes for removed parts? describe semantic vs presentational in diagrams
+
+
 
 \subsection{Program Representation}
 \label{sub:Program Representation}
@@ -420,6 +427,8 @@ TODO
 \caption{A simple tree with a hole}
 \label{fig:A simple tree with a hole}
 \end{figure}
+
+TODO: use mathit instead of var(x)
 
 %We represent expression contain holes as part of the editor state 
 The \textit{program state} for each editor instance in Grove consists of a graph that represents the program being edited.
@@ -534,13 +543,13 @@ TODO: z -> foo (or multi-editor)
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "$\texttt{*}_{2}$" [> "root", > "1"'] -> {
-   "$\texttt{var(x)}_{4}$" [> "left", > "3"'],
+   "$\texttt{x}_{4}$" [> "left", > "3"'],
    {}
   }
  }
 };
 \path (2cm,-2cm) graph[graph style] {
- y [as={$\texttt{var(y)}_{6}$}]
+ y [as={$\texttt{y}_{6}$}]
 };
 \end{tikzpicture}
 \caption{\autoref{fig:Addition-b} after deleting \Edge{5}}
@@ -554,14 +563,14 @@ TODO: z -> foo (or multi-editor)
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{*}_{2}$" [> "root", > "1"'] -> {
-   "$\texttt{var(x)}_{4}$" [> "left", > "3"'],
-   "$\texttt{var(z)}_{8}$" [> "right", > "7"']
+  "$\texttt{*}_{2}$" [> "RT$_1$"] -> {
+   "$\texttt{x}_{4}$" [> "L$_3$"'],
+   "$\texttt{z}_{8}$" [> "R$_7$"]
   }
  }
 };
 \path (2cm,-2cm) graph[graph style] {
- "$\texttt{var(y)}_{6}$"
+ "$\texttt{y}_{6}$"
 };
 \end{tikzpicture}
 \caption{\autoref{fig:Change-a} after adding \Vertex{8} and \Edge{7}}
@@ -572,6 +581,8 @@ TODO: z -> foo (or multi-editor)
 \caption{Change}
 \label{fig:Change}
 \end{figure}
+
+Arrows between figures
 
 % \begin{figure}
 % \centering
@@ -817,6 +828,14 @@ If multiple replicas restore to different places, then you get some complexity:
 TODO: mention that id numbers are global (or maybe use A1 and B1 for different users?)
 
 We assume multiple instances
+
+TODO: Finally, note that through we present several complex scenarios, this is merely for presentation.
+In practice, these complex scenarios occur less frequently than portrayed here.
+
+Common scenarios first and then consider more unusual scenarios
+that cause cycles or multiple parents
+
+TODO: \autoref{sub:Editing Different Parts of the Code}
 
 \subsubsection{Editing Different Parts of the Code}
 \label{sub:Editing Different Parts of the Code}
@@ -1843,14 +1862,11 @@ that did not have disconnected vertexes.
 \subsection{Cursors}
 \label{sub:Cursors}
 
-TODO: cursors are informational
+Cursor is either on edge or on position
 
-\subsection{Summary}
+cursors are advisory
 
-Finally, note that through we present several complex scenarios, this is merely for presentation.
-In practice, these complex scenarios occur less frequently than portrayed here.
-
-
+Don't model communication but would be separate layer anyway
 
 \section{Formalism}
 \label{sec:Formalism}
