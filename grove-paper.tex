@@ -75,6 +75,7 @@
 \usepackage{mathpartir}
 \usepackage{stmaryrd}
 \usepackage{fontawesome}
+\usepackage{array}
 
 % math ligatures
 \mathlig{::=}{\coloncolonequals}
@@ -122,11 +123,9 @@
 \tikzset{
   every picture/.style={framed, background rectangle/.style={draw=gray!50}},
 }
-\tikzset{graphs/graph style/.style={
-  tree layout,
-  level sep=1cm,
-  nodes={draw, rounded corners=1mm},
-  edges={draw, font={\small\ttfamily}},
+\tikzset{edge style/.style={
+  draw,
+  font={\small\ttfamily},
   /tikz/every edge quotes/.style={
     %draw=gray!20,
     anchor=west,
@@ -136,6 +135,12 @@
       \else
         \pgfkeysalso{anchor=east}
       \fi}},
+}}
+\tikzset{graphs/graph style/.style={
+  tree layout,
+  level sep=1cm,
+  nodes={draw, rounded corners=1mm},
+  edges={edge style},
 }}
 \tikzset{graphs/root style/.style={
  %draw=none,
@@ -410,7 +415,7 @@ TODO: gray-scale unchanged parts of diagrams; and dashes for removed parts? desc
 \begin{figure}
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.3\textwidth}
+\begin{subfigure}{0.49\linewidth}
 \centering
 TODO
 \caption{User interface}
@@ -419,13 +424,13 @@ TODO
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.3\textwidth}
+\begin{subfigure}{0.49\linewidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{*}_{2}$" [> "root", > "1"'] -> {
-   "$\texttt{var(x)}_{4}$" [> "left", > "3"'],
+  "$\texttt{*}_{2}$" [> "Root$_{1}$"] -> {
+   "$\texttt{x}_{4}$" [> "L$_{3}$"],
    {}
   }
  }
@@ -505,35 +510,6 @@ We discuss cursor representations and cursor sharing in more detail in \autoref{
 \label{sub:Construction}
 
 \begin{figure}
-\begin{tabular}{|p{0.49\linewidth}|p{0.49\linewidth}|}
-%\centering
-TODO
-&
-%\centering
-\begin{tikzpicture}
-\path (0cm,0cm) graph[graph style] {
- root[root style] -> {
-  "$\texttt{*}_{2}$" [> "Rt$_1$"] -> {
-   "$\texttt{x}_{4}$" [> "L$_3$"'],
-   "$\texttt{y}_{6}$" [> "R$_5$"]
-  }
- }
-};
-\end{tikzpicture}
-\\
-\subcaption{User interface}
-\label{fig:Construction-a}
- &
-\subcaption{\autoref{fig:A simple tree with a hole-b} after adding \Vertex{6} and \Edge{5}}
-\label{fig:Construction-b}
-\\ \hline
-\end{tabular}
-\caption{Construction}
-\label{fig:Construction}
-\end{figure}
-
-
-\begin{figure}
 \hfill
 %%%%%%%%
 \begin{subfigure}{0.49\columnwidth}
@@ -550,9 +526,9 @@ TODO
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{*}_{2}$" [> "Rt$_1$"] -> {
-   "$\texttt{x}_{4}$" [> "L$_3$"'],
-   "$\texttt{y}_{6}$" [> "R$_5$"]
+  "$\texttt{*}_{2}$" [> "Root$_{1}$"] -> {
+   "$\texttt{x}_{4}$" [> "L$_{3}$"'],
+   "$\texttt{y}_{6}$" [> "R$_{5}$"]
   }
  }
 };
@@ -595,8 +571,8 @@ TODO: z -> foo (or multi-editor)
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{*}_{2}$" [> "root", > "1"'] -> {
-   "$\texttt{x}_{4}$" [> "left", > "3"'],
+  "$\texttt{*}_{2}$" [> "Root$_{1}$"] -> {
+   "$\texttt{x}_{4}$" [> "L$_{3}$"'],
    {}
   }
  }
@@ -616,9 +592,9 @@ TODO: z -> foo (or multi-editor)
 \begin{tikzpicture}[framed]
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{*}_{2}$" [> "RT$_1$"] -> {
-   "$\texttt{x}_{4}$" [> "L$_3$"'],
-   "$\texttt{z}_{8}$" [> "R$_7$"]
+  "$\texttt{*}_{2}$" [> "Root$_{1}$"] -> {
+   "$\texttt{x}_{4}$" [> "L$_{3}$"'],
+   "$\texttt{z}_{8}$" [> "R$_{7}$"]
   }
  }
 };
@@ -685,7 +661,7 @@ TODO: Explain orphans
 \subsubsection{Wrapping Code}
 \label{sub:Wrapping Code}
 
-\begin{figure*}
+\begin{figure}
 % TODO: naive add that creates a conflict
 % \begin{tikzpicture}
 % \path (0,0)       node {\includegraphics[scale=0.4]{graphviz/wrapping/1.dot}};
@@ -696,16 +672,16 @@ TODO: Explain orphans
 % \end{tikzpicture}
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.3\textwidth}
+\begin{subfigure}{0.32\linewidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style]
 };
-\path (-1cm,-3cm) graph[graph style] {
+\path (-0.5,-3cm) graph[graph style] {
  "$\texttt{*}_{2}$" -> {
-  "$\texttt{var(x)}_{4}$" [> "left", > "3"'],
-  "$\texttt{var(z)}_{6}$" [> "right", > "5"']
+  "$\texttt{x}_{4}$" [> "L$_{3}$"'],
+  "$\texttt{z}_{6}$" [> "R$_{5}$"]
  }
 };
 \end{tikzpicture}
@@ -715,18 +691,18 @@ TODO: Explain orphans
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.3\textwidth}
+\begin{subfigure}{0.32\linewidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "root", > "7"']
+  "$\texttt{+}_{8}$" [> "Root$_{7}$"]
  }
 };
-\path (-1cm,-3cm) graph[graph style] {
+\path (-0.5cm,-3cm) graph[graph style] {
  "$\texttt{*}_{2}$" -> {
-  "$\texttt{var(x)}_{4}$" [> "left", > "3"'],
-  "$\texttt{var(z)}_{6}$" [> "right", > "5"']
+  "$\texttt{x}_{4}$" [> "L$_{5}$"'],
+  "$\texttt{z}_{6}$" [> "R$_{5}$"]
  }
 };
 \end{tikzpicture}
@@ -736,15 +712,15 @@ TODO: Explain orphans
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.3\textwidth}
+\begin{subfigure}{0.32\linewidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
-   "$\texttt{*}_{2}$" [> "left", > "9"'] -> {
-    "$\texttt{var(x)}_{4}$" [> "left", > "3"'],
-    "$\texttt{var(z)}_{6}$" [> "right", > "5"']
+  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
+   "$\texttt{*}_{2}$" [> "L$_{9}$"'] -> {
+    "$\texttt{x}_{4}$" [> "L$_{3}$"'],
+    "$\texttt{z}_{6}$" [> "R$_{5}$"]
    },
    {}
   }
@@ -758,7 +734,7 @@ TODO: Explain orphans
 \hfill{}
 \caption{Wrapping}
 \label{fig:Wrapping}
-\end{figure*}
+\end{figure}
 
 Next, Alice types~\texttt{+} when the cursor is on \Vertex{2}.
 If this were a hole, this would simply put a vertex with the~\texttt{+} constructor
@@ -796,18 +772,18 @@ TODO: Traditional diff: no relation (and indent might change)
 % \end{tikzpicture}
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.3\textwidth}
+\begin{subfigure}{0.49\linewidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "root", > "7"']
+  "$\texttt{+}_{8}$" [> "Root$_{7}$"]
  }
 };
 \path (0cm,-3cm) graph [graph style] {
  "$\texttt{*}_{2}$" -> {
-  "$\texttt{var(x)}_{4}$" [> "left", > "3"'],
-  "$\texttt{var(z)}_{6}$" [> "right", > "5"']
+  "$\texttt{x}_{4}$" [> "L$_{3}$"'],
+  "$\texttt{z}_{6}$" [> "R$_{5}$"]
  }
 };
 \end{tikzpicture}
@@ -817,16 +793,16 @@ TODO: Traditional diff: no relation (and indent might change)
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.3\textwidth}
+\begin{subfigure}{0.45\linewidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
    {},
-   "$\texttt{*}_{2}$" [> "right", > "11"'] -> {
-    "$\texttt{var(x)}_{4}$" [> "left", > "3"'],
-    "$\texttt{var(z)}_{6}$" [> "right", > "5"']
+   "$\texttt{*}_{2}$" [> "R$_{11}$"] -> {
+    "$\texttt{x}_{4}$" [> "L$_{3}$"'],
+    "$\texttt{z}_{6}$" [> "R$_{5}$"]
    }
   }
  }
@@ -893,19 +869,19 @@ TODO: \autoref{sub:Editing Different Parts of the Code}
 \subsubsection{Editing Different Parts of the Code}
 \label{sub:Editing Different Parts of the Code}
 
-\begin{figure*}
+\begin{figure}
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.3\textwidth}
+\begin{subfigure}{0.32\linewidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
    {},
-   "$\texttt{*}_{2}$" [> "right", > "11"'] -> {
-    "$\texttt{var(u)}_{12}$" [> "left", > "13"'],
-    "$\texttt{var(z)}_{6}$" [> "right", > "5"']
+   "$\texttt{*}_{2}$" [> "R$_{11}$"] -> {
+    "$\texttt{u}_{12}$" [> "L$_{13}$"'],
+    "$\texttt{z}_{6}$" [> "R$_{5}$"]
    }
   }
  }
@@ -917,16 +893,16 @@ TODO: \autoref{sub:Editing Different Parts of the Code}
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.3\textwidth}
+\begin{subfigure}{0.32\linewidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
    {},
-   "$\texttt{*}_{2}$" [> "right", > "11"'] -> {
-    "$\texttt{var(x)}_{4}$" [> "left", > "3"'],
-    "$\texttt{var(v)}_{14}$" [> "right", > "15"']
+   "$\texttt{*}_{2}$" [> "R$_{11}$"] -> {
+    "$\texttt{x}_{4}$" [> "L$_{3}$"'],
+    "$\texttt{v}_{14}$" [> "R$_{15}$"]
    }
   }
  }
@@ -938,16 +914,16 @@ TODO: \autoref{sub:Editing Different Parts of the Code}
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.3\textwidth}
+\begin{subfigure}{0.32\linewidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
    {},
-   "$\texttt{*}_{2}$" [> "right", > "11"'] -> {
-    "$\texttt{var(u)}_{12}$" [> "left", > "13"'],
-    "$\texttt{var(v)}_{14}$" [> "right", > "15"']
+   "$\texttt{*}_{2}$" [> "R$_{11}$"] -> {
+    "$\texttt{u}_{12}$" [> "L$_{13}$"'],
+    "$\texttt{v}_{14}$" [> "R$_{15}$"]
    }
   }
  }
@@ -960,7 +936,7 @@ TODO: \autoref{sub:Editing Different Parts of the Code}
 \hfill{}
 \caption{Editing Different Parts of the Code}
 \label{fig:Editing Different Parts of the Code}
-\end{figure*}
+\end{figure}
 
 % \begin{figure}
 % \centering
@@ -1020,19 +996,19 @@ TODO: commutativity diagram of screenshots with two cursors
 \subsubsection{Editing Nested Parts of the Code}
 \label{sub:Editing Nested Parts of the Code}
 
-\begin{figure*}
+\begin{figure}
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.3\textwidth}
+\begin{subfigure}{0.32\linewidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
    {},
-   "$\texttt{*}_{2}$" [> "right", > "11"'] -> {
-    "$\texttt{var(u)}_{12}$" [> "left", > "13"'],
-    "$\texttt{var(w)}_{16}$" [> "right", > "17"']
+   "$\texttt{*}_{2}$" [> "R$_{11}$"] -> {
+    "$\texttt{u}_{12}$" [> "L$_{13}$"'],
+    "$\texttt{w}_{16}$" [> "R$_{17}$"]
    }
   }
  }
@@ -1044,15 +1020,15 @@ TODO: commutativity diagram of screenshots with two cursors
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.3\textwidth}
+\begin{subfigure}{0.32\linewidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
-   "$\texttt{*}_{2}$" [> "left", > "19"'] -> {
-    "$\texttt{var(u)}_{12}$" [> "left", > "13"'],
-    "$\texttt{var(v)}_{14}$" [> "right", > "15"']
+  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
+   "$\texttt{*}_{2}$" [> "L$_{19}$"'] -> {
+    "$\texttt{u}_{12}$" [> "L$_{13}$"'],
+    "$\texttt{v}_{14}$" [> "R$_{15}$"]
    },
    {}
   }
@@ -1065,15 +1041,15 @@ TODO: commutativity diagram of screenshots with two cursors
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.3\textwidth}
+\begin{subfigure}{0.32\linewidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
-   "$\texttt{*}_{2}$" [> "left", > "19"'] -> {
-    "$\texttt{var(u)}_{12}$" [> "left", > "13"'],
-    "$\texttt{var(w)}_{16}$" [> "right", > "17"']
+  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
+   "$\texttt{*}_{2}$" [> "L$_{19}$"'] -> {
+    "$\texttt{u}_{12}$" [> "L$_{13}$"'],
+    "$\texttt{w}_{16}$" [> "R$_{17}$"]
    },
    {}
   }
@@ -1087,7 +1063,7 @@ TODO: commutativity diagram of screenshots with two cursors
 \hfill{}
 \caption{Editing Nested Parts of the Code}
 \label{fig:Editing Nested Parts of the Code}
-\end{figure*}
+\end{figure}
 
 % \begin{figure}
 % \centering
@@ -1140,18 +1116,18 @@ our nominal equality.
 \begin{figure*}
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.3\textwidth}
+\begin{subfigure}{0.24\linewidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
-   "$\texttt{*}_{2}$" [> "left", > "19"'] -> {
-    "$\texttt{var(u)}_{12}$" [> "left", > "13"'],
-    "$\texttt{var(w)}_{16}$" [> "right", > "17"']
+  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
+   "$\texttt{*}_{2}$" [> "L$_{19}$"'] -> {
+    "$\texttt{u}_{12}$" [> "L$_{13}$"'],
+    "$\texttt{w}_{16}$" [> "R$_{17}$"]
    },
    {
-    "$\texttt{var(x)}_{20}$" [> "right", > "21"']
+    "$\texttt{x}_{20}$" [> "R$_{21}$"]
    }
   }
  }
@@ -1163,17 +1139,17 @@ our nominal equality.
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.3\textwidth}
+\begin{subfigure}{0.24\linewidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
-   "$\texttt{*}_{2}$" [> "left", > "19"'] -> {
-    "$\texttt{var(u)}_{12}$" [> "left", > "13"'],
-    "$\texttt{var(w)}_{16}$" [> "right", > "17"']
+  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
+   "$\texttt{*}_{2}$" [> "L$_{19}$"'] -> {
+    "$\texttt{u}_{12}$" [> "L$_{13}$"'],
+    "$\texttt{w}_{16}$" [> "R$_{17}$"]
    },
-   "$\texttt{var(y)}_{22}$" [> "right", > "23"']
+   "$\texttt{y}_{22}$" [> "R$_{23}$"]
   }
  }
 };
@@ -1184,28 +1160,35 @@ our nominal equality.
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.3\textwidth}
+\begin{subfigure}{0.24\linewidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
-   "$\texttt{*}_{2}$" [> "left", > "19"'] -> {
-    "$\texttt{var(u)}_{12}$" [> "left", > "13"'],
-    "$\texttt{var(w)}_{16}$" [> "right", > "17"']
+  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
+   "$\texttt{*}_{2}$" [> "L$_{19}$"'] -> {
+    "$\texttt{u}_{12}$" [> "L$_{13}$"'],
+    "$\texttt{w}_{16}$" [> "R$_{17}$"]
    },
    {
-    "$\texttt{var(x)}_{20}$" [> "right", > "21"'],
-    "$\texttt{var(y)}_{22}$" [> "right", > "23"']
+    "$\texttt{x}_{20}$" [> "R$_{21}$"],
+    "$\texttt{y}_{22}$" [> "R$_{23}$"]
    }
   }
  }
 };
 \end{tikzpicture}
-
-TODO: show UI
 \caption{The result of merging \autoref{fig:Multi-child-a} with \autoref{fig:Multi-child-b}}
 \label{fig:Multi-child-c}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.24\linewidth}
+\centering
+TODO: show UI
+\caption{User interface showing the multi-child conflict in \autoref{fig:Multi-child-d}}
+\label{fig:Multi-child-d}
 \end{subfigure}
 %%%%%%%%
 \hfill{}
@@ -1291,14 +1274,14 @@ Multiple adds cause conflicts
 \begin{figure*}
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.24\textwidth}
+\begin{subfigure}{0.24\linewidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
-   "$\texttt{+}_{24}$" [> "left", > "23"'] -> {
-    "$\texttt{var(x)}_{26}$" [> "left", > "25"'],
+  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
+   "$\texttt{+}_{24}$" [> "L$_{23}$"'] -> {
+    "$\texttt{x}_{26}$" [> "L$_{25}$"'],
     {}
    },
    {}
@@ -1316,14 +1299,14 @@ TODO: UI (at least moc up)
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.24\textwidth}
+\begin{subfigure}{0.24\linewidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
-   "$\texttt{+}_{24}$" [> "left", > "23"'],
-   "$\texttt{var(x)}_{26}$" [> "right", > "27"']
+  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
+   "$\texttt{+}_{24}$" [> "L$_{23}$"'],
+   "$\texttt{x}_{26}$" [> "R$_{27}$"]
   }
  }
 };
@@ -1334,15 +1317,15 @@ TODO: UI (at least moc up)
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.24\textwidth}
+\begin{subfigure}{0.24\linewidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
-   "$\texttt{+}_{24}$" [> "left", > "23"'] -> {
+  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
+   "$\texttt{+}_{24}$" [> "L$_{23}$"'] -> {
     {},
-    "$\texttt{var(x)}_{26}$" [> "right", > "29"']
+    "$\texttt{x}_{26}$" [> "R$_{29}$"']
    },
    {}
   }
@@ -1355,21 +1338,21 @@ TODO: UI (at least moc up)
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.24\textwidth}
+\begin{subfigure}{0.24\linewidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  a/{$\texttt{+}_{8}$} [> "root", > "7"'] -> {
-   "$\texttt{+}_{24}$" [> "left", > "23"'] ->["right", "29"'] {
+  a/{$\texttt{+}_{8}$} [> "Root$_{7}$"] -> {
+   "$\texttt{+}_{24}$" [> "L$_{23}$"'] -> {
     {},
-    b/"$\texttt{var(x)}_{26}$"
+    b/"$\texttt{x}_{26}$" [> "R$_{29}$"']
    },
    {}
   }
  },
- a ->["right", "27"'] b
 };
+\path [edge style,->] (a) to ["R$_{27}$",out=-60,in=60] (b);
 \end{tikzpicture}
 \caption{The result of merging \autoref{fig:Multi-parent-b} with \autoref{fig:Multi-parent-c}}
 \label{fig:Multi-parent-d}
@@ -1533,17 +1516,17 @@ We call this situation a multi-parent conflict.
 \subsubsection{Single-User Cycles}
 \label{sub:Cycles}
 
-\begin{figure*}
+\begin{figure}
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.24\textwidth}
+\begin{subfigure}{0.32\linewidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  v8/"$\texttt{+}_{8}$" [> "root", > "7"'] -> {
-   v2/"$\texttt{*}_{2}$" [> "left", > "19"'] -> {
-    "$\texttt{var(x)}_{2}$" [> "left", > "19"'],
+  v8/"$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
+   v2/"$\texttt{*}_{2}$" [> "L$_{19}$"'] -> {
+    "$\texttt{x}_{2}$" [> "L$_{19}$"'],
     {}
    },
    {}
@@ -1557,19 +1540,19 @@ We call this situation a multi-parent conflict.
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.24\textwidth}
+\begin{subfigure}{0.32\linewidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  v8/"$\texttt{+}_{8}$" [> "root", > "7"'] -> {
-   v2/"$\texttt{*}_{2}$" [> "left", > "19"'] -> {
-    "$\texttt{var(x)}_{2}$" [> "left", > "19"'],
+  v8/"$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
+   v2/"$\texttt{*}_{2}$" [> "L$_{19}$"'] -> {
+    "$\texttt{x}_{2}$" [> "L$_{19}$"'],
     {}
    },
-   "$\texttt{+}_{18}$" [> "right", > "7"'] -> {
-    "$\texttt{*}_{10}$" [> "left", > "19"'] -> {
-     "$\texttt{var(x)}_{12}$" [> "left", > "19"'],
+   "$\texttt{+}_{18}$" [> "R$_{7}$"] -> {
+    "$\texttt{*}_{10}$" [> "L$_{19}$"'] -> {
+     "$\texttt{x}_{12}$" [> "L$_{19}$"'],
      {}
     },
     {}
@@ -1584,21 +1567,21 @@ We call this situation a multi-parent conflict.
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.24\textwidth}
+\begin{subfigure}{0.32\linewidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  v8/"$\texttt{+}_{8}$" [> "root", > "7"'] -> {
-   v2/"$\texttt{*}_{2}$" [> "left", > "19"'] -> {
-    "$\texttt{var(x)}_{2}$" [> "left", > "19"'],
+  v8/"$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
+   v2/"$\texttt{*}_{2}$" [> "L$_{19}$"'] -> {
+    "$\texttt{x}_{2}$" [> "L$_{19}$"'],
     {}
    },
    {}
   }
- },
- v2 -> v8
+ }
 };
+\path[edge style,->] (v2) to ["R$_{19}$",out=-60,in=-60] (v8);
 \end{tikzpicture}
 \caption{\autoref{fig:Single-User Cycles-a} after Alice copy and pastes \Vertex{TODO} by reference as the right child of \Vertex{TODO}}
 \label{fig:Single-User Cycles-c}
@@ -1607,7 +1590,7 @@ We call this situation a multi-parent conflict.
 \hfill{}
 \caption{Single-User Cycles}
 \label{fig:Single-User Cycles}
-\end{figure*}
+\end{figure}
 
 % \begin{figure}
 % \centering
@@ -1659,10 +1642,10 @@ edits would create a cycle.
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
-   "$\texttt{+}_{2}$" [> "left", > "19"'] -> {
-    "$\texttt{+}_{4}$" [> "left", > "19"'],
-    "$\texttt{*}_{6}$" [> "right", > "19"']
+  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
+   "$\texttt{+}_{2}$" [> "L$_{19}$"'] -> {
+    "$\texttt{+}_{4}$" [> "L$_{19}$"'],
+    "$\texttt{*}_{6}$" [> "R$_{19}$"]
    },
    {}
   }
@@ -1680,12 +1663,12 @@ edits would create a cycle.
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
-   "$\texttt{+}_{2}$" [> "left", > "19"'] -> {
+  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
+   "$\texttt{+}_{2}$" [> "L$_{19}$"'] -> {
    },
    {
-    "$\texttt{+}_{4}$" [> "left", > "19"'] -> {
-     "$\texttt{*}_{6}$" [> "left", > "19"'],
+    "$\texttt{+}_{4}$" [> "R$_{19}$"] -> {
+     "$\texttt{*}_{6}$" [> "L$_{19}$"'],
      {}
     }
    }
@@ -1704,12 +1687,12 @@ edits would create a cycle.
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
-   "$\texttt{+}_{2}$" [> "left", > "19"'] -> {
+  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
+   "$\texttt{+}_{2}$" [> "L$_{19}$"'] -> {
    },
    {
-    "$\texttt{*}_{6}$" [> "left", > "19"'] -> {
-     "$\texttt{+}_{4}$" [> "left", > "19"'],
+    "$\texttt{*}_{6}$" [> "R$_{19}$"] -> {
+     "$\texttt{+}_{4}$" [> "L$_{19}$"'],
      {}
     }
    }
@@ -1728,12 +1711,12 @@ edits would create a cycle.
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
-   "$\texttt{+}_{2}$" [> "left", > "19"'] -> {
+  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
+   "$\texttt{+}_{2}$" [> "L$_{19}$"'] -> {
    },
    {
-    v1/"$\texttt{*}_{6}$" [> "left", > "19"'],
-    v2/"$\texttt{+}_{4}$" [> "left", > "19"']
+    v1/"$\texttt{*}_{6}$" [> "R$_{19}$"],
+    v2/"$\texttt{+}_{4}$" [> "R$_{19}$"]
    }
   }
  }
@@ -1800,9 +1783,9 @@ cycle represents to future work.
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
-   "$\texttt{+}_{2}$" [> "left", > "19"'],
-   "$\texttt{*}_{6}$" [> "left", > "19"']
+  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
+   "$\texttt{+}_{2}$" [> "L$_{19}$"'],
+   "$\texttt{*}_{6}$" [> "R$_{19}$"]
   }
  }
 };
@@ -1818,10 +1801,10 @@ cycle represents to future work.
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
-   "$\texttt{+}_{2}$" [> "left", > "19"'] -> {
-    "$\texttt{*}_{6}$" [> "left", > "19"'],
-    {}
+  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
+   "$\texttt{+}_{2}$" [> "L$_{19}$"'] -> {
+    {},
+    "$\texttt{*}_{6}$" [> "R$_{19}$"]
    },
    {}
   }
@@ -1839,10 +1822,10 @@ cycle represents to future work.
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "root", > "7"'] -> {
+  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
    {},
-   "$\texttt{*}_{6}$" [> "left", > "19"'] -> {
-    "$\texttt{+}_{2}$" [> "left", > "19"'],
+   "$\texttt{*}_{6}$" [> "R$_{19}$"] -> {
+    "$\texttt{+}_{2}$" [> "L$_{19}$"'],
     {}
    }
   }
@@ -1860,14 +1843,14 @@ cycle represents to future work.
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "root", > "7"']
+  "$\texttt{+}_{8}$" [> "Root$_{7}$"]
  }
 };
 \path (-1cm,-3cm) graph[graph style] {
- times/"$\texttt{*}_{6}$" [> "left", > "19"']
+ times/"$\texttt{*}_{6}$" [> "L$_{19}$"']
 };
 \path (1cm,-3cm) graph[graph style] {
- plus/"$\texttt{+}_{2}$" [> "left", > "19"']
+ plus/"$\texttt{+}_{2}$" [> "L$_{19}$"']
 };
 \path[draw,->] (times) to [out=45,in=135] (plus);
 \path[draw,->] (plus) to [out=-135,in=-45] (times);
