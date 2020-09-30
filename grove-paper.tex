@@ -66,7 +66,7 @@
 
 %% Packages
 \usepackage{booktabs}
-\usepackage{subcaption}
+\usepackage[rule=false]{subcaption}
 \usepackage{graphicx}
 \usepackage{semantic}
 \let\colonapprox\undefined % Avoid redefinition error in `colonequals`
@@ -109,6 +109,7 @@
 %\tikzset{boldline/.style={color=black,line width=1.0pt}}
 
 \usetikzlibrary{
+  backgrounds,  % Provides "framed" and "gridded"
   graphs,       % Graph *notation*
   graphdrawing, % Graph *layout*
   quotes,       % Quote syntax (e.g., "foo")
@@ -118,17 +119,28 @@
   trees,
 }
 
+\tikzset{
+  every picture/.style={framed, background rectangle/.style={draw=gray!50}},
+}
 \tikzset{graphs/graph style/.style={
- tree layout,
- level sep=1cm,
- nodes={draw, rounded corners=1mm},
- edges={draw, font={\small\ttfamily}}
+  tree layout,
+  level sep=1cm,
+  nodes={draw, rounded corners=1mm},
+  edges={draw, font={\small\ttfamily}},
+  /tikz/every edge quotes/.style={
+    %draw=gray!20,
+    anchor=west,
+    swap/.append code={
+      \ifpgfarrowswap
+        \pgfkeysalso{anchor=west}
+      \else
+        \pgfkeysalso{anchor=east}
+      \fi}},
 }}
 \tikzset{graphs/root style/.style={
  %draw=none,
  as={\textbullet$_{0}$}
 }}
-%\tikzset{graphs/every edge/.style={}
 
 %%%%%%%%
 % Lang components
@@ -370,7 +382,7 @@ Motivation:
 This section introduces collaborative structure editing in Grove.
 We begin in \autoref{sub:Program Representation} by covering how we represent expressions with holes as graphs,
 \autoref{sub:Single User Edits} explores edits by a single user, Alice,
-and \autoref{sub:Collaborative Structure Editing} explores edits by multiple users, Alice and Bob,
+and \autoref{sub:Multi-user Edits} explores edits by multiple users, Alice and Bob,
 each of whom is editing their own instance of a program.
 
 do not model cursors
@@ -476,60 +488,101 @@ corresponds to the hole on the right of the~\texttt{*} in~\texttt{x * \hole}.
 \subsection{Single User Edits}
 \label{sub:Single User Edits}
 
-% TODO: change num(2) in Fig1 to num(1) so Fig1 matches Fig2 (move parts of Fig 2 into Fig 1?)
+In the remainder of this section,
+we will consider user edits, starting
+in this subsection with single-user
+edits and continuing in \autoref{sub:Multi-user Edits}
+with multi-user edits.
 
-% TODO: remove cursor from Fig 1 and Fig 2
+Each user edit that we will consider corresponds to one or more graph edits.
+Graph edits can only add fresh edges and vertices or remove existing edges.
 
-\subsubsection{Additions}
-\label{sub:Additions}
+User edits act relative to a cursor. 
+We do not model cursor sharing and the cursor does not appear in the underlying graph.
+We discuss cursor representations and cursor sharing in more detail in \autoref{sub:Cursors}.
+
+\subsubsection{Construction}
+\label{sub:Construction}
+
+\begin{figure}
+\begin{tabular}{|p{0.49\linewidth}|p{0.49\linewidth}|}
+%\centering
+TODO
+&
+%\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "$\texttt{*}_{2}$" [> "Rt$_1$"] -> {
+   "$\texttt{x}_{4}$" [> "L$_3$"'],
+   "$\texttt{y}_{6}$" [> "R$_5$"]
+  }
+ }
+};
+\end{tikzpicture}
+\\
+\subcaption{User interface}
+\label{fig:Construction-a}
+ &
+\subcaption{\autoref{fig:A simple tree with a hole-b} after adding \Vertex{6} and \Edge{5}}
+\label{fig:Construction-b}
+\\ \hline
+\end{tabular}
+\caption{Construction}
+\label{fig:Construction}
+\end{figure}
+
 
 \begin{figure}
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.3\textwidth}
+\begin{subfigure}{0.49\columnwidth}
 \centering
 TODO
 \caption{User interface}
-\label{fig:Addition-a}
+\label{fig:Construction-a}
 \end{subfigure}
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.3\textwidth}
+\begin{subfigure}{0.49\columnwidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{*}_{2}$" [> "root", > "1"'] -> {
-   "$\texttt{var(x)}_{4}$" [> "left", > "3"'],
-   "$\texttt{var(y)}_{6}$" [> "right", > "5"']
+  "$\texttt{*}_{2}$" [> "Rt$_1$"] -> {
+   "$\texttt{x}_{4}$" [> "L$_3$"'],
+   "$\texttt{y}_{6}$" [> "R$_5$"]
   }
  }
 };
 \end{tikzpicture}
 \caption{\autoref{fig:A simple tree with a hole-b} after adding \Vertex{6} and \Edge{5}}
-\label{fig:Addition-b}
+\label{fig:Construction-b}
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Addition}
-\label{fig:Addition}
+\caption{Construction}
+\label{fig:Construction}
 \end{figure}
 
+TODO: "user edits" and "graph edits"
 
-TODO: Actions act at a cursor.  Each instance also has a cursor that it controls, but this is not part of the graph representation.
-
-Alice starts with the code in \autoref{fig:A simple tree with a hole},
+To start our examples, Alice starts with the code in \autoref{fig:A simple tree with a hole}.
 She moves her cursor to the hole in~\texttt{x * \hole} and enters the variable~\texttt{y}.
 We model edits as sequences of additions and deletions of edges to the graph.
 Alice's edit corresponds to creating a vertex for the variable reference~\texttt{y} and adding an edge
 to that vertex from \Vertex{2}.
-\autoref{fig:Addition-b} shows the result, where the new vertex has identifier~6.
+\autoref{fig:Construction-b} shows the result, where the new vertex has identifier~6.
 This graph represents the expression \texttt{x * y}.
 
 TODO: (though as we show in \autoref{sec:Formalism} creating a vertex is implicit in edge creation)
 
 TODO: z -> foo (or multi-editor)
+
+% TODO: change num(2) in Fig1 to num(1) so Fig1 matches Fig2 (move parts of Fig 2 into Fig 1?)
+
+% TODO: remove cursor from Fig 1 and Fig 2
 
 \subsubsection{Changes}
 \label{sub:Changes}
@@ -537,7 +590,7 @@ TODO: z -> foo (or multi-editor)
 \begin{figure}
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.3\textwidth}
+\begin{subfigure}{0.49\linewidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
@@ -548,19 +601,19 @@ TODO: z -> foo (or multi-editor)
   }
  }
 };
-\path (2cm,-2cm) graph[graph style] {
+\path (1cm,-2cm) graph[graph style] {
  y [as={$\texttt{y}_{6}$}]
 };
 \end{tikzpicture}
-\caption{\autoref{fig:Addition-b} after deleting \Edge{5}}
+\caption{\autoref{fig:Construction-b} after deleting \Edge{5}}
 \label{fig:Change-a}
 \end{subfigure}
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.3\textwidth}
+\begin{subfigure}{0.49\linewidth}
 \centering
-\begin{tikzpicture}
+\begin{tikzpicture}[framed]
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "$\texttt{*}_{2}$" [> "RT$_1$"] -> {
@@ -569,7 +622,7 @@ TODO: z -> foo (or multi-editor)
   }
  }
 };
-\path (2cm,-2cm) graph[graph style] {
+\path (1cm,-2cm) graph[graph style] {
  "$\texttt{y}_{6}$"
 };
 \end{tikzpicture}
@@ -822,8 +875,8 @@ If only one restore, then it does what you expect (basically a cut and paste)
 
 If multiple replicas restore to different places, then you get some complexity:
 
-\subsection{Collaborative Structure Editing}
-\label{sub:Collaborative Structure Editing}
+\subsection{Multi-user Edits}
+\label{sub:Multi-user Edits}
 
 TODO: mention that id numbers are global (or maybe use A1 and B1 for different users?)
 
