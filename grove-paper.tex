@@ -430,7 +430,7 @@ TODO
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "$\texttt{*}_{2}$" [> "Root$_{1}$"] -> {
-   "$\texttt{x}_{4}$" [> "L$_{3}$"],
+   "$\texttt{x}_{4}$" [> "L$_{3}$"'],
    {}
   }
  }
@@ -681,7 +681,7 @@ TODO: Explain orphans
 \path (-0.5,-3cm) graph[graph style] {
  "$\texttt{*}_{2}$" -> {
   "$\texttt{x}_{4}$" [> "L$_{3}$"'],
-  "$\texttt{z}_{6}$" [> "R$_{5}$"]
+  "$\texttt{z}_{8}$" [> "R$_{7}$"]
  }
 };
 \end{tikzpicture}
@@ -696,13 +696,13 @@ TODO: Explain orphans
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "Root$_{7}$"]
+  "$\texttt{+}_{10}$" [> "Root$_{9}$"]
  }
 };
 \path (-0.5cm,-3cm) graph[graph style] {
  "$\texttt{*}_{2}$" -> {
   "$\texttt{x}_{4}$" [> "L$_{5}$"'],
-  "$\texttt{z}_{6}$" [> "R$_{5}$"]
+  "$\texttt{z}_{8}$" [> "R$_{7}$"]
  }
 };
 \end{tikzpicture}
@@ -717,10 +717,10 @@ TODO: Explain orphans
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
-   "$\texttt{*}_{2}$" [> "L$_{9}$"'] -> {
+  "$\texttt{+}_{10}$" [> "Root$_{9}$"] -> {
+   "$\texttt{*}_{2}$" [> "L$_{11}$"'] -> {
     "$\texttt{x}_{4}$" [> "L$_{3}$"'],
-    "$\texttt{z}_{6}$" [> "R$_{5}$"]
+    "$\texttt{z}_{8}$" [> "R$_{7}$"]
    },
    {}
   }
@@ -777,13 +777,13 @@ TODO: Traditional diff: no relation (and indent might change)
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "Root$_{7}$"]
+  "$\texttt{+}_{10}$" [> "Root$_{9}$"]
  }
 };
 \path (0cm,-3cm) graph [graph style] {
  "$\texttt{*}_{2}$" -> {
   "$\texttt{x}_{4}$" [> "L$_{3}$"'],
-  "$\texttt{z}_{6}$" [> "R$_{5}$"]
+  "$\texttt{z}_{8}$" [> "R$_{7}$"]
  }
 };
 \end{tikzpicture}
@@ -798,11 +798,11 @@ TODO: Traditional diff: no relation (and indent might change)
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
+  "$\texttt{+}_{10}$" [> "Root$_{9}$"] -> {
    {},
-   "$\texttt{*}_{2}$" [> "R$_{11}$"] -> {
+   "$\texttt{*}_{2}$" [> "R$_{13}$"] -> {
     "$\texttt{x}_{4}$" [> "L$_{3}$"'],
-    "$\texttt{z}_{6}$" [> "R$_{5}$"]
+    "$\texttt{z}_{6}$" [> "R$_{7}$"]
    }
   }
  }
@@ -877,11 +877,11 @@ TODO: \autoref{sub:Editing Different Parts of the Code}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
+  "$\texttt{+}_{10}$" [> "Root$_{9}$"] -> {
    {},
-   "$\texttt{*}_{2}$" [> "R$_{11}$"] -> {
-    "$\texttt{u}_{12}$" [> "L$_{13}$"'],
-    "$\texttt{z}_{6}$" [> "R$_{5}$"]
+   "$\texttt{*}_{2}$" [> "R$_{13}$"] -> {
+    "$\texttt{u}_{16}$" [> "L$_{15}$"'],
+    "$\texttt{z}_{6}$" [> "R$_{7}$"]
    }
   }
  }
@@ -898,11 +898,11 @@ TODO: \autoref{sub:Editing Different Parts of the Code}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
+  "$\texttt{+}_{10}$" [> "Root$_{9}$"] -> {
    {},
-   "$\texttt{*}_{2}$" [> "R$_{11}$"] -> {
+   "$\texttt{*}_{2}$" [> "R$_{13}$"] -> {
     "$\texttt{x}_{4}$" [> "L$_{3}$"'],
-    "$\texttt{v}_{14}$" [> "R$_{15}$"]
+    "$\texttt{v}_{18}$" [> "R$_{17}$"]
    }
   }
  }
@@ -919,11 +919,11 @@ TODO: \autoref{sub:Editing Different Parts of the Code}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
+  "$\texttt{+}_{10}$" [> "Root$_{9}$"] -> {
    {},
-   "$\texttt{*}_{2}$" [> "R$_{11}$"] -> {
-    "$\texttt{u}_{12}$" [> "L$_{13}$"'],
-    "$\texttt{v}_{14}$" [> "R$_{15}$"]
+   "$\texttt{*}_{2}$" [> "R$_{13}$"] -> {
+    "$\texttt{u}_{16}$" [> "L$_{15}$"'],
+    "$\texttt{v}_{18}$" [> "R$_{17}$"]
    }
   }
  }
@@ -1004,17 +1004,17 @@ TODO: commutativity diagram of screenshots with two cursors
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
+  "$\texttt{+}_{10}$" [> "Root$_{9}$"] -> {
    {},
-   "$\texttt{*}_{2}$" [> "R$_{11}$"] -> {
-    "$\texttt{u}_{12}$" [> "L$_{13}$"'],
-    "$\texttt{w}_{16}$" [> "R$_{17}$"]
+   "$\texttt{*}_{2}$" [> "R$_{13}$"] -> {
+    "$\texttt{w}_{20}$" [> "L$_{19}$"'],
+    "$\texttt{v}_{18}$" [> "R$_{17}$"]
    }
   }
  }
 };
 \end{tikzpicture}
-\caption{\autoref{fig:Editing Different Parts of the Code-c} after Alice replaces \Vertex{14} with \Vertex{16}}
+\caption{\autoref{fig:Editing Nested Parts of the Code-c} after Alice replaces \Vertex{14} with \Vertex{16}}
 \label{fig:Editing Nested Parts of the Code-a}
 \end{subfigure}
 %%%%%%%%
@@ -1025,17 +1025,17 @@ TODO: commutativity diagram of screenshots with two cursors
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
-   "$\texttt{*}_{2}$" [> "L$_{19}$"'] -> {
-    "$\texttt{u}_{12}$" [> "L$_{13}$"'],
-    "$\texttt{v}_{14}$" [> "R$_{15}$"]
+  "$\texttt{+}_{10}$" [> "Root$_{9}$"] -> {
+   "$\texttt{*}_{2}$" [> "L$_{21}$"'] -> {
+    "$\texttt{u}_{16}$" [> "L$_{15}$"'],
+    "$\texttt{v}_{18}$" [> "R$_{17}$"]
    },
    {}
   }
  }
 };
 \end{tikzpicture}
-\caption{\autoref{fig:Editing Different Parts of the Code-c} after Bob move \Vertex{2} to the left child of \Vertex{8}}
+\caption{\autoref{fig:Editing Nested Parts of the Code-c} after Bob move \Vertex{2} to the left child of \Vertex{8}}
 \label{fig:Editing Nested Parts of the Code-b}
 \end{subfigure}
 %%%%%%%%
@@ -1046,10 +1046,10 @@ TODO: commutativity diagram of screenshots with two cursors
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
-   "$\texttt{*}_{2}$" [> "L$_{19}$"'] -> {
-    "$\texttt{u}_{12}$" [> "L$_{13}$"'],
-    "$\texttt{w}_{16}$" [> "R$_{17}$"]
+  "$\texttt{+}_{10}$" [> "Root$_{9}$"] -> {
+   "$\texttt{*}_{2}$" [> "L$_{21}$"'] -> {
+    "$\texttt{w}_{20}$" [> "L$_{19}$"'],
+    "$\texttt{v}_{18}$" [> "R$_{17}$"]
    },
    {}
   }
@@ -1121,13 +1121,13 @@ our nominal equality.
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
-   "$\texttt{*}_{2}$" [> "L$_{19}$"'] -> {
-    "$\texttt{u}_{12}$" [> "L$_{13}$"'],
-    "$\texttt{w}_{16}$" [> "R$_{17}$"]
+  "$\texttt{+}_{10}$" [> "Root$_{9}$"] -> {
+   "$\texttt{*}_{2}$" [> "L$_{21}$"'] -> {
+    "$\texttt{w}_{20}$" [> "L$_{19}$"'],
+    "$\texttt{v}_{18}$" [> "R$_{17}$"]
    },
    {
-    "$\texttt{x}_{20}$" [> "R$_{21}$"]
+    "$\texttt{x}_{22}$" [> "R$_{21}$"]
    }
   }
  }
@@ -1144,12 +1144,12 @@ our nominal equality.
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
-   "$\texttt{*}_{2}$" [> "L$_{19}$"'] -> {
-    "$\texttt{u}_{12}$" [> "L$_{13}$"'],
-    "$\texttt{w}_{16}$" [> "R$_{17}$"]
+  "$\texttt{+}_{10}$" [> "Root$_{9}$"] -> {
+   "$\texttt{*}_{2}$" [> "L$_{21}$"'] -> {
+    "$\texttt{w}_{20}$" [> "L$_{19}$"'],
+    "$\texttt{v}_{18}$" [> "R$_{17}$"]
    },
-   "$\texttt{y}_{22}$" [> "R$_{23}$"]
+   "$\texttt{y}_{24}$" [> "R$_{23}$"]
   }
  }
 };
@@ -1165,14 +1165,14 @@ our nominal equality.
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
-   "$\texttt{*}_{2}$" [> "L$_{19}$"'] -> {
-    "$\texttt{u}_{12}$" [> "L$_{13}$"'],
-    "$\texttt{w}_{16}$" [> "R$_{17}$"]
+  "$\texttt{+}_{10}$" [> "Root$_{9}$"] -> {
+   "$\texttt{*}_{2}$" [> "L$_{21}$"'] -> {
+    "$\texttt{w}_{20}$" [> "L$_{19}$"'],
+    "$\texttt{v}_{18}$" [> "R$_{17}$"]
    },
    {
-    "$\texttt{x}_{20}$" [> "R$_{21}$"],
-    "$\texttt{y}_{22}$" [> "R$_{23}$"]
+    "$\texttt{x}_{22}$" [> "R$_{21}$"],
+    "$\texttt{y}_{24}$" [> "R$_{23}$"]
    }
   }
  }
@@ -1274,14 +1274,14 @@ Multiple adds cause conflicts
 \begin{figure*}
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.24\linewidth}
+\begin{subfigure}{0.19\linewidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
-   "$\texttt{+}_{24}$" [> "L$_{23}$"'] -> {
-    "$\texttt{x}_{26}$" [> "L$_{25}$"'],
+  "$\texttt{+}_{10}$" [> "Root$_{9}$"] -> {
+   "$\texttt{*}_{2}$" [> "L$_{21}$"'] -> {
+    "$\texttt{w}_{20}$" [> "L$_{19}$"'],
     {}
    },
    {}
@@ -1289,9 +1289,6 @@ Multiple adds cause conflicts
  }
 };
 \end{tikzpicture}
-
-TODO: use * and +
-
 TODO: UI (at least moc up)
 \caption{Initial code}
 \label{fig:Multi-parent-a}
@@ -1299,14 +1296,17 @@ TODO: UI (at least moc up)
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.24\linewidth}
+\begin{subfigure}{0.19\linewidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
-   "$\texttt{+}_{24}$" [> "L$_{23}$"'],
-   "$\texttt{x}_{26}$" [> "R$_{27}$"]
+  "$\texttt{+}_{10}$" [> "Root$_{9}$"] -> {
+   "$\texttt{*}_{2}$" [> "L$_{21}$"'] -> {
+    {},
+    "$\texttt{w}_{20}$" [> "R$_{25}$"']
+   },
+   {}
   }
  }
 };
@@ -1317,17 +1317,14 @@ TODO: UI (at least moc up)
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.24\linewidth}
+\begin{subfigure}{0.19\linewidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
-   "$\texttt{+}_{24}$" [> "L$_{23}$"'] -> {
-    {},
-    "$\texttt{x}_{26}$" [> "R$_{29}$"']
-   },
-   {}
+  "$\texttt{+}_{10}$" [> "Root$_{9}$"] -> {
+   "$\texttt{*}_{2}$" [> "L$_{21}$"'],
+   "$\texttt{w}_{20}$" [> "R$_{27}$"]
   }
  }
 };
@@ -1338,15 +1335,15 @@ TODO: UI (at least moc up)
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}{0.24\linewidth}
+\begin{subfigure}{0.19\linewidth}
 \centering
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  a/{$\texttt{+}_{8}$} [> "Root$_{7}$"] -> {
-   "$\texttt{+}_{24}$" [> "L$_{23}$"'] -> {
+  a/{$\texttt{+}_{10}$} [> "Root$_{9}$"] -> {
+   "$\texttt{*}_{2}$" [> "L$_{21}$"'] -> {
     {},
-    b/"$\texttt{x}_{26}$" [> "R$_{29}$"']
+    b/"$\texttt{w}_{20}$" [> "R$_{25}$"']
    },
    {}
   }
@@ -1356,6 +1353,27 @@ TODO: UI (at least moc up)
 \end{tikzpicture}
 \caption{The result of merging \autoref{fig:Multi-parent-b} with \autoref{fig:Multi-parent-c}}
 \label{fig:Multi-parent-d}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.19\linewidth}
+\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  v8/"$\texttt{+}_{10}$" [> "Root$_{9}$"] -> {
+   v2/"$\texttt{*}_{2}$" [> "L$_{21}$"'] -> {
+    {},
+    "$\texttt{w}_{20}$" [> "R$_{25}$"']
+   },
+   {}
+  }
+ }
+};
+\end{tikzpicture}
+\caption{Initial code TODO: move to previous figure}
+\label{fig:Multi-parent-e}
 \end{subfigure}
 %%%%%%%%
 \hfill{}
@@ -1524,41 +1542,14 @@ We call this situation a multi-parent conflict.
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  v8/"$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
-   v2/"$\texttt{*}_{2}$" [> "L$_{19}$"'] -> {
-    "$\texttt{x}_{2}$" [> "L$_{19}$"'],
+  v8/"$\texttt{+}_{10}$" [> "Root$_{9}$"'] -> {
+   v2/"$\texttt{*}_{2}$" [> "L$_{21}$"'] -> {
+    {},
     {}
    },
    {}
   }
  }
-};
-\end{tikzpicture}
-\caption{Initial code}
-\label{fig:Single-User Cycles-a}
-\end{subfigure}
-%%%%%%%%
-\hfill
-%%%%%%%%
-\begin{subfigure}{0.32\linewidth}
-\centering
-\begin{tikzpicture}
-\path (0cm,0cm) graph[graph style] {
- root[root style] -> {
-  v8/"$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
-   v2/"$\texttt{*}_{2}$" [> "L$_{19}$"'] -> {
-    "$\texttt{x}_{2}$" [> "L$_{19}$"'],
-    {}
-   },
-   "$\texttt{+}_{18}$" [> "R$_{7}$"] -> {
-    "$\texttt{*}_{10}$" [> "L$_{19}$"'] -> {
-     "$\texttt{x}_{12}$" [> "L$_{19}$"'],
-     {}
-    },
-    {}
-   }
-  }
- },
 };
 \end{tikzpicture}
 \caption{\autoref{fig:Single-User Cycles-a} after Alice copy and pastes \Vertex{TODO} by copy as the right child of \Vertex{TODO}}
@@ -1572,16 +1563,39 @@ We call this situation a multi-parent conflict.
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  v8/"$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
-   v2/"$\texttt{*}_{2}$" [> "L$_{19}$"'] -> {
-    "$\texttt{x}_{2}$" [> "L$_{19}$"'],
-    {}
+  v8/"$\texttt{+}_{10}$" [> "Root$_{9}$"'] -> {
+   v2/"$\texttt{*}_{2}$" [> "L$_{21}$"'] -> {
+    {},
+    "$\texttt{+}_{30}$" [> "R$_{29}$"] -> {
+     "$\texttt{*}_{32}$" [> "L$_{31}$"'] -> {
+      {},
+      {}
+     },
+     {}
+    }
    },
+  }
+ }
+};
+\end{tikzpicture}
+\caption{\autoref{fig:Single-User Cycles-a} after Alice copy and pastes \Vertex{TODO} by copy as the right child of \Vertex{TODO}}
+\label{fig:Single-User Cycles-b}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}{0.32\linewidth}
+\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  v8/"$\texttt{+}_{10}$" [> "Root$_{9}$"] -> {
+   v2/"$\texttt{*}_{2}$" [> "L$_{21}$"'],
    {}
   }
  }
 };
-\path[edge style,->] (v2) to ["R$_{19}$",out=-60,in=-60] (v8);
+\path[edge style,->] (v2) to ["R$_{29}$",out=-60,in=-60] (v8);
 \end{tikzpicture}
 \caption{\autoref{fig:Single-User Cycles-a} after Alice copy and pastes \Vertex{TODO} by reference as the right child of \Vertex{TODO}}
 \label{fig:Single-User Cycles-c}
@@ -1642,7 +1656,7 @@ edits would create a cycle.
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
+  "$\texttt{+}_{10}$" [> "Root$_{9}$"] -> {
    "$\texttt{+}_{2}$" [> "L$_{19}$"'] -> {
     "$\texttt{+}_{4}$" [> "L$_{19}$"'],
     "$\texttt{*}_{6}$" [> "R$_{19}$"]
