@@ -2006,7 +2006,8 @@ and   vertices are drawn from $\V$,
 and   positions are drawn from $\P$, 
 and   edge states are drawn from $\Sigma$, all defined below.
 
-Each edge $\e = (u, v, p, v^\prime)$ has a unique name, $u \in \U$, and connects the child position $p$ of a source vertex $v$ to a target vertex $v^\prime$.
+Each edge $\e = (u, v, p, v^\prime)$ has a unique name, $u \in \U$,
+and connects the child position $p$ of a source vertex $v$ to a target vertex $v^\prime$.
 The state of each edge, $\e$, is determined by the corresponding edge state, $\G(\e) \in \Sigma = \{ \bot, \Plus, \Minus \}$.
 If $\G(\e) = \bot$, then $\e$ does not yet exist.
 If $\G(\e)$ is $\Plus$, the edge has been created.
@@ -2014,9 +2015,10 @@ If $\G(\e)$ is $\Minus$, the edge has been destroyed.
 The total ordering $\bot \sqsubset \Plus \sqsubset \Minus$ forms a lattice over $\Sigma$.
 
 A vertex $v = (u, k)$ identifies a distinct instance of the constructor $k$.
-Each constructor represents a different type of node in the target language's abstract syntax tree.
 
-A position $p$ identifies a location adjacent to some parent vertex.
+A constructor $k \in \K$ represents a different type of node in the target language's abstract syntax tree.
+
+A position $p \in \P$ identifies a location, adjacent to some parent vertex.
 
 Every graph contains a distinguished root vertex, root constructor, and root position, respectively named $v_0$, $k_0$, and $p_0$.
 
@@ -2033,12 +2035,29 @@ unique IDs (for both edges and vertexes).
 \subsubsection{Graph Actions}
 \label{sub:Graph Actions}
 
-A graph action is a +E or -E.
+We define graph edit actions as a pair of an edge state, excluding $\bot$, and an edge.
+Thus, $\alpha \in \A = \left\{\Plus, \Minus\right\} \times \E$.
+As a shorthand, we define $+e$ to be $(\Plus, e)$ and $-e$ to be $(\Minus, e)$.
 
-Graph action semantics is a transition system
-between graphs. (join with whatever it was before)
+We define the join operation $s_1 \sqcup s\_2$ to be the least upper bound of $s_1$ and $s_2$ with respect to the $\sqsubset$ ordering.
+For example, $\Plus \sqcup \bot = \Plus$, which means edges can be created if they have never existed,
+and $\Plus \sqcup \Minus = \Minus$, which means that once an edge is deleted it can never be restored.
+%smallest element of $\Sigma$ that is greater than or equal to both $s_1$ and $s_2$.
 
-G --action--> G'
+We define the semantics of graph actions via the following
+transition relation between graphs.
+\[
+G \overset{\left(s,e\right)}{\longrightarrow} G\left[ e \mapsto s \sqcup G(e) \right\}
+\]
+In other words, applying graph action $\alpha = \left(s, e\right)$ to a graph $G$
+results in $G\left[e \mapsto s \sqcup G(e) \right]$ (i.e., the graph is updated at $e$ to be
+the join of $s$ with whatever was already at $e$).
+
+% Graph action semantics is a transition system between graphs.
+% (join with whatever it was before)
+
+% Intuitively, joining any edge state with $\bot$ is always the non-$\bot$ edge state (once an edge exists, it always exists).
+% Joining anything with $\Minus$ is always $\Minus$ (once an edge is marked as deleted, it is permanently deleted).
 
 \subsection{Commutativity}
 
@@ -2426,5 +2445,9 @@ $\boxed{(E,A)^{*} -->a (E,A)^{*}}$
 \end{mathpar}
 
 Missing Action.env members: Record / Report / Stop / Replay, Dump / Load, Clone / Drop
+
+$G \overset{\left(e,s\right)}{\longrightarrow} G\left[ e \mapsto s \sqcup G(e) \right]$
+
+% Edge.Map.add action.value.edge (join old_state new_state) graph
 
 \end{document}
