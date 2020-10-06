@@ -1127,7 +1127,7 @@ our nominal equality.
     "$\texttt{v}_{18}$" [> "R$_{17}$"]
    },
    {
-    "$\texttt{x}_{22}$" [> "R$_{21}$"]
+    "$\texttt{x}_{24}$" [> "R$_{23}$"]
    }
   }
  }
@@ -1149,7 +1149,7 @@ our nominal equality.
     "$\texttt{w}_{20}$" [> "L$_{19}$"'],
     "$\texttt{v}_{18}$" [> "R$_{17}$"]
    },
-   "$\texttt{y}_{24}$" [> "R$_{23}$"]
+   "$\texttt{y}_{26}$" [> "R$_{25}$"]
   }
  }
 };
@@ -1171,8 +1171,8 @@ our nominal equality.
     "$\texttt{v}_{18}$" [> "R$_{17}$"]
    },
    {
-    "$\texttt{x}_{22}$" [> "R$_{21}$"],
-    "$\texttt{y}_{24}$" [> "R$_{23}$"]
+    "$\texttt{x}_{24}$" [> "R$_{23}$"],
+    "$\texttt{y}_{26}$" [> "R$_{25}$"]
    }
   }
  }
@@ -1304,7 +1304,7 @@ TODO: UI (at least moc up)
   "$\texttt{+}_{10}$" [> "Root$_{9}$"] -> {
    "$\texttt{*}_{2}$" [> "L$_{21}$"'] -> {
     {},
-    "$\texttt{w}_{20}$" [> "R$_{25}$"']
+    "$\texttt{w}_{20}$" [> "R$_{27}$"']
    },
    {}
   }
@@ -1324,7 +1324,7 @@ TODO: UI (at least moc up)
  root[root style] -> {
   "$\texttt{+}_{10}$" [> "Root$_{9}$"] -> {
    "$\texttt{*}_{2}$" [> "L$_{21}$"'],
-   "$\texttt{w}_{20}$" [> "R$_{27}$"]
+   "$\texttt{w}_{20}$" [> "R$_{29}$"]
   }
  }
 };
@@ -1343,13 +1343,13 @@ TODO: UI (at least moc up)
   a/{$\texttt{+}_{10}$} [> "Root$_{9}$"] -> {
    "$\texttt{*}_{2}$" [> "L$_{21}$"'] -> {
     {},
-    b/"$\texttt{w}_{20}$" [> "R$_{25}$"']
+    b/"$\texttt{w}_{20}$" [> "R$_{27}$"']
    },
    {}
   }
  },
 };
-\path [edge style,->] (a) to ["R$_{27}$",out=-60,in=60] (b);
+\path [edge style,->] (a) to ["R$_{29}$",out=-60,in=60] (b);
 \end{tikzpicture}
 \caption{The result of merging \autoref{fig:Multi-parent-b} with \autoref{fig:Multi-parent-c}}
 \label{fig:Multi-parent-d}
@@ -1365,7 +1365,7 @@ TODO: UI (at least moc up)
   v8/"$\texttt{+}_{10}$" [> "Root$_{9}$"] -> {
    v2/"$\texttt{*}_{2}$" [> "L$_{21}$"'] -> {
     {},
-    "$\texttt{w}_{20}$" [> "R$_{25}$"']
+    "$\texttt{w}_{20}$" [> "R$_{27}$"']
    },
    {}
   }
@@ -1553,7 +1553,7 @@ We call this situation a multi-parent conflict.
 };
 \end{tikzpicture}
 \caption{\autoref{fig:Single-User Cycles-a} after Alice copy and pastes \Vertex{TODO} by copy as the right child of \Vertex{TODO}}
-\label{fig:Single-User Cycles-b}
+\label{fig:Single-User Cycles-a}
 \end{subfigure}
 %%%%%%%%
 \hfill
@@ -1566,8 +1566,8 @@ We call this situation a multi-parent conflict.
   v8/"$\texttt{+}_{10}$" [> "Root$_{9}$"'] -> {
    v2/"$\texttt{*}_{2}$" [> "L$_{21}$"'] -> {
     {},
-    "$\texttt{+}_{30}$" [> "R$_{29}$"] -> {
-     "$\texttt{*}_{32}$" [> "L$_{31}$"'] -> {
+    "$\texttt{+}_{32}$" [> "R$_{31}$"] -> {
+     "$\texttt{*}_{34}$" [> "L$_{33}$"'] -> {
       {},
       {}
      },
@@ -1595,7 +1595,7 @@ We call this situation a multi-parent conflict.
   }
  }
 };
-\path[edge style,->] (v2) to ["R$_{29}$",out=-60,in=-60] (v8);
+\path[edge style,->] (v2) to ["R$_{31}$",out=-60,in=-60] (v8);
 \end{tikzpicture}
 \caption{\autoref{fig:Single-User Cycles-a} after Alice copy and pastes \Vertex{TODO} by reference as the right child of \Vertex{TODO}}
 \label{fig:Single-User Cycles-c}
@@ -1657,9 +1657,9 @@ edits would create a cycle.
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "$\texttt{+}_{10}$" [> "Root$_{9}$"] -> {
-   "$\texttt{+}_{2}$" [> "L$_{19}$"'] -> {
-    "$\texttt{+}_{4}$" [> "L$_{19}$"'],
-    "$\texttt{*}_{6}$" [> "R$_{19}$"]
+   "$\texttt{+}_{2}$" [> "L$_{21}$"'] -> {
+    "$\texttt{+}_{34}$" [> "L$_{33}$"'],
+    "$\texttt{*}_{36}$" [> "R$_{35}$"]
    },
    {}
   }
@@ -1677,12 +1677,12 @@ edits would create a cycle.
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
-   "$\texttt{+}_{2}$" [> "L$_{19}$"'] -> {
+  "$\texttt{+}_{10}$" [> "Root$_{9}$"] -> {
+   "$\texttt{+}_{2}$" [> "L$_{21}$"'] -> {
    },
    {
-    "$\texttt{+}_{4}$" [> "R$_{19}$"] -> {
-     "$\texttt{*}_{6}$" [> "L$_{19}$"'],
+    "$\texttt{+}_{34}$" [> "R$_{37}$"] -> {
+     "$\texttt{*}_{36}$" [> "L$_{39}$"'],
      {}
     }
    }
@@ -1701,12 +1701,12 @@ edits would create a cycle.
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
-   "$\texttt{+}_{2}$" [> "L$_{19}$"'] -> {
+  "$\texttt{+}_{10}$" [> "Root$_{9}$"] -> {
+   "$\texttt{+}_{2}$" [> "L$_{21}$"'] -> {
    },
    {
-    "$\texttt{*}_{6}$" [> "R$_{19}$"] -> {
-     "$\texttt{+}_{4}$" [> "L$_{19}$"'],
+    "$\texttt{*}_{36}$" [> "R$_{41}$"] -> {
+     "$\texttt{+}_{34}$" [> "L$_{43}$"'],
      {}
     }
    }
@@ -1725,18 +1725,18 @@ edits would create a cycle.
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
-   "$\texttt{+}_{2}$" [> "L$_{19}$"'] -> {
+  "$\texttt{+}_{10}$" [> "Root$_{9}$"] -> {
+   "$\texttt{+}_{2}$" [> "L$_{21}$"'] -> {
    },
    {
-    v1/"$\texttt{*}_{6}$" [> "R$_{19}$"],
-    v2/"$\texttt{+}_{4}$" [> "R$_{19}$"]
+    v1/"$\texttt{+}_{34}$" [> "R$_{37}$"],
+    v2/"$\texttt{*}_{36}$" [> "R$_{41}$"]
    }
   }
  }
 };
-\path[draw,->] (v1) to [out=-45,in=-135] (v2);
-\path[draw,->] (v2) to [out=-90,in=-90] (v1);
+\path[edge style,->] (v1) to ["L$_{39}$",out=-45,in=-135] (v2);
+\path[edge style,->] (v2) to ["L$_{43}$",out=-90,in=-90] (v1);
 \end{tikzpicture}
 \caption{Initial code}
 \label{fig:Multi-User Cycles-d}
@@ -1797,9 +1797,9 @@ cycle represents to future work.
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
-   "$\texttt{+}_{2}$" [> "L$_{19}$"'],
-   "$\texttt{*}_{6}$" [> "R$_{19}$"]
+  "$\texttt{+}_{10}$" [> "Root$_{9}$"] -> {
+   "$\texttt{+}_{2}$" [> "L$_{21}$"'],
+   "$\texttt{*}_{36}$" [> "R$_{41}$"]
   }
  }
 };
@@ -1815,10 +1815,10 @@ cycle represents to future work.
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
-   "$\texttt{+}_{2}$" [> "L$_{19}$"'] -> {
+  "$\texttt{+}_{10}$" [> "Root$_{9}$"] -> {
+   "$\texttt{+}_{2}$" [> "L$_{21}$"'] -> {
     {},
-    "$\texttt{*}_{6}$" [> "R$_{19}$"]
+    "$\texttt{*}_{36}$" [> "R$_{45}$"]
    },
    {}
   }
@@ -1836,10 +1836,10 @@ cycle represents to future work.
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "Root$_{7}$"] -> {
+  "$\texttt{+}_{10}$" [> "Root$_{9}$"] -> {
    {},
-   "$\texttt{*}_{6}$" [> "R$_{19}$"] -> {
-    "$\texttt{+}_{2}$" [> "L$_{19}$"'],
+   "$\texttt{*}_{36}$" [> "R$_{37}$"] -> {
+    "$\texttt{+}_{2}$" [> "L$_{47}$"'],
     {}
    }
   }
@@ -1857,17 +1857,13 @@ cycle represents to future work.
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "$\texttt{+}_{8}$" [> "Root$_{7}$"]
+  "$\texttt{+}_{10}$" [> "Root$_{9}$"]
  }
 };
-\path (-1cm,-3cm) graph[graph style] {
- times/"$\texttt{*}_{6}$" [> "L$_{19}$"']
-};
-\path (1cm,-3cm) graph[graph style] {
- plus/"$\texttt{+}_{2}$" [> "L$_{19}$"']
-};
-\path[draw,->] (times) to [out=45,in=135] (plus);
-\path[draw,->] (plus) to [out=-135,in=-45] (times);
+\path (-1cm,-3cm) graph[graph style] { plus/"$\texttt{+}_{2}$" };
+\path ( 1cm,-3cm) graph[graph style] { times/"$\texttt{*}_{32}$" };
+\path[edge style,->] (times) to ["L$_{43}$"anchor=south,out=-135,in=-45] (plus);
+\path[edge style,->] (plus) to ["R$_{41}$"anchor=north,out=45,in=135] (times);
 \end{tikzpicture}
 \caption{Initial code}
 \label{fig:Disconnection-d}
