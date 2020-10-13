@@ -82,12 +82,11 @@
 \mathlig{|-}{\vdash}
 \mathlig{:->}{\mapsto}
 \mathlig{-->a}{\overset{a}{\longrightarrow}}
-%\mathlig{||}{|}
-%\mathlig{|}{:}
-%\mathlig{:}{\!:\!}
 \newcommand{\abs}[1]{\left|{#1}\right|}
 
 \def\_{\texttt{\textunderscore}}
+
+\newcommand{\conflict}[2]{\llparenthesis#1|#2\rrparenthesis}
 
 
 %%%%%%%%
@@ -152,13 +151,12 @@
 
 % sets
 \def\A{\mathcal{A}}
-\def\C{\mathcal{C}}
+%\def\C{\mathcal{C}}
 \def\E{\mathcal{E}}
 \def\G{\mathcal{G}}
 \def\I{\mathcal{I}}
 \def\K{\mathcal{K}}
 \def\P{\mathcal{P}}
-\def\S{\mathcal{S}}
 \def\U{\mathcal{U}}
 \def\V{\mathcal{V}}
 \def\e{\varepsilon}
@@ -202,6 +200,11 @@
 \def\Up{\text{Up}}
 
 % relations
+\DeclareMathOperator{\s}{\text{S}}
+\DeclareMathOperator{\MP}{\text{MP}}
+\DeclareMathOperator{\CC}{\text{C}}
+\DeclareMathOperator{\D}{\text{D}}
+
 \DeclareMathOperator{\arity}{\text{arity}}
 \DeclareMathOperator{\childVertexes}{\text{childVertexes}}
 \DeclareMathOperator{\cursorChildren}{\text{cursorChildren}}
@@ -2074,7 +2077,7 @@ Every graph contains a distinguished root vertex, root constructor, and root pos
 % lattice ordering $\bot < + < -$ LUB e.g., join A B = C
 
 You can map from syntax to graph by selecting
-unique IDs (for both edges and vertexes).
+unique IDs $u$ (for both edges and vertexes).
     - holes are not explicit in the graph
 
 \subsubsection{Graph Actions}
@@ -2153,6 +2156,23 @@ $G \overset{\alpha_2\alpha_1}{\longrightarrow} G'$.
 \label{sub:Edit Actions}
 
 Mapping to graph actions
+
+\[
+\begin{array}{l}
+  \textrm{Edit Actions}: \grave{e} \in Act ::= e \mid \#u \mid \conflict{\grave{e}}{\grave{e}} \\
+  \s : \G \to Act \times \V^{*} \times \V^{*} \times \V^{*} \\
+  \s(G) = (\grave{e}, \MP(G), \CC(G), \D(G)) \\
+  \MP(G) = \left\{ v \in \vertexes(G) \mid \exists e_1,e_2 \in \liveEdges(G), e_1= \right. \\
+      \qquad \left. (v,p_1,v_1), e_2=(v,p_2,v_2), e_1 \ne e_2 \right\} \\
+  \CC(G) = \ldots \\
+  \D(G) = \orphans(G) \setminus \left\{ v_0 \right\} \\
+  \orphans(G) = \left\{ v \in \vertexes(G) \mid \forall e=(v^\prime,p,v^{\prime\prime}) \in \right. \\
+      \qquad \left. \liveEdges(G), v^{\prime\prime} \ne v \right\} \\
+  \vertexes(G) = \left\{ v \mid \exists e = (v^\prime, p, v^{\prime\prime}) \in \edges(G), v \in \left\{ v^\prime, v^{\prime\prime}\right\} \right\} \\
+  \edges(G) = \left\{ e \mid G(e) \ne \bot \right\} \\
+  \liveEdges(G) = \left\{ e \mid G(e) = + \right\} \\
+\end{array}
+\]
 
 Sensibility -- mapping back from graphs
 to well-typed states that fixes holes
@@ -2266,7 +2286,7 @@ TODO: put all intermediate states for all graphs along with the edge actions
 
 \begin{tabular}{cl@{\hspace{1.5cm}}cl@{\hspace{1.5cm}}cl@{\hspace{1.5cm}}cl}
   $\A$ & Actions & $\S$ & Edge States   \\
-  $\C$ & Cursors & $\U$ & UUIDs         \\
+%  $\C$ & Cursors & $\U$ & UUIDs         \\
   $\E$ & Edges   & $\V$ & Vertexes      \\
   $\G$ & Graphs  & $\AA$ & Graph Actions \\
   $\I$ & Indices & $\EE$ & Editors       \\
@@ -2293,11 +2313,11 @@ A \emph{vertex} $v = (k, u) \in \V = \K \times \U$ is a distinct instance of con
 
 \paragraph{Cursor} \par
 
-A \emph{cursor} $c = (v,i) \in \C = \V \times \I$ is a reference to the (possibly empty) set of all vertexes with parent vertex $v$ and child index $i$. Let $c_{root} = (v_{root}, i_{root})$ be the \emph{root cursor}, a reference to all of the rooted vertexes, of a graph.
+%A \emph{cursor} $c = (v,i) \in \C = \V \times \I$ is a reference to the (possibly empty) set of all vertexes with parent vertex $v$ and child index $i$. Let $c_{root} = (v_{root}, i_{root})$ be the \emph{root cursor}, a reference to all of the rooted vertexes, of a graph.
 
 \paragraph{Edge} \par
 
-An \emph{edge} $\e = (c, v, u) \in \E = \C \times \V \times \U$ adds vertex $v$ with the set of vertexes referenced by cursor $c$.
+%An \emph{edge} $\e = (c, v, u) \in \E = \C \times \V \times \U$ adds vertex $v$ with the set of vertexes referenced by cursor $c$.
 
 \paragraph{Edge State} \par
 
@@ -2315,7 +2335,7 @@ A \emph{graph} $G = [\e :-> s]_{u}^{*} \in \G = \A^{*}$ is a function from edges
 
 \paragraph{Move Action} \par
 
-A \emph{move action} $a \in \A^{move} = \{ \Left,\Right,\Up,\Down \} \cup \{ \Select \} \times \C$ re-positions the cursor.
+%A \emph{move action} $a \in \A^{move} = \{ \Left,\Right,\Up,\Down \} \cup \{ \Select \} \times \C$ re-positions the cursor.
 
 \paragraph{Edit Action} \par
 
@@ -2331,7 +2351,7 @@ An \emph{action} $a \in \A = \A^{move} \cup \A^{edit} \cup \A^{comm}$ describes 
 
 \paragraph{Editor} \par
 
-An \emph{editor} $E = (G,c,A_{Q}^{*},A_{H}^{*},u) \in \EE = \mathcal{G} \times \C \times \AA^{*} \times \AA^{*} \times \U$ is an instance of graph $G$ with cursor $c$, queued graph actions $A_{Q}^{*}$, and known graph action history $A_{H}^{*}$, that can be identified by UUID $u$.
+%An \emph{editor} $E = (G,c,A_{Q}^{*},A_{H}^{*},u) \in \EE = \mathcal{G} \times \C \times \AA^{*} \times \AA^{*} \times \U$ is an instance of graph $G$ with cursor $c$, queued graph actions $A_{Q}^{*}$, and known graph action history $A_{H}^{*}$, that can be identified by UUID $u$.
 
 \subsubsection{The Environment} \par
 
