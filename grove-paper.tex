@@ -76,6 +76,7 @@
 \usepackage{stmaryrd}
 \usepackage{fontawesome}
 \usepackage{array}
+\usepackage{todonotes}
 
 % math ligatures
 \mathlig{::=}{\coloncolonequals}
@@ -533,8 +534,6 @@ corresponds to the hole on the right of the~\texttt{*} in~\texttt{x * \hole}.
 % arguments to those constructors (e.g.,~\texttt{2} in~\texttt{num(2)}).
 % (In TODO:REF, we discuss how to allow edits within these.)
 
-\marginpar{START REV HERE}
-
 \subsection{Single User Edits}
 \label{sub:Single User Edits}
 
@@ -544,7 +543,7 @@ in this subsection with single-user
 edits and continuing in \autoref{sub:Multi-user Edits}
 with multi-user edits.
 
-Each user edit that we will consider corresponds to one or more graph edits.
+Each user edit that we consider corresponds to one or more graph edits.
 Graph edits can only add fresh edges and vertices or remove existing edges.
 
 User edits act relative to a cursor. 
@@ -559,7 +558,7 @@ We discuss cursor representations and cursor sharing in more detail in \autoref{
 %%%%%%%%
 \begin{subfigure}{0.49\columnwidth}
 \centering
-TODO
+TODO: remove this figure
 \caption{User interface}
 \label{fig:Construction-a}
 \end{subfigure}
@@ -589,32 +588,22 @@ TODO
 \label{fig:Construction}
 \end{figure}
 
-TODO: "user edits" and "graph edits"
+\todo{"user edits" and "graph edits"}
+To start our examples, Alice moves her cursor to the hole in~\texttt{x * \hole} in \autoref{fig:A simple tree with a hole} and constructs the variable~\texttt{y} as shown in \autoref{fig:Construction-b}.
+This edit corresponds to creating \Edge{\eidConstructionY} from \Vertex{\vidSimpleX} at the \texttt{R} position to a newly created vertex \Vertex{\vidConstructionY} containing the variable reference \texttt{y}.
+The resulting graph represents the expression \texttt{x * y}.
 
-To start our examples, Alice starts with the code in \autoref{fig:A simple tree with a hole}.
-She moves her cursor to the hole in~\texttt{x * \hole} and enters the variable~\texttt{y}.
-We model edits as sequences of additions and deletions of edges to the graph.
-Alice's edit corresponds to creating a vertex for the variable reference~\texttt{y} and adding an edge
-to that vertex from \Vertex{2}.
-\autoref{fig:Construction-b} shows the result, where the new vertex has identifier~6.
-This graph represents the expression \texttt{x * y}.
-
-TODO: (though as we show in \autoref{sec:Formalism} creating a vertex is implicit in edge creation)
-
-TODO: z -> foo (or multi-editor)
-
-% TODO: change num(2) in Fig1 to num(1) so Fig1 matches Fig2 (move parts of Fig 2 into Fig 1?)
-
-% TODO: remove cursor from Fig 1 and Fig 2
-
-\subsubsection{Changes}
-\label{sub:Changes}
+\subsubsection{Deletion}
+\label{sub:Deletion}
 
 \begin{figure}
 \hfill
 %%%%%%%%
 \begin{subfigure}{0.49\linewidth}
 \centering
+TODO: delete and leave deleted z8
+
+TODO: delete "x" instead of "y"
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -636,6 +625,7 @@ TODO: z -> foo (or multi-editor)
 %%%%%%%%
 \begin{subfigure}{0.49\linewidth}
 \centering
+TODO: Delete this figure
 \newedge{ChangeZ}{R}
 \newvertex{ChangeZ}{z}
 \begin{tikzpicture}[framed]
@@ -660,8 +650,6 @@ TODO: z -> foo (or multi-editor)
 \label{fig:Change}
 \end{figure}
 
-Arrows between figures
-
 % \begin{figure}
 % \centering
 % \begin{tikzpicture}
@@ -673,39 +661,27 @@ Arrows between figures
 % \label{fig:Delete and Add}
 % \end{figure}
 
-Next Alice wants to replace~\texttt{y} with~\texttt{z} so that the code becomes~\texttt{x * z}.
-This is modeled by first deleting \Edge{5}.
-This results in \autoref{fig:Change-a}, which represents the expression~\texttt{x * \hole{}}.
-After that deletion, we add a new vertex to represent~\texttt{z} and an
-edge from \Vertex{2} to that vertex.
-This results in the bottom graph in \autoref{fig:Change-b},
-which represents the expression~\texttt{x * z}.
-
-Note that this edge has a new identifier distinct from the one before.
-In our model, once an edge with a particular identifier is deleted, it cannot be recreated.
-Instead a new edge with a new identifier is created.
-
-Note that \Vertex{3} continues to exist, and if it had any children, those children could remain connected to it.
+\todo{Arrows between figures}
+Next Alice decides to delete~\texttt{x} so that the code becomes~\texttt{\hole  * y}.
+This is modeled by deleting \Edge{\eidConstructionY} as shown in \autoref{fig:Change-a}. 
+Notice that \Vertex{\vidConstructionY} continues to exist, and if it had any children, those children could remain connected to it.
 In our system, once a vertex is created it is never deleted.
-This allows further manipulations of those vertexes as shown later in this section.
+This allows further manipulations of those vertices by other users as shown later in this section.
+Note that we omit such orphans from the remaining diagrams if they are not relevant to the exposition.
 
-Note that we will omit orphans from diagrams if they are not relevant
-(e.g., they are deleted and are not added back later)
+Once an edge with a particular identifier is deleted, it cannot be recreated.
+Thus if Alice performed an "undo" on this deletion, Grove would create a fresh edge between \Vertex{TODO} and \Vertex{TODO}.
 
-Note that we do not explicitly delete or add vertexes.
-Our only actions are deleting or adding \textit{edges}.
-Vertexes are implicitly created whenever an edge
-is created that points to it.
-Deleting vertexes is not necessary, as we can simply
-remove the edge pointing to it.
+% Note that we do not explicitly add vertexes.
+% Our only actions are deleting or adding \textit{edges}.
+% Vertexes are implicitly created whenever an edge
+% is created that points to it.
+% Deleting vertexes is not necessary, as we can simply
+% remove the edge pointing to it.
 
-TODO: explain that multiple delete or add are idempotent
+% TODO: explain that multiple delete or add are idempotent
 
-TODO: explain that delete overrides add
-
-TODO: once deleted an edge can never be recreated (though, a new edge (with a new id) can be created in the same spot as the original)
-
-TODO: Explain orphans
+% TODO: explain that delete overrides add
 
 \subsubsection{Wrapping Code}
 \label{sub:Wrapping Code}
@@ -788,6 +764,8 @@ TODO: Explain orphans
 \label{fig:Wrapping}
 \end{figure}
 
+\marginpar{START REV HERE}
+
 Next, Alice types~\texttt{+} when the cursor is on \Vertex{2}.
 If this were a hole, this would simply put a vertex with the~\texttt{+} constructor
 as a child of \Vertex{0}.
@@ -847,14 +825,15 @@ TODO: Traditional diff: no relation (and indent might change)
 %%%%%%%%
 \begin{subfigure}{0.45\linewidth}
 \centering
+\newedge{MoveTimes}{R}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    {},
-   "\vSimpleTimes" [> "R$_{13}$"] -> {
+   "\vSimpleTimes" [> "\eMoveTimes"] -> {
     "\vSimpleX" [> "\eSimpleX"'],
-    "$\texttt{z}_{6}$" [> "\eChangeZ"]
+    "\vChangeZ" [> "\eChangeZ"]
    }
   }
  }
@@ -931,9 +910,9 @@ TODO: \autoref{sub:Editing Different Parts of the Code}
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    {},
-   "\vSimpleTimes" [> "R$_{13}$"] -> {
+   "\vSimpleTimes" [> "\eMoveTimes"] -> {
     "$\texttt{u}_{16}$" [> "L$_{15}$"'],
-    "$\texttt{z}_{6}$" [> "\eChangeZ"]
+    "\vChangeZ" [> "\eChangeZ"]
    }
   }
  }
@@ -952,7 +931,7 @@ TODO: \autoref{sub:Editing Different Parts of the Code}
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    {},
-   "\vSimpleTimes" [> "R$_{13}$"] -> {
+   "\vSimpleTimes" [> "\eMoveTimes"] -> {
     "\vSimpleX" [> "\eSimpleX"'],
     "$\texttt{v}_{18}$" [> "R$_{17}$"]
    }
@@ -973,7 +952,7 @@ TODO: \autoref{sub:Editing Different Parts of the Code}
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    {},
-   "\vSimpleTimes" [> "R$_{13}$"] -> {
+   "\vSimpleTimes" [> "\eMoveTimes"] -> {
     "$\texttt{u}_{16}$" [> "L$_{15}$"'],
     "$\texttt{v}_{18}$" [> "R$_{17}$"]
    }
@@ -1058,7 +1037,7 @@ TODO: commutativity diagram of screenshots with two cursors
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    {},
-   "\vSimpleTimes" [> "R$_{13}$"] -> {
+   "\vSimpleTimes" [> "\eMoveTimes"] -> {
     "$\texttt{w}_{20}$" [> "L$_{19}$"'],
     "$\texttt{v}_{18}$" [> "R$_{17}$"]
    }
@@ -1926,6 +1905,8 @@ cycle represents to future work.
 \label{fig:Disconnection}
 \end{figure*}
 
+\todo{UI would show orphans only once edits orphans occur}
+
 Finally, when multi-user edits are merged,
 parts of the graph can become disconnected
 even though they are connected in each user's
@@ -1977,6 +1958,8 @@ the internal graph representation in Sec.~\ref{sub:Convergent Graphs},
 
 
 TODO: point of this section is commutativity theorem
+
+TODO: (though as we show in \autoref{sec:Formalism} creating a vertex is implicit in edge creation)
 
 The formalism is rather simple, \autoref{sec:Grove By Example} shows
 that it is sufficient to handle many common situations,
