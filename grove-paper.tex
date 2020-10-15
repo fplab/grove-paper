@@ -905,13 +905,15 @@ TODO: \autoref{sub:Editing Different Parts of the Code}
 %%%%%%%%
 \begin{subfigure}{0.32\linewidth}
 \centering
+\newedge{DifferentAlice}{L}
+\newvertex{DifferentAlice}{u}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    {},
    "\vSimpleTimes" [> "\eMoveTimes"] -> {
-    "$\texttt{u}_{16}$" [> "L$_{15}$"'],
+    "\vDifferentAlice" [> "\eDifferentAlice"'],
     "\vChangeZ" [> "\eChangeZ"]
    }
   }
@@ -926,6 +928,8 @@ TODO: \autoref{sub:Editing Different Parts of the Code}
 %%%%%%%%
 \begin{subfigure}{0.32\linewidth}
 \centering
+\newedge{DifferentBob}{R}
+\newvertex{DifferentBob}{v}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -933,7 +937,7 @@ TODO: \autoref{sub:Editing Different Parts of the Code}
    {},
    "\vSimpleTimes" [> "\eMoveTimes"] -> {
     "\vSimpleX" [> "\eSimpleX"'],
-    "$\texttt{v}_{18}$" [> "R$_{17}$"]
+    "\vDifferentBob" [> "\eDifferentBob"]
    }
   }
  }
@@ -953,8 +957,8 @@ TODO: \autoref{sub:Editing Different Parts of the Code}
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    {},
    "\vSimpleTimes" [> "\eMoveTimes"] -> {
-    "$\texttt{u}_{16}$" [> "L$_{15}$"'],
-    "$\texttt{v}_{18}$" [> "R$_{17}$"]
+    "\vDifferentAlice" [> "\eDifferentAlice"'],
+    "\vDifferentBob" [> "\eDifferentBob"]
    }
   }
  }
@@ -1032,14 +1036,16 @@ TODO: commutativity diagram of screenshots with two cursors
 %%%%%%%%
 \begin{subfigure}{0.32\linewidth}
 \centering
+\newedge{NestedAlice}{L}
+\newvertex{NestedAlice}{w}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    {},
    "\vSimpleTimes" [> "\eMoveTimes"] -> {
-    "$\texttt{w}_{20}$" [> "L$_{19}$"'],
-    "$\texttt{v}_{18}$" [> "R$_{17}$"]
+    "\vNestedAlice" [> "\eNestedAlice"'],
+    "\vDifferentBob" [> "\eDifferentBob"]
    }
   }
  }
@@ -1053,13 +1059,14 @@ TODO: commutativity diagram of screenshots with two cursors
 %%%%%%%%
 \begin{subfigure}{0.32\linewidth}
 \centering
+\newedge{NestedBob}{L}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "\vSimpleTimes" [> "L$_{21}$"'] -> {
-    "$\texttt{u}_{16}$" [> "L$_{15}$"'],
-    "$\texttt{v}_{18}$" [> "R$_{17}$"]
+   "\vSimpleTimes" [> "\eNestedBob"'] -> {
+    "\vDifferentAlice" [> "\eDifferentAlice"'],
+    "\vDifferentBob" [> "\eDifferentBob"]
    },
    {}
   }
@@ -1078,9 +1085,9 @@ TODO: commutativity diagram of screenshots with two cursors
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "\vSimpleTimes" [> "L$_{21}$"'] -> {
-    "$\texttt{w}_{20}$" [> "L$_{19}$"'],
-    "$\texttt{v}_{18}$" [> "R$_{17}$"]
+   "\vSimpleTimes" [> "\eNestedBob"'] -> {
+    "\vNestedAlice" [> "\eNestedAlice"'],
+    "\vDifferentBob" [> "\eDifferentBob"]
    },
    {}
   }
@@ -1149,16 +1156,18 @@ our nominal equality.
 %%%%%%%%
 \begin{subfigure}{0.24\linewidth}
 \centering
+\newedge{MultiChildAlice}{R}
+\newvertex{MultiChildAlice}{x}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "\vSimpleTimes" [> "L$_{21}$"'] -> {
-    "$\texttt{w}_{20}$" [> "L$_{19}$"'],
-    "$\texttt{v}_{18}$" [> "R$_{17}$"]
+   "\vSimpleTimes" [> "\eNestedBob"'] -> {
+    "\vNestedAlice" [> "\eNestedAlice"'],
+    "\vDifferentBob" [> "\eDifferentBob"]
    },
    {
-    "$\texttt{x}_{24}$" [> "R$_{23}$"]
+    "\vMultiChildAlice" [> "\eMultiChildAlice"]
    }
   }
  }
@@ -1172,15 +1181,17 @@ our nominal equality.
 %%%%%%%%
 \begin{subfigure}{0.24\linewidth}
 \centering
+\newedge{MultiChildBob}{R}
+\newvertex{MultiChildBob}{y}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "\vSimpleTimes" [> "L$_{21}$"'] -> {
-    "$\texttt{w}_{20}$" [> "L$_{19}$"'],
-    "$\texttt{v}_{18}$" [> "R$_{17}$"]
+   "\vSimpleTimes" [> "\eNestedBob"'] -> {
+    "\vNestedAlice" [> "\eNestedAlice"'],
+    "\vDifferentBob" [> "\eDifferentBob"]
    },
-   "$\texttt{y}_{26}$" [> "R$_{25}$"]
+   "\vMultiChildBob" [> "\eMultiChildBob"]
   }
  }
 };
@@ -1197,13 +1208,13 @@ our nominal equality.
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "\vSimpleTimes" [> "L$_{21}$"'] -> {
-    "$\texttt{w}_{20}$" [> "L$_{19}$"'],
-    "$\texttt{v}_{18}$" [> "R$_{17}$"]
+   "\vSimpleTimes" [> "\eNestedBob"'] -> {
+    "\vNestedAlice" [> "\eNestedAlice"'],
+    "\vDifferentBob" [> "\eDifferentBob"]
    },
    {
-    "$\texttt{x}_{24}$" [> "R$_{23}$"],
-    "$\texttt{y}_{26}$" [> "R$_{25}$"]
+    "\vMultiChildAlice" [> "\eMultiChildAlice"],
+    "\vMultiChildBob" [> "\eMultiChildBob"]
    }
   }
  }
@@ -1311,8 +1322,8 @@ Multiple adds cause conflicts
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "\vSimpleTimes" [> "L$_{21}$"'] -> {
-    "$\texttt{w}_{20}$" [> "L$_{19}$"'],
+   "\vSimpleTimes" [> "\eNestedBob"'] -> {
+    "\vNestedAlice" [> "\eNestedAlice"'],
     {}
    },
    {}
@@ -1329,13 +1340,14 @@ TODO: UI (at least moc up)
 %%%%%%%%
 \begin{subfigure}{0.19\linewidth}
 \centering
+\newedge{MultiParentAlice}{R}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "\vSimpleTimes" [> "L$_{21}$"'] -> {
+   "\vSimpleTimes" [> "\eNestedBob"'] -> {
     {},
-    "$\texttt{w}_{20}$" [> "R$_{27}$"']
+    "\vNestedAlice" [> "\eMultiParentAlice"']
    },
    {}
   }
@@ -1350,12 +1362,13 @@ TODO: UI (at least moc up)
 %%%%%%%%
 \begin{subfigure}{0.19\linewidth}
 \centering
+\newedge{MultiParentBob}{R}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "\vSimpleTimes" [> "L$_{21}$"'],
-   "$\texttt{w}_{20}$" [> "R$_{29}$"]
+   "\vSimpleTimes" [> "\eNestedBob"'],
+   "\vNestedAlice" [> "\eMultiParentBob"]
   }
  }
 };
@@ -1372,15 +1385,15 @@ TODO: UI (at least moc up)
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   a/{\vWrapPlus} [> "\eWrapPlus"] -> {
-   "\vSimpleTimes" [> "L$_{21}$"'] -> {
+   "\vSimpleTimes" [> "\eNestedBob"'] -> {
     {},
-    b/"$\texttt{w}_{20}$" [> "R$_{27}$"']
+    b/"\vNestedAlice" [> "\eMultiParentAlice"']
    },
    {}
   }
  },
 };
-\path [edge style,->] (a) to ["R$_{29}$",out=-60,in=60] (b);
+\path [edge style,->] (a) to ["\eMultiParentBob",out=-60,in=60] (b);
 \end{tikzpicture}
 \caption{The result of merging \autoref{fig:Multi-parent-b} with \autoref{fig:Multi-parent-c}}
 \label{fig:Multi-parent-d}
@@ -1394,9 +1407,9 @@ TODO: UI (at least moc up)
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   v8/"\vWrapPlus" [> "\eWrapPlus"] -> {
-   v2/"\vSimpleTimes" [> "L$_{21}$"'] -> {
+   v2/"\vSimpleTimes" [> "\eNestedBob"'] -> {
     {},
-    "$\texttt{w}_{20}$" [> "R$_{27}$"']
+    "\vNestedAlice" [> "\eMultiParentAlice"']
    },
    {}
   }
@@ -1574,7 +1587,7 @@ We call this situation a multi-parent conflict.
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   v8/"\vWrapPlus" [> "\eWrapPlus"'] -> {
-   v2/"\vSimpleTimes" [> "L$_{21}$"'] -> {
+   v2/"\vSimpleTimes" [> "\eNestedBob"'] -> {
     {},
     {}
    },
@@ -1591,14 +1604,18 @@ We call this situation a multi-parent conflict.
 %%%%%%%%
 \begin{subfigure}{0.32\linewidth}
 \centering
+\newedge{SingleCyclePlus}{R}
+\newvertex{SingleCyclePlus}{+}
+\newedge{SingleCycleTimes}{L}
+\newvertex{SingleCycleTimes}{*}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   v8/"\vWrapPlus" [> "\eWrapPlus"'] -> {
-   v2/"\vSimpleTimes" [> "L$_{21}$"'] -> {
+   v2/"\vSimpleTimes" [> "\eNestedBob"'] -> {
     {},
-    "$\texttt{+}_{32}$" [> "R$_{31}$"] -> {
-     "$\texttt{*}_{34}$" [> "L$_{33}$"'] -> {
+    "\vSingleCyclePlus" [> "\eSingleCyclePlus"] -> {
+     "\vSingleCycleTimes" [> "\eSingleCycleTimes"'] -> {
       {},
       {}
      },
@@ -1617,16 +1634,17 @@ We call this situation a multi-parent conflict.
 %%%%%%%%
 \begin{subfigure}{0.32\linewidth}
 \centering
+\newedge{SingleCycleCycle}{R}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   v8/"\vWrapPlus" [> "\eWrapPlus"] -> {
-   v2/"\vSimpleTimes" [> "L$_{21}$"'],
+   v2/"\vSimpleTimes" [> "\eNestedBob"'],
    {}
   }
  }
 };
-\path[edge style,->] (v2) to ["R$_{31}$",out=-60,in=-60] (v8);
+\path[edge style,->] (v2) to ["\eSingleCycleCycle",out=-60,in=-60] (v8);
 \end{tikzpicture}
 \caption{\autoref{fig:Single-User Cycles-a} after Alice copy and pastes \Vertex{TODO} by reference as the right child of \Vertex{TODO}}
 \label{fig:Single-User Cycles-c}
@@ -1688,7 +1706,7 @@ edits would create a cycle.
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "$\texttt{+}_{2}$" [> "L$_{21}$"'] -> {
+   "\vSimpleTimes" [> "\eNestedBob"'] -> {
     "$\texttt{+}_{34}$" [> "L$_{33}$"'],
     "$\texttt{*}_{36}$" [> "R$_{35}$"]
    },
@@ -1709,7 +1727,7 @@ edits would create a cycle.
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "$\texttt{+}_{2}$" [> "L$_{21}$"'] -> {
+   "\vSimpleTimes" [> "\eNestedBob"'] -> {
    },
    {
     "$\texttt{+}_{34}$" [> "R$_{37}$"] -> {
@@ -1733,7 +1751,7 @@ edits would create a cycle.
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "$\texttt{+}_{2}$" [> "L$_{21}$"'] -> {
+   "\vSimpleTimes" [> "\eNestedBob"'] -> {
    },
    {
     "$\texttt{*}_{36}$" [> "R$_{41}$"] -> {
@@ -1757,7 +1775,7 @@ edits would create a cycle.
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "$\texttt{+}_{2}$" [> "L$_{21}$"'] -> {
+   "\vSimpleTimes" [> "\eNestedBob"'] -> {
    },
    {
     v1/"$\texttt{+}_{34}$" [> "R$_{37}$"],
@@ -1829,7 +1847,7 @@ cycle represents to future work.
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "$\texttt{+}_{2}$" [> "L$_{21}$"'],
+   "\vSimpleTimes" [> "\eNestedBob"'],
    "$\texttt{*}_{36}$" [> "R$_{41}$"]
   }
  }
@@ -1847,7 +1865,7 @@ cycle represents to future work.
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "$\texttt{+}_{2}$" [> "L$_{21}$"'] -> {
+   "\vSimpleTimes" [> "\eNestedBob"'] -> {
     {},
     "$\texttt{*}_{36}$" [> "R$_{45}$"]
    },
@@ -1870,7 +1888,7 @@ cycle represents to future work.
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    {},
    "$\texttt{*}_{36}$" [> "R$_{37}$"] -> {
-    "$\texttt{+}_{2}$" [> "L$_{47}$"'],
+    "\vSimpleTimes" [> "L$_{47}$"'],
     {}
    }
   }
@@ -1891,7 +1909,7 @@ cycle represents to future work.
   "\vWrapPlus" [> "\eWrapPlus"]
  }
 };
-\path (-1cm,-3cm) graph[graph style] { plus/"$\texttt{+}_{2}$" };
+\path (-1cm,-3cm) graph[graph style] { plus/"\vSimpleTimes" };
 \path ( 1cm,-3cm) graph[graph style] { times/"$\texttt{*}_{32}$" };
 \path[edge style,->] (times) to ["L$_{43}$"anchor=south,out=-135,in=-45] (plus);
 \path[edge style,->] (plus) to ["R$_{41}$"anchor=north,out=45,in=135] (times);
