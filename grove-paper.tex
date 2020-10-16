@@ -1702,13 +1702,17 @@ edits would create a cycle.
 %%%%%%%%
 \begin{subfigure}{0.24\textwidth}
 \centering
+\newedge{MultiCyclePlus}{L}
+\newvertex{MultiCyclePlus}{+}
+\newedge{MultiCycleTimes}{R}
+\newvertex{MultiCycleTimes}{*}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    "\vSimpleTimes" [> "\eNestedBob"'] -> {
-    "$\texttt{+}_{34}$" [> "L$_{33}$"'],
-    "$\texttt{*}_{36}$" [> "R$_{35}$"]
+    "\vMultiCyclePlus" [> "\eMultiCyclePlus"'],
+    "\vMultiCycleTimes" [> "\eMultiCycleTimes"]
    },
    {}
   }
@@ -1723,6 +1727,8 @@ edits would create a cycle.
 %%%%%%%%
 \begin{subfigure}{0.24\textwidth}
 \centering
+\newedge{MultiCycleAlicePlus}{R}
+\newedge{MultiCycleAliceTimes}{L}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1730,8 +1736,8 @@ edits would create a cycle.
    "\vSimpleTimes" [> "\eNestedBob"'] -> {
    },
    {
-    "$\texttt{+}_{34}$" [> "R$_{37}$"] -> {
-     "$\texttt{*}_{36}$" [> "L$_{39}$"'],
+    "\vMultiCyclePlus" [> "\eMultiCycleAlicePlus"] -> {
+     "\vMultiCycleTimes" [> "\eMultiCycleAliceTimes"'],
      {}
     }
    }
@@ -1747,6 +1753,8 @@ edits would create a cycle.
 %%%%%%%%
 \begin{subfigure}{0.24\textwidth}
 \centering
+\newedge{MultiCycleBobTimes}{R}
+\newedge{MultiCycleBobPlus}{L}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1754,8 +1762,8 @@ edits would create a cycle.
    "\vSimpleTimes" [> "\eNestedBob"'] -> {
    },
    {
-    "$\texttt{*}_{36}$" [> "R$_{41}$"] -> {
-     "$\texttt{+}_{34}$" [> "L$_{43}$"'],
+    "\vMultiCycleTimes" [> "\eMultiCycleBobTimes"] -> {
+     "\vMultiCyclePlus" [> "\eMultiCycleBobPlus"'],
      {}
     }
    }
@@ -1778,14 +1786,14 @@ edits would create a cycle.
    "\vSimpleTimes" [> "\eNestedBob"'] -> {
    },
    {
-    v1/"$\texttt{+}_{34}$" [> "R$_{37}$"],
-    v2/"$\texttt{*}_{36}$" [> "R$_{41}$"]
+    v1/"\vMultiCyclePlus" [> "\eMultiCycleAlicePlus"],
+    v2/"\vMultiCycleTimes" [> "\eMultiCycleBobTimes"]
    }
   }
  }
 };
-\path[edge style,->] (v1) to ["L$_{39}$",out=-45,in=-135] (v2);
-\path[edge style,->] (v2) to ["L$_{43}$",out=-90,in=-90] (v1);
+\path[edge style,->] (v1) to ["\eMultiCycleAliceTimes",out=-45,in=-135] (v2);
+\path[edge style,->] (v2) to ["\eMultiCycleBobPlus",out=-90,in=-90] (v1);
 \end{tikzpicture}
 \caption{Initial code}
 \label{fig:Multi-User Cycles-d}
@@ -1848,7 +1856,7 @@ cycle represents to future work.
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    "\vSimpleTimes" [> "\eNestedBob"'],
-   "$\texttt{*}_{36}$" [> "R$_{41}$"]
+   "\vMultiCycleTimes" [> "\eMultiCycleBobTimes"]
   }
  }
 };
@@ -1861,13 +1869,14 @@ cycle represents to future work.
 %%%%%%%%
 \begin{subfigure}{0.24\textwidth}
 \centering
+\newedge{DisconnectionAlice}{R}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    "\vSimpleTimes" [> "\eNestedBob"'] -> {
     {},
-    "$\texttt{*}_{36}$" [> "R$_{45}$"]
+    "\vMultiCycleTimes" [> "\eDisconnectionAlice"]
    },
    {}
   }
@@ -1882,13 +1891,14 @@ cycle represents to future work.
 %%%%%%%%
 \begin{subfigure}{0.24\textwidth}
 \centering
+\newedge{DisconnectionBob}{L}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    {},
-   "$\texttt{*}_{36}$" [> "R$_{37}$"] -> {
-    "\vSimpleTimes" [> "L$_{47}$"'],
+   "\vMultiCycleTimes" [> "\eMultiCycleAlicePlus"] -> {
+    "\vSimpleTimes" [> "\eDisconnectionBob"'],
     {}
    }
   }
@@ -1910,9 +1920,9 @@ cycle represents to future work.
  }
 };
 \path (-1cm,-3cm) graph[graph style] { plus/"\vSimpleTimes" };
-\path ( 1cm,-3cm) graph[graph style] { times/"$\texttt{*}_{32}$" };
-\path[edge style,->] (times) to ["L$_{43}$"anchor=south,out=-135,in=-45] (plus);
-\path[edge style,->] (plus) to ["R$_{41}$"anchor=north,out=45,in=135] (times);
+\path ( 1cm,-3cm) graph[graph style] { times/"\vMultiCycleTimes" };
+\path[edge style,->] (times) to ["\eMultiCycleBobPlus"anchor=south,out=-135,in=-45] (plus);
+\path[edge style,->] (plus) to ["\eMultiCycleBobTimes"anchor=north,out=45,in=135] (times);
 \end{tikzpicture}
 \caption{Initial code}
 \label{fig:Disconnection-d}
