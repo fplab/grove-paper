@@ -121,7 +121,7 @@
 }
 
 \tikzset{
-  every picture/.style={framed, background rectangle/.style={draw=gray!50}},
+  %every picture/.style={framed, background rectangle/.style={draw=gray!50}},
 }
 \tikzset{edge style/.style={
   draw,
@@ -307,7 +307,7 @@
 \begin{document}
 
 %% Title information
-\title[Grove]{Grove: A Convergent Collaborative Structure-Editor Calculus}
+\title[Grove]{Grove: A Convergent Collaborative Structure-Editor~Calculus}
 %\subtitle{Subtitle}
 
 %% Author information
@@ -450,16 +450,16 @@ TODO: gray-scale unchanged parts of diagrams; and dashes for removed parts? desc
 %%%%%%%%
 \begin{subfigure}[t]{0.49\linewidth}
 \centering
-TODO
-\caption{User interface}
+\caption{}
 \label{fig:A simple tree with a hole-a}
+TODO
 \end{subfigure}
 %%%%%%%%
 \hfill
 %%%%%%%%
 \begin{subfigure}[t]{0.49\linewidth}
 \centering
-\caption{Graph representation}
+\caption{}
 \label{fig:A simple tree with a hole-b}
 \newedge{SimpleTimes}{Root}%
 \newvertex{SimpleTimes}{*}%
@@ -475,6 +475,7 @@ TODO
  }
 };
 \end{tikzpicture}
+
 TODO: labels for edge numbers
 
 TODO: sub figure with diagram of relation of subfigures
@@ -483,7 +484,9 @@ TODO: move subcaptions into master caption
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{A simple tree with a hole}
+\caption{A simple tree with a hole.
+\autoref{fig:A simple tree with a hole-a}:~User interface.
+\autoref{fig:A simple tree with a hole-b}:~Graph representation.}
 \label{fig:A simple tree with a hole}
 \end{figure}
 
@@ -552,7 +555,7 @@ We discuss cursor representations and cursor sharing in more detail in \autoref{
 %%%%%%%%
 \begin{subfigure}[t]{0.49\columnwidth}
 \centering
-\caption{User interface}
+\caption{}
 \label{fig:Construction-a}
 TODO: remove this figure
 \end{subfigure}
@@ -561,7 +564,7 @@ TODO: remove this figure
 %%%%%%%%
 \begin{subfigure}[t]{0.49\columnwidth}
 \centering
-\caption{\autoref{fig:A simple tree with a hole-b} after adding \Vertex{6} and \Edge{5}}
+\caption{}
 \label{fig:Construction-b}
 \newedge{ConstructionY}{R}%
 \newvertex{ConstructionY}{y}%
@@ -578,7 +581,9 @@ TODO: remove this figure
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Construction}
+\caption{Construction.
+\autoref{fig:Construction-a}:~User interface.
+\autoref{fig:Construction-b}:~\autoref{fig:A simple tree with a hole-b} after adding \Vertex{6} and \Edge{5}.}
 \label{fig:Construction}
 \end{figure}
 
@@ -595,7 +600,7 @@ The resulting graph represents the expression \texttt{x * y}.
 %%%%%%%%
 \begin{subfigure}[t]{0.49\linewidth}
 \centering
-\caption{\autoref{fig:Construction-b} after deleting \Edge{5}}
+\caption{}
 \label{fig:Change-a}
 TODO: delete and leave deleted z8
 
@@ -619,7 +624,7 @@ TODO: delete "x" instead of "y"
 %%%%%%%%
 \begin{subfigure}[t]{0.49\linewidth}
 \centering
-\caption{\autoref{fig:Change-a} after adding \Vertex{8} and \Edge{7}}
+\caption{}
 \label{fig:Change-b}
 TODO: Delete this figure
 \newedge{ChangeZ}{R}
@@ -640,7 +645,9 @@ TODO: Delete this figure
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Change}
+\caption{Change.
+\autoref{fig:Change-a}:~\autoref{fig:Construction-b} after deleting \Edge{5}.
+\autoref{fig:Change-b}:~\autoref{fig:Change-a} after adding \Vertex{8} and \Edge{7}.}
 \label{fig:Change}
 \end{figure}
 
@@ -693,7 +700,7 @@ Thus if Alice performed an "undo" on this deletion, Grove would create a fresh e
 %%%%%%%%
 \begin{subfigure}[t]{0.32\linewidth}
 \centering
-\caption{\autoref{fig:Change-b} after deleting \Edge{1}}
+\caption{}
 \label{fig:Wrapping-a}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
@@ -712,7 +719,7 @@ Thus if Alice performed an "undo" on this deletion, Grove would create a fresh e
 %%%%%%%%
 \begin{subfigure}[t]{0.32\linewidth}
 \centering
-\caption{autoref{fig:Wrapping-a} after adding \Vertex{8} and \Edge{7}}
+\caption{}
 \label{fig:Wrapping-b}
 \newedge{WrapPlus}{Root}
 \newvertex{WrapPlus}{+}
@@ -735,7 +742,7 @@ Thus if Alice performed an "undo" on this deletion, Grove would create a fresh e
 %%%%%%%%
 \begin{subfigure}[t]{0.32\linewidth}
 \centering
-\caption{autoref{fig:Wrapping-b} after adding \Edge{9}}
+\caption{}
 \label{fig:Wrapping-c}
 \newedge{WrapTimes}{L}
 \begin{tikzpicture}
@@ -754,7 +761,11 @@ Thus if Alice performed an "undo" on this deletion, Grove would create a fresh e
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Wrapping: \autoref{fig:Wrapping-a}}
+\caption{Wrapping.
+\autoref{fig:Wrapping-a}: \autoref{fig:Change-b} after deleting \Edge{1}.
+\autoref{fig:Wrapping-b}:~\autoref{fig:Wrapping-a} after adding \Vertex{8} and \Edge{7}.
+\autoref{fig:Wrapping-c}:~\autoref{fig:Wrapping-b} after adding \Edge{9}.
+}
 \label{fig:Wrapping}
 \end{figure}
 
@@ -798,7 +809,7 @@ TODO: Traditional diff: no relation (and indent might change)
 %%%%%%%%
 \begin{subfigure}[t]{0.49\linewidth}
 \centering
-\caption{\autoref{fig:Wrapping-c} after deleting \Edge{9}}
+\caption{}
 \label{fig:Move-a}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
@@ -819,7 +830,7 @@ TODO: Traditional diff: no relation (and indent might change)
 %%%%%%%%
 \begin{subfigure}[t]{0.45\linewidth}
 \centering
-\caption{\autoref{fig:Move-a} after adding \Edge{11}}
+\caption{}
 \label{fig:Move-b}
 \newedge{MoveTimes}{R}
 \begin{tikzpicture}
@@ -838,7 +849,9 @@ TODO: Traditional diff: no relation (and indent might change)
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Moving \Vertex{2} from the left child to the right child of \Vertex{8}}
+\caption{Moving \Vertex{2} from the left child to the right child of \Vertex{8}.
+\autoref{fig:Move-a}:~\autoref{fig:Wrapping-c} after deleting \Edge{9}.
+\autoref{fig:Move-b}:~\autoref{fig:Move-a} after adding \Edge{11}.}
 \label{fig:Move}
 \end{figure}
 
@@ -899,7 +912,7 @@ TODO: \autoref{sub:Editing Different Parts of the Code}
 %%%%%%%%
 \begin{subfigure}[t]{0.32\linewidth}
 \centering
-\caption{\autoref{fig:Move-b} after Alice replaces \Vertex{4} with \Vertex{12}}
+\caption{}
 \label{fig:Editing Different Parts of the Code-a}
 \newedge{DifferentAlice}{L}
 \newvertex{DifferentAlice}{u}
@@ -922,7 +935,7 @@ TODO: \autoref{sub:Editing Different Parts of the Code}
 %%%%%%%%
 \begin{subfigure}[t]{0.32\linewidth}
 \centering
-\caption{\autoref{fig:Move-b} after Bob replaces \Vertex{6} with \Vertex{14}}
+\caption{}
 \label{fig:Editing Different Parts of the Code-b}
 \newedge{DifferentBob}{R}
 \newvertex{DifferentBob}{v}
@@ -945,7 +958,7 @@ TODO: \autoref{sub:Editing Different Parts of the Code}
 %%%%%%%%
 \begin{subfigure}[t]{0.32\linewidth}
 \centering
-\caption{The result of merging \autoref{fig:Editing Different Parts of the Code-a} with \autoref{fig:Editing Different Parts of the Code-b}}
+\caption{}
 \label{fig:Editing Different Parts of the Code-c}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
@@ -963,7 +976,12 @@ TODO: \autoref{sub:Editing Different Parts of the Code}
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Editing Different Parts of the Code}
+\caption{Editing Different Parts of the Code.
+\autoref{fig:Editing Different Parts of the Code-a}:~\autoref{fig:Move-b} after Alice replaces \Vertex{4} with \Vertex{12}.
+\autoref{fig:Editing Different Parts of the Code-b}:~\autoref{fig:Move-b} after Bob replaces \Vertex{6} with \Vertex{14}.
+\autoref{fig:Editing Different Parts of the Code-c}:~The
+result of merging \autoref{fig:Editing Different Parts of the Code-a}
+with \autoref{fig:Editing Different Parts of the Code-b}.}
 \label{fig:Editing Different Parts of the Code}
 \end{figure}
 
@@ -1030,7 +1048,7 @@ TODO: commutativity diagram of screenshots with two cursors
 %%%%%%%%
 \begin{subfigure}[t]{0.32\linewidth}
 \centering
-\caption{\autoref{fig:Editing Nested Parts of the Code-c} after Alice replaces \Vertex{14} with \Vertex{16}}
+\caption{}
 \label{fig:Editing Nested Parts of the Code-a}
 \newedge{NestedAlice}{L}
 \newvertex{NestedAlice}{w}
@@ -1053,7 +1071,7 @@ TODO: commutativity diagram of screenshots with two cursors
 %%%%%%%%
 \begin{subfigure}[t]{0.32\linewidth}
 \centering
-\caption{\autoref{fig:Editing Nested Parts of the Code-c} after Bob move \Vertex{2} to the left child of \Vertex{8}}
+\caption{}
 \label{fig:Editing Nested Parts of the Code-b}
 \newedge{NestedBob}{L}
 \begin{tikzpicture}
@@ -1075,7 +1093,7 @@ TODO: commutativity diagram of screenshots with two cursors
 %%%%%%%%
 \begin{subfigure}[t]{0.32\linewidth}
 \centering
-\caption{The result of merging \autoref{fig:Editing Nested Parts of the Code-a} with \autoref{fig:Editing Nested Parts of the Code-b}}
+\caption{}
 \label{fig:Editing Nested Parts of the Code-c}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
@@ -1093,7 +1111,10 @@ TODO: commutativity diagram of screenshots with two cursors
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Editing Nested Parts of the Code}
+\caption{Editing Nested Parts of the Code.
+\autoref{fig:Editing Nested Parts of the Code-a}:~\autoref{fig:Editing Nested Parts of the Code-c} after Alice replaces \Vertex{14} with \Vertex{16}.
+\autoref{fig:Editing Nested Parts of the Code-b}:~\autoref{fig:Editing Nested Parts of the Code-c} after Bob move \Vertex{2} to the left child of \Vertex{8}.
+\autoref{fig:Editing Nested Parts of the Code-c}:~The result of merging \autoref{fig:Editing Nested Parts of the Code-a} with \autoref{fig:Editing Nested Parts of the Code-b}.}
 \label{fig:Editing Nested Parts of the Code}
 \end{figure}
 
@@ -1150,7 +1171,7 @@ our nominal equality.
 %%%%%%%%
 \begin{subfigure}[t]{0.24\linewidth}
 \centering
-\caption{\autoref{fig:Editing Nested Parts of the Code-c} after Alice ... TODO}
+\caption{}
 \label{fig:Multi-child-a}
 \newedge{MultiChildAlice}{R}
 \newvertex{MultiChildAlice}{x}
@@ -1175,7 +1196,7 @@ our nominal equality.
 %%%%%%%%
 \begin{subfigure}[t]{0.24\linewidth}
 \centering
-\caption{\autoref{fig:Editing Nested Parts of the Code-c} after Bob ... TODO}
+\caption{}
 \label{fig:Multi-child-b}
 \newedge{MultiChildBob}{R}
 \newvertex{MultiChildBob}{y}
@@ -1198,7 +1219,7 @@ our nominal equality.
 %%%%%%%%
 \begin{subfigure}[t]{0.24\linewidth}
 \centering
-\caption{The result of merging \autoref{fig:Multi-child-a} with \autoref{fig:Multi-child-b}}
+\caption{}
 \label{fig:Multi-child-c}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
@@ -1222,13 +1243,17 @@ our nominal equality.
 %%%%%%%%
 \begin{subfigure}[t]{0.24\linewidth}
 \centering
-\caption{User interface showing the multi-child conflict in \autoref{fig:Multi-child-d}}
+\caption{}
 \label{fig:Multi-child-d}
 TODO: show UI
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Multi-child conflicts}
+\caption{Multi-child conflicts.
+\autoref{fig:Multi-child-a}:~\autoref{fig:Editing Nested Parts of the Code-c} after Alice ... TODO.
+\autoref{fig:Multi-child-b}:~\autoref{fig:Editing Nested Parts of the Code-c} after Bob ... TODO.
+\autoref{fig:Multi-child-c}:~The result of merging \autoref{fig:Multi-child-a} with \autoref{fig:Multi-child-b}.
+\autoref{fig:Multi-child-d}:~User interface showing the multi-child conflict in \autoref{fig:Multi-child-c}.}
 \label{fig:Multi-child}
 \end{figure*}
 
@@ -1312,7 +1337,7 @@ Multiple adds cause conflicts
 %%%%%%%%
 \begin{subfigure}[t]{0.19\linewidth}
 \centering
-\caption{Initial code}
+\caption{}
 \label{fig:Multi-parent-a}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
@@ -1334,7 +1359,7 @@ TODO: UI (at least moc up)
 %%%%%%%%
 \begin{subfigure}[t]{0.19\linewidth}
 \centering
-\caption{\autoref{fig:Multi-parent-a} after Alice ... TODO}
+\caption{}
 \label{fig:Multi-parent-b}
 \newedge{MultiParentAlice}{R}
 \begin{tikzpicture}
@@ -1356,7 +1381,7 @@ TODO: UI (at least moc up)
 %%%%%%%%
 \begin{subfigure}[t]{0.19\linewidth}
 \centering
-\caption{\autoref{fig:Multi-child-a} after Bob ... TODO}
+\caption{}
 \label{fig:Multi-parent-c}
 \newedge{MultiParentBob}{R}
 \begin{tikzpicture}
@@ -1375,7 +1400,7 @@ TODO: UI (at least moc up)
 %%%%%%%%
 \begin{subfigure}[t]{0.19\linewidth}
 \centering
-\caption{The result of merging \autoref{fig:Multi-parent-b} with \autoref{fig:Multi-parent-c}}
+\caption{}
 \label{fig:Multi-parent-d}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
@@ -1397,8 +1422,8 @@ TODO: UI (at least moc up)
 %%%%%%%%
 \begin{subfigure}[t]{0.19\linewidth}
 \centering
-\caption{Multi-parent conflicts}
-\label{fig:Multi-parent}
+\caption{}
+\label{fig:Multi-parent-e}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1412,11 +1437,16 @@ TODO: UI (at least moc up)
  }
 };
 \end{tikzpicture}
-\caption{Initial code TODO: move to previous figure}
-\label{fig:Multi-parent-e}
 \end{subfigure}
 %%%%%%%%
 \hfill{}
+\caption{Multi-parent conflicts.
+\autoref{fig:Multi-parent-a}:~Initial code.
+\autoref{fig:Multi-parent-b}:~\autoref{fig:Multi-parent-a} after Alice ... TODO.
+\autoref{fig:Multi-parent-c}:~\autoref{fig:Multi-child-a} after Bob ... TODO.
+\autoref{fig:Multi-parent-d}:~The result of merging \autoref{fig:Multi-parent-b} with \autoref{fig:Multi-parent-c}.
+\autoref{fig:Multi-parent-e}:~Initial code TODO: move to previous figure.}
+\label{fig:Multi-parent}
 \end{figure*}
 
 In addition to conflicts due multiple edges coming \emph{out of} an index of a particular vertex,
@@ -1577,7 +1607,7 @@ We call this situation a multi-parent conflict.
 %%%%%%%%
 \begin{subfigure}[t]{0.32\linewidth}
 \centering
-\caption{\autoref{fig:Single-User Cycles-a} after Alice copy and pastes \Vertex{TODO} by copy as the right child of \Vertex{TODO}}
+\caption{}
 \label{fig:Single-User Cycles-a}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
@@ -1598,7 +1628,7 @@ We call this situation a multi-parent conflict.
 %%%%%%%%
 \begin{subfigure}[t]{0.32\linewidth}
 \centering
-\caption{\autoref{fig:Single-User Cycles-a} after Alice copy and pastes \Vertex{TODO} by copy as the right child of \Vertex{TODO}}
+\caption{}
 \label{fig:Single-User Cycles-b}
 \newedge{SingleCyclePlus}{R}
 \newvertex{SingleCyclePlus}{+}
@@ -1628,7 +1658,7 @@ We call this situation a multi-parent conflict.
 %%%%%%%%
 \begin{subfigure}[t]{0.32\linewidth}
 \centering
-\caption{\autoref{fig:Single-User Cycles-a} after Alice copy and pastes \Vertex{TODO} by reference as the right child of \Vertex{TODO}}
+\caption{}
 \label{fig:Single-User Cycles-c}
 \newedge{SingleCycleCycle}{R}
 \begin{tikzpicture}
@@ -1645,7 +1675,10 @@ We call this situation a multi-parent conflict.
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Single-User Cycles}
+\caption{Single-User Cycles.
+\autoref{fig:Single-User Cycles-a}:~\autoref{fig:Single-User Cycles-a} after Alice copy and pastes \Vertex{TODO} by copy as the right child of \Vertex{TODO}.
+\autoref{fig:Single-User Cycles-b}:~\autoref{fig:Single-User Cycles-a} after Alice copy and pastes \Vertex{TODO} by copy as the right child of \Vertex{TODO}.
+\autoref{fig:Single-User Cycles-c}:~\autoref{fig:Single-User Cycles-a} after Alice copy and pastes \Vertex{TODO} by reference as the right child of \Vertex{TODO}.}
 \label{fig:Single-User Cycles}
 \end{figure}
 
@@ -1696,7 +1729,7 @@ edits would create a cycle.
 %%%%%%%%
 \begin{subfigure}[t]{0.24\textwidth}
 \centering
-\caption{Initial code}
+\caption{}
 \label{fig:Multi-User Cycles-a}
 \newedge{MultiCyclePlus}{L}
 \newvertex{MultiCyclePlus}{+}
@@ -1721,7 +1754,7 @@ edits would create a cycle.
 %%%%%%%%
 \begin{subfigure}[t]{0.24\textwidth}
 \centering
-\caption{Initial code}
+\caption{}
 \label{fig:Multi-User Cycles-b}
 \newedge{MultiCycleAlicePlus}{R}
 \newedge{MultiCycleAliceTimes}{L}
@@ -1747,7 +1780,7 @@ edits would create a cycle.
 %%%%%%%%
 \begin{subfigure}[t]{0.24\textwidth}
 \centering
-\caption{Initial code}
+\caption{}
 \label{fig:Multi-User Cycles-c}
 \newedge{MultiCycleBobTimes}{R}
 \newedge{MultiCycleBobPlus}{L}
@@ -1773,7 +1806,7 @@ edits would create a cycle.
 %%%%%%%%
 \begin{subfigure}[t]{0.24\textwidth}
 \centering
-\caption{Initial code}
+\caption{}
 \label{fig:Multi-User Cycles-d}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
@@ -1794,7 +1827,11 @@ edits would create a cycle.
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Multi-User Cycles}
+\caption{Multi-User Cycles
+\autoref{fig:Multi-User Cycles-a}:~Initial code.
+\autoref{fig:Multi-User Cycles-b}:~TODO.
+\autoref{fig:Multi-User Cycles-c}:~TODO.
+\autoref{fig:Multi-User Cycles-d}:~TODO.}
 \label{fig:Multi-User Cycles}
 \end{figure*}
 
@@ -1845,7 +1882,7 @@ cycle represents to future work.
 %%%%%%%%
 \begin{subfigure}[t]{0.24\textwidth}
 \centering
-\caption{Initial code}
+\caption{}
 \label{fig:Disconnection-a}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
@@ -1863,7 +1900,7 @@ cycle represents to future work.
 %%%%%%%%
 \begin{subfigure}[t]{0.24\textwidth}
 \centering
-\caption{Initial code}
+\caption{}
 \label{fig:Disconnection-b}
 \newedge{DisconnectionAlice}{R}
 \begin{tikzpicture}
@@ -1885,7 +1922,7 @@ cycle represents to future work.
 %%%%%%%%
 \begin{subfigure}[t]{0.24\textwidth}
 \centering
-\caption{Initial code}
+\caption{}
 \label{fig:Disconnection-c}
 \newedge{DisconnectionBob}{L}
 \begin{tikzpicture}
@@ -1907,7 +1944,7 @@ cycle represents to future work.
 %%%%%%%%
 \begin{subfigure}[t]{0.24\textwidth}
 \centering
-\caption{Initial code}
+\caption{}
 \label{fig:Disconnection-d}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
@@ -1923,7 +1960,11 @@ cycle represents to future work.
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Disconnection}
+\caption{Disconnection.
+\autoref{fig:Disconnection-a}:~Initial code.
+\autoref{fig:Disconnection-b}:~TODO.
+\autoref{fig:Disconnection-c}:~TODO.
+\autoref{fig:Disconnection-d}:~TODO.}
 \label{fig:Disconnection}
 \end{figure*}
 
