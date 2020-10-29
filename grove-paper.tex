@@ -146,6 +146,9 @@
  %draw=none,
  as={\textbullet$_{0}$}
 }}
+\tikzset{alice/.style={
+  color=red,
+}}
 
 %%%%%%%%
 % Lang components
@@ -421,7 +424,7 @@ Motivation:
 This section introduces collaborative structure editing in Grove.
 We begin in \autoref{sub:Program Representation} by covering how we use graphs to represent expressions with holes,
 \autoref{sub:Single-User Actions} explores edits by a single user, Alice,
-and \autoref{sub:Multi-user Edits} explores edits by multiple users, Alice and Bob,
+and \autoref{sub:Multi-user Actions} explores edits by multiple users, Alice and Bob,
 each of whom is editing their own instance of a program.
 
 do not model cursors
@@ -485,17 +488,11 @@ TODO
 \label{fig:A simple tree with a hole}
 \end{figure}
 
-TODO: labels for edge numbers
-
 TODO: sub figure with diagram of relation of subfigures
-
-TODO: move subcaptions into master caption
 
 TODO: colors for different editors
 
 TODO: label edges of transitions between graphs
-
-TODO: Remove subfigure captions
 
 %We represent expression contain holes as part of the editor state 
 The \textit{program state} for each editor instance in Grove consists of a graph that represents the program being edited.
@@ -511,20 +508,20 @@ has a hole on the right side of the times operator.
 
 Program state is a directed graph with a distinguished root vertex.
 %For example, \autoref{fig:A simple tree with a hole-b} shows the graph corresponding to the term in \autoref{fig:A simple tree with a hole-a}.
-Each vertex represents a term and is labeled with a globally unique identifier and a term constructor.
-In \autoref{fig:A simple tree with a hole-b}, \Vertex{\vidSimpleTimes} and \Vertex{\vidSimpleX} have the constructors~\texttt{*} and \texttt{var(x)}, respectively.
+Each vertex represents a term and is labeled with both a globally unique identifier and a term constructor.
+In \autoref{fig:A simple tree with a hole-b}, \Vertex{\vidSimpleTimes} and \Vertex{\vidSimpleX} have the constructors~\texttt{*} and \texttt{var(x)},\todo{var} respectively.
 The root vertex has the distinguished identifier~0 and the constructor~\textbullet.
 
 Each term constructor has an associated set of child positions.
-The~\texttt{*} constructor has positions for~\texttt{left} and~\texttt{right} children
+The~\texttt{*} constructor has positions for~\texttt{L}~(i.e., left) and~\texttt{R}~(i.e., right) children
 and the~\texttt{var} constructors have no child positions but takes an argument naming the particular
 variable referenced~(e.g.,~\texttt{x} in \texttt{var(x)}).\footnote{Note that,
 for the purposes of this paper, we represent identifiers and number literals
 indivisibly.  See Section~TODO:REF, for how we would allow editing individual characters.}
-The root vertex constructor,~\textbullet, has the single child position \texttt{root}.
+The root vertex constructor,~\textbullet, has the single child position \texttt{Root}.
 
-Each edge is labeled with a globally unique identifier (e.g.,~1 and~3 in \autoref{fig:A simple tree with a hole-b}) and
-a child position (e.g., \texttt{left} and \texttt{root} in \autoref{fig:A simple tree with a hole-b}).
+Each edge is labeled with a globally unique identifier~(e.g.,~1 and~3 in \autoref{fig:A simple tree with a hole-b}) and
+a child position (e.g., \texttt{L} and \texttt{Root} in \autoref{fig:A simple tree with a hole-b}).
 An edge indicates that the destination vertex is a child of the origin vertex at the given position.
 %Visually, we indicate the position of an edge by the location of its origin.
 For the sake of presentation clarity, we reserve odd identifiers for vertexes and even identifiers for edges.
@@ -542,12 +539,12 @@ corresponds to the hole on the right of the~\texttt{*} in~\texttt{x * \hole}.
 \label{sub:Single-User Actions}
 
 In the remainder of this section,
-we will consider user actions, starting
+we consider user actions, starting
 in this subsection with single-user
-actions and continuing in \autoref{sub:Multi-user Edits}
+actions and continuing in \autoref{sub:Multi-user Actions}
 with multi-user actions.
 
-Each user action that we consider corresponds to one or more graph edits.
+Each user action corresponds to one or more graph edits.
 Graph edits can only add fresh edges and vertices or remove existing edges.
 
 User actions act relative to a cursor. 
@@ -569,7 +566,7 @@ We discuss cursor representations and cursor sharing in more detail in \autoref{
  root[root style] -> {
   "\vSimpleTimes" [> "\eSimpleTimes"] -> {
    "\vSimpleX" [> "\eSimpleX"'],
-   "\vConstructionY" [> "\eConstructionY"]
+   "\vConstructionY" [> "\eConstructionY", >alice, alice]
   }
  }
 };
@@ -593,7 +590,7 @@ We discuss cursor representations and cursor sharing in more detail in \autoref{
   }
  }
 };
-\path (-1cm,-2.5cm) graph[graph style] {
+\path (-0.75cm,-2.75cm) graph[graph style] {
  "\vSimpleX" % [as={$\texttt{y}_{6}$}]
 };
 \end{tikzpicture}
@@ -609,7 +606,7 @@ We discuss cursor representations and cursor sharing in more detail in \autoref{
 To start our examples, Alice moves her cursor to the hole in~\texttt{x * \hole} in \autoref{fig:A simple tree with a hole}
 and constructs the variable~\texttt{y} as shown in \autoref{fig:Construction-b}.
 This action corresponds to creating \Edge{\eidConstructionY} from \Vertex{\vidSimpleX} at the \texttt{R} position to a newly
-created vertex, \Vertex{\vidConstructionY}, containing the variable reference \texttt{y}.
+created vertex, \Vertex{\vidConstructionY}, containing the variable reference~\texttt{y}.
 The resulting graph, shown in \autoref{fig:Construction-b}, represents the expression \texttt{x * y}.
 
 \subsubsection{Deletion}
@@ -627,15 +624,15 @@ The resulting graph, shown in \autoref{fig:Construction-b}, represents the expre
 % \end{figure}
 
 \todo{Arrows between figures}
-Next Alice decides to delete~\texttt{x} so that the code becomes~\texttt{\hole  * y}.
+Next Alice deletes~\texttt{x} so that the code becomes~\texttt{\hole{} * y}.
 This is modeled by deleting \Edge{\eidConstructionY} as shown in \autoref{fig:Change-a}. 
-Notice that \Vertex{\vidConstructionY} continues to exist, and if it had any children, those children could remain connected to it.
+Notice that \Vertex{\vidConstructionY} continues to exist, and if it had any children, those children would remain connected to it.
 In our system, once a vertex is created it is never deleted.
 This allows further manipulations of those vertices by other users as shown later in this section.
-Note that we omit such orphans from the remaining diagrams if they are not relevant to the exposition.
+Note that we omit such orphaned vertexes from the remaining diagrams if they are not relevant to the exposition.
 
 Once an edge with a particular identifier is deleted, it cannot be recreated.
-Thus if Alice performed an "undo" on this deletion, Grove would create a fresh edge between \Vertex{TODO} and \Vertex{TODO}.
+Thus if Alice performed an ``undo'' on this deletion, Grove would create a fresh edge between \Vertex{\vidSimpleTimes} and \Vertex{\vidSimpleX}.
 
 % Note that we do not explicitly add vertexes.
 % Our only actions are deleting or adding \textit{edges}.
@@ -670,10 +667,10 @@ Thus if Alice performed an "undo" on this deletion, Grove would create a fresh e
 \path (0cm,0cm) graph[graph style] {
  root[root style]
 };
-\path (-0.5,-3cm) graph[graph style] {
+\path (-0.5cm,-3cm) graph[graph style] {
  "\vSimpleTimes" -> {
-  "\vSimpleX" [> "\eSimpleX"'],
-  "\vChangeZ" [> "\eChangeZ"]
+  {},
+  "\vConstructionY" [> "\eConstructionY"]
  }
 };
 \end{tikzpicture}
@@ -690,13 +687,13 @@ Thus if Alice performed an "undo" on this deletion, Grove would create a fresh e
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "\vWrapPlus" [> "\eWrapPlus"]
+  "\vWrapPlus" [> "\eWrapPlus", >alice, alice]
  }
 };
 \path (-0.5cm,-3cm) graph[graph style] {
  "\vSimpleTimes" -> {
-  "\vSimpleX" [> "\eSimpleX"'],
-  "\vChangeZ" [> "\eChangeZ"]
+  {},
+  "\vConstructionY" [> "\eConstructionY"]
  }
 };
 \end{tikzpicture}
@@ -713,9 +710,9 @@ Thus if Alice performed an "undo" on this deletion, Grove would create a fresh e
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "\vSimpleTimes" [> "\eWrapTimes"'] -> {
-    "\vSimpleX" [> "\eSimpleX"'],
-    "\vChangeZ" [> "\eChangeZ"]
+   "\vSimpleTimes" [> "\eWrapTimes"', >alice] -> {
+    {},
+    "\vConstructionY" [> "\eConstructionY"]
    },
    {}
   }
@@ -725,53 +722,24 @@ Thus if Alice performed an "undo" on this deletion, Grove would create a fresh e
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Wrapping.
-\autoref{fig:Wrapping-a}:~\autoref{fig:Change-b} after deleting \Edge{\eidSimpleTimes}.
-\autoref{fig:Wrapping-b}:~\autoref{fig:Wrapping-a} after adding \Vertex{\vidWrapPlus} and \Edge{\eidWrapPlus}.
-\autoref{fig:Wrapping-c}:~\autoref{fig:Wrapping-b} after adding \Edge{\eidWrapTimes}.}
+\caption{Wrapping.}
 \label{fig:Wrapping}
 \end{figure}
 
 \marginpar{START REV HERE}
 
-TODO: revise: "user action" "graph edit"
-
 Next, Alice types~\texttt{+} when the cursor is on \Vertex{\vidSimpleTimes}.
-If this were a hole, this would cause a construction edit to be performed as in Sec.TODO above.
+If this were a hole, this would cause a construction edit to be performed as in \autoref{sub:Construction} above.
 However, this position is already occupied by the \texttt{*} expression, 
-so instead, typing~\texttt{+} performs a wrapping edit.
-This corresponds to the following sequence of graph actions, shown in \autoref{fig:Wrapping}: 
+so instead, typing~\texttt{+} is interpreted as a wrapping action.\footnote{%
+Multi-user merges can still create multi-child conflicts,
+but it is better to not interpret user actions ina way that creates them.
+How to handle multiple children in the same position is explored in \autoref{sub:Multi-child conflicts}.}
+This corresponds to the following sequence of graph edits, shown in \autoref{fig:Wrapping}: 
 (a) delete \Edge{\eidSimpleTimes}, leaving \Vertex{\vidSimpleTimes} temporarily orphaned,
-(b) add a fresh~\texttt{+} vertex (\Vertex{\vidWrapPlus}) as a child of the root vertex,
+(b) add a fresh~\texttt{+} vertex (\Vertex{\vidWrapPlus}) as a child of the root vertex, and
 (c) add an edge to \Vertex{\vidSimpleTimes} in the left child position of this new~\texttt{+} vertex.
 (The choice of wrapping with a bias for the left child position is arbitrary.)
-
-% A naive editor could add the~\texttt{+} as a new child of the root.
-% However, 
-
-by creating a new
-edge from the \texttt{L} index of the \texttt{*} to a freshly created \texttt{plus} vertex.
-This would result in a conflict between the \texttt{+} and the existing \texttt{var}
-as shown in Figure~REF:TODO.
-
-You can have a second edge,
-we discuss conflicts in section TODO
-In the single-user setting, we don't want to create conflicts, so instead we perform a wrapping action.
-
-
-How to handle multiple children in the same position is explored in Sec~REF:TODO,
-but for this sort of edit, a better user experience
-would be interpret the request for a plus to mean to
-take whatever (if anything) is in the cursor
-and place it as a child of the plus.
-This \emph{wraps} the existing \texttt{var} in the \texttt{plus}
-and results in the code~\texttt{(x * z) + \hole}.
-(This is similar to the behavior in other structure editors such as in CITE:TODO.)
-Translating this into edge deletes and adds results in the sequence of graphs in \autoref{fig:Wrapping}.
-
-TODO: "Note that the logic of to insert or wrap is a layer above graph actions."
-
-TODO: Traditional diff: no relation (and indent might change)
 
 \subsubsection{Move}
 \label{sub:Move}
@@ -797,8 +765,8 @@ TODO: Traditional diff: no relation (and indent might change)
 };
 \path (0cm,-3cm) graph [graph style] {
  "\vSimpleTimes" -> {
-  "\vSimpleX" [> "\eSimpleX"'],
-  "\vChangeZ" [> "\eChangeZ"]
+  {},
+  "\vConstructionY" [> "\eConstructionY"]
  }
 };
 \end{tikzpicture}
@@ -817,8 +785,8 @@ TODO: Traditional diff: no relation (and indent might change)
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    {},
    "\vSimpleTimes" [> "\eMoveTimes"] -> {
-    "\vSimpleX" [> "\eSimpleX"'],
-    "\vChangeZ" [> "\eChangeZ"]
+    {},
+    "\vConstructionY" [> "\eConstructionY"]
    }
   }
  }
@@ -840,16 +808,11 @@ Instead, by deleting just the edge to the code to be moved and then
 adding a new edge to that code somewhere else, the actual code is
 moved, not just a copy.
 
-For example, consider \autoref{fig:Move}, which represents
-the movement of~\texttt{1 * 2} from the left child of \texttt{plus}
-to its right child.
-\autoref{fig:Editing Nested Parts of the Code-c} is the code before the move.
-First, \Edge{\eidWrapPlus} is deleted, which results in \autoref{fig:Move-a}
-where the rooted code is now~\texttt{\hole{} + \hole{}},
-and \Vertex{\vidSimpleTimes} is orphaned.
-Next \Edge{\eidMoveTimes} is added, which results in the bottom graph
-where the rooted code is now~\texttt{\hole{} + 1 * 2},
-and \Vertex{\vidSimpleTimes} is no longer orphaned.
+For example, \autoref{fig:Move} Alice
+moves \texttt{\hole{} * y} from the left child of \texttt{+} to its right child.
+This corresponds to the following sequence of graph edits, shown in \autoref{fig:Move}:
+(a) delete \Edge{\eidWrapPlus} leaving \Vertex{\vidSimpleTimes} temporarily orphaned and 
+(b) add an edge (\Edge{\eidMoveTimes}) to \Vertex{\vidSimpleTimes} in the right child position of \Vertex{\vidWrapPlus}.
 
 This move semantics gives us a richer structure than
 when treating code as a list of lines.  We exploit
@@ -867,8 +830,8 @@ If only one restore, then it does what you expect (basically a cut and paste)
 
 If multiple replicas restore to different places, then you get some complexity:
 
-\subsection{Multi-user Edits}
-\label{sub:Multi-user Edits}
+\subsection{Multi-user Actions}
+\label{sub:Multi-user Actions}
 
 TODO: mention that id numbers are global (or maybe use A1 and B1 for different users?)
 
@@ -901,7 +864,7 @@ TODO: \autoref{sub:Editing Different Parts of the Code}
    {},
    "\vSimpleTimes" [> "\eMoveTimes"] -> {
     "\vDifferentAlice" [> "\eDifferentAlice"'],
-    "\vChangeZ" [> "\eChangeZ"]
+    "\vConstructionY" [> "\eConstructionY"]
    }
   }
  }
@@ -2259,6 +2222,8 @@ Unision?
 
 \section{Discussion and Conclusion}
 \label{sec:Discussion and Conclusion}
+
+TODO: Traditional diff: no relation (and indent might change)
 
 TODO: memory usage
 
