@@ -419,7 +419,7 @@ Motivation:
 \label{sec:Grove By Example}
 
 This section introduces collaborative structure editing in Grove.
-We begin in \autoref{sub:Program Representation} by covering how we represent expressions with holes as graphs,
+We begin in \autoref{sub:Program Representation} by covering how we use graphs to represent expressions with holes,
 \autoref{sub:Single-User Actions} explores edits by a single user, Alice,
 and \autoref{sub:Multi-user Edits} explores edits by multiple users, Alice and Bob,
 each of whom is editing their own instance of a program.
@@ -476,6 +476,14 @@ TODO
  }
 };
 \end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill{}
+\caption{A simple tree with a hole.
+\autoref{fig:A simple tree with a hole-a}:~User interface.
+\autoref{fig:A simple tree with a hole-b}:~Graph representation.}
+\label{fig:A simple tree with a hole}
+\end{figure}
 
 TODO: labels for edge numbers
 
@@ -488,14 +496,6 @@ TODO: colors for different editors
 TODO: label edges of transitions between graphs
 
 TODO: Remove subfigure captions
-\end{subfigure}
-%%%%%%%%
-\hfill{}
-\caption{A simple tree with a hole.
-\autoref{fig:A simple tree with a hole-a}:~User interface.
-\autoref{fig:A simple tree with a hole-b}:~Graph representation.}
-\label{fig:A simple tree with a hole}
-\end{figure}
 
 %We represent expression contain holes as part of the editor state 
 The \textit{program state} for each editor instance in Grove consists of a graph that represents the program being edited.
@@ -560,19 +560,8 @@ We discuss cursor representations and cursor sharing in more detail in \autoref{
 \begin{figure}
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.49\columnwidth}
+\begin{minipage}[t]{0.49\columnwidth}
 \centering
-\caption{}
-\label{fig:Construction-a}
-TODO: remove this figure
-\end{subfigure}
-%%%%%%%%
-\hfill
-%%%%%%%%
-\begin{subfigure}[t]{0.49\columnwidth}
-\centering
-\caption{}
-\label{fig:Construction-b}
 \newedge{ConstructionY}{R}%
 \newvertex{ConstructionY}{y}%
 \begin{tikzpicture}
@@ -585,13 +574,35 @@ TODO: remove this figure
  }
 };
 \end{tikzpicture}
-\end{subfigure}
-%%%%%%%%
-\hfill{}
 \caption{Construction.
-\autoref{fig:Construction-a}:~User interface.
 \autoref{fig:Construction-b}:~\autoref{fig:A simple tree with a hole-b} after adding \Vertex{\vidConstructionY} and \Edge{\eidConstructionY}.}
 \label{fig:Construction}
+\label{fig:Construction-b}
+\end{minipage}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{minipage}[t]{0.49\linewidth}
+\centering
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "\vSimpleTimes" [> "\eSimpleTimes"] -> {
+   {},
+   "\vConstructionY" [> "\eConstructionY"]
+  }
+ }
+};
+\path (-1cm,-2.5cm) graph[graph style] {
+ "\vSimpleX" % [as={$\texttt{y}_{6}$}]
+};
+\end{tikzpicture}
+\caption{Change.}
+\label{fig:Change-a}
+\label{fig:Change}
+\end{minipage}
+%%%%%%%%
+\hfill{}
 \end{figure}
 
 \todo{"user actions" and "graph edits"}
@@ -603,63 +614,6 @@ The resulting graph, shown in \autoref{fig:Construction-b}, represents the expre
 
 \subsubsection{Deletion}
 \label{sub:Deletion}
-
-\begin{figure}
-\hfill
-%%%%%%%%
-\begin{subfigure}[t]{0.49\linewidth}
-\centering
-\caption{}
-\label{fig:Change-a}
-TODO: delete and leave deleted z8
-
-TODO: delete "x" instead of "y"
-
-\begin{tikzpicture}
-\path (0cm,0cm) graph[graph style] {
- root[root style] -> {
-  "\vSimpleTimes" [> "\eSimpleTimes"] -> {
-   "\vSimpleX" [> "\eSimpleX"'],
-   {}
-  }
- }
-};
-\path (1cm,-2cm) graph[graph style] {
- y [as={$\texttt{y}_{6}$}]
-};
-\end{tikzpicture}
-\end{subfigure}
-%%%%%%%%
-\hfill
-%%%%%%%%
-\begin{subfigure}[t]{0.49\linewidth}
-\centering
-\caption{}
-\label{fig:Change-b}
-TODO: Delete this figure
-\newedge{ChangeZ}{R}
-\newvertex{ChangeZ}{z}
-\begin{tikzpicture}[framed]
-\path (0cm,0cm) graph[graph style] {
- root[root style] -> {
-  "\vSimpleTimes" [> "\eSimpleTimes"] -> {
-   "\vSimpleX" [> "\eSimpleX"'],
-   "\vChangeZ" [> "\eChangeZ"]
-  }
- }
-};
-\path (1cm,-2cm) graph[graph style] {
- "$\texttt{y}_{6}$"
-};
-\end{tikzpicture}
-\end{subfigure}
-%%%%%%%%
-\hfill{}
-\caption{Change.
-\autoref{fig:Change-a}:~\autoref{fig:Construction-b} after deleting \Edge{\eidConstructionY}.
-\autoref{fig:Change-b}:~\autoref{fig:Change-a} after adding \Vertex{\vidChangeZ} and \Edge{\eidChangeZ}.}
-\label{fig:Change}
-\end{figure}
 
 % \begin{figure}
 % \centering
