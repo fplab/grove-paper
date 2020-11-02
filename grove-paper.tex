@@ -78,6 +78,8 @@
 \usepackage{array}
 \usepackage{todonotes}
 
+%\selectcolormodel{gray}
+
 % math ligatures
 \mathlig{::=}{\coloncolonequals}
 \mathlig{|-}{\vdash}
@@ -125,6 +127,7 @@
 }
 \tikzset{edge style/.style={
   draw,
+  %color=gray,
   font={\small\ttfamily},
   /tikz/every edge quotes/.style={
     %draw=gray!20,
@@ -139,7 +142,10 @@
 \tikzset{graphs/graph style/.style={
   tree layout,
   level sep=1cm,
-  nodes={draw, rounded corners=1mm},
+  nodes={
+    draw,
+    %color=gray,
+    rounded corners=1mm},
   edges={edge style},
 }}
 \tikzset{graphs/root style/.style={
@@ -147,7 +153,19 @@
  as={\textbullet$_{0}$}
 }}
 \tikzset{alice/.style={
-  color=red,
+  color=red!80!black,
+  font={\bfseries},
+  thick,
+}}
+\tikzset{bob/.style={
+  color=green!60!black,
+  font={\bfseries},
+  thick,
+}}
+\tikzset{merge/.style={
+  color=blue,
+  font={\bfseries},
+  thick,
 }}
 
 %%%%%%%%
@@ -424,7 +442,7 @@ Motivation:
 This section introduces collaborative structure editing in Grove.
 We begin in \autoref{sub:Program Representation} by covering how we use graphs to represent expressions with holes,
 \autoref{sub:Single-User Actions} explores edits by a single user, Alice,
-and \autoref{sub:Multi-user Actions} explores edits by multiple users, Alice and Bob,
+and \autoref{sub:Multi-user Interactions} explores edits by multiple users, Alice and Bob,
 each of whom is editing their own instance of a program.
 
 do not model cursors
@@ -471,9 +489,9 @@ TODO
 \newvertex{SimpleX}{x}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
- root[root style] -> {
-  "\vSimpleTimes" [> "\eSimpleTimes"] -> {
-   "\vSimpleX" [> "\eSimpleX"'],
+ root[root style, color=black] -> {
+  "\vSimpleTimes" [> "\eSimpleTimes", >color=black, color=black] -> {
+   "\vSimpleX" [> "\eSimpleX"', >color=black, color=black],
    {}
   }
  }
@@ -490,9 +508,13 @@ TODO
 
 TODO: sub figure with diagram of relation of subfigures
 
-TODO: colors for different editors
+TODO: deleted edges (vertecies?) in gray with X in them
 
 TODO: label edges of transitions between graphs
+
+TODO: explain red, green, blue
+
+TODO: $+_32$ and L$_37$
 
 %We represent expression contain holes as part of the editor state 
 The \textit{program state} for each editor instance in Grove consists of a graph that represents the program being edited.
@@ -541,7 +563,7 @@ corresponds to the hole on the right of the~\texttt{*} in~\texttt{x * \hole}.
 In the remainder of this section,
 we consider user actions, starting
 in this subsection with single-user
-actions and continuing in \autoref{sub:Multi-user Actions}
+actions and continuing in \autoref{sub:Multi-user Interactions}
 with multi-user actions.
 
 Each user action corresponds to one or more graph edits.
@@ -551,7 +573,7 @@ User actions act relative to a cursor.
 We do not model cursor sharing and the cursor does not appear in the underlying graph.
 We discuss cursor representations and cursor sharing in more detail in \autoref{sub:Cursors}.
 
-\subsubsection{Construction}
+\subsubsection{Construction Actions}
 \label{sub:Construction}
 
 \begin{figure}
@@ -594,7 +616,7 @@ We discuss cursor representations and cursor sharing in more detail in \autoref{
  "\vSimpleX" % [as={$\texttt{y}_{6}$}]
 };
 \end{tikzpicture}
-\caption{Change.}
+\caption{Deletion.}
 \label{fig:Change-a}
 \label{fig:Change}
 \end{minipage}
@@ -609,7 +631,7 @@ This action corresponds to creating \Edge{\eidConstructionY} from \Vertex{\vidSi
 created vertex, \Vertex{\vidConstructionY}, containing the variable reference~\texttt{y}.
 The resulting graph, shown in \autoref{fig:Construction-b}, represents the expression \texttt{x * y}.
 
-\subsubsection{Deletion}
+\subsubsection{Deletion Actions}
 \label{sub:Deletion}
 
 % \begin{figure}
@@ -645,8 +667,8 @@ Thus if Alice performed an ``undo'' on this deletion, Grove would create a fresh
 
 % TODO: explain that delete overrides add
 
-\subsubsection{Wrapping Code}
-\label{sub:Wrapping Code}
+\subsubsection{Wrapping Actions}
+\label{sub:Wrapping}
 
 \begin{figure}
 % TODO: naive add that creates a conflict
@@ -722,26 +744,21 @@ Thus if Alice performed an ``undo'' on this deletion, Grove would create a fresh
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Wrapping.}
+\caption{Wrapping.  Note that this figure omits the orphaned \Vertex{\vidSimpleX} since it is no longer relevant to our narrative.}
 \label{fig:Wrapping}
 \end{figure}
 
-\marginpar{START REV HERE}
-
 Next, Alice types~\texttt{+} when the cursor is on \Vertex{\vidSimpleTimes}.
-If this were a hole, this would cause a construction edit to be performed as in \autoref{sub:Construction} above.
-However, this position is already occupied by the \texttt{*} expression, 
-so instead, typing~\texttt{+} is interpreted as a wrapping action.\footnote{%
-Multi-user merges can still create multi-child conflicts,
-but it is better to not interpret user actions ina way that creates them.
-How to handle multiple children in the same position is explored in \autoref{sub:Multi-child conflicts}.}
+If this were a hole, this would cause a construction action to be performed as in \autoref{sub:Construction} above.
+However, Alice's editor sees that this position is already occupied by the \texttt{*} expression, 
+so typing~\texttt{+} is interpreted as a wrapping action instead of a construction action.
 This corresponds to the following sequence of graph edits, shown in \autoref{fig:Wrapping}: 
 (a) delete \Edge{\eidSimpleTimes}, leaving \Vertex{\vidSimpleTimes} temporarily orphaned,
 (b) add a fresh~\texttt{+} vertex (\Vertex{\vidWrapPlus}) as a child of the root vertex, and
 (c) add an edge to \Vertex{\vidSimpleTimes} in the left child position of this new~\texttt{+} vertex.
 (The choice of wrapping with a bias for the left child position is arbitrary.)
 
-\subsubsection{Move}
+\subsubsection{Movement Actions}
 \label{sub:Move}
 
 \begin{figure}
@@ -784,7 +801,7 @@ This corresponds to the following sequence of graph edits, shown in \autoref{fig
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    {},
-   "\vSimpleTimes" [> "\eMoveTimes"] -> {
+   "\vSimpleTimes" [> "\eMoveTimes", >alice] -> {
     {},
     "\vConstructionY" [> "\eConstructionY"]
    }
@@ -795,13 +812,13 @@ This corresponds to the following sequence of graph edits, shown in \autoref{fig
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Moving \Vertex{\vidSimpleTimes} from the left child to the right child of \Vertex{\vidWrapPlus}.
-\autoref{fig:Move-a}:~\autoref{fig:Wrapping-c} after deleting \Edge{\eidWrapTimes}.
-\autoref{fig:Move-b}:~\autoref{fig:Move-a} after adding \Edge{\eidMoveTimes}.}
+\caption{Moving \Vertex{\vidSimpleTimes} from the left child to the right child of \Vertex{\vidWrapPlus}.}
 \label{fig:Move}
 \end{figure}
 
-An interesting consequence of our design is that a move operation
+\marginpar{START REV HERE}
+
+A consequence of our design is that a move operation
 does not have to delete code from one position and create a copy
 in another position.
 Instead, by deleting just the edge to the code to be moved and then
@@ -830,20 +847,29 @@ If only one restore, then it does what you expect (basically a cut and paste)
 
 If multiple replicas restore to different places, then you get some complexity:
 
-\subsection{Multi-user Actions}
-\label{sub:Multi-user Actions}
+\subsection{Multi-user Interactions}
+\label{sub:Multi-user Interactions}
 
 TODO: mention that id numbers are global (or maybe use A1 and B1 for different users?)
 
 We assume multiple instances
 
-TODO: Finally, note that through we present several complex scenarios, this is merely for presentation.
-In practice, these complex scenarios occur less frequently than portrayed here.
-
 Common scenarios first and then consider more unusual scenarios
 that cause cycles or multiple parents
 
-TODO: \autoref{sub:Editing Different Parts of the Code}
+\subsubsection{Commutativity}
+\label{sub:Commutativity}
+
+Note that aside from transmitting the edge deletions and additions,
+the merge requires no coordination between Alice and Bob.
+For example, suppose that Alice and Bob did not transmit their edits to each other
+but to a third user, Chris, that has the original graph in \autoref{fig:Move-b}.
+Chris can apply the edits from Alice and Bob in any order and will always get
+the graph in \autoref{fig:Editing Different Parts of the Code-c}.
+
+Stated more formally, our edit model obeys the commutativity shown in \autoref{fig:Commutativity}.
+For any two sequences of edits $\vec{\alpha}$ and $\vec{\alpha}^\prime$,
+applying them in either order produces the same results.
 
 \subsubsection{Editing Different Parts of the Code}
 \label{sub:Editing Different Parts of the Code}
@@ -863,7 +889,7 @@ TODO: \autoref{sub:Editing Different Parts of the Code}
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    {},
    "\vSimpleTimes" [> "\eMoveTimes"] -> {
-    "\vDifferentAlice" [> "\eDifferentAlice"'],
+    "\vDifferentAlice" [> "\eDifferentAlice"', >alice, alice],
     "\vConstructionY" [> "\eConstructionY"]
    }
   }
@@ -886,8 +912,8 @@ TODO: \autoref{sub:Editing Different Parts of the Code}
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    {},
    "\vSimpleTimes" [> "\eMoveTimes"] -> {
-    "\vSimpleX" [> "\eSimpleX"'],
-    "\vDifferentBob" [> "\eDifferentBob"]
+    {},
+    "\vDifferentBob" [> "\eDifferentBob", >bob, bob]
    }
   }
  }
@@ -907,8 +933,8 @@ TODO: \autoref{sub:Editing Different Parts of the Code}
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    {},
    "\vSimpleTimes" [> "\eMoveTimes"] -> {
-    "\vDifferentAlice" [> "\eDifferentAlice"'],
-    "\vDifferentBob" [> "\eDifferentBob"]
+    "\vDifferentAlice" [> "\eDifferentAlice"', >merge, merge],
+    "\vDifferentBob" [> "\eDifferentBob", >merge, merge]
    }
   }
  }
@@ -917,12 +943,7 @@ TODO: \autoref{sub:Editing Different Parts of the Code}
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Editing Different Parts of the Code.
-\textbf{(a)}:~\autoref{fig:Move-b} after Alice replaces \Vertex{\vidSimpleX} with \Vertex{\vidDifferentAlice}.
-\textbf{(b)}:~\autoref{fig:Move-b} after Bob replaces \Vertex{\vidConstructionY} with \Vertex{\vidDifferentBob}.
-\textbf{(c)}:~The
-result of merging \autoref{fig:Editing Different Parts of the Code-a}
-with \autoref{fig:Editing Different Parts of the Code-b}.}
+\caption{Editing Different Parts of the Code.}
 \label{fig:Editing Different Parts of the Code}
 \end{figure}
 
@@ -940,39 +961,20 @@ with \autoref{fig:Editing Different Parts of the Code-b}.}
 % \label{fig:Editing Different Parts of the Code}
 % \end{figure}
 
-TODO: have star or dot dot arrows for skipping steps
-
-Arrow coming from 5b to 6a and 6b
-
-Diamond diagram referencing diagrams
-
 To start, Alice and Bob are synchronized with each other and
 both have the graph in \autoref{fig:Move-b}, which
-represents the code~\texttt{\hole{} + (x + z)}.
+represents the code~\texttt{\hole{} + (\hole{} + y)}.
 
-Alice changes the~\texttt{x} to a~\texttt{u},
-and Bob changes the~\texttt{z} to a~\texttt{v}.
+Alice add~\texttt{u} as the left child of \Vertex{TODO}
+and Bob changes the~\texttt{y} to a~\texttt{v}.
 Before transmitting their edits to each other,
 Alice thus has the graph in \autoref{fig:Editing Different Parts of the Code-a}
 and Bob has the graph in \autoref{fig:Editing Different Parts of the Code-b}.
-For Alice, this involves deleting \Edge{3} and creating \Edge{13}.
-For Bob, this involves deleting \Edge{\eidConstructionY} and creating \Edge{15}.
 
-Alice and Bob then transmit their graph actions (i.e., edge additions and deletions) to each other
-and applies the other's graph actions to their own copy of the graph.
-By design, graph actions commute, so this results in both Alice and Bob having the graph in
+Alice and Bob then transmit their graph edits to each other
+and apply the other's graph edits to their own copy of the graph.
+This results in both Alice and Bob having the graph in
 \autoref{fig:Editing Different Parts of the Code-c}.
-
-Note that aside from transmitting the edge deletions and additions,
-no coordination between Alice and Bob is needed to coordinate the merge.
-For example, suppose that Alice and Bob did not transmit their edits to each other
-but to a third user, Chris, that has the original graph at the top of \autoref{fig:Move-b}.
-Chris can apply the edits from Alice and Bob in any order and will always get
-the graph in \autoref{fig:Editing Different Parts of the Code-c}.
-
-Stated more formally, our edit model obeys the commutativity shown in \autoref{fig:Commutativity}.
-For any two sequences of edits $\vec{\alpha}$ and $\vec{\alpha}^\prime$,
-applying them in either order produces the same results.
 
 \begin{figure}
 \centering
@@ -980,6 +982,12 @@ TODO: commutativity diagram of screenshots with two cursors
 \caption{TODO:Commutativity}
 \label{fig:Commutativity}
 \end{figure}
+
+TODO: have star or dot dot arrows for skipping steps
+
+TODO: Arrow coming from 5b to 6a and 6b
+
+TODO: Diamond diagram referencing diagrams
 
 \subsubsection{Editing Nested Parts of the Code}
 \label{sub:Editing Nested Parts of the Code}
@@ -999,7 +1007,7 @@ TODO: commutativity diagram of screenshots with two cursors
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    {},
    "\vSimpleTimes" [> "\eMoveTimes"] -> {
-    "\vNestedAlice" [> "\eNestedAlice"'],
+    "\vNestedAlice" [> "\eNestedAlice"', >alice, alice],
     "\vDifferentBob" [> "\eDifferentBob"]
    }
   }
@@ -1019,7 +1027,7 @@ TODO: commutativity diagram of screenshots with two cursors
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "\vSimpleTimes" [> "\eNestedBob"'] -> {
+   "\vSimpleTimes" [> "\eNestedBob"', >bob] -> {
     "\vDifferentAlice" [> "\eDifferentAlice"'],
     "\vDifferentBob" [> "\eDifferentBob"]
    },
@@ -1040,8 +1048,8 @@ TODO: commutativity diagram of screenshots with two cursors
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "\vSimpleTimes" [> "\eNestedBob"'] -> {
-    "\vNestedAlice" [> "\eNestedAlice"'],
+   "\vSimpleTimes" [> "\eNestedBob"', >merge] -> {
+    "\vNestedAlice" [> "\eNestedAlice"', >merge, merge],
     "\vDifferentBob" [> "\eDifferentBob"]
    },
    {}
@@ -1076,29 +1084,24 @@ TODO: commutativity diagram of screenshots with two cursors
 
 After the edits in the previous subsection synchronize,
 Alice changes the~\texttt{v} to a~\texttt{w}, which results in the graph in \autoref{fig:Editing Nested Parts of the Code-a}.
-On the other hand, Bob moves the~\texttt{u * v} from the right of the plus to the left of the plus
+On the other hand, Bob moves the~\texttt{u * v} from the left of the plus to the right of the plus
 by deleting \Edge{\eidMoveTimes} and adding \Edge{19}, which results in the graph in \autoref{fig:Editing Nested Parts of the Code-b}.
 Since vertex and edge identifiers are preserved by these,
 both Alice's and Bob's edits can be applied to the other's graph,
 which results in both Alice and Bob having the graph in \autoref{fig:Editing Nested Parts of the Code-c}.
-
-As with \autoref{sub:Editing Different Parts of the Code}, this merge does not require coordination
-between Alice and Bob.  They could independently send their edits
-to a third party, Charley, who could replay their edits in any order
-and will always get the graph in \autoref{fig:Editing Nested Parts of the Code-c}.
 
 A consequence of this design is that we allow users to edit
 parts of the code that have been deleted.  For example,
 Alice might receive Bob's deletion of \Edge{\eidMoveTimes} before making her
 edits and before receiving Bob's addition of \Edge{19}.
 Her edits would then be within the code deleted by Bob.
+TODO: She can restore that code using a restoration action add a fresh edge to it.
 
 TODO:figure
 
 Contrast with a traditional diff
 
-TODO: put this somewhere.
-(Similar to how git merged across moves.
+Similar to how git merged across moves.
 A notable difference though is that \texttt{git} detects
 file moves by structural similarity rather than
 our nominal equality.
@@ -1125,7 +1128,7 @@ our nominal equality.
     "\vDifferentBob" [> "\eDifferentBob"]
    },
    {
-    "\vMultiChildAlice" [> "\eMultiChildAlice"]
+    "\vMultiChildAlice" [> "\eMultiChildAlice", >alice, alice]
    }
   }
  }
@@ -1149,7 +1152,7 @@ our nominal equality.
     "\vNestedAlice" [> "\eNestedAlice"'],
     "\vDifferentBob" [> "\eDifferentBob"]
    },
-   "\vMultiChildBob" [> "\eMultiChildBob"]
+   "\vMultiChildBob" [> "\eMultiChildBob", >bob, bob]
   }
  }
 };
@@ -1171,8 +1174,8 @@ our nominal equality.
     "\vDifferentBob" [> "\eDifferentBob"]
    },
    {
-    "\vMultiChildAlice" [> "\eMultiChildAlice"],
-    "\vMultiChildBob" [> "\eMultiChildBob"]
+    "\vMultiChildAlice" [> "\eMultiChildAlice", >merge, merge],
+    "\vMultiChildBob" [> "\eMultiChildBob", >merge, merge]
    }
   }
  }
@@ -1210,9 +1213,13 @@ TODO: show UI
 % \label{fig:Direct Conflicts}
 % \end{figure}
 
+TODO: Multi-user merges can still create multi-child conflicts,
+but it is better to not interpret user actions in a way that creates them.
+How to handle multiple children in the same position is explored in \autoref{sub:Multi-child conflicts}.
+
 Finally, we address our first kind of genuine conflict between edits.
 Alice inserts the variable~\texttt{x} to the right side of the~\texttt{+}
-while Bob add the variable~\texttt{y} also to the right side of the~\texttt{+}
+while Bob add the variable~\texttt{y} also to the right side of the~\texttt{+}.
 These results in the graphs in \autoref{fig:Multi-child-a} and \autoref{fig:Multi-child-b}, respectively.
 In particular pay attention to the edges going out of the \texttt{right} index of \Vertex{\vidWrapPlus}.
 In \autoref{fig:Multi-child-a} it is \Edge{21}, which points to the variable~\texttt{x},
@@ -1222,7 +1229,7 @@ We merge these by including \emph{both} edges as edges going out of the \texttt{
 of \Vertex{\vidWrapPlus}.
 This results in \autoref{fig:Multi-child-c}.
 The conflict between Alice's and Bob's changes is
-represented by the fact that there are multiple edges going out of one index (i.e. the \texttt{right}
+represented by the fact that there are multiple edges going out of one index (i.e., the \texttt{right}
 index of \Vertex{\vidWrapPlus}).
 In the graph representation, we flag this conflict by highlighting its edges
 in red (TODO).
@@ -1236,16 +1243,21 @@ It just must be resolved before the the code is run.\footnote{It
 may be possible to develop evaluation models that allow these sorts of conflicts,
 but that is beyond the scope of this paper.}
 
+TODO: need example of fully-automatic resolution and semi-automatic resolution
+
+Multiple adds cause conflicts
+(Not usually presented in the UI)
+
 Compare this to what happens when there are conflicts in a traditional,
 line/diff-based version control system (e.g., \texttt{git}, \texttt{mercurial}, \texttt{svn}, etc.).
 Those systems annotate files with difference markers (e.g., sequences of~\texttt{<},~\texttt{>}, or~\texttt{=})
 when a merge conflict happens.
-These show alternate versions versions of the code, and it is up to the user
+These show alternate versions of the code, and it is up to the user
 to replace those alternates with the desired merged result.
 
 Our tree-based model is similar in that it presents alternate versions
 of the code, and it is up to the user to replace those alternates with the desired merged result.
-Our model is different, in that merge conflicts in the line-based model
+Our model is different in that merge conflicts in the line-based model
 prevent some semantic editor services from running
 that could continue to run in the tree-based model because
 code inside and outside the conflict is still valid code.
@@ -1264,11 +1276,6 @@ where the traditional model infers these from a differencing algorithm.
 Note that as a convenience to the user, certain simple
 conflicts might be automatically resolved,
 but we consider this a higher-level, user-interface consideration.
-
-TODO: need example of fully-automatic resolution and semi-automatic resolution
-
-Multiple adds cause conflicts
-(Not usually presented in the UI)
 
 \subsubsection{Multi-parent conflicts}
 \label{sub:Multi-parent conflicts}
@@ -1309,7 +1316,7 @@ TODO: UI (at least moc up)
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    "\vSimpleTimes" [> "\eNestedBob"'] -> {
     {},
-    "\vNestedAlice" [> "\eMultiParentAlice"']
+    "\vNestedAlice" [> "\eMultiParentAlice"', >alice]
    },
    {}
   }
@@ -1330,7 +1337,7 @@ TODO: UI (at least moc up)
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    "\vSimpleTimes" [> "\eNestedBob"'],
-   "\vNestedAlice" [> "\eMultiParentBob"]
+   "\vNestedAlice" [> "\eMultiParentBob", >bob]
   }
  }
 };
@@ -1349,13 +1356,13 @@ TODO: UI (at least moc up)
   a/{\vWrapPlus} [> "\eWrapPlus"] -> {
    "\vSimpleTimes" [> "\eNestedBob"'] -> {
     {},
-    b/"\vNestedAlice" [> "\eMultiParentAlice"']
+    b/"\vNestedAlice" [> "\eMultiParentAlice"', >merge]
    },
    {}
   }
  },
 };
-\path [edge style,->] (a) to ["\eMultiParentBob",out=-60,in=60] (b);
+\path [edge style,->,merge] (a) to ["\eMultiParentBob",out=-60,in=60,merge] (b);
 \end{tikzpicture}
 \end{subfigure}
 %%%%%%%%
@@ -1390,25 +1397,27 @@ TODO: UI (at least moc up)
 \label{fig:Multi-parent}
 \end{figure*}
 
-In addition to conflicts due multiple edges coming \emph{out of} an index of a particular vertex,
+In addition to conflicts due to multiple edges coming \emph{out of} child position of a particular vertex,
 conflicts can manifest as multiple edges going \emph{into} a particular vertex.
 We call these \emph{multi-parent conflicts}.
 
 An example of this is shown in \autoref{fig:Multi-parent}.
 \autoref{fig:Multi-parent-a} shows the graph after Alice and Bob have made some more edits,
 and Alice and Bob's editors are synchronized with each other.
-This graph represents the expression~\texttt{(x + \hole{}) + \hole{})}.
-Alice moves the variable~\texttt{x} to the left-most hole,
+This graph represents the expression~\texttt{(w + \hole{}) + \hole{})}.
+Alice moves the variable~\texttt{w} to the left-most hole,
 while Bob moves it to the right-most hole.
 This results in the graphs in \autoref{fig:Multi-parent-b} and \autoref{fig:Multi-parent-c},
-which represent respectively the expression~\texttt{(\hole{} + \hole{}) + x} for Alice
-and the expression~\texttt{(\hole{} + x) + \hole{}} for Bob.
+which represent respectively the expression~\texttt{(\hole{} + w) + \hole{}} for Alice
+and the expression~\texttt{(\hole{} + \hole{}) + w} for Bob.
 In both cases, these edits are achieved with one edge delete and one edge add.
-Alice deletes \Edge{25} and adds \Edge{27}, while Bob deletes \Edge{25} and adds edge \Edge{29}.
-As explained in Subsection~TODO:REF, deletes are idempotent so Alice and Bob both deleting \Edge{25} is not a problem.
-However, both \Edge{27} (added by Alice) and edge \Edge{29} (added by Bob) point to the same vertex.
-This generates the bottom graph, in which \Vertex{26} as two parents pointing to it.
+Alice deletes \Edge{TODO} and adds \Edge{TODO}, while Bob deletes \Edge{TODO} and adds edge \Edge{TODO}.
+As explained in Subsection~TODO:REF, deletes are idempotent so Alice and Bob both deleting \Edge{TODO} is not a problem.
+However, both \Edge{TODO} (added by Alice) and edge \Edge{TODO} (added by Bob) point to the same vertex.
+This generates REF:FIG, in which \Vertex{TODO} as two parents pointing to it.
 We call this situation a multi-parent conflict.
+
+TODO: talk about how to resolve the conflict
 
 % \subsubsection{Conflicting wrap operations}
 
@@ -1581,8 +1590,8 @@ We call this situation a multi-parent conflict.
   v8/"\vWrapPlus" [> "\eWrapPlus"'] -> {
    v2/"\vSimpleTimes" [> "\eNestedBob"'] -> {
     {},
-    "\vSingleCyclePlus" [> "\eSingleCyclePlus"] -> {
-     "\vSingleCycleTimes" [> "\eSingleCycleTimes"'] -> {
+    "\vSingleCyclePlus" [> "\eSingleCyclePlus", >alice, alice] -> {
+     "\vSingleCycleTimes" [> "\eSingleCycleTimes"', >alice, alice] -> {
       {},
       {}
      },
@@ -1611,7 +1620,7 @@ We call this situation a multi-parent conflict.
   }
  }
 };
-\path[edge style,->] (v2) to ["\eSingleCycleCycle",out=-60,in=-60] (v8);
+\path[edge style,->,alice] (v2) to ["\eSingleCycleCycle",out=-60,in=-60,alice] (v8);
 \end{tikzpicture}
 \end{subfigure}
 %%%%%%%%
@@ -1649,16 +1658,16 @@ and causes a cycle.
 
 Note that not all pastes should be deep copies.
 For example, Alice may have accomplished code move in \autoref{sub:Editing Nested Parts of the Code}
-done by a cutting from the old position and pasting to the new position.
+by a cutting from the old position and pasting to the new position.
 Preserving Bob's nested edits requires that the paste be by reference instead of by copy.
 Distinguishing when a paste should be by reference versus by copy
 is ultimately a user interface question.
-Cycles caused by the local user's edits be detected as soon as a user enters them
+Cycles caused by the local user's edits can be detected as soon as a user enters them
 by noting either that the graph would contain a cycle or the vertex
 already has a parent somewhere in the graph.
 
 Thus, as a user interface consideration, it might be best to either
-disallow such edits to at least warn users that their
+disallow such edits to at least warn users when their
 edits would create a cycle.
 
 \subsubsection{Multi-User Cycles}
@@ -1706,8 +1715,8 @@ edits would create a cycle.
    "\vSimpleTimes" [> "\eNestedBob"'] -> {
    },
    {
-    "\vMultiCyclePlus" [> "\eMultiCycleAlicePlus"] -> {
-     "\vMultiCycleTimes" [> "\eMultiCycleAliceTimes"'],
+    "\vMultiCyclePlus" [> "\eMultiCycleAlicePlus", >alice, alice] -> {
+     "\vMultiCycleTimes" [> "\eMultiCycleAliceTimes"', >alice, alice],
      {}
     }
    }
@@ -1732,8 +1741,8 @@ edits would create a cycle.
    "\vSimpleTimes" [> "\eNestedBob"'] -> {
    },
    {
-    "\vMultiCycleTimes" [> "\eMultiCycleBobTimes"] -> {
-     "\vMultiCyclePlus" [> "\eMultiCycleBobPlus"'],
+    "\vMultiCycleTimes" [> "\eMultiCycleBobTimes", >bob, bob] -> {
+     "\vMultiCyclePlus" [> "\eMultiCycleBobPlus"', >bob, bob],
      {}
     }
    }
@@ -1756,23 +1765,19 @@ edits would create a cycle.
    "\vSimpleTimes" [> "\eNestedBob"'] -> {
    },
    {
-    v1/"\vMultiCyclePlus" [> "\eMultiCycleAlicePlus"],
-    v2/"\vMultiCycleTimes" [> "\eMultiCycleBobTimes"]
+    v1/"\vMultiCyclePlus" [> "\eMultiCycleAlicePlus", >merge, merge],
+    v2/"\vMultiCycleTimes" [> "\eMultiCycleBobTimes", >merge, merge]
    }
   }
  }
 };
-\path[edge style,->] (v1) to ["\eMultiCycleAliceTimes",out=-45,in=-135] (v2);
-\path[edge style,->] (v2) to ["\eMultiCycleBobPlus",out=-90,in=-90] (v1);
+\path[edge style,->,merge] (v1) to ["\eMultiCycleAliceTimes",out=-45,in=-135,merge] (v2);
+\path[edge style,->,merge] (v2) to ["\eMultiCycleBobPlus",out=-90,in=-90,merge] (v1);
 \end{tikzpicture}
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Multi-User Cycles
-\autoref{fig:Multi-User Cycles-a}:~Initial code.
-\autoref{fig:Multi-User Cycles-b}:~TODO.
-\autoref{fig:Multi-User Cycles-c}:~TODO.
-\autoref{fig:Multi-User Cycles-d}:~TODO.}
+\caption{Multi-User Cycles.}
 \label{fig:Multi-User Cycles}
 \end{figure*}
 
@@ -1850,7 +1855,7 @@ cycle represents to future work.
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    "\vSimpleTimes" [> "\eNestedBob"'] -> {
     {},
-    "\vMultiCycleTimes" [> "\eDisconnectionAlice"]
+    "\vMultiCycleTimes" [> "\eDisconnectionAlice", >alice]
    },
    {}
   }
@@ -1872,7 +1877,7 @@ cycle represents to future work.
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    {},
    "\vMultiCycleTimes" [> "\eMultiCycleAlicePlus"] -> {
-    "\vSimpleTimes" [> "\eDisconnectionBob"'],
+    "\vSimpleTimes" [> "\eDisconnectionBob"', >bob],
     {}
    }
   }
@@ -1895,17 +1900,13 @@ cycle represents to future work.
 };
 \path (-1cm,-3cm) graph[graph style] { plus/"\vSimpleTimes" };
 \path ( 1cm,-3cm) graph[graph style] { times/"\vMultiCycleTimes" };
-\path[edge style,->] (times) to ["\eMultiCycleBobPlus"anchor=south,out=-135,in=-45] (plus);
-\path[edge style,->] (plus) to ["\eMultiCycleBobTimes"anchor=north,out=45,in=135] (times);
+\path[edge style,->,merge] (times) to ["\eMultiCycleBobPlus"anchor=south,out=-135,in=-45, merge] (plus);
+\path[edge style,->,merge] (plus) to ["\eMultiCycleBobTimes"anchor=north,out=45,in=135, merge] (times);
 \end{tikzpicture}
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Disconnection.
-\autoref{fig:Disconnection-a}:~Initial code.
-\autoref{fig:Disconnection-b}:~TODO.
-\autoref{fig:Disconnection-c}:~TODO.
-\autoref{fig:Disconnection-d}:~TODO.}
+\caption{Disconnection.}
 \label{fig:Disconnection}
 \end{figure*}
 
@@ -2226,6 +2227,11 @@ Unision?
 TODO: Traditional diff: no relation (and indent might change)
 
 TODO: memory usage
+
+TODO: cache eviction algorithm
+
+TODO: Finally, note that through we present several complex scenarios, this is merely for presentation.
+In practice, these complex scenarios occur less frequently than portrayed here.
 
 \subsection{Variable names, strings, and numbers}
 \label{sub:Variable names, strings, and numbers}
