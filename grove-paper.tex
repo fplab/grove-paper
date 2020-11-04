@@ -123,7 +123,7 @@
 }
 
 \tikzset{
-  %every picture/.style={framed, background rectangle/.style={draw=gray!50}},
+  every picture/.style={framed, background rectangle/.style={draw=gray!50}},
 }
 \tikzset{edge style/.style={
   draw,
@@ -508,13 +508,21 @@ TODO
 
 TODO: sub figure with diagram of relation of subfigures
 
-TODO: deleted edges (vertecies?) in gray with X in them
+TODO: [don't do this] deleted edges (vertecies?) in gray with X in them
 
 TODO: label edges of transitions between graphs
 
 TODO: explain red, green, blue
 
 TODO: $+_32$ and L$_37$
+
+TODO: extra space in figure 12 d
+
+TODO: reduce vertical tree sep
+
+TODO: list actions in an overview subfigure
+
+TODO: maybe label actions between
 
 %We represent expression contain holes as part of the editor state 
 The \textit{program state} for each editor instance in Grove consists of a graph that represents the program being edited.
@@ -793,7 +801,11 @@ This corresponds to the following sequence of graph edits, shown in \autoref{fig
 %%%%%%%%
 \begin{subfigure}[t]{0.45\linewidth}
 \centering
-\caption{}
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,1ex) node (fig-Move-b) {};
+\end{tikzpicture}
+}
 \label{fig:Move-b}
 \newedge{MoveTimes}{R}
 \begin{tikzpicture}
@@ -879,7 +891,12 @@ applying them in either order produces the same results.
 %%%%%%%%
 \begin{subfigure}[t]{0.32\linewidth}
 \centering
-\caption{}
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,1ex) node (fig-Editing Different Parts of the Code-a) {};
+\path [draw,->,alice] (fig-Move-b) to (-2em, 0cm |- fig-Editing Different Parts of the Code-a);
+\end{tikzpicture}
+}
 \label{fig:Editing Different Parts of the Code-a}
 \newedge{DifferentAlice}{L}
 \newvertex{DifferentAlice}{u}
@@ -902,7 +919,12 @@ applying them in either order produces the same results.
 %%%%%%%%
 \begin{subfigure}[t]{0.32\linewidth}
 \centering
-\caption{}
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,1ex) node (fig-Editing Different Parts of the Code-b) {};
+\path [draw, bob,->] (fig-Move-b) to [out=15,in=165] (-2em, 0cm |- fig-Editing Different Parts of the Code-b);
+\end{tikzpicture}
+}
 \label{fig:Editing Different Parts of the Code-b}
 \newedge{DifferentBob}{R}
 \newvertex{DifferentBob}{v}
@@ -925,7 +947,13 @@ applying them in either order produces the same results.
 %%%%%%%%
 \begin{subfigure}[t]{0.32\linewidth}
 \centering
-\caption{}
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,1ex) node (fig-Editing Different Parts of the Code-c) {};
+\path [draw, merge,->] (fig-Editing Different Parts of the Code-a) to [out=15,in=165] (-2em, 0cm |- fig-Editing Different Parts of the Code-c);
+\path [draw, merge,->] (fig-Editing Different Parts of the Code-b) to (-2em, 0cm |- fig-Editing Different Parts of the Code-c);
+\end{tikzpicture}
+}
 \label{fig:Editing Different Parts of the Code-c}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
@@ -993,11 +1021,19 @@ TODO: Diamond diagram referencing diagrams
 \label{sub:Editing Nested Parts of the Code}
 
 \begin{figure}
-\hfill
+%\hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.32\linewidth}
+\hskip3em%\hfill
+\begin{subfigure}[t]{0.25\linewidth}
 \centering
-\caption{}
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (-7.5em,0cm) node (fig-Editing Different Parts of the Code-c-x) [gray,anchor=base west] {\textbf{Fig.~\ref*{fig:Editing Different Parts of the Code-c}}};
+%%%%
+\path (0cm,0cm) node (fig-Editing Nested Parts of the Code-a) [anchor=base] {\strut};
+\path [draw,merge,->,alice] (fig-Editing Different Parts of the Code-c-x) to (-1.5em, 0cm |- fig-Editing Nested Parts of the Code-a);
+\end{tikzpicture}
+}
 \label{fig:Editing Nested Parts of the Code-a}
 \newedge{NestedAlice}{L}
 \newvertex{NestedAlice}{w}
@@ -1018,9 +1054,14 @@ TODO: Diamond diagram referencing diagrams
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.32\linewidth}
+\begin{subfigure}[t]{0.25\linewidth}
 \centering
-\caption{}
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,0cm) node (fig-Editing Nested Parts of the Code-b) [anchor=base] {\strut};
+\path [draw,merge,->,bob] (fig-Editing Different Parts of the Code-c-x) to [out=15,in=165] (-1.5em, 0cm |- fig-Editing Nested Parts of the Code-b);
+\end{tikzpicture}
+}
 \label{fig:Editing Nested Parts of the Code-b}
 \newedge{NestedBob}{L}
 \begin{tikzpicture}
@@ -1040,9 +1081,15 @@ TODO: Diamond diagram referencing diagrams
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.32\linewidth}
+\begin{subfigure}[t]{0.25\linewidth}
 \centering
-\caption{}
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,0cm) node (fig-Editing Nested Parts of the Code-c) [anchor=base] {\strut};
+\path [draw,merge,->,merge] (fig-Editing Nested Parts of the Code-a) to [out=15,in=165] (-1.5em, 0cm |- fig-Editing Nested Parts of the Code-c);
+\path [draw,merge,->,merge] (fig-Editing Nested Parts of the Code-b) to [out=15,in=165] (-1.5em, 0cm |- fig-Editing Nested Parts of the Code-c);
+\end{tikzpicture}
+}
 \label{fig:Editing Nested Parts of the Code-c}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
@@ -2220,6 +2267,8 @@ Git
 Darcs
 
 Unision?
+
+Homotopical Patch Theorey: https://www.cambridge.org/core/journals/journal-of-functional-programming/article/homotopical-patch-theory/42AD8BB8A91688BCAC16FD4D6A2C3FE7
 
 \section{Discussion and Conclusion}
 \label{sec:Discussion and Conclusion}
