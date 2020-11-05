@@ -336,148 +336,10 @@
 \newcommand{\Edge}[1]{Edge~#1}
 \newcommand{\Vertex}[1]{Vertex~#1}
 
-\begin{document}
-
-%% Title information
-% \title[Grove]{Convergent Collaborative Structure Editing}
-\title[Grove]{Grove: A Convergent Collaborative Structure-Editor Calculus}
-%\subtitle{Subtitle}
-
-%% Author information
-\author{Michael D. Adams}
-\orcid{0000-0003-3160-6972}
-
-\author{Eric Griffis}
-\orcid{nnnn-nnnn-nnnn-nnnn}
-
-\author{Cyrus Omar}
-\orcid{0000-0003-4502-7971}
-\affiliation{
-  %\position{Assistant Research Scientist}
-  \department[0]{Computer Science and Engineering}
-  \department[1]{Electrical Engineering and Computer Science}
-  \department[2]{College of Engineering}
-  \institution{University of Michigan}
-  \streetaddress{Bob and Betty Beyster Building, 2260 Hayward Street}
-  \city{Ann Arbor}
-  \state{MI}
-  \postcode{48109-2121}
-  \country{USA}
-}
-
-
-%% Abstract
-%% Note: \begin{abstract}...\end{abstract} environment must come
-%% before \maketitle command
-\begin{abstract}
-Text of abstract \ldots.
-\end{abstract}
-
-
-%% 2012 ACM Computing Classification System (CSS) concepts
-%% Generate at 'http://dl.acm.org/ccs/ccs.cfm'.
-%\begin{CCSXML}
-%<ccs2012>
-%<concept>
-%<concept_id>10011007.10011006.10011008</concept_id>
-%<concept_desc>Software and its engineering~General programming languages</concept_desc>
-%<concept_significance>500</concept_significance>
-%</concept>
-%<concept>
-%<concept_id>10003456.10003457.10003521.10003525</concept_id>
-%<concept_desc>Social and professional topics~History of programming languages</concept_desc>
-%<concept_significance>300</concept_significance>
-%</concept>
-%</ccs2012>
-%\end{CCSXML}
-%\ccsdesc[500]{Software and its engineering~General programming languages}
-%\ccsdesc[300]{Social and professional topics~History of programming languages}
-%% End of generated code
-
-
-%% Keywords
-%% comma separated list
-% \keywords{keyword1, keyword2, keyword3}  %% \keywords are mandatory in final camera-ready submission
-
-
-%% \maketitle
-%% Note: \maketitle command must come after title commands, author
-%% commands, abstract environment, Computing Classification System
-%% environment and commands, and keywords command.
-\maketitle
-
-
-\section{Introduction}
-\label{sec:Introduction}
-
-TODO: fix the following warning which are reported by LaTeX but not Overleaf: Class acmart Warning: A possible image without description on input line 321.
-
-
-Motivation:
-- collaborative editing (both synchronous ala Google Docs and asynchronous version control) 
-  is good and important as computing grows
-- semantic structure editing is good because it solves the gap problem (semantic editor services 
-  are always available) -- cite Hazelnut papers (talk about holes)
-- previous approaches to collaborative editing have limitations
-  - diff/merge based approaches (trying to solve the inverse problem based on final states -- 
-    you lose the actual actions that were performed, and have to reconstruct them or an approx.
-    of them i.e. add line/delete line actions -- would need to adapt this to structure editing,
-    some papers have started to look at that, but fundamentally we don't want to throw away the
-    knowledge we have about the edits!)
-  - operational transforms (complexity, you have to patch previous actions based on new actions)
-  - CRDT-based collaborative editing (that's all been on text, not PL semantics) -- this is good
-    because it is relatively simple: you just send all the edits to all the replicas and they are 
-    convergent by design
-- we want to have the same convergence for a CRDT-based collaborative structure editor that maintains
-  the sensibility invariant of Hazelnut, i.e. every editor state has meaning. mention that maintaining sensibility 
-  allows scaling of semantic editor services in the presence of large number of collaborators (in contrast,
-  using VS Code or other collaborative text editors with large numbers of collaborators means that almost always
-  the semantic editor services will be disabled because the program is going to be broken in multiple places
-  transiently)
-
-  this is tricky because:
-  - some edits might be conflicting -- solve this with "conflict holes"
-  - adding cut/paste or delete/restore allows for degenerate programs (cycles, multiple parents, etc.)
-- since we are commutative, we solve both synchronus and async collaborative editing
-  - and this resolves issues around merges and conflicts
-- contribution of this paper is to solve these problems from type-theoretic first principles:
-  - ...
-- Hazel
-
-\subsection{Contributions and Paper Organization}
-\label{sec:Contributions and Paper Organization}
-
-\section{Grove By Example}
-\label{sec:Grove By Example}
-
-This section introduces collaborative structure editing in Grove.
-We begin in \autoref{sub:Program Representation} by covering how we use graphs to represent expressions with holes,
-\autoref{sub:Single-User Actions} explores edits by a single user, Alice,
-and \autoref{sub:Multi-user Interactions} explores edits by multiple users, Alice and Bob,
-each of whom is editing their own instance of a program.
-
-do not model cursors
-but model later in \autoref{sub:Cursors} 
-they are not involved in the communication of graph edits
-though their representation is slightly subtly
-
-TODO: group user-level edits (with user visible)
-
-TODO: gray-scale unchanged parts of diagrams; and dashes for removed parts? describe semantic vs presentational in diagrams
-
-
-
-\subsection{Program Representation}
-\label{sub:Program Representation}
-
-% \begin{figure}
-% \centering
-% TODO: UI
-% \includegraphics[scale=0.75]{graphviz/simple-tree-with-hole/1.dot}
-% \caption{A simple tree with a hole}
-% \label{fig:A simple tree with a hole}
-% \end{figure}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \figureSimple
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\figureSimple}{
 \begin{figure}
 \hfill
 %%%%%%%%
@@ -516,85 +378,12 @@ TODO
 \autoref{fig:A simple tree with a hole-b}:~Graph representation.}
 \label{fig:A simple tree with a hole}
 \end{figure}
+}
 
-TODO: sub figure with diagram of relation of subfigures
-
-TODO: [don't do this] deleted edges (vertecies?) in gray with X in them
-
-TODO: label edges of transitions between graphs
-
-TODO: explain red, green, blue
-
-TODO: $+_32$ and L$_37$
-
-TODO: extra space in figure 12 d
-
-TODO: reduce vertical tree sep
-
-TODO: list actions in an overview subfigure
-
-TODO: maybe label actions between
-
-%We represent expression contain holes as part of the editor state 
-The \textit{program state} for each editor instance in Grove consists of a graph that represents the program being edited.
-This can be presented to the user as an expression containing holes.
-For example, \autoref{fig:A simple tree with a hole-b} shows one such graph,
-and \autoref{fig:A simple tree with a hole-a} shows its corresponding expression,~\texttt{x * \hole}, which
-has a hole on the right side of the times operator.
-
-%We present this from two perspectives.
-%One is the underlying graph model, the other is the interface a user might see, which omits these details unless needed.
-
-%which involves explicit graph edges, positions, and add and delete operations.
-
-Program state is a directed graph with a distinguished root vertex.
-%For example, \autoref{fig:A simple tree with a hole-b} shows the graph corresponding to the term in \autoref{fig:A simple tree with a hole-a}.
-Each vertex represents a term and is labeled with both a globally unique identifier and a term constructor.
-In \autoref{fig:A simple tree with a hole-b}, \Vertex{\vidSimpleTimes} and \Vertex{\vidSimpleX} have the constructors~\texttt{*} and \texttt{var(x)},\todo{var} respectively.
-The root vertex has the distinguished identifier~0 and the constructor~\textbullet.
-
-Each term constructor has an associated set of child positions.
-The~\texttt{*} constructor has positions for~\texttt{L}~(i.e., left) and~\texttt{R}~(i.e., right) children
-and the~\texttt{var} constructors have no child positions but takes an argument naming the particular
-variable referenced~(e.g.,~\texttt{x} in \texttt{var(x)}).\footnote{Note that,
-for the purposes of this paper, we represent identifiers and number literals
-indivisibly.  See Section~TODO:REF, for how we would allow editing individual characters.}
-The root vertex constructor,~\textbullet, has the single child position \texttt{Root}.
-
-Each edge is labeled with a globally unique identifier~(e.g.,~1 and~3 in \autoref{fig:A simple tree with a hole-b}) and
-a child position (e.g., \texttt{L} and \texttt{Root} in \autoref{fig:A simple tree with a hole-b}).
-An edge indicates that the destination vertex is a child of the origin vertex at the given position.
-%Visually, we indicate the position of an edge by the location of its origin.
-For the sake of presentation clarity, we reserve odd identifiers for vertexes and even identifiers for edges.
-
-Finally, holes are represented by the absence of a child.
-For example, in \autoref{fig:A simple tree with a hole-b} the absence of a \texttt{right} edge coming from \Vertex{\vidSimpleTimes}
-corresponds to the hole on the right of the~\texttt{*} in~\texttt{x * \hole}.
-
-% In this paper we represent variables and numeric constants
-% as leaves and represent their names or values as
-% arguments to those constructors (e.g.,~\texttt{2} in~\texttt{num(2)}).
-% (In TODO:REF, we discuss how to allow edits within these.)
-
-\subsection{Single-User Actions}
-\label{sub:Single-User Actions}
-
-In the remainder of this section,
-we consider user actions, starting
-in this subsection with single-user
-actions and continuing in \autoref{sub:Multi-user Interactions}
-with multi-user actions.
-
-Each user action corresponds to one or more graph edits.
-Graph edits can only add fresh edges and vertices or remove existing edges.
-
-User actions act relative to a cursor. 
-We do not model cursor sharing and the cursor does not appear in the underlying graph.
-We discuss cursor representations and cursor sharing in more detail in \autoref{sub:Cursors}.
-
-\subsubsection{Construction Actions}
-\label{sub:Construction}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \figureConstructionAndDeletion
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\figureConstructionAndDeletion}{
 \begin{figure}
 %\hfill
 \hskip0.12\linewidth
@@ -657,62 +446,13 @@ We discuss cursor representations and cursor sharing in more detail in \autoref{
 \hfill{}
 \caption{Construction and Deletion.}
 \end{figure}
+}
 
-\todo{"user actions" and "graph edits"}
-To start our examples, Alice moves her cursor to the hole in~\texttt{x * \hole} in \autoref{fig:A simple tree with a hole}
-and constructs the variable~\texttt{y} as shown in \autoref{fig:Construction-b}.
-This action corresponds to creating \Edge{\eidConstructionY} from \Vertex{\vidSimpleX} at the \texttt{R} position to a newly
-created vertex, \Vertex{\vidConstructionY}, containing the variable reference~\texttt{y}.
-The resulting graph, shown in \autoref{fig:Construction-b}, represents the expression \texttt{x * y}.
-
-\subsubsection{Deletion Actions}
-\label{sub:Deletion}
-
-% \begin{figure}
-% \centering
-% \begin{tikzpicture}
-% \path (0,0)    node {\includegraphics[scale=0.75]{graphviz/delete-and-add/1.dot}};
-% \path (0,-4cm) node {\includegraphics[scale=0.75]{graphviz/delete-and-add/2.dot}};
-% \path (0,-8cm) node {\includegraphics[scale=0.75]{graphviz/delete-and-add/3.dot}};
-% \end{tikzpicture}
-% \caption{Delete and Add}
-% \label{fig:Delete and Add}
-% \end{figure}
-
-\todo{Arrows between figures}
-Next Alice deletes~\texttt{x} so that the code becomes~\texttt{\hole{} * y}.
-This is modeled by deleting \Edge{\eidConstructionY} as shown in \autoref{fig:Change-a}. 
-Notice that \Vertex{\vidConstructionY} continues to exist, and if it had any children, those children would remain connected to it.
-In our system, once a vertex is created it is never deleted.
-This allows further manipulations of those vertices by other users as shown later in this section.
-Note that we omit such orphaned vertexes from the remaining diagrams if they are not relevant to the exposition.
-
-Once an edge with a particular identifier is deleted, it cannot be recreated.
-Thus if Alice performed an ``undo'' on this deletion, Grove would create a fresh edge between \Vertex{\vidSimpleTimes} and \Vertex{\vidSimpleX}.
-
-% Note that we do not explicitly add vertexes.
-% Our only actions are deleting or adding \textit{edges}.
-% Vertexes are implicitly created whenever an edge
-% is created that points to it.
-% Deleting vertexes is not necessary, as we can simply
-% remove the edge pointing to it.
-
-% TODO: explain that multiple delete or add are idempotent
-
-% TODO: explain that delete overrides add
-
-\subsubsection{Wrapping Actions}
-\label{sub:Wrapping}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \figureWrapping
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\figureWrapping}{
 \begin{figure}
-% TODO: naive add that creates a conflict
-% \begin{tikzpicture}
-% \path (0,0)       node {\includegraphics[scale=0.4]{graphviz/wrapping/1.dot}};
-% \path (0cm,-4cm)  node {\includegraphics[scale=0.4]{graphviz/wrapping/2.dot}};
-% \path (0cm,-8cm)  node {\includegraphics[scale=0.4]{graphviz/wrapping/3.dot}};
-% \path (0cm,-12cm) node {\includegraphics[scale=0.4]{graphviz/wrapping/4.dot}};
-% \path (0cm,-16cm) node {\includegraphics[scale=0.4]{graphviz/wrapping/5.dot}};
-% \end{tikzpicture}
 \hfill
 %%%%%%%%
 \begin{subfigure}[t]{0.32\linewidth}
@@ -796,20 +536,12 @@ Thus if Alice performed an ``undo'' on this deletion, Grove would create a fresh
 \caption{Wrapping.  Note that this figure omits the orphaned \Vertex{\vidSimpleX} since it is no longer relevant to our narrative.}
 \label{fig:Wrapping}
 \end{figure}
+}
 
-Next, Alice types~\texttt{+} when the cursor is on \Vertex{\vidSimpleTimes}.
-If this were a hole, this would cause a construction action to be performed as in \autoref{sub:Construction} above.
-However, Alice's editor sees that this position is already occupied by the \texttt{*} expression, 
-so typing~\texttt{+} is interpreted as a wrapping action instead of a construction action.
-This corresponds to the following sequence of graph edits, shown in \autoref{fig:Wrapping}: 
-(a) delete \Edge{\eidSimpleTimes}, leaving \Vertex{\vidSimpleTimes} temporarily orphaned,
-(b) add a fresh~\texttt{+} vertex (\Vertex{\vidWrapPlus}) as a child of the root vertex, and
-(c) add an edge to \Vertex{\vidSimpleTimes} in the left child position of this new~\texttt{+} vertex.
-(The choice of wrapping with a bias for the left child position is arbitrary.)
-
-\subsubsection{Movement Actions}
-\label{sub:Move}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \figureMovement
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\figureMovement}{
 \begin{figure}
 %\hfill
 \hskip0.12\linewidth
@@ -868,68 +600,15 @@ This corresponds to the following sequence of graph edits, shown in \autoref{fig
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Moving \Vertex{\vidSimpleTimes} from the left child to the right child of \Vertex{\vidWrapPlus}.}
+\caption{Moving \vSimpleTimes{} to the right child of~\vWrapPlus{}.}
 \label{fig:Move}
 \end{figure}
+}
 
-\marginpar{START REV HERE}
-
-A consequence of our design is that a move operation
-does not have to delete code from one position and create a copy
-in another position.
-Instead, by deleting just the edge to the code to be moved and then
-adding a new edge to that code somewhere else, the actual code is
-moved, not just a copy.
-
-For example, \autoref{fig:Move} Alice
-moves \texttt{\hole{} * y} from the left child of \texttt{+} to its right child.
-This corresponds to the following sequence of graph edits, shown in \autoref{fig:Move}:
-(a) delete \Edge{\eidWrapPlus} leaving \Vertex{\vidSimpleTimes} temporarily orphaned and 
-(b) add an edge (\Edge{\eidMoveTimes}) to \Vertex{\vidSimpleTimes} in the right child position of \Vertex{\vidWrapPlus}.
-
-This move semantics gives us a richer structure than
-when treating code as a list of lines.  We exploit
-this in Section~REF:TODO in order merge edits that involve moving code.
-
-Of course, if the user wants a genuine copy
-and not just a move, that can be achieved
-by creating new vertexes with fresh identifiers.
-(TODO: figure for this?)
-
-This is similar to the paste with formatting versus
-paste without formatting.
-
-If only one restore, then it does what you expect (basically a cut and paste)
-
-If multiple replicas restore to different places, then you get some complexity:
-
-\subsection{Multi-user Interactions}
-\label{sub:Multi-user Interactions}
-
-TODO: mention that id numbers are global (or maybe use A1 and B1 for different users?)
-
-We assume multiple instances
-
-Common scenarios first and then consider more unusual scenarios
-that cause cycles or multiple parents
-
-\subsubsection{Commutativity}
-\label{sub:Commutativity}
-
-Note that aside from transmitting the edge deletions and additions,
-the merge requires no coordination between Alice and Bob.
-For example, suppose that Alice and Bob did not transmit their edits to each other
-but to a third user, Chris, that has the original graph in \autoref{fig:Move-b}.
-Chris can apply the edits from Alice and Bob in any order and will always get
-the graph in \autoref{fig:Editing Different Parts of the Code-c}.
-
-Stated more formally, our edit model obeys the commutativity shown in \autoref{fig:Commutativity}.
-For any two sequences of edits $\vec{\alpha}$ and $\vec{\alpha}^\prime$,
-applying them in either order produces the same results.
-
-\subsubsection{Editing Different Parts of the Code}
-\label{sub:Editing Different Parts of the Code}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \figureEditingDifferentParts
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\figureEditingDifferentParts}{
 \begin{figure}
 \hfill
 %%%%%%%%
@@ -1018,52 +697,24 @@ applying them in either order produces the same results.
 \caption{Editing Different Parts of the Code.}
 \label{fig:Editing Different Parts of the Code}
 \end{figure}
+}
 
-% \begin{figure}
-% \centering
-% TODO: add screenshot of code text to each node
-% TODO: remove orphans from diagram
-% \begin{tikzpicture}
-% \path (0,0)       node {\includegraphics[scale=0.5]{graphviz/editing-different-parts-of-the-code/1.dot}};
-% \path (-3cm,-3cm) node {\includegraphics[scale=0.5]{graphviz/editing-different-parts-of-the-code/2A.dot}};
-% \path (3cm,-3cm)  node {\includegraphics[scale=0.5]{graphviz/editing-different-parts-of-the-code/2B.dot}};
-% \path (0cm,-6cm)  node {\includegraphics[scale=0.5]{graphviz/editing-different-parts-of-the-code/3.dot}};
-% \end{tikzpicture}
-% \caption{Editing Different Parts of the Code}
-% \label{fig:Editing Different Parts of the Code}
-% \end{figure}
-
-To start, Alice and Bob are synchronized with each other and
-both have the graph in \autoref{fig:Move-b}, which
-represents the code~\texttt{\hole{} + (\hole{} + y)}.
-
-Alice add~\texttt{u} as the left child of \Vertex{TODO}
-and Bob changes the~\texttt{y} to a~\texttt{v}.
-Before transmitting their edits to each other,
-Alice thus has the graph in \autoref{fig:Editing Different Parts of the Code-a}
-and Bob has the graph in \autoref{fig:Editing Different Parts of the Code-b}.
-
-Alice and Bob then transmit their graph edits to each other
-and apply the other's graph edits to their own copy of the graph.
-This results in both Alice and Bob having the graph in
-\autoref{fig:Editing Different Parts of the Code-c}.
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \figureCommutativity
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\figureCommutativity}{
 \begin{figure}
 \centering
 TODO: commutativity diagram of screenshots with two cursors
 \caption{TODO:Commutativity}
 \label{fig:Commutativity}
 \end{figure}
+}
 
-TODO: have star or dot dot arrows for skipping steps
-
-TODO: Arrow coming from 5b to 6a and 6b
-
-TODO: Diamond diagram referencing diagrams
-
-\subsubsection{Editing Nested Parts of the Code}
-\label{sub:Editing Nested Parts of the Code}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \figureEditingNestedParts
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\figureEditingNestedParts}{
 \begin{figure}
 %\hfill
 \hskip0.12\linewidth
@@ -1158,50 +809,12 @@ TODO: Diamond diagram referencing diagrams
 \autoref{fig:Editing Nested Parts of the Code-c}:~The result of merging \autoref{fig:Editing Nested Parts of the Code-a} with \autoref{fig:Editing Nested Parts of the Code-b}.}
 \label{fig:Editing Nested Parts of the Code}
 \end{figure}
+}
 
-% \begin{figure}
-% \centering
-% TODO: add screenshot of code text to each node
-% TODO: remove orphans from diagram
-% TODO: annotate edges with delete and restore
-% \begin{tikzpicture}
-% \path (0,0)       node {\includegraphics[scale=0.5]{graphviz/editing-nested-parts-of-the-code/1.dot}};
-% \path (-3cm,-3cm) node {\includegraphics[scale=0.5]{graphviz/editing-nested-parts-of-the-code/2A.dot}};
-% \path (3cm,-3cm)  node {\includegraphics[scale=0.5]{graphviz/editing-nested-parts-of-the-code/2B.dot}};
-% \path (0cm,-6cm)  node {\includegraphics[scale=0.5]{graphviz/editing-nested-parts-of-the-code/3.dot}};
-% \end{tikzpicture}
-% \caption{Editing Nested Parts of the Code}
-% \label{fig:Editing Nested Parts of the Code}
-% \end{figure}
-
-After the edits in the previous subsection synchronize,
-Alice changes the~\texttt{v} to a~\texttt{w}, which results in the graph in \autoref{fig:Editing Nested Parts of the Code-a}.
-On the other hand, Bob moves the~\texttt{u * v} from the left of the plus to the right of the plus
-by deleting \Edge{\eidMoveTimes} and adding \Edge{19}, which results in the graph in \autoref{fig:Editing Nested Parts of the Code-b}.
-Since vertex and edge identifiers are preserved by these,
-both Alice's and Bob's edits can be applied to the other's graph,
-which results in both Alice and Bob having the graph in \autoref{fig:Editing Nested Parts of the Code-c}.
-
-A consequence of this design is that we allow users to edit
-parts of the code that have been deleted.  For example,
-Alice might receive Bob's deletion of \Edge{\eidMoveTimes} before making her
-edits and before receiving Bob's addition of \Edge{19}.
-Her edits would then be within the code deleted by Bob.
-TODO: She can restore that code using a restoration action add a fresh edge to it.
-
-TODO:figure
-
-Contrast with a traditional diff
-
-Similar to how git merged across moves.
-A notable difference though is that \texttt{git} detects
-file moves by structural similarity rather than
-our nominal equality.
-(We exploit this in Subsection~REF:TODO).
-
-\subsubsection{Multi-child conflicts}
-\label{sub:Multi-child conflicts}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \figureMultiChild
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\figureMultiChild}{
 \begin{figure*}
 %\hfill
 \hskip0.12\linewidth
@@ -1311,86 +924,12 @@ TODO: show UI
 \autoref{fig:Multi-child-d}:~User interface showing the multi-child conflict in \autoref{fig:Multi-child-c}.}
 \label{fig:Multi-child}
 \end{figure*}
+}
 
-% \begin{figure}
-% \centering
-% \begin{tikzpicture}
-% \path (0,0)       node {\includegraphics[scale=0.5]{graphviz/direct-conflicts/1.dot}};
-% \path (-3cm,-3cm) node {\includegraphics[scale=0.5]{graphviz/direct-conflicts/2A.dot}};
-% \path (3cm,-3cm)  node {\includegraphics[scale=0.5]{graphviz/direct-conflicts/2B.dot}};
-% \path (0cm,-6cm)  node {\includegraphics[scale=0.5]{graphviz/direct-conflicts/3.dot}};
-% \end{tikzpicture}
-% \caption{Direct Conflicts}
-% \label{fig:Direct Conflicts}
-% \end{figure}
-
-TODO: Multi-user merges can still create multi-child conflicts,
-but it is better to not interpret user actions in a way that creates them.
-How to handle multiple children in the same position is explored in \autoref{sub:Multi-child conflicts}.
-
-Finally, we address our first kind of genuine conflict between edits.
-Alice inserts the variable~\texttt{x} to the right side of the~\texttt{+}
-while Bob add the variable~\texttt{y} also to the right side of the~\texttt{+}.
-These results in the graphs in \autoref{fig:Multi-child-a} and \autoref{fig:Multi-child-b}, respectively.
-In particular pay attention to the edges going out of the \texttt{right} index of \Vertex{\vidWrapPlus}.
-In \autoref{fig:Multi-child-a} it is \Edge{21}, which points to the variable~\texttt{x},
-and in \autoref{fig:Multi-child-b} it is \Edge{23}, which points to the variable~\texttt{y}.
-
-We merge these by including \emph{both} edges as edges going out of the \texttt{right} index
-of \Vertex{\vidWrapPlus}.
-This results in \autoref{fig:Multi-child-c}.
-The conflict between Alice's and Bob's changes is
-represented by the fact that there are multiple edges going out of one index (i.e., the \texttt{right}
-index of \Vertex{\vidWrapPlus}).
-In the graph representation, we flag this conflict by highlighting its edges
-in red (TODO).
-In the textual representation, we flag this conflict with the notation~\texttt{\{ x | y \}}.
-This is a conflict that must eventually be resolved by the user by deleting
-one of the edges and editing the other to be the merged value.
-For example, one could delete \Edge{23} and then edit the~\texttt{x}
-to be~\texttt{x * y}.
-Note that users can continue to edit the code while in this conflicted state.
-It just must be resolved before the the code is run.\footnote{It
-may be possible to develop evaluation models that allow these sorts of conflicts,
-but that is beyond the scope of this paper.}
-
-TODO: need example of fully-automatic resolution and semi-automatic resolution
-
-Multiple adds cause conflicts
-(Not usually presented in the UI)
-
-Compare this to what happens when there are conflicts in a traditional,
-line/diff-based version control system (e.g., \texttt{git}, \texttt{mercurial}, \texttt{svn}, etc.).
-Those systems annotate files with difference markers (e.g., sequences of~\texttt{<},~\texttt{>}, or~\texttt{=})
-when a merge conflict happens.
-These show alternate versions of the code, and it is up to the user
-to replace those alternates with the desired merged result.
-
-Our tree-based model is similar in that it presents alternate versions
-of the code, and it is up to the user to replace those alternates with the desired merged result.
-Our model is different in that merge conflicts in the line-based model
-prevent some semantic editor services from running
-that could continue to run in the tree-based model because
-code inside and outside the conflict is still valid code.
-It is just the point where they meet the poses a potential problem for editor services.
-Another place our model is different
-is that changes are explicit rather than being inferred.
-Finally, in our model, since all changes are in terms of
-the structure of the code rather than lines,
-all changes respect that structure.
-This is unlike the line-based model where there is no guarantee
-that a merge conflict follows the structure of the code.
-Finally, our model differs from the traditional model
-in that we have explict add and remove actions
-where the traditional model infers these from a differencing algorithm.
-
-Note that as a convenience to the user, certain simple
-conflicts might be automatically resolved,
-but we consider this a higher-level, user-interface consideration.
-
-\subsubsection{Multi-parent conflicts}
-\label{sub:Multi-parent conflicts}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \figureMultiParent
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\figureMultiParent}{
 \begin{figure*}
 %\hfill
 \hskip0.12\linewidth
@@ -1531,32 +1070,12 @@ TODO: UI (at least moc up)
 \caption{Multi-parent conflicts.}
 \label{fig:Multi-parent}
 \end{figure*}
+}
 
-In addition to conflicts due to multiple edges coming \emph{out of} child position of a particular vertex,
-conflicts can manifest as multiple edges going \emph{into} a particular vertex.
-We call these \emph{multi-parent conflicts}.
-
-An example of this is shown in \autoref{fig:Multi-parent}.
-\autoref{fig:Multi-parent-a} shows the graph after Alice and Bob have made some more edits,
-and Alice and Bob's editors are synchronized with each other.
-This graph represents the expression~\texttt{(w + \hole{}) + \hole{})}.
-Alice moves the variable~\texttt{w} to the left-most hole,
-while Bob moves it to the right-most hole.
-This results in the graphs in \autoref{fig:Multi-parent-b} and \autoref{fig:Multi-parent-c},
-which represent respectively the expression~\texttt{(\hole{} + w) + \hole{}} for Alice
-and the expression~\texttt{(\hole{} + \hole{}) + w} for Bob.
-In both cases, these edits are achieved with one edge delete and one edge add.
-Alice deletes \Edge{TODO} and adds \Edge{TODO}, while Bob deletes \Edge{TODO} and adds edge \Edge{TODO}.
-As explained in Subsection~TODO:REF, deletes are idempotent so Alice and Bob both deleting \Edge{TODO} is not a problem.
-However, both \Edge{TODO} (added by Alice) and edge \Edge{TODO} (added by Bob) point to the same vertex.
-This generates REF:FIG, in which \Vertex{TODO} as two parents pointing to it.
-We call this situation a multi-parent conflict.
-
-TODO: talk about how to resolve the conflict
-
-\subsubsection{Single-User Cycles}
-\label{sub:Cycles}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \figureSingleUserCycles
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\figureSingleUserCycles}{
 \begin{figure}
 %\hfill
 \hskip0.12\linewidth
@@ -1654,48 +1173,12 @@ TODO: talk about how to resolve the conflict
 \autoref{fig:Single-User Cycles-c}:~\autoref{fig:Single-User Cycles-a} after Alice copy and pastes \Vertex{TODO} by reference as the right child of \Vertex{TODO}.}
 \label{fig:Single-User Cycles}
 \end{figure}
+}
 
-% \begin{figure}
-% \centering
-% TODO: lam x. app(\#1, \hole)
-% \caption{Single-User Cycles}
-% \label{fig:Single-User Cycles}
-% \end{figure}
-
-Another case we must consider is when cycles appear in the graph.
-We categorize these into cycles caused by the action of a single user
-and cycles caused by the interaction of the actions of multiple users.
-
-In a single user context,
-normal insertion and deletion of code by the user cannot create cycles.
-However, it is possible with certain kinds of copy and paste.
-For example, suppose Alice is editing the code in \autoref{fig:Single-User Cycles-a}
-and uses copy and paste to copy \Vertex{TODO} to the right child of \Vertex{TODO}.
-There are two ways to interpret the paste action.
-The first interpretation is to create a deep copy of \Vertex{TODO}.
-This results in \autoref{fig:Single-User Cycles-b} and
-does not cause a cycle.
-The second interpretation is to simply add an edge to \Vertex{TODO}.
-This results in \autoref{fig:Single-User Cycles-b}
-and causes a cycle.
-
-Note that not all pastes should be deep copies.
-For example, Alice may have accomplished code move in \autoref{sub:Editing Nested Parts of the Code}
-by a cutting from the old position and pasting to the new position.
-Preserving Bob's nested edits requires that the paste be by reference instead of by copy.
-Distinguishing when a paste should be by reference versus by copy
-is ultimately a user interface question.
-Cycles caused by the local user's edits can be detected as soon as a user enters them
-by noting either that the graph would contain a cycle or the vertex
-already has a parent somewhere in the graph.
-
-Thus, as a user interface consideration, it might be best to either
-disallow such edits to at least warn users when their
-edits would create a cycle.
-
-\subsubsection{Multi-User Cycles}
-\label{sub:Multi-User Cycles}
-MultiCyclePlus
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \figureMultiUserCycles
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\figureMultiUserCycles}{
 \begin{figure*}
 %\hfill
 \hskip0.12\linewidth
@@ -1826,49 +1309,12 @@ MultiCyclePlus
 \caption{Multi-User Cycles.}
 \label{fig:Multi-User Cycles}
 \end{figure*}
+}
 
-TODO: NEEDS UI MOCKUP
-
-While single-user edits can be checked to see
-whether they create a cycle and thus the system
-can immediately warn the user,
-multi-user edits may not manifest cycles until after
-the edits from multiple users are merged.
-
-For example, consider the situation in \autoref{fig:Multi-User Cycles}.
-\autoref{fig:Multi-User Cycles-a} shows the graph after Alice and Bob have made some more edits,
-and Alice and Bob's editors are synchronized with each other.
-This graph represents the expression~\texttt{((\hole+\hole)+(\hole*\hole))+\hole}.
-Alice moves the leftmost \texttt{+} into the rightmost hold
-and then the \texttt{*} underneath that.
-This results in \autoref{fig:Multi-User Cycles-b},
-which represents the expression~\texttt{(\hole+\hole)+((\hole*\hole)+\hole)}.
-On the other hand, Bob does the same move
-but puts the \texttt{+} and under the \texttt{*}.
-This results in \autoref{fig:Multi-User Cycles-c},
-which represents the expression~\texttt{(\hole+\hole)+((\hole+\hole)*\hole)}.
-
-On their own, neither of these edits creates a cycle.
-However, merging the edit actions of both Alice and Bob results in the graph
-in \autoref{fig:Multi-User Cycles-d}, which has a cycle
-between \Vertex{TODO} and \Vertex{TODO}.
-This situation is akin to a merge conflict in traditional version control systems.
-Resolving it requires user input, but is as simple as
-either deleting \Edge{TODO} and \Edge{TODO} (thus favoring Alice's version)
-or deleting \Edge{TODO} and \Edge{TODO} (thus favoring Bob's version).
-Since a cycle like this that is connected to the root vertex always
-contains vertexes with multiple parents that if removed would break the cycle,
-we use the user interface described in \autoref{sub:Multi-parent conflicts}
-to display these kinds of programs.
-For example, \autoref{fig:Multi-User Cycles-d} would be displayed
-as shown in TODO:FIGURE.
-We leave the user interface considerations of resolving the conflict such a
-cycle represents to future work.
-
-
-\subsubsection{Disconnection}
-\label{sub:Disconnection}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \figureDisconnection
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\figureDisconnection}{
 \begin{figure*}
 %\hfill
 \hskip0.12\linewidth
@@ -1979,6 +1425,567 @@ cycle represents to future work.
 \caption{Disconnection.}
 \label{fig:Disconnection}
 \end{figure*}
+}
+
+\begin{document}
+
+%% Title information
+% \title[Grove]{Convergent Collaborative Structure Editing}
+\title[Grove]{Grove: A Convergent Collaborative Structure-Editor Calculus}
+%\subtitle{Subtitle}
+
+%% Author information
+\author{Michael D. Adams}
+\orcid{0000-0003-3160-6972}
+
+\author{Eric Griffis}
+\orcid{nnnn-nnnn-nnnn-nnnn}
+
+\author{Cyrus Omar}
+\orcid{0000-0003-4502-7971}
+\affiliation{
+  %\position{Assistant Research Scientist}
+  \department[0]{Computer Science and Engineering}
+  \department[1]{Electrical Engineering and Computer Science}
+  \department[2]{College of Engineering}
+  \institution{University of Michigan}
+  \streetaddress{Bob and Betty Beyster Building, 2260 Hayward Street}
+  \city{Ann Arbor}
+  \state{MI}
+  \postcode{48109-2121}
+  \country{USA}
+}
+
+
+%% Abstract
+%% Note: \begin{abstract}...\end{abstract} environment must come
+%% before \maketitle command
+\begin{abstract}
+Text of abstract \ldots.
+\end{abstract}
+
+
+%% 2012 ACM Computing Classification System (CSS) concepts
+%% Generate at 'http://dl.acm.org/ccs/ccs.cfm'.
+%\begin{CCSXML}
+%<ccs2012>
+%<concept>
+%<concept_id>10011007.10011006.10011008</concept_id>
+%<concept_desc>Software and its engineering~General programming languages</concept_desc>
+%<concept_significance>500</concept_significance>
+%</concept>
+%<concept>
+%<concept_id>10003456.10003457.10003521.10003525</concept_id>
+%<concept_desc>Social and professional topics~History of programming languages</concept_desc>
+%<concept_significance>300</concept_significance>
+%</concept>
+%</ccs2012>
+%\end{CCSXML}
+%\ccsdesc[500]{Software and its engineering~General programming languages}
+%\ccsdesc[300]{Social and professional topics~History of programming languages}
+%% End of generated code
+
+
+%% Keywords
+%% comma separated list
+% \keywords{keyword1, keyword2, keyword3}  %% \keywords are mandatory in final camera-ready submission
+
+
+%% \maketitle
+%% Note: \maketitle command must come after title commands, author
+%% commands, abstract environment, Computing Classification System
+%% environment and commands, and keywords command.
+\maketitle
+
+
+\section{Introduction}
+\label{sec:Introduction}
+
+TODO: fix the following warning which are reported by LaTeX but not Overleaf: Class acmart Warning: A possible image without description on input line 321.
+
+
+Motivation:
+- collaborative editing (both synchronous ala Google Docs and asynchronous version control) 
+  is good and important as computing grows
+- semantic structure editing is good because it solves the gap problem (semantic editor services 
+  are always available) -- cite Hazelnut papers (talk about holes)
+- previous approaches to collaborative editing have limitations
+  - diff/merge based approaches (trying to solve the inverse problem based on final states -- 
+    you lose the actual actions that were performed, and have to reconstruct them or an approx.
+    of them i.e. add line/delete line actions -- would need to adapt this to structure editing,
+    some papers have started to look at that, but fundamentally we don't want to throw away the
+    knowledge we have about the edits!)
+  - operational transforms (complexity, you have to patch previous actions based on new actions)
+  - CRDT-based collaborative editing (that's all been on text, not PL semantics) -- this is good
+    because it is relatively simple: you just send all the edits to all the replicas and they are 
+    convergent by design
+- we want to have the same convergence for a CRDT-based collaborative structure editor that maintains
+  the sensibility invariant of Hazelnut, i.e. every editor state has meaning. mention that maintaining sensibility 
+  allows scaling of semantic editor services in the presence of large number of collaborators (in contrast,
+  using VS Code or other collaborative text editors with large numbers of collaborators means that almost always
+  the semantic editor services will be disabled because the program is going to be broken in multiple places
+  transiently)
+
+  this is tricky because:
+  - some edits might be conflicting -- solve this with "conflict holes"
+  - adding cut/paste or delete/restore allows for degenerate programs (cycles, multiple parents, etc.)
+- since we are commutative, we solve both synchronus and async collaborative editing
+  - and this resolves issues around merges and conflicts
+- contribution of this paper is to solve these problems from type-theoretic first principles:
+  - ...
+- Hazel
+
+\subsection{Contributions and Paper Organization}
+\label{sec:Contributions and Paper Organization}
+
+\section{Grove By Example}
+\label{sec:Grove By Example}
+
+This section introduces collaborative structure editing in Grove.
+We begin in \autoref{sub:Program Representation} by covering how we use graphs to represent expressions with holes,
+\autoref{sub:Single-User Actions} explores edits by a single user, Alice,
+and \autoref{sub:Multi-user Interactions} explores edits by multiple users, Alice and Bob,
+each of whom is editing their own instance of a program.
+
+do not model cursors
+but model later in \autoref{sub:Cursors} 
+they are not involved in the communication of graph edits
+though their representation is slightly subtly
+
+TODO: group user-level edits (with user visible)
+
+TODO: gray-scale unchanged parts of diagrams; and dashes for removed parts? describe semantic vs presentational in diagrams
+
+\subsection{Program Representation}
+\label{sub:Program Representation}
+
+\figureSimple
+
+TODO: sub figure with diagram of relation of subfigures
+
+TODO: [don't do this] deleted edges (vertecies?) in gray with X in them
+
+TODO: label edges of transitions between graphs
+
+TODO: explain red, green, blue
+
+TODO: $+_32$ and L$_37$
+
+TODO: extra space in figure 12 d
+
+TODO: reduce vertical tree sep
+
+TODO: list actions in an overview subfigure
+
+TODO: maybe label actions between
+
+%We represent expression contain holes as part of the editor state 
+The \textit{program state} for each editor instance in Grove consists of a graph that represents the program being edited.
+This can be presented to the user as an expression containing holes.
+For example, \autoref{fig:A simple tree with a hole-b} shows one such graph,
+and \autoref{fig:A simple tree with a hole-a} shows its corresponding expression,~\texttt{x * \hole}, which
+has a hole on the right side of the times operator.
+
+%We present this from two perspectives.
+%One is the underlying graph model, the other is the interface a user might see, which omits these details unless needed.
+
+%which involves explicit graph edges, positions, and add and delete operations.
+
+Program state is a directed graph with a distinguished root vertex.
+%For example, \autoref{fig:A simple tree with a hole-b} shows the graph corresponding to the term in \autoref{fig:A simple tree with a hole-a}.
+Each vertex represents a term and is labeled with both a globally unique identifier and a term constructor.
+In \autoref{fig:A simple tree with a hole-b}, \Vertex{\vidSimpleTimes} and \Vertex{\vidSimpleX} have the constructors~\texttt{*} and \texttt{var(x)},\todo{var} respectively.
+The root vertex has the distinguished identifier~0 and the constructor~\textbullet.
+
+Each term constructor has an associated set of child positions.
+The~\texttt{*} constructor has positions for~\texttt{L}~(i.e., left) and~\texttt{R}~(i.e., right) children
+and the~\texttt{var} constructors have no child positions but takes an argument naming the particular
+variable referenced~(e.g.,~\texttt{x} in \texttt{var(x)}).\footnote{Note that,
+for the purposes of this paper, we represent identifiers and number literals
+indivisibly.  See Section~TODO:REF, for how we would allow editing individual characters.}
+The root vertex constructor,~\textbullet, has the single child position \texttt{Root}.
+
+Each edge is labeled with a globally unique identifier~(e.g.,~1 and~3 in \autoref{fig:A simple tree with a hole-b}) and
+a child position (e.g., \texttt{L} and \texttt{Root} in \autoref{fig:A simple tree with a hole-b}).
+An edge indicates that the destination vertex is a child of the origin vertex at the given position.
+%Visually, we indicate the position of an edge by the location of its origin.
+For the sake of presentation clarity, we reserve odd identifiers for vertexes and even identifiers for edges.
+
+Finally, holes are represented by the absence of a child.
+For example, in \autoref{fig:A simple tree with a hole-b} the absence of a \texttt{right} edge coming from \Vertex{\vidSimpleTimes}
+corresponds to the hole on the right of the~\texttt{*} in~\texttt{x * \hole}.
+
+% In this paper we represent variables and numeric constants
+% as leaves and represent their names or values as
+% arguments to those constructors (e.g.,~\texttt{2} in~\texttt{num(2)}).
+% (In TODO:REF, we discuss how to allow edits within these.)
+
+\subsection{Single-User Actions}
+\label{sub:Single-User Actions}
+
+In the remainder of this section,
+we consider user actions, starting
+in this subsection with single-user
+actions and continuing in \autoref{sub:Multi-user Interactions}
+with multi-user actions.
+
+Each user action corresponds to one or more graph edits.
+Graph edits can only add fresh edges and vertices or remove existing edges.
+
+User actions act relative to a cursor. 
+We do not model cursor sharing and the cursor does not appear in the underlying graph.
+We discuss cursor representations and cursor sharing in more detail in \autoref{sub:Cursors}.
+
+\subsubsection{Construction Actions}
+\label{sub:Construction}
+
+\figureConstructionAndDeletion
+
+\todo{"user actions" and "graph edits"}
+To start our examples, Alice moves her cursor to the hole in~\texttt{x * \hole} in \autoref{fig:A simple tree with a hole}
+and constructs the variable~\texttt{y} as shown in \autoref{fig:Construction-b}.
+This action corresponds to creating \Edge{\eidConstructionY} from \Vertex{\vidSimpleX} at the \texttt{R} position to a newly
+created vertex, \Vertex{\vidConstructionY}, containing the variable reference~\texttt{y}.
+The resulting graph, shown in \autoref{fig:Construction-b}, represents the expression \texttt{x * y}.
+
+\subsubsection{Deletion Actions}
+\label{sub:Deletion}
+
+\todo{Arrows between figures}
+Next Alice deletes~\texttt{x} so that the code becomes~\texttt{\hole{} * y}.
+This is modeled by deleting \Edge{\eidConstructionY} as shown in \autoref{fig:Change-a}. 
+Notice that \Vertex{\vidConstructionY} continues to exist, and if it had any children, those children would remain connected to it.
+In our system, once a vertex is created it is never deleted.
+This allows further manipulations of those vertices by other users as shown later in this section.
+Note that we omit such orphaned vertexes from the remaining diagrams if they are not relevant to the exposition.
+
+Once an edge with a particular identifier is deleted, it cannot be recreated.
+Thus if Alice performed an ``undo'' on this deletion, Grove would create a fresh edge between \Vertex{\vidSimpleTimes} and \Vertex{\vidSimpleX}.
+
+% Note that we do not explicitly add vertexes.
+% Our only actions are deleting or adding \textit{edges}.
+% Vertexes are implicitly created whenever an edge
+% is created that points to it.
+% Deleting vertexes is not necessary, as we can simply
+% remove the edge pointing to it.
+
+% TODO: explain that multiple delete or add are idempotent
+
+% TODO: explain that delete overrides add
+
+\subsubsection{Wrapping Actions}
+\label{sub:Wrapping}
+
+\figureWrapping
+
+Next, Alice types~\texttt{+} when the cursor is on \Vertex{\vidSimpleTimes}.
+If this were a hole, this would cause a construction action to be performed as in \autoref{sub:Construction} above.
+However, Alice's editor sees that this position is already occupied by the \texttt{*} expression, 
+so typing~\texttt{+} is interpreted as a wrapping action instead of a construction action.
+This corresponds to the following sequence of graph edits, shown in \autoref{fig:Wrapping}: 
+(a) delete \Edge{\eidSimpleTimes}, leaving \Vertex{\vidSimpleTimes} temporarily orphaned,
+(b) add a fresh~\texttt{+} vertex (\Vertex{\vidWrapPlus}) as a child of the root vertex, and
+(c) add an edge to \Vertex{\vidSimpleTimes} in the left child position of this new~\texttt{+} vertex.
+(The choice of wrapping with a bias for the left child position is arbitrary.)
+
+\subsubsection{Movement Actions}
+\label{sub:Move}
+
+\figureMovement
+
+\marginpar{START REV HERE}
+
+A consequence of our design is that a move operation
+does not have to delete code from one position and create a copy
+in another position.
+Instead, by deleting just the edge to the code to be moved and then
+adding a new edge to that code somewhere else, the actual code is
+moved, not just a copy.
+
+For example, \autoref{fig:Move} Alice
+moves \texttt{\hole{} * y} from the left child of \texttt{+} to its right child.
+This corresponds to the following sequence of graph edits, shown in \autoref{fig:Move}:
+(a) delete \Edge{\eidWrapPlus} leaving \Vertex{\vidSimpleTimes} temporarily orphaned and 
+(b) add an edge (\Edge{\eidMoveTimes}) to \Vertex{\vidSimpleTimes} in the right child position of \Vertex{\vidWrapPlus}.
+
+This move semantics gives us a richer structure than
+when treating code as a list of lines.  We exploit
+this in Section~REF:TODO in order merge edits that involve moving code.
+
+Of course, if the user wants a genuine copy
+and not just a move, that can be achieved
+by creating new vertexes with fresh identifiers.
+(TODO: figure for this?)
+
+This is similar to the paste with formatting versus
+paste without formatting.
+
+If only one restore, then it does what you expect (basically a cut and paste)
+
+If multiple replicas restore to different places, then you get some complexity:
+
+\subsection{Multi-user Interactions}
+\label{sub:Multi-user Interactions}
+
+TODO: mention that id numbers are global (or maybe use A1 and B1 for different users?)
+
+We assume multiple instances
+
+Common scenarios first and then consider more unusual scenarios
+that cause cycles or multiple parents
+
+\subsubsection{Commutativity}
+\label{sub:Commutativity}
+
+Note that aside from transmitting the edge deletions and additions,
+the merge requires no coordination between Alice and Bob.
+For example, suppose that Alice and Bob did not transmit their edits to each other
+but to a third user, Chris, that has the original graph in \autoref{fig:Move-b}.
+Chris can apply the edits from Alice and Bob in any order and will always get
+the graph in \autoref{fig:Editing Different Parts of the Code-c}.
+
+Stated more formally, our edit model obeys the commutativity shown in \autoref{fig:Commutativity}.
+For any two sequences of edits $\vec{\alpha}$ and $\vec{\alpha}^\prime$,
+applying them in either order produces the same results.
+
+\subsubsection{Editing Different Parts of the Code}
+\label{sub:Editing Different Parts of the Code}
+
+\figureEditingDifferentParts
+
+To start, Alice and Bob are synchronized with each other and
+both have the graph in \autoref{fig:Move-b}, which
+represents the code~\texttt{\hole{} + (\hole{} + y)}.
+
+Alice add~\texttt{u} as the left child of \Vertex{TODO}
+and Bob changes the~\texttt{y} to a~\texttt{v}.
+Before transmitting their edits to each other,
+Alice thus has the graph in \autoref{fig:Editing Different Parts of the Code-a}
+and Bob has the graph in \autoref{fig:Editing Different Parts of the Code-b}.
+
+Alice and Bob then transmit their graph edits to each other
+and apply the other's graph edits to their own copy of the graph.
+This results in both Alice and Bob having the graph in
+\autoref{fig:Editing Different Parts of the Code-c}.
+
+\figureCommutativity
+
+TODO: have star or dot dot arrows for skipping steps
+
+TODO: Arrow coming from 5b to 6a and 6b
+
+TODO: Diamond diagram referencing diagrams
+
+\subsubsection{Editing Nested Parts of the Code}
+\label{sub:Editing Nested Parts of the Code}
+
+\figureEditingNestedParts
+
+After the edits in the previous subsection synchronize,
+Alice changes the~\texttt{v} to a~\texttt{w}, which results in the graph in \autoref{fig:Editing Nested Parts of the Code-a}.
+On the other hand, Bob moves the~\texttt{u * v} from the left of the plus to the right of the plus
+by deleting \Edge{\eidMoveTimes} and adding \Edge{19}, which results in the graph in \autoref{fig:Editing Nested Parts of the Code-b}.
+Since vertex and edge identifiers are preserved by these,
+both Alice's and Bob's edits can be applied to the other's graph,
+which results in both Alice and Bob having the graph in \autoref{fig:Editing Nested Parts of the Code-c}.
+
+A consequence of this design is that we allow users to edit
+parts of the code that have been deleted.  For example,
+Alice might receive Bob's deletion of \Edge{\eidMoveTimes} before making her
+edits and before receiving Bob's addition of \Edge{19}.
+Her edits would then be within the code deleted by Bob.
+TODO: She can restore that code using a restoration action add a fresh edge to it.
+
+TODO:figure
+
+Contrast with a traditional diff
+
+Similar to how git merged across moves.
+A notable difference though is that \texttt{git} detects
+file moves by structural similarity rather than
+our nominal equality.
+(We exploit this in Subsection~REF:TODO).
+
+\subsubsection{Multi-child conflicts}
+\label{sub:Multi-child conflicts}
+
+\figureMultiChild
+
+TODO: Multi-user merges can still create multi-child conflicts,
+but it is better to not interpret user actions in a way that creates them.
+How to handle multiple children in the same position is explored in \autoref{sub:Multi-child conflicts}.
+
+Finally, we address our first kind of genuine conflict between edits.
+Alice inserts the variable~\texttt{x} to the right side of the~\texttt{+}
+while Bob add the variable~\texttt{y} also to the right side of the~\texttt{+}.
+These results in the graphs in \autoref{fig:Multi-child-a} and \autoref{fig:Multi-child-b}, respectively.
+In particular pay attention to the edges going out of the \texttt{right} index of \Vertex{\vidWrapPlus}.
+In \autoref{fig:Multi-child-a} it is \Edge{21}, which points to the variable~\texttt{x},
+and in \autoref{fig:Multi-child-b} it is \Edge{23}, which points to the variable~\texttt{y}.
+
+We merge these by including \emph{both} edges as edges going out of the \texttt{right} index
+of \Vertex{\vidWrapPlus}.
+This results in \autoref{fig:Multi-child-c}.
+The conflict between Alice's and Bob's changes is
+represented by the fact that there are multiple edges going out of one index (i.e., the \texttt{right}
+index of \Vertex{\vidWrapPlus}).
+In the graph representation, we flag this conflict by highlighting its edges
+in red (TODO).
+In the textual representation, we flag this conflict with the notation~\texttt{\{ x | y \}}.
+This is a conflict that must eventually be resolved by the user by deleting
+one of the edges and editing the other to be the merged value.
+For example, one could delete \Edge{23} and then edit the~\texttt{x}
+to be~\texttt{x * y}.
+Note that users can continue to edit the code while in this conflicted state.
+It just must be resolved before the the code is run.\footnote{It
+may be possible to develop evaluation models that allow these sorts of conflicts,
+but that is beyond the scope of this paper.}
+
+TODO: need example of fully-automatic resolution and semi-automatic resolution
+
+Multiple adds cause conflicts
+(Not usually presented in the UI)
+
+Compare this to what happens when there are conflicts in a traditional,
+line/diff-based version control system (e.g., \texttt{git}, \texttt{mercurial}, \texttt{svn}, etc.).
+Those systems annotate files with difference markers (e.g., sequences of~\texttt{<},~\texttt{>}, or~\texttt{=})
+when a merge conflict happens.
+These show alternate versions of the code, and it is up to the user
+to replace those alternates with the desired merged result.
+
+Our tree-based model is similar in that it presents alternate versions
+of the code, and it is up to the user to replace those alternates with the desired merged result.
+Our model is different in that merge conflicts in the line-based model
+prevent some semantic editor services from running
+that could continue to run in the tree-based model because
+code inside and outside the conflict is still valid code.
+It is just the point where they meet the poses a potential problem for editor services.
+Another place our model is different
+is that changes are explicit rather than being inferred.
+Finally, in our model, since all changes are in terms of
+the structure of the code rather than lines,
+all changes respect that structure.
+This is unlike the line-based model where there is no guarantee
+that a merge conflict follows the structure of the code.
+Finally, our model differs from the traditional model
+in that we have explict add and remove actions
+where the traditional model infers these from a differencing algorithm.
+
+Note that as a convenience to the user, certain simple
+conflicts might be automatically resolved,
+but we consider this a higher-level, user-interface consideration.
+
+\subsubsection{Multi-parent conflicts}
+\label{sub:Multi-parent conflicts}
+
+\figureMultiParent
+
+In addition to conflicts due to multiple edges coming \emph{out of} child position of a particular vertex,
+conflicts can manifest as multiple edges going \emph{into} a particular vertex.
+We call these \emph{multi-parent conflicts}.
+
+An example of this is shown in \autoref{fig:Multi-parent}.
+\autoref{fig:Multi-parent-a} shows the graph after Alice and Bob have made some more edits,
+and Alice and Bob's editors are synchronized with each other.
+This graph represents the expression~\texttt{(w + \hole{}) + \hole{})}.
+Alice moves the variable~\texttt{w} to the left-most hole,
+while Bob moves it to the right-most hole.
+This results in the graphs in \autoref{fig:Multi-parent-b} and \autoref{fig:Multi-parent-c},
+which represent respectively the expression~\texttt{(\hole{} + w) + \hole{}} for Alice
+and the expression~\texttt{(\hole{} + \hole{}) + w} for Bob.
+In both cases, these edits are achieved with one edge delete and one edge add.
+Alice deletes \Edge{TODO} and adds \Edge{TODO}, while Bob deletes \Edge{TODO} and adds edge \Edge{TODO}.
+As explained in Subsection~TODO:REF, deletes are idempotent so Alice and Bob both deleting \Edge{TODO} is not a problem.
+However, both \Edge{TODO} (added by Alice) and edge \Edge{TODO} (added by Bob) point to the same vertex.
+This generates REF:FIG, in which \Vertex{TODO} as two parents pointing to it.
+We call this situation a multi-parent conflict.
+
+TODO: talk about how to resolve the conflict
+
+\subsubsection{Single-User Cycles}
+\label{sub:Cycles}
+
+\figureSingleUserCycles
+
+Another case we must consider is when cycles appear in the graph.
+We categorize these into cycles caused by the action of a single user
+and cycles caused by the interaction of the actions of multiple users.
+
+In a single user context,
+normal insertion and deletion of code by the user cannot create cycles.
+However, it is possible with certain kinds of copy and paste.
+For example, suppose Alice is editing the code in \autoref{fig:Single-User Cycles-a}
+and uses copy and paste to copy \Vertex{TODO} to the right child of \Vertex{TODO}.
+There are two ways to interpret the paste action.
+The first interpretation is to create a deep copy of \Vertex{TODO}.
+This results in \autoref{fig:Single-User Cycles-b} and
+does not cause a cycle.
+The second interpretation is to simply add an edge to \Vertex{TODO}.
+This results in \autoref{fig:Single-User Cycles-b}
+and causes a cycle.
+
+Note that not all pastes should be deep copies.
+For example, Alice may have accomplished code move in \autoref{sub:Editing Nested Parts of the Code}
+by a cutting from the old position and pasting to the new position.
+Preserving Bob's nested edits requires that the paste be by reference instead of by copy.
+Distinguishing when a paste should be by reference versus by copy
+is ultimately a user interface question.
+Cycles caused by the local user's edits can be detected as soon as a user enters them
+by noting either that the graph would contain a cycle or the vertex
+already has a parent somewhere in the graph.
+
+Thus, as a user interface consideration, it might be best to either
+disallow such edits to at least warn users when their
+edits would create a cycle.
+
+\subsubsection{Multi-User Cycles}
+\label{sub:Multi-User Cycles}
+
+\figureMultiUserCycles
+
+TODO: NEEDS UI MOCKUP
+
+While single-user edits can be checked to see
+whether they create a cycle and thus the system
+can immediately warn the user,
+multi-user edits may not manifest cycles until after
+the edits from multiple users are merged.
+
+For example, consider the situation in \autoref{fig:Multi-User Cycles}.
+\autoref{fig:Multi-User Cycles-a} shows the graph after Alice and Bob have made some more edits,
+and Alice and Bob's editors are synchronized with each other.
+This graph represents the expression~\texttt{((\hole+\hole)+(\hole*\hole))+\hole}.
+Alice moves the leftmost \texttt{+} into the rightmost hold
+and then the \texttt{*} underneath that.
+This results in \autoref{fig:Multi-User Cycles-b},
+which represents the expression~\texttt{(\hole+\hole)+((\hole*\hole)+\hole)}.
+On the other hand, Bob does the same move
+but puts the \texttt{+} and under the \texttt{*}.
+This results in \autoref{fig:Multi-User Cycles-c},
+which represents the expression~\texttt{(\hole+\hole)+((\hole+\hole)*\hole)}.
+
+On their own, neither of these edits creates a cycle.
+However, merging the edit actions of both Alice and Bob results in the graph
+in \autoref{fig:Multi-User Cycles-d}, which has a cycle
+between \Vertex{TODO} and \Vertex{TODO}.
+This situation is akin to a merge conflict in traditional version control systems.
+Resolving it requires user input, but is as simple as
+either deleting \Edge{TODO} and \Edge{TODO} (thus favoring Alice's version)
+or deleting \Edge{TODO} and \Edge{TODO} (thus favoring Bob's version).
+Since a cycle like this that is connected to the root vertex always
+contains vertexes with multiple parents that if removed would break the cycle,
+we use the user interface described in \autoref{sub:Multi-parent conflicts}
+to display these kinds of programs.
+For example, \autoref{fig:Multi-User Cycles-d} would be displayed
+as shown in TODO:FIGURE.
+We leave the user interface considerations of resolving the conflict such a
+cycle represents to future work.
+
+
+\subsubsection{Disconnection}
+\label{sub:Disconnection}
+
+\figureDisconnection
 
 \todo{UI would show orphans only once edits orphans occur}
 
@@ -2173,7 +2180,6 @@ $G \overset{\alpha}\rightarrow G'$
 iff $G \sqcup \llbracket\alpha\rrbracket = G'$.
 Thus the commutativity of graph actions is established
 by the commutativity of the join operations defining those graph actions.
-
 
 Discuss uniqueness of uuid
 
