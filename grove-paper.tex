@@ -630,11 +630,11 @@ TODO
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   {},
-   "\vSimpleTimes" [> "\eMoveTimes"] -> {
+  {},
+  "\vSimpleTimes" [> "\eMoveTimes"] -> {
     "\vDifferentAlice" [> "\eDifferentAlice"', >alice edge, alice],
     "\vConstructionY" [> "\eConstructionY"]
-   }
+  }
   }
  }
 };
@@ -656,11 +656,11 @@ TODO
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   {},
-   "\vSimpleTimes" [> "\eMoveTimes"] -> {
+  {},
+  "\vSimpleTimes" [> "\eMoveTimes"] -> {
     {},
     "\vDifferentBob" [> "\eDifferentBob", >bob edge, bob]
-   }
+  }
   }
  }
 };
@@ -683,11 +683,11 @@ TODO
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   {},
-   "\vSimpleTimes" [> "\eMoveTimes"] -> {
+  {},
+  "\vSimpleTimes" [> "\eMoveTimes"] -> {
     "\vDifferentAlice" [> "\eDifferentAlice"', >merge edge, merge],
     "\vDifferentBob" [> "\eDifferentBob", >merge edge, merge]
-   }
+  }
   }
  }
 };
@@ -706,10 +706,24 @@ TODO
 \newcommand{\figureCommutativity}{
 \begin{figure}
 \centering
+\begin{tikzpicture}
+\path ( 0cm, 0cm) node (a) {Original\\Version};
+% \path (-1cm,-1cm) node (b) [alice] {Alice's Version};
+% \path ( 1cm,-1cm) node (c) [bob] {Bob's Version};
+% \path ( 0cm,-2cm) node (d) {Combined Version};
+% \path [draw,->,alice] (a) -- node [pos=0.7,auto,swap] {Alice's Edits} (b);
+% \path [draw,->,bob]   (a) -- node [pos=0.7,auto]      {Bob's Edits}   (c);
+% \path [draw,->,merge] (b) -- node [pos=0.3,auto,swap] {Merge} (d);
+\path [draw,->,merge] (c) -- node [pos=0.3,auto]      {Merge} (d);
+\end{tikzpicture}
 
 TODO: commutativity diagram of screenshots with two cursors
 
 TODO: include legend of arrow colors
+
+TODO: move into section 2.3.1
+
+TODO: star on multi-step arrows
 
 \caption{TODO:Commutativity}
 \label{fig:Commutativity}
@@ -1561,8 +1575,6 @@ though their representation is slightly subtly
 
 \figureSimple
 
-TODO: explain red, green, blue
-
 TODO: $+_32$ and L$_37$
 
 TODO: extra space in figure 12 d
@@ -1609,6 +1621,8 @@ corresponds to the hole on the right of the~\texttt{*} in~\texttt{x * \hole}.
 
 \subsection{Single-User Actions}
 \label{sub:Single-User Actions}
+
+TODO: explain cross-page arrows
 
 In the remainder of this section,
 we consider user actions, starting
@@ -1675,48 +1689,42 @@ This corresponds to the following sequence of graph edits, shown in \autoref{fig
 (c) add an edge to \Vertex{\vidSimpleTimes} in the left child position of this new~\texttt{+} vertex.
 (The choice of wrapping with a bias for the left child position is arbitrary.)
 
-\subsubsection{Movement Actions}
-\label{sub:Move}
+\subsubsection{Repositioning Actions}
+\label{sub:Repositioning}
 
-\marginpar{START REV HERE}
+If a user want to move code from one place to another we have two options.
+The first is to delete the code from its old position, and
+reconstruct the code in its new position.
+However, edges and vertices have unique identifiers in Grove 
+to support the collaborative editing features we discuss next,
+so reconstruction will not preserve identity of vertices and edges. 
+Consequently, we include explicit repositioning actions that preserve identity.
+These would be triggered by, for example, a drag and drop, or a cut and paste
+(but not copy and paste, or a second paste after a cut, which do not need to
+preserve identity and so would rely on reconstruction as already described).
 
-TODO: in this section, discuss how we have to be careful to avoid creating cycles
+In terms of the graph, a repositioning action involves simply deleting the edge
+from the original parent then adding an edge from the new parent.
+Thus the code is actually \textit{moved}, not copied.
 
-A consequence of our design is that a move operation
-does not have to delete code from one position and create a copy
-in another position.
-Instead, by deleting just the edge to the code to be moved and then
-adding a new edge to that code somewhere else, the actual code is
-moved, not just a copy.
-
-For example, \autoref{fig:Move} Alice
-moves \texttt{\hole{} * y} from the left child of \texttt{+} to its right child.
+For example, in \autoref{fig:Move} Alice continues her edits by
+moving \texttt{\hole{} * y} from the left child of \texttt{+} to its right child.
 This corresponds to the following sequence of graph edits, shown in \autoref{fig:Move}:
-(a) delete \Edge{\eidWrapPlus} leaving \Vertex{\vidSimpleTimes} temporarily orphaned and 
-(b) add an edge (\Edge{\eidMoveTimes}) to \Vertex{\vidSimpleTimes} in the right child position of \Vertex{\vidWrapPlus}.
-
-This move semantics gives us a richer structure than
-when treating code as a list of lines.  We exploit
-this in Section~REF:TODO in order merge edits that involve moving code.
-
-Of course, if the user wants a genuine copy
-and not just a move, that can be achieved
-by creating new vertexes with fresh identifiers.
-(TODO: figure for this?)
-
-This is similar to the paste with formatting versus
-paste without formatting.
-
-If only one restore, then it does what you expect (basically a cut and paste)
-
-If multiple replicas restore to different places, then you get some complexity:
+(a) delete \eWrapPlus leaving \vSimpleTimes temporarily orphaned and 
+(b) add \eMoveTimes to \vSimpleTimes in the right child position of \vWrapPlus.
 
 \figureMovement
 
 \subsection{Multi-user Interactions}
 \label{sub:Multi-user Interactions}
 
+\marginpar{START REV HERE}
+
 TODO: mention that id numbers are global (or maybe use A1 and B1 for different users?)
+
+TODO: (Place somewhere) This move semantics gives us a richer structure than
+when treating code as a list of lines.  We exploit
+this in Section~REF:TODO in order merge edits that involve moving code.
 
 We assume multiple instances
 
@@ -1757,7 +1765,33 @@ This results in both Alice and Bob having the graph in
 
 \figureEditingDifferentParts
 
-\figureCommutativity
+%\figureCommutativity
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\path ( 0cm, 0cm) node (a) [align=center]       {Original \\ Version};
+\path (-1cm,-2cm) node (b) [align=center,alice] {Alice's  \\ Version};
+\path ( 1cm,-2cm) node (c) [align=center,bob]   {Bob's    \\ Version};
+\path ( 0cm,-4cm) node (d) [align=center]       {Combined \\ Version};
+\path [draw,->,alice] (a) -- node [pos=0.7,auto,swap] {Alice's Edits} (b);
+\path [draw,->,bob]   (a) -- node [pos=0.7,auto]      {Bob's Edits}   (c);
+\path [draw,->,merge] (b) -- node [pos=0.3,auto,swap] {Merge} (d);
+\path [draw,->,merge] (c) -- node [pos=0.3,auto]      {Merge} (d);
+\end{tikzpicture}
+
+TODO: commutativity diagram of screenshots with two cursors
+
+TODO: include legend of arrow colors
+
+TODO: move into section 2.3.1
+
+TODO: star on multi-step arrows
+
+\caption{TODO:Commutativity}
+\label{fig:Commutativity}
+\end{figure}
+
 
 \subsubsection{Editing Nested Parts of the Code}
 \label{sub:Editing Nested Parts of the Code}
