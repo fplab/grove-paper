@@ -534,7 +534,7 @@ TODO
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Wrapping.  Note that this figure omits the orphaned \Vertex{\vidSimpleX} since it is no longer relevant to our narrative.}
+\caption{Wrapping.  Note that this figure omits the orphaned \vSimpleX{} since it is no longer relevant to our narrative.}
 \label{fig:Wrapping}
 \end{figure}
 }
@@ -823,8 +823,8 @@ TODO: star on multi-step arrows
 %%%%%%%%
 \hfill{}
 \caption{Editing Nested Parts of the Code.
-\autoref{fig:Editing Nested Parts of the Code-a}:~\autoref{fig:Editing Nested Parts of the Code-c} after Alice replaces \Vertex{\vidDifferentAlice} with \Vertex{\vidNestedAlice}.
-\autoref{fig:Editing Nested Parts of the Code-b}:~\autoref{fig:Editing Nested Parts of the Code-c} after Bob move \Vertex{\vidSimpleTimes} to the left child of \Vertex{\vidWrapPlus}.
+\autoref{fig:Editing Nested Parts of the Code-a}:~\autoref{fig:Editing Nested Parts of the Code-c} after Alice replaces \vDifferentAlice{} with \vNestedAlice{}.
+\autoref{fig:Editing Nested Parts of the Code-b}:~\autoref{fig:Editing Nested Parts of the Code-c} after Bob move \vSimpleTimes{} to the left child of \vWrapPlus{}.
 \autoref{fig:Editing Nested Parts of the Code-c}:~The result of merging \autoref{fig:Editing Nested Parts of the Code-a} with \autoref{fig:Editing Nested Parts of the Code-b}.}
 \label{fig:Editing Nested Parts of the Code}
 \end{figure}
@@ -1521,6 +1521,7 @@ Text of abstract \ldots.
 
 TODO: fix the following warning which are reported by LaTeX but not Overleaf: Class acmart Warning: A possible image without description on input line 321.
 
+TODO: star on multi-step arrows
 
 Motivation:
 - collaborative editing (both synchronous ala Google Docs and asynchronous version control) 
@@ -1575,30 +1576,16 @@ though their representation is slightly subtly
 
 \figureSimple
 
-TODO: $+_32$ and L$_37$
-
-TODO: extra space in figure 12 d
-
-TODO: list actions in an overview subfigure
-
-TODO: maybe label actions between
-
-%We represent expression contain holes as part of the editor state 
 The \textit{program state} for each editor instance in Grove consists of a graph that represents the program being edited.
 This can be presented to the user as an expression containing holes.
 For example, \autoref{fig:A simple tree with a hole-b} shows one such graph,
 and \autoref{fig:A simple tree with a hole-a} shows its corresponding expression,~\texttt{x * \hole}, which
 has a hole on the right side of the times operator.
 
-%We present this from two perspectives.
-%One is the underlying graph model, the other is the interface a user might see, which omits these details unless needed.
-
-%which involves explicit graph edges, positions, and add and delete operations.
-
 Program state is a directed graph with a distinguished root vertex.
 %For example, \autoref{fig:A simple tree with a hole-b} shows the graph corresponding to the term in \autoref{fig:A simple tree with a hole-a}.
 Each vertex represents a term and is labeled with both a globally unique identifier and a term constructor.
-In \autoref{fig:A simple tree with a hole-b}, \Vertex{\vidSimpleTimes} and \Vertex{\vidSimpleX} have the constructors~\texttt{*} and \texttt{var(x)},\todo{var} respectively.
+In \autoref{fig:A simple tree with a hole-b}, \vSimpleTimes{} and \vSimpleX{} have the constructors~\texttt{*} and \texttt{var(x)},\todo{var} respectively.
 The root vertex has the distinguished identifier~0 and the constructor~\textbullet.
 
 Each term constructor has an associated set of child positions.
@@ -1616,7 +1603,7 @@ An edge indicates that the destination vertex is a child of the origin vertex at
 For the sake of presentation clarity, we reserve odd identifiers for vertexes and even identifiers for edges.
 
 Finally, holes are represented by the absence of a child.
-For example, in \autoref{fig:A simple tree with a hole-b} the absence of a \texttt{right} edge coming from \Vertex{\vidSimpleTimes}
+For example, in \autoref{fig:A simple tree with a hole-b} the absence of a \texttt{right} edge coming from \vSimpleTimes{}
 corresponds to the hole on the right of the~\texttt{*} in~\texttt{x * \hole}.
 
 \subsection{Single-User Actions}
@@ -1645,8 +1632,8 @@ We discuss cursor representations and cursor sharing in more detail in \autoref{
 \todo{"user actions" and "graph edits"}
 To start our examples, Alice moves her cursor to the hole in~\texttt{x * \hole} in \autoref{fig:A simple tree with a hole}
 and constructs the variable~\texttt{y} as shown in \autoref{fig:Construction-b}.
-This action corresponds to creating \Edge{\eidConstructionY} from \Vertex{\vidSimpleX} at the \texttt{R} position to a newly
-created vertex, \Vertex{\vidConstructionY}, containing the variable reference~\texttt{y}.
+This action corresponds to creating \eConstructionY{} from \vSimpleX{} at the \texttt{R} position to a newly
+created vertex, \vConstructionY{}, containing the variable reference~\texttt{y}.
 The resulting graph, shown in \autoref{fig:Construction-b}, represents the expression \texttt{x * y}.
 
 \subsubsection{Deletion Actions}
@@ -1654,39 +1641,28 @@ The resulting graph, shown in \autoref{fig:Construction-b}, represents the expre
 
 \todo{Arrows between figures}
 Next Alice deletes~\texttt{x} so that the code becomes~\texttt{\hole{} * y}.
-This is modeled by deleting \Edge{\eidConstructionY} as shown in \autoref{fig:Change-a}. 
-Notice that \Vertex{\vidConstructionY} continues to exist, and if it had any children, those children would remain connected to it.
+This is modeled by deleting \eConstructionY{} as shown in \autoref{fig:Change-a}. 
+Notice that \vConstructionY{} continues to exist, and if it had any children, those children would remain connected to it.
 In our system, once a vertex is created it is never deleted.
 This allows further manipulations of those vertices by other users as shown later in this section.
 Note that we omit such orphaned vertexes from the remaining diagrams if they are not relevant to the exposition.
 
 Once an edge with a particular identifier is deleted, it cannot be recreated.
-Thus if Alice performed an ``undo'' on this deletion, Grove would create a fresh edge between \Vertex{\vidSimpleTimes} and \Vertex{\vidSimpleX}.
-
-% Note that we do not explicitly add vertexes.
-% Our only actions are deleting or adding \textit{edges}.
-% Vertexes are implicitly created whenever an edge
-% is created that points to it.
-% Deleting vertexes is not necessary, as we can simply
-% remove the edge pointing to it.
-
-% TODO: explain that multiple delete or add are idempotent
-
-% TODO: explain that delete overrides add
+Thus if Alice performed an ``undo'' on this deletion, Grove would create a fresh edge between \vSimpleTimes{} and \vSimpleX{}.
 
 \subsubsection{Wrapping Actions}
 \label{sub:Wrapping}
 
 \figureWrapping
 
-Next, Alice types~\texttt{+} when the cursor is on \Vertex{\vidSimpleTimes}.
+Next, Alice types~\texttt{+} when the cursor is on \vSimpleTimes{}.
 If this were a hole, this would cause a construction action to be performed as in \autoref{sub:Construction} above.
 However, Alice's editor sees that this position is already occupied by the \texttt{*} expression, 
 so typing~\texttt{+} is interpreted as a wrapping action instead of a construction action.
 This corresponds to the following sequence of graph edits, shown in \autoref{fig:Wrapping}: 
-(a) delete \Edge{\eidSimpleTimes}, leaving \Vertex{\vidSimpleTimes} temporarily orphaned,
-(b) add a fresh~\texttt{+} vertex (\Vertex{\vidWrapPlus}) as a child of the root vertex, and
-(c) add an edge to \Vertex{\vidSimpleTimes} in the left child position of this new~\texttt{+} vertex.
+(a) delete \eSimpleTimes{}, leaving \vSimpleTimes{} temporarily orphaned,
+(b) add a fresh~\texttt{+} vertex (\vWrapPlus{}) as a child of the root vertex, and
+(c) add an edge to \vSimpleTimes{} in the left child position of this new~\texttt{+} vertex.
 (The choice of wrapping with a bias for the left child position is arbitrary.)
 
 \subsubsection{Repositioning Actions}
@@ -1786,8 +1762,6 @@ TODO: include legend of arrow colors
 
 TODO: move into section 2.3.1
 
-TODO: star on multi-step arrows
-
 \caption{TODO:Commutativity}
 \label{fig:Commutativity}
 \end{figure}
@@ -1801,14 +1775,14 @@ TODO: star on multi-step arrows
 After the edits in the previous subsection synchronize,
 Alice changes the~\texttt{v} to a~\texttt{w}, which results in the graph in \autoref{fig:Editing Nested Parts of the Code-a}.
 On the other hand, Bob moves the~\texttt{u * v} from the left of the plus to the right of the plus
-by deleting \Edge{\eidMoveTimes} and adding \Edge{19}, which results in the graph in \autoref{fig:Editing Nested Parts of the Code-b}.
+by deleting \eMoveTimes{} and adding \Edge{19}, which results in the graph in \autoref{fig:Editing Nested Parts of the Code-b}.
 Since vertex and edge identifiers are preserved by these,
 both Alice's and Bob's edits can be applied to the other's graph,
 which results in both Alice and Bob having the graph in \autoref{fig:Editing Nested Parts of the Code-c}.
 
 A consequence of this design is that we allow users to edit
 parts of the code that have been deleted.  For example,
-Alice might receive Bob's deletion of \Edge{\eidMoveTimes} before making her
+Alice might receive Bob's deletion of \eMoveTimes{} before making her
 edits and before receiving Bob's addition of \Edge{19}.
 Her edits would then be within the code deleted by Bob.
 TODO: She can restore that code using a restoration action add a fresh edge to it.
@@ -1836,16 +1810,16 @@ Finally, we address our first kind of genuine conflict between edits.
 Alice inserts the variable~\texttt{x} to the right side of the~\texttt{+}
 while Bob add the variable~\texttt{y} also to the right side of the~\texttt{+}.
 These results in the graphs in \autoref{fig:Multi-child-a} and \autoref{fig:Multi-child-b}, respectively.
-In particular pay attention to the edges going out of the \texttt{right} index of \Vertex{\vidWrapPlus}.
+In particular pay attention to the edges going out of the \texttt{right} index of \vWrapPlus{}.
 In \autoref{fig:Multi-child-a} it is \Edge{21}, which points to the variable~\texttt{x},
 and in \autoref{fig:Multi-child-b} it is \Edge{23}, which points to the variable~\texttt{y}.
 
 We merge these by including \emph{both} edges as edges going out of the \texttt{right} index
-of \Vertex{\vidWrapPlus}.
+of \vWrapPlus{}.
 This results in \autoref{fig:Multi-child-c}.
 The conflict between Alice's and Bob's changes is
 represented by the fact that there are multiple edges going out of one index (i.e., the \texttt{right}
-index of \Vertex{\vidWrapPlus}).
+index of \vWrapPlus{}).
 In the graph representation, we flag this conflict by highlighting its edges
 in red (TODO).
 In the textual representation, we flag this conflict with the notation~\texttt{\{ x | y \}}.
@@ -2131,6 +2105,7 @@ Turn that into a constructor set K + index set I + arity function (has type: K -
 \label{sub:Graphs}
 
 TODO: rename indices to positions
+
 TODO: look into using bold plus and minus (google results)
 
 A graph $\G : \E \rightarrow \Sigma$ is a function from edges to edge states, 
