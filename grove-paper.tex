@@ -114,6 +114,7 @@
 \usetikzlibrary{
   backgrounds,  % Provides "framed" and "gridded"
   bending,      % bending arrow tips
+  decorations.pathmorphing,   % Provides wavy edges
   graphs,       % Graph *notation*
   graphdrawing, % Graph *layout*
   quotes,       % Quote syntax (e.g., "foo")
@@ -177,94 +178,15 @@
   thick,
 }}
 \tikzset{alice edge/.style={alice, edge style, font={\bfseries\small}}}
+\tikzset{alice node/.style={alice}}
+\tikzset{alice step/.style={alice}}
 \tikzset{bob edge/.style={bob, edge style}, font={\bfseries\small}}
+\tikzset{bob node/.style={bob}}
+\tikzset{bob step/.style={bob}}
 \tikzset{merge edge/.style={merge, edge style}, font={\bfseries\small}}
+\tikzset{merge node/.style={merge}}
+\tikzset{merge step/.style={merge,decorate,decoration={coil,amplitude=1.0pt,segment length=7.0pt,aspect=0}}}
 \tikzset{star/.style={edge node={node[inner sep=0pt,at end,sloped] {\large\textbf{${}^{*}$}}}}}
-
-%%%% From https://tex.stackexchange.com/questions/104119/star-next-to-arrowhead-in-tikz
-\usepgflibrary{plotmarks}
-\tikzset{
-    to*/.style={
-        shorten >=.25em,#1-to,
-        to path={-- node[inner sep=0pt,at end,sloped] {${}^*$} (\tikztotarget) \tikztonodes}
-    },
-    to*/.default=
-}
-
-\makeatletter
-\pgfarrowsdeclare{to*}{to*}
-{
-  \pgfutil@tempdima=-0.84pt%
-  \advance\pgfutil@tempdima by-1.3\pgflinewidth%
-  \pgfutil@tempdimb=0.21pt%
-  \advance\pgfutil@tempdimb by.625\pgflinewidth%
-  \advance\pgfutil@tempdimb by2.5pt%
-  \pgfarrowsleftextend{+\pgfutil@tempdima}
-  \pgfarrowsrightextend{+\pgfutil@tempdimb}
-}
-{
-  \pgfutil@tempdima=0.28pt%
-  \advance\pgfutil@tempdima by.3\pgflinewidth%
-  \pgfsetlinewidth{0.8\pgflinewidth}
-  \pgfsetdash{}{+0pt}
-  \pgfsetroundcap
-  \pgfsetroundjoin
-  \pgfpathmoveto{\pgfqpoint{-3\pgfutil@tempdima}{4\pgfutil@tempdima}}
-  \pgfpathcurveto
-  {\pgfqpoint{-2.75\pgfutil@tempdima}{2.5\pgfutil@tempdima}}
-  {\pgfqpoint{0pt}{0.25\pgfutil@tempdima}}
-  {\pgfqpoint{0.75\pgfutil@tempdima}{0pt}}
-  \pgfpathcurveto
-  {\pgfqpoint{0pt}{-0.25\pgfutil@tempdima}}
-  {\pgfqpoint{-2.75\pgfutil@tempdima}{-2.5\pgfutil@tempdima}}
-  {\pgfqpoint{-3\pgfutil@tempdima}{-4\pgfutil@tempdima}}
-  \pgfusepathqstroke
-  \begingroup
-    \pgftransformxshift{2.5pt}
-    \pgftransformyshift{2pt}
-    \pgftransformscale{.7}
-    \pgfuseplotmark{asterisk}
-  \endgroup
-%  \pgftext[left,y=2pt]{$\scriptstyle *$}
-}
-
-\pgfarrowsdeclare{*to}{*to}
-{
-  \pgfutil@tempdima=-0.84pt%
-  \advance\pgfutil@tempdima by-1.3\pgflinewidth%
-  \pgfutil@tempdimb=0.21pt%
-  \advance\pgfutil@tempdimb by.625\pgflinewidth%
-  \advance\pgfutil@tempdimb by2.5pt%
-  \pgfarrowsleftextend{+\pgfutil@tempdima}
-  \pgfarrowsrightextend{+\pgfutil@tempdimb}
-}
-{
-  \pgfutil@tempdima=0.28pt%
-  \advance\pgfutil@tempdima by.3\pgflinewidth%
-  \pgfsetlinewidth{0.8\pgflinewidth}
-  \pgfsetdash{}{+0pt}
-  \pgfsetroundcap
-  \pgfsetroundjoin
-  \pgfpathmoveto{\pgfqpoint{-3\pgfutil@tempdima}{4\pgfutil@tempdima}}
-  \pgfpathcurveto
-  {\pgfqpoint{-2.75\pgfutil@tempdima}{2.5\pgfutil@tempdima}}
-  {\pgfqpoint{0pt}{0.25\pgfutil@tempdima}}
-  {\pgfqpoint{0.75\pgfutil@tempdima}{0pt}}
-  \pgfpathcurveto
-  {\pgfqpoint{0pt}{-0.25\pgfutil@tempdima}}
-  {\pgfqpoint{-2.75\pgfutil@tempdima}{-2.5\pgfutil@tempdima}}
-  {\pgfqpoint{-3\pgfutil@tempdima}{-4\pgfutil@tempdima}}
-  \pgfusepathqstroke
-  \begingroup
-    \pgftransformxshift{2.5pt}
-    \pgftransformyshift{-2pt}
-    \pgftransformscale{.7}
-    \pgfuseplotmark{asterisk}
-  \endgroup
-%  \pgftext[left,y=-2pt]{$\scriptstyle *$}
-}
-
-\makeatother
 
 %%%%%%%%
 % Lang components
@@ -484,7 +406,7 @@ TODO
 \path (-7.5em,0cm) node (fig-A simple tree with a hole-b-x) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:A simple tree with a hole-b}}}};
 %%%%
 \path (0cm,0cm) node (fig-Construction) [anchor=base] {\strut};
-\path [draw,->,alice] (fig-A simple tree with a hole-b-x) to (-2em, 0cm |- fig-Construction);
+\path [draw,->,alice step] (fig-A simple tree with a hole-b-x) to (-2em, 0cm |- fig-Construction);
 \end{tikzpicture}
 }
 \label{fig:Construction and Deletion-a}
@@ -495,7 +417,7 @@ TODO
  root[root style] -> {
   "\vSimpleTimes" [> "\eSimpleTimes"] -> {
    "\vSimpleX" [> "\eSimpleX"'],
-   "\vConstructionY" [> "\eConstructionY", >alice edge, alice]
+   "\vConstructionY" [> "\eConstructionY", >alice edge, alice node]
   }
  }
 };
@@ -509,7 +431,7 @@ TODO
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
 \path (0cm,0cm) node (fig-Deletion) [anchor=base] {\strut};
-\path [draw,->,alice] (fig-Construction) to[alice edge] (-2em, 0cm |- fig-Deletion);
+\path [draw,->,alice step] (fig-Construction) to (-2em, 0cm |- fig-Deletion);
 \end{tikzpicture}
 }
 \label{fig:Construction and Deletion-b}
@@ -550,7 +472,7 @@ TODO
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
 \path (0cm,0cm) node (fig-Wrapping-a) [anchor=base] {\strut};
-\path [draw,->,alice] (fig-Deletion) to[alice edge] (-2em, 0cm |- fig-Wrapping-a);
+\path [draw,->,alice step] (fig-Deletion) to (-2em, 0cm |- fig-Wrapping-a);
 \end{tikzpicture}
 }
 \label{fig:Wrapping-a}
@@ -574,14 +496,14 @@ TODO
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
 \path (0cm,0cm) node (fig-Wrapping-b) [anchor=base] {\strut};
-\path [draw,->,alice] (fig-Wrapping-a) to[alice edge] (-2em, 0cm |- fig-Wrapping-b);
+\path [draw,->,alice step] (fig-Wrapping-a) to (-2em, 0cm |- fig-Wrapping-b);
 \end{tikzpicture}
 }
 \label{fig:Wrapping-b}
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
-  "\vWrapPlus" [> "\eWrapPlus", >alice edge, alice]
+  "\vWrapPlus" [> "\eWrapPlus", >alice edge, alice node]
  }
 };
 \path (0cm,-1.7cm) graph[graph style] {
@@ -600,7 +522,7 @@ TODO
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
 \path (0cm,0cm) node (fig-Wrapping-c) [anchor=base] {\strut};
-\path [draw,->,alice] (fig-Wrapping-b) to[alice edge] (-2em, 0cm |- fig-Wrapping-c);
+\path [draw,->,alice step] (fig-Wrapping-b) to (-2em, 0cm |- fig-Wrapping-c);
 \end{tikzpicture}
 }
 \label{fig:Wrapping-c}
@@ -641,7 +563,7 @@ TODO
 \path (-7.5em,0cm) node (fig-Wrapping-c-x) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:Wrapping-c}}}};
 %%%%
 \path (0cm,0cm) node (fig-Moving-a) [anchor=base] {\strut};
-\path [draw,->,alice] (fig-Wrapping-c-x) to (-2em, 0cm |- fig-Moving-a);
+\path [draw,->,alice step] (fig-Wrapping-c-x) to (-2em, 0cm |- fig-Moving-a);
 \end{tikzpicture}
 }
 \label{fig:Move-a}
@@ -667,7 +589,7 @@ TODO
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
 \path (0cm,0cm) node (fig-Moving-b) [anchor=base] {\strut};
-\path [draw,->,alice] (fig-Moving-a) to (-2em, 0cm |- fig-Moving-b);
+\path [draw,->,alice step] (fig-Moving-a) to (-2em, 0cm |- fig-Moving-b);
 \end{tikzpicture}
 }
 \label{fig:Move-b}
@@ -708,7 +630,7 @@ TODO
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
 \path (0cm,0cm) node (fig-Editing Different Parts of the Code-a) [anchor=base] {\strut};
-\path [draw,->,alice] (fig-Moving-b) to (-2em, 0cm |- fig-Editing Different Parts of the Code-a);
+\path [draw,->,alice step] (fig-Moving-b) to (-2em, 0cm |- fig-Editing Different Parts of the Code-a);
 \end{tikzpicture}
 }
 \label{fig:Editing Different Parts of the Code-a}
@@ -718,7 +640,7 @@ TODO
   "\vWrapPlus" [> "\eWrapPlus"] -> {
   {},
   "\vSimpleTimes" [> "\eMoveTimes"] -> {
-    "\vDifferentAlice" [> "\eDifferentAlice"', >alice edge, alice],
+    "\vDifferentAlice" [> "\eDifferentAlice"', >alice edge, alice node],
     "\vConstructionY" [> "\eConstructionY"]
   }
   }
@@ -734,7 +656,7 @@ TODO
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
 \path (0cm,0cm) node (fig-Editing Different Parts of the Code-b) [anchor=base] {\strut};
-\path [draw, bob,->] (fig-Moving-b) to [out=15,in=165,star] (-2em, 0cm |- fig-Editing Different Parts of the Code-b);
+\path [draw,->,bob step] (fig-Moving-b) to [out=15,in=165,star] (-2em, 0cm |- fig-Editing Different Parts of the Code-b);
 \end{tikzpicture}
 }
 \label{fig:Editing Different Parts of the Code-b}
@@ -745,7 +667,7 @@ TODO
   {},
   "\vSimpleTimes" [> "\eMoveTimes"] -> {
     {},
-    "\vDifferentBob" [> "\eDifferentBob", >bob edge, bob]
+    "\vDifferentBob" [> "\eDifferentBob", >bob edge, bob node]
   }
   }
  }
@@ -760,8 +682,8 @@ TODO
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
 \path (0cm,0cm) node (fig-Editing Different Parts of the Code-c) [anchor=base] {\strut};
-\path [draw,->,merge] (fig-Editing Different Parts of the Code-a) to [out=15,in=165] (-2em, 0cm |- fig-Editing Different Parts of the Code-c);
-\path [draw,->,merge] (fig-Editing Different Parts of the Code-b) to (-2em, 0cm |- fig-Editing Different Parts of the Code-c);
+\path [draw,->,merge step] (fig-Editing Different Parts of the Code-a) to [out=15,in=165] (-2em, 0cm |- fig-Editing Different Parts of the Code-c);
+\path [draw,->,merge step] (fig-Editing Different Parts of the Code-b) to (-2em, 0cm |- fig-Editing Different Parts of the Code-c);
 \end{tikzpicture}
 }
 \label{fig:Editing Different Parts of the Code-c}
@@ -771,8 +693,8 @@ TODO
   "\vWrapPlus" [> "\eWrapPlus"] -> {
   {},
   "\vSimpleTimes" [> "\eMoveTimes"] -> {
-    "\vDifferentAlice" [> "\eDifferentAlice"', >merge edge, merge],
-    "\vDifferentBob" [> "\eDifferentBob", >merge edge, merge]
+    "\vDifferentAlice" [> "\eDifferentAlice"', >merge edge, merge node],
+    "\vDifferentBob" [> "\eDifferentBob", >merge edge, merge node]
   }
   }
  }
@@ -792,16 +714,6 @@ TODO
 \newcommand{\figureCommutativity}{
 \begin{figure}
 \centering
-\begin{tikzpicture}
-\path ( 0cm, 0cm) node (a) {Original\\Version};
-% \path (-1cm,-1cm) node (b) [alice] {Alice's Version};
-% \path ( 1cm,-1cm) node (c) [bob] {Bob's Version};
-% \path ( 0cm,-2cm) node (d) {Combined Version};
-% \path [draw,->,alice] (a) -- node [pos=0.7,auto,swap] {Alice's Edits} (b);
-% \path [draw,->,bob]   (a) -- node [pos=0.7,auto]      {Bob's Edits}   (c);
-% \path [draw,->,merge] (b) -- node [pos=0.3,auto,swap] {Merge} (d);
-\path [draw,->,merge] (c) -- node [pos=0.3,auto]      {Merge} (d);
-\end{tikzpicture}
 
 TODO: commutativity diagram of screenshots with two cursors
 
@@ -834,7 +746,7 @@ TODO: star on multi-step arrows
 \path (-7.5em,0cm) node (fig-Editing Different Parts of the Code-c-x) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:Editing Different Parts of the Code-c}}}};
 %%%%
 \path (0cm,0cm) node (fig-Editing Nested Parts of the Code-a) [anchor=base] {\strut};
-\path [draw,->,alice] (fig-Editing Different Parts of the Code-c-x) to[star] (-2em, 0cm |- fig-Editing Nested Parts of the Code-a);
+\path [draw,->,alice step] (fig-Editing Different Parts of the Code-c-x) to[star] (-2em, 0cm |- fig-Editing Nested Parts of the Code-a);
 \end{tikzpicture}
 }
 \label{fig:Editing Nested Parts of the Code-a}
@@ -844,7 +756,7 @@ TODO: star on multi-step arrows
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    {},
    "\vSimpleTimes" [> "\eMoveTimes"] -> {
-    "\vNestedAlice" [> "\eNestedAlice"', >alice edge, alice],
+    "\vNestedAlice" [> "\eNestedAlice"', >alice edge, alice node],
     "\vDifferentBob" [> "\eDifferentBob"]
    }
   }
@@ -860,7 +772,7 @@ TODO: star on multi-step arrows
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
 \path (0cm,0cm) node (fig-Editing Nested Parts of the Code-b) [anchor=base] {\strut};
-\path [draw,->,bob] (fig-Editing Different Parts of the Code-c-x) to [out=15,in=165,star] (-2em, 0cm |- fig-Editing Nested Parts of the Code-b);
+\path [draw,->,bob step] (fig-Editing Different Parts of the Code-c-x) to [out=15,in=165,star] (-2em, 0cm |- fig-Editing Nested Parts of the Code-b);
 \end{tikzpicture}
 }
 \label{fig:Editing Nested Parts of the Code-b}
@@ -886,8 +798,8 @@ TODO: star on multi-step arrows
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
 \path (0cm,0cm) node (fig-Editing Nested Parts of the Code-c) [anchor=base] {\strut};
-\path [draw,->,merge] (fig-Editing Nested Parts of the Code-a) to [out=15,in=165] (-2em, 0cm |- fig-Editing Nested Parts of the Code-c);
-\path [draw,->,merge] (fig-Editing Nested Parts of the Code-b) to [out=15,in=165] (-2em, 0cm |- fig-Editing Nested Parts of the Code-c);
+\path [draw,->,merge step] (fig-Editing Nested Parts of the Code-a) to [out=15,in=165] (-2em, 0cm |- fig-Editing Nested Parts of the Code-c);
+\path [draw,->,merge step] (fig-Editing Nested Parts of the Code-b) to [out=15,in=165] (-2em, 0cm |- fig-Editing Nested Parts of the Code-c);
 \end{tikzpicture}
 }
 \label{fig:Editing Nested Parts of the Code-c}
@@ -897,7 +809,7 @@ TODO: star on multi-step arrows
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    "\vSimpleTimes" [> "\eNestedBob"', >merge edge] -> {
-    "\vNestedAlice" [> "\eNestedAlice"', >merge edge, merge],
+    "\vNestedAlice" [> "\eNestedAlice"', >merge edge, merge node],
     "\vDifferentBob" [> "\eDifferentBob"]
    },
    {}
@@ -935,7 +847,7 @@ TODO: star on multi-step arrows
 \path (-7.5em,0cm) node (fig-Editing Nested-c-x) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:Editing Nested-c}}}};
 %%%%
 \path (0cm,0cm) node (fig-Multi-child conflict-a) [anchor=base] {\strut};
-\path [draw,->,alice] (fig-Editing Nested-c-x) to (-2em, 0cm |- fig-Multi-child conflict-a);
+\path [draw,->,alice step] (fig-Editing Nested-c-x) to (-2em, 0cm |- fig-Multi-child conflict-a);
 \end{tikzpicture}
 }
 \label{fig:Multi-child-a}
@@ -948,7 +860,7 @@ TODO: star on multi-step arrows
     "\vDifferentBob" [> "\eDifferentBob"]
    },
    {
-    "\vMultiChildAlice" [> "\eMultiChildAlice", >alice edge, alice]
+    "\vMultiChildAlice" [> "\eMultiChildAlice", >alice edge, alice node]
    }
   }
  }
@@ -963,7 +875,7 @@ TODO: star on multi-step arrows
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
 \path (0cm,0cm) node (fig-Multi-child conflict-b) [anchor=base] {\strut};
-\path [draw,->,bob] (fig-Editing Nested-c-x) to[out=15,in=165] (-2em, 0cm |- fig-Multi-child conflict-b);
+\path [draw,->,bob step] (fig-Editing Nested-c-x) to[out=15,in=165] (-2em, 0cm |- fig-Multi-child conflict-b);
 \end{tikzpicture}
 }
 \label{fig:Multi-child-b}
@@ -975,7 +887,7 @@ TODO: star on multi-step arrows
     "\vNestedAlice" [> "\eNestedAlice"'],
     "\vDifferentBob" [> "\eDifferentBob"]
    },
-   "\vMultiChildBob" [> "\eMultiChildBob", >bob edge, bob]
+   "\vMultiChildBob" [> "\eMultiChildBob", >bob edge, bob node]
   }
  }
 };
@@ -989,8 +901,8 @@ TODO: star on multi-step arrows
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
 \path (0cm,0cm) node (fig-Multi-child conflict-c) [anchor=base] {\strut};
-\path [draw,->,merge] (fig-Multi-child conflict-a) to[out=15,in=165] (-2em, 0cm |- fig-Multi-child conflict-c);
-\path [draw,->,merge] (fig-Multi-child conflict-b) to (-2em, 0cm |- fig-Multi-child conflict-c);
+\path [draw,->,merge step] (fig-Multi-child conflict-a) to[out=15,in=165] (-2em, 0cm |- fig-Multi-child conflict-c);
+\path [draw,->,merge step] (fig-Multi-child conflict-b) to (-2em, 0cm |- fig-Multi-child conflict-c);
 \end{tikzpicture}
 }
 \label{fig:Multi-child-c}
@@ -1002,9 +914,9 @@ TODO: star on multi-step arrows
     "\vNestedAlice" [> "\eNestedAlice"'],
     "\vDifferentBob" [> "\eDifferentBob"]
    },
-   "\vMultiChildAlice" [> "\eMultiChildAlice"anchor=153, >merge edge, merge],
+   "\vMultiChildAlice" [> "\eMultiChildAlice"anchor=153, >merge edge, merge node],
    {},
-   "\vMultiChildBob" [> "\eMultiChildBob"anchor=195, >merge edge, merge]
+   "\vMultiChildBob" [> "\eMultiChildBob"anchor=195, >merge edge, merge node]
   }
  }
 };
@@ -1043,7 +955,7 @@ TODO: show UI
 \path (-7.5em,0cm) node (fig-Multi-child-c-x) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:Multi-child-c}}}};
 %%%%
 \path (0cm,0cm) node (fig-Multi-parent-a) [anchor=base] {\strut};
-\path [draw,->,alice] (fig-Multi-child-c-x) to[star] (-2em, 0cm |- fig-Multi-parent-a);
+\path [draw,->,alice step] (fig-Multi-child-c-x) to[star] (-2em, 0cm |- fig-Multi-parent-a);
 \end{tikzpicture}
 }
 \label{fig:Multi-parent-a}
@@ -1069,7 +981,7 @@ TODO: show UI
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
 \path (0cm,0cm) node (fig-Multi-parent-b) [anchor=base] {\strut};
-\path [draw,->,alice] (fig-Multi-parent-a) to[star] (-2em, 0cm |- fig-Multi-parent-b);
+\path [draw,->,alice step] (fig-Multi-parent-a) to[star] (-2em, 0cm |- fig-Multi-parent-b);
 \end{tikzpicture}
 }
 \label{fig:Multi-parent-b}
@@ -1095,7 +1007,7 @@ TODO: show UI
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
 \path (0cm,0cm) node (fig-Multi-parent-c) [anchor=base] {\strut};
-\path [draw,->,bob] (fig-Multi-parent-a) to[out=15,in=165,star] (-2em, 0cm |- fig-Multi-parent-c);
+\path [draw,->,bob step] (fig-Multi-parent-a) to[out=15,in=165,star] (-2em, 0cm |- fig-Multi-parent-c);
 \end{tikzpicture}
 }
 \label{fig:Multi-parent-c}
@@ -1118,8 +1030,8 @@ TODO: show UI
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
 \path (0cm,0cm) node (fig-Multi-parent-d) [anchor=base] {\strut};
-\path [draw,->,merge] (fig-Multi-parent-b) to[out=15,in=165] (-2em, 0cm |- fig-Multi-parent-d);
-\path [draw,->,merge] (fig-Multi-parent-c) to[out=15,in=165] (-2em, 0cm |- fig-Multi-parent-d);
+\path [draw,->,merge step] (fig-Multi-parent-b) to[out=15,in=165] (-2em, 0cm |- fig-Multi-parent-d);
+\path [draw,->,merge step] (fig-Multi-parent-c) to[out=15,in=165] (-2em, 0cm |- fig-Multi-parent-d);
 \end{tikzpicture}
 }
 \label{fig:Multi-parent-d}
@@ -1135,7 +1047,7 @@ TODO: show UI
   }
  },
 };
-\path [draw,->,merge] (a) to ["\eMultiParentBob",out=-60,in=60,merge edge] (b);
+\path [draw,->,merge edge] (a) to ["\eMultiParentBob",out=-60,in=60] (b);
 \end{tikzpicture}
 \end{subfigure}
 %%%%%%%%
@@ -1146,7 +1058,7 @@ TODO: show UI
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
 \path (0cm,0cm) node (fig-Multi-parent-e) [anchor=base] {\strut};
-\path [draw,->,alice] (fig-Multi-parent-d) to (-2em, 0cm |- fig-Multi-parent-e);
+\path [draw,->,alice step] (fig-Multi-parent-d) to (-2em, 0cm |- fig-Multi-parent-e);
 \end{tikzpicture}
 }
 \label{fig:Multi-parent-e}
@@ -1200,7 +1112,7 @@ TODO: UI
 % \path (-7.5em,0cm) node (fig-Multi-parent-e-x) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:Multi-parent-e}}}};
 % %%%%
 % \path (0cm,0cm) node (fig-Single-User Cycles-a) [anchor=base] {\strut};
-% \path [draw,->,alice] (fig-Multi-parent-e-x) to (-2em, 0cm |- fig-Single-User Cycles-a);
+% \path [draw,->,alice step] (fig-Multi-parent-e-x) to (-2em, 0cm |- fig-Single-User Cycles-a);
 % \end{tikzpicture}
 % }
 % \label{fig:Single-User Cycles-a}
@@ -1226,7 +1138,7 @@ TODO: UI
 % \caption{
 % \begin{tikzpicture}[remember picture, overlay]
 % \path (0cm,0cm) node (fig-Single-User Cycles-b) [anchor=base] {\strut};
-% \path [draw,->,alice] (fig-Single-User Cycles-a) to (-2em, 0cm |- fig-Single-User Cycles-b);
+% \path [draw,->,alice step] (fig-Single-User Cycles-a) to (-2em, 0cm |- fig-Single-User Cycles-b);
 % \end{tikzpicture}
 % }
 % \label{fig:Single-User Cycles-b}
@@ -1236,8 +1148,8 @@ TODO: UI
 %   v8/"\vWrapPlus" [> "\eWrapPlus"'] -> {
 %   v2/"\vSimpleTimes" [> "\eNestedBob"'] -> {
 %     {},
-%     "\vSingleCyclePlus" [> "\eSingleCyclePlus", >alice edge, alice] -> {
-%      "\vSingleCycleTimes" [> "\eSingleCycleTimes"', >alice edge, alice] -> {
+%     "\vSingleCyclePlus" [> "\eSingleCyclePlus", >alice edge, alice node] -> {
+%      "\vSingleCycleTimes" [> "\eSingleCycleTimes"', >alice edge, alice node] -> {
 %       {},
 %       {}
 %      },
@@ -1257,7 +1169,7 @@ TODO: UI
 % \caption{
 % \begin{tikzpicture}[remember picture, overlay]
 % \path (0cm,0cm) node (fig-Single-User Cycles-c) [anchor=base] {\strut};
-% \path [draw,->,alice] (fig-Single-User Cycles-a) to[out=15,in=165] (-2em, 0cm |- fig-Single-User Cycles-c);
+% \path [draw,->,alice step] (fig-Single-User Cycles-a) to[out=15,in=165] (-2em, 0cm |- fig-Single-User Cycles-c);
 % \end{tikzpicture}
 % }
 % \label{fig:Single-User Cycles-c}
@@ -1270,7 +1182,7 @@ TODO: UI
 %   }
 %  }
 % };
-% \path[draw,->,alice] (v2) to ["\eSingleCycleCycle",out=-60,in=-60,alice edge] (v8);
+% \path[draw,->,alice edge] (v2) to ["\eSingleCycleCycle",out=-60,in=-60] (v8);
 % \end{tikzpicture}
 % \end{subfigure}
 % %%%%%%%%
@@ -1303,7 +1215,7 @@ TODO: UI
 \path (-7.5em,0cm) node (fig-Multi-parent-e-x) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:Multi-parent-e}}}};
 %%%%
 \path (0cm,0cm) node (fig-Multi-User Cycles-a) [anchor=base] {\strut};
-\path [draw,->,alice] (fig-Multi-parent-e-x) to[star] (-2em, 0cm |- fig-Multi-User Cycles-a);
+\path [draw,->,alice step] (fig-Multi-parent-e-x) to[star] (-2em, 0cm |- fig-Multi-User Cycles-a);
 \end{tikzpicture}
 }
 \label{fig:Multi-User Cycles-a}
@@ -1312,8 +1224,8 @@ TODO: UI
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    "\vSimpleTimes" [> "\eNestedBob"'] -> {
-    "\vMultiCycleTimes" [> "\eMultiCycleTimes"', >alice edge, alice],
-    "\vMultiCyclePlus" [> "\eMultiCyclePlus", >alice edge, alice]
+    "\vMultiCycleTimes" [> "\eMultiCycleTimes"', >alice edge, alice node],
+    "\vMultiCyclePlus" [> "\eMultiCyclePlus", >alice edge, alice node]
    },
    {}
   }
@@ -1329,7 +1241,7 @@ TODO: UI
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
 \path (0cm,0cm) node (fig-Multi-User Cycles-b) [anchor=base] {\strut};
-\path [draw,->,alice] (fig-Multi-User Cycles-a) to[star] (-2em, 0cm |- fig-Multi-User Cycles-b);
+\path [draw,->,alice step] (fig-Multi-User Cycles-a) to[star] (-2em, 0cm |- fig-Multi-User Cycles-b);
 \end{tikzpicture}
 }
 \label{fig:Multi-User Cycles-b}
@@ -1340,8 +1252,8 @@ TODO: UI
    "\vSimpleTimes" [> "\eNestedBob"'] -> {
    },
    {
-    "\vMultiCycleTimes" [> "\eMultiCycleAliceTimes", >alice edge, alice] -> {
-     "\vMultiCyclePlus" [> "\eMultiCycleAlicePlus"', >alice edge, alice],
+    "\vMultiCycleTimes" [> "\eMultiCycleAliceTimes", >alice edge, alice node] -> {
+     "\vMultiCyclePlus" [> "\eMultiCycleAlicePlus"', >alice edge, alice node],
      {}
     }
    }
@@ -1358,7 +1270,7 @@ TODO: UI
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
 \path (0cm,0cm) node (fig-Multi-User Cycles-c) [anchor=base] {\strut};
-\path [draw,->,bob] (fig-Multi-User Cycles-a) to[out=15,in=165,star] (-2em, 0cm |- fig-Multi-User Cycles-c);
+\path [draw,->,bob step] (fig-Multi-User Cycles-a) to[out=15,in=165,star] (-2em, 0cm |- fig-Multi-User Cycles-c);
 \end{tikzpicture}
 }
 \label{fig:Multi-User Cycles-c}
@@ -1369,8 +1281,8 @@ TODO: UI
    "\vSimpleTimes" [> "\eNestedBob"'] -> {
    },
    {
-    "\vMultiCyclePlus" [> "\eMultiCycleBobPlus", >bob edge, bob] -> {
-     "\vMultiCycleTimes" [> "\eMultiCycleBobTimes"', >bob edge, bob],
+    "\vMultiCyclePlus" [> "\eMultiCycleBobPlus", >bob edge, bob node] -> {
+     "\vMultiCycleTimes" [> "\eMultiCycleBobTimes"', >bob edge, bob node],
      {}
     }
    }
@@ -1387,8 +1299,8 @@ TODO: UI
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
 \path (0cm,0cm) node (fig-Multi-User Cycles-d) [anchor=base] {\strut};
-\path [draw,->,merge] (fig-Multi-User Cycles-b) to[out=15,in=165] (-2em, 0cm |- fig-Multi-User Cycles-d);
-\path [draw,->,merge] (fig-Multi-User Cycles-c) to (-2em, 0cm |- fig-Multi-User Cycles-d);
+\path [draw,->,merge step] (fig-Multi-User Cycles-b) to[out=15,in=165] (-2em, 0cm |- fig-Multi-User Cycles-d);
+\path [draw,->,merge step] (fig-Multi-User Cycles-c) to (-2em, 0cm |- fig-Multi-User Cycles-d);
 \end{tikzpicture}
 }
 \label{fig:Multi-User Cycles-d}
@@ -1398,14 +1310,14 @@ TODO: UI
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    "\vSimpleTimes" [> "\eNestedBob"'anchor=-15] -> {
    },
-   v1/"\vMultiCycleTimes" [> "\eMultiCycleAliceTimes"anchor=155, >merge edge, merge],
+   v1/"\vMultiCycleTimes" [> "\eMultiCycleAliceTimes"anchor=155, >merge edge, merge node],
    {},
-   v2/"\vMultiCyclePlus" [> "\eMultiCycleBobPlus"anchor=-165, >merge edge, merge]
+   v2/"\vMultiCyclePlus" [> "\eMultiCycleBobPlus"anchor=-165, >merge edge, merge node]
   }
  }
 };
-\path[draw,-{>[bend]},merge] (v1) to ["\eMultiCycleAlicePlus"anchor=south,out=-60,in=-120,merge edge] (v2);
-\path[draw,-{>[bend]},merge] (v2) to ["\eMultiCycleBobTimes"anchor=north,out=-90,in=-90,merge edge] (v1);
+\path[draw,-{>[bend]},merge edge] (v1) to ["\eMultiCycleAlicePlus"anchor=south,out=-60,in=-120] (v2);
+\path[draw,-{>[bend]},merge edge] (v2) to ["\eMultiCycleBobTimes"anchor=north,out=-90,in=-90] (v1);
 \end{tikzpicture}
 \end{subfigure}
 %%%%%%%%
@@ -1432,7 +1344,7 @@ TODO: UI
 \path (-7.5em,0cm) node (fig-Multi-User Cycles-d-x) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:Multi-User Cycles-d}}}};
 %%%%
 \path (0cm,0cm) node (fig-Disconnection-a) [anchor=base] {\strut};
-\path [draw,->,alice] (fig-Multi-User Cycles-d-x) to[star] (-2em, 0cm |- fig-Disconnection-a);
+\path [draw,->,alice step] (fig-Multi-User Cycles-d-x) to[star] (-2em, 0cm |- fig-Disconnection-a);
 \end{tikzpicture}
 }
 \label{fig:Disconnection-a}
@@ -1455,7 +1367,7 @@ TODO: UI
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
 \path (0cm,0cm) node (fig-Disconnection-b) [anchor=base] {\strut};
-\path [draw,->,alice] (fig-Disconnection-a) to[star] (-2em, 0cm |- fig-Disconnection-b);
+\path [draw,->,alice step] (fig-Disconnection-a) to[star] (-2em, 0cm |- fig-Disconnection-b);
 \end{tikzpicture}
 }
 \label{fig:Disconnection-b}
@@ -1481,7 +1393,7 @@ TODO: UI
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
 \path (0cm,0cm) node (fig-Disconnection-c) [anchor=base] {\strut};
-\path [draw,->,bob] (fig-Disconnection-a) to[out=15,in=165,star] (-2em, 0cm |- fig-Disconnection-c);
+\path [draw,->,bob step] (fig-Disconnection-a) to[out=15,in=165,star] (-2em, 0cm |- fig-Disconnection-c);
 \end{tikzpicture}
 }
 \label{fig:Disconnection-c}
@@ -1507,8 +1419,8 @@ TODO: UI
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
 \path (0cm,0cm) node (fig-Disconnection-d) [anchor=base] {\strut};
-\path [draw,->,merge] (fig-Disconnection-b) to[out=15,in=165] (-2em, 0cm |- fig-Disconnection-d);
-\path [draw,->,merge] (fig-Disconnection-c) to (-2em, 0cm |- fig-Disconnection-d);
+\path [draw,->,merge step] (fig-Disconnection-b) to[out=15,in=165] (-2em, 0cm |- fig-Disconnection-d);
+\path [draw,->,merge step] (fig-Disconnection-c) to (-2em, 0cm |- fig-Disconnection-d);
 \end{tikzpicture}
 }
 \label{fig:Disconnection-d}
@@ -1520,8 +1432,8 @@ TODO: UI
 };
 \path (-0.5cm,-2cm) graph[graph style] { plus/"\vSimpleTimes" };
 \path ( 0.5cm,-2cm) graph[graph style] { times/"\vMultiCyclePlus" };
-\path[draw,->,merge] (times) to ["\eMultiCycleBobTimes"'anchor=north,out=-135,in=-45, merge edge] (plus);
-\path[draw,->,merge] (plus) to ["\eMultiCycleBobPlus"anchor=south,out=45,in=135, merge edge] (times);
+\path[draw,->,merge edge] (times) to ["\eMultiCycleBobTimes"'anchor=north,out=-135,in=-45] (plus);
+\path[draw,->,merge edge] (plus) to ["\eMultiCycleBobPlus"anchor=south,out=45,in=135] (times);
 \end{tikzpicture}
 \end{subfigure}
 %%%%%%%%
@@ -1833,13 +1745,13 @@ This results in both Alice and Bob having the graph in
 \centering
 \begin{tikzpicture}
 \path ( 0cm, 0cm) node (a) [align=center]       {Original \\ Version};
-\path (-1cm,-2cm) node (b) [align=center,alice] {Alice's  \\ Version};
-\path ( 1cm,-2cm) node (c) [align=center,bob]   {Bob's    \\ Version};
+\path (-1cm,-2cm) node (b) [align=center,alice node] {Alice's  \\ Version};
+\path ( 1cm,-2cm) node (c) [align=center,bob node]   {Bob's    \\ Version};
 \path ( 0cm,-4cm) node (d) [align=center]       {Combined \\ Version};
-\path [draw,->,alice] (a) -- node [pos=0.7,auto,swap] {Alice's Edits} (b);
-\path [draw,->,bob]   (a) -- node [pos=0.7,auto]      {Bob's Edits}   (c);
-\path [draw,->,merge] (b) -- node [pos=0.3,auto,swap] {Sync} (d);
-\path [draw,->,merge] (c) -- node [pos=0.3,auto]      {Sync} (d);
+\path [draw,->,alice step] (a) -- node [pos=0.7,auto,swap] {Alice's Edits} (b);
+\path [draw,->,bob step]   (a) -- node [pos=0.7,auto]      {Bob's Edits}   (c);
+\path [draw,->,merge step] (b) -- node [pos=0.3,auto,swap] {Sync} (d);
+\path [draw,->,merge step] (c) -- node [pos=0.3,auto]      {Sync} (d);
 \end{tikzpicture}
 
 TODO: commutativity diagram of screenshots with two cursors
