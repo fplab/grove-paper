@@ -125,7 +125,7 @@
 }
 
 \tikzset{
-  every picture/.style={framed, background rectangle/.style={draw=gray!50}},
+  %every picture/.style={framed, background rectangle/.style={draw=gray!50}},
 }
 \tikzset{edge style/.style={
   draw,
@@ -382,9 +382,9 @@ TODO
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{A simple tree with a hole.
-\autoref{fig:A simple tree with a hole-a}:~User interface.
-\autoref{fig:A simple tree with a hole-b}:~Graph representation.}
+\caption{Example of Code that Includes a Hole.
+\autoref{fig:A simple tree with a hole-a}:~User Interface for the Code.
+\autoref{fig:A simple tree with a hole-b}:~Graph Representation of the Code.}
 \label{fig:A simple tree with a hole}
 \end{figure}
 }
@@ -453,7 +453,7 @@ TODO
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Construction and Deletion.}
+\caption{Example of Construction and Deletion.}
 \end{figure}
 }
 
@@ -542,7 +542,7 @@ TODO
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Wrapping.  Note that this figure omits the orphaned \vSimpleX{} since it is no longer relevant to our narrative.}
+\caption{Example of Wrapping.  (Note that this figure omits the orphaned \vSimpleX{} since it is no longer relevant to our narrative.)}
 \label{fig:Wrapping}
 \end{figure}
 }
@@ -609,7 +609,7 @@ TODO
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Moving \vSimpleTimes{} to the right child of~\vWrapPlus{}.}
+\caption{Example of Repositioning Code.}
 \label{fig:Move}
 \end{figure}
 }
@@ -703,7 +703,7 @@ TODO
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Editing Different Parts of the Code.}
+\caption{Example of Users Editing Different Parts of the Code.}
 \label{fig:Editing Different Parts of the Code}
 \end{figure}
 }
@@ -711,22 +711,25 @@ TODO
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% \figureCommutativity
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\figureCommutativity}{
-\begin{figure}
-\centering
-
-TODO: commutativity diagram of screenshots with two cursors
-
-TODO: include legend of arrow colors
-
-TODO: move into section 2.3.1
-
-TODO: star on multi-step arrows
-
-\caption{TODO:Commutativity}
-\label{fig:Commutativity}
-\end{figure}
-}
+% \newcommand{\figureCommutativity}{
+% \begin{figure}
+% \centering
+% \begin{figure}
+% \centering
+% \begin{tikzpicture}
+% \path (-3cm, 0cm) node (a) [align=center]       {Original \\ Version};
+% \path ( 0cm, 1cm) node (b) [align=center,alice node] {Alice's  \\ Version};
+% \path ( 0cm,-1cm) node (c) [align=center,bob node]   {Bob's    \\ Version};
+% \path ( 3cm, 0cm) node (d) [align=center]       {Combined \\ Version};
+% \path [draw,->,alice step] (a) -- node [pos=0.7,auto] {Alice's Edits} (b);
+% \path [draw,->,bob step]   (a) -- node [pos=0.7,auto,swap]      {Bob's Edits}   (c);
+% \path [draw,->,merge step] (b) -- node [pos=0.3,auto] {Sync} (d);
+% \path [draw,->,merge step] (c) -- node [pos=0.3,auto,swap]      {Sync} (d);
+% \end{tikzpicture}
+% \caption{TODO:Commutativity}
+% \label{fig:Commutativity}
+% \end{figure}
+% }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% \figureEditingNestedParts
@@ -820,10 +823,7 @@ TODO: star on multi-step arrows
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Editing Nested Parts of the Code.
-\autoref{fig:Editing Nested Parts of the Code-a}:~\autoref{fig:Editing Nested Parts of the Code-c} after Alice replaces \vDifferentAlice{} with \vNestedAlice{}.
-\autoref{fig:Editing Nested Parts of the Code-b}:~\autoref{fig:Editing Nested Parts of the Code-c} after Bob move \vSimpleTimes{} to the left child of \vWrapPlus{}.
-\autoref{fig:Editing Nested Parts of the Code-c}:~The result of merging \autoref{fig:Editing Nested Parts of the Code-a} with \autoref{fig:Editing Nested Parts of the Code-b}.}
+\caption{Example of Users Editing Nested Parts of the Code.}
 \label{fig:Editing Nested Parts of the Code}
 \end{figure}
 }
@@ -933,7 +933,7 @@ TODO: show UI
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Multi-child conflicts.}
+\caption{Example of Multi-Child Conflicts.}
 \label{fig:Multi-child}
 \end{figure*}
 }
@@ -1087,7 +1087,7 @@ TODO: UI
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Multi-parent conflicts.}
+\caption{Example of Multi-Parent Conflicts.}
 \label{fig:Multi-parent}
 \end{figure*}
 }
@@ -1322,7 +1322,7 @@ TODO: UI
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Cycles.}
+\caption{Example of Cycles.}
 \label{fig:Multi-User Cycles}
 \end{figure*}
 }
@@ -1438,7 +1438,7 @@ TODO: UI
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Disconnection.}
+\caption{Example of Disconnection.}
 \label{fig:Disconnection}
 \end{figure*}
 }
@@ -1519,23 +1519,28 @@ Text of abstract \ldots.
 
 TODO: fix the following warning which are reported by LaTeX but not Overleaf: Class acmart Warning: A possible image without description on input line 321.
 
-TODO: star on multi-step arrows
-
 Motivation:
+
 - collaborative editing (both synchronous ala Google Docs and asynchronous version control) 
   is good and important as computing grows
+
 - semantic structure editing is good because it solves the gap problem (semantic editor services 
   are always available) -- cite Hazelnut papers (talk about holes)
+
 - previous approaches to collaborative editing have limitations
+
   - diff/merge based approaches (trying to solve the inverse problem based on final states -- 
     you lose the actual actions that were performed, and have to reconstruct them or an approx.
     of them i.e. add line/delete line actions -- would need to adapt this to structure editing,
     some papers have started to look at that, but fundamentally we don't want to throw away the
     knowledge we have about the edits!)
+
   - operational transforms (complexity, you have to patch previous actions based on new actions)
+
   - CRDT-based collaborative editing (that's all been on text, not PL semantics) -- this is good
     because it is relatively simple: you just send all the edits to all the replicas and they are 
     convergent by design
+
 - we want to have the same convergence for a CRDT-based collaborative structure editor that maintains
   the sensibility invariant of Hazelnut, i.e. every editor state has meaning. mention that maintaining sensibility 
   allows scaling of semantic editor services in the presence of large number of collaborators (in contrast,
@@ -1544,12 +1549,19 @@ Motivation:
   transiently)
 
   this is tricky because:
+
   - some edits might be conflicting -- solve this with "conflict holes"
+
   - adding cut/paste or delete/restore allows for degenerate programs (cycles, multiple parents, etc.)
+
 - since we are commutative, we solve both synchronus and async collaborative editing
+
   - and this resolves issues around merges and conflicts
+
 - contribution of this paper is to solve these problems from type-theoretic first principles:
+
   - ...
+
 - Hazel
 
 \subsection{Contributions and Paper Organization}
@@ -1637,7 +1649,6 @@ The resulting graph, shown in \autoref{fig:Construction-b}, represents the expre
 \subsubsection{Deletion Actions}
 \label{sub:Deletion}
 
-\todo{Arrows between figures}
 Next Alice deletes~\texttt{x} so that the code becomes~\texttt{\hole{} * y}.
 This is modeled by deleting \eConstructionY{} as shown in \autoref{fig:Change-a}. 
 Notice that \vConstructionY{} continues to exist, and if it had any children, those children would remain connected to it.
@@ -1740,29 +1751,19 @@ This results in both Alice and Bob having the graph in
 \figureEditingDifferentParts
 
 %\figureCommutativity
-
 \begin{figure}
 \centering
 \begin{tikzpicture}
-\path ( 0cm, 0cm) node (a) [align=center]       {Original \\ Version};
-\path (-1cm,-2cm) node (b) [align=center,alice node] {Alice's  \\ Version};
-\path ( 1cm,-2cm) node (c) [align=center,bob node]   {Bob's    \\ Version};
-\path ( 0cm,-4cm) node (d) [align=center]       {Combined \\ Version};
-\path [draw,->,alice step] (a) -- node [pos=0.7,auto,swap] {Alice's Edits} (b);
-\path [draw,->,bob step]   (a) -- node [pos=0.7,auto]      {Bob's Edits}   (c);
-\path [draw,->,merge step] (b) -- node [pos=0.3,auto,swap] {Sync} (d);
-\path [draw,->,merge step] (c) -- node [pos=0.3,auto]      {Sync} (d);
+\path (-3cm, 0cm) node (a) [align=center]       {Original \\ Version};
+\path ( 0cm, 1cm) node (b) [align=center,alice node] {Alice's  \\ Version};
+\path ( 0cm,-1cm) node (c) [align=center,bob node]   {Bob's    \\ Version};
+\path ( 3cm, 0cm) node (d) [align=center]       {Combined \\ Version};
+\path [draw,->,alice step] (a) -- node [pos=0.7,auto,align=center] {Alice's \\ Edits} (b);
+\path [draw,->,bob step]   (a) -- node [pos=0.7,auto,swap,align=center]      {Bob's \\ Edits}   (c);
+\path [draw,->,merge step] (b) -- node [pos=0.3,auto] {Sync} (d);
+\path [draw,->,merge step] (c) -- node [pos=0.3,auto,swap]      {Sync} (d);
 \end{tikzpicture}
-
-TODO: commutativity diagram of screenshots with two cursors
-
-TODO: include legend of arrow colors
-
-TODO: move into section 2.3.1
-
-TODO: layout horizontally
-
-\caption{TODO:Commutativity}
+\caption{Commutativity of Edits.}
 \label{fig:Commutativity}
 \end{figure}
 
