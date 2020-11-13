@@ -1792,6 +1792,8 @@ applying them in either order produces the same results.
 
 \figureEditingNestedParts
 
+\figureMultiChild
+
 After Alice and Bob share the edits they made in the previous subsection,
 Alice changes~\vDifferentAlice{} to~\vNestedAlice{}, which results in the graph in \autoref{fig:Editing Nested Parts of the Code-a}.
 On the other hand, Bob moves~\vSimpleTimes{} and its children from the left child of~\vWrapPlus{} to its right child
@@ -1819,8 +1821,6 @@ our nominal equality.
 
 \subsubsection{Multi-child conflicts}
 \label{sub:Multi-child conflicts}
-
-\figureMultiChild
 
 Next we address what happens whn edits conflict.
 For example, Alice adds~\vMultiChildAlice{} as the right child of~\vWrapPlus{}
@@ -2150,8 +2150,8 @@ You can map from syntax to graph by selecting
 unique IDs $u$ (for both edges and vertexes).
     - holes are not explicit in the graph
 
-\subsubsection{Graph Actions}
-\label{sub:Graph Actions}
+\subsubsection{Graph Edits}
+\label{sub:Graph Edits}
 
 We define graph edit actions as a pair of an edge state, excluding $\bot$, and an edge.
 Thus, $\alpha \in \A = \left\{\Plus, \Minus\right\} \times \E$.
@@ -2221,14 +2221,37 @@ $G \overset{\alpha_2\alpha_1}{\longrightarrow} G'$.
 \subsubsection{Agda Mechanization}
 \label{sub:Agda Mechanization}
 
-\subsection{Edit Actions}
-\label{sub:Edit Actions}
+\subsection{Graph Decomposition}
+\label{sub:Graph Decomposition}
+
+What does a graph decomposition produce? a 4-tuple (reachable, multiparented, deleted, simple cycles).
+
+A simple cycle is a set of vertices connected by a closed path, consisting
+   of:
+
+   1) two or more vertices, all descendants of each other, and
+   2) the vertices of any non-multiparent subtrees reachable from the core, and
+      not reachable from the root vertex.
+
+  To determine the simple cycles of a graph, we:
+  
+  1) check if any vertex in the graph is a descendant of itself or some other
+     vertex that is (a descendant of itself),
+  2) find the least vertex in the core of this new(ly discovered) cycle, and
+  3) return a tree connecting every vertex reachable from the least (vertex).
+
+  The least vertex of a cycle is the one that was created first. To ensure consistent behavior, the search for reachable vertices begins at the least vertex in a cycle.
+
+<Mathematical definition of above.>
+
+\subsection{User Actions}
+\label{sub:User Actions}
 
 Mapping to b actions
 
 \[
 \begin{array}{l}
-  \textrm{Edit Actions}: \grave{e} \in Act ::= e \mid \#u \mid \conflict{\grave{e}}{\grave{e}} \\
+  \textrm{User Actions}: \grave{e} \in Act ::= e \mid \#u \mid \conflict{\grave{e}}{\grave{e}} \\
   \s : \G \to Act \times \V^{*} \times \V^{*} \times \V^{*} \\
   \s(G) = (\grave{e}, \MP(G), \CC(G), \D(G)) \\
   \MP(G) = \left\{ v \in \vertexes(G) \mid \exists e_1,e_2 \in \liveEdges(G), e_1= \right. \\
