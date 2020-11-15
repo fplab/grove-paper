@@ -1627,7 +1627,7 @@ An edge indicates that the destination vertex is a child of the origin vertex at
 For the sake of presentation clarity, we reserve odd identifiers for vertexes and even identifiers for edges.
 
 Finally, holes are represented by the absence of a child.
-For example, in \autoref{fig:A simple tree with a hole-b} the absence of a \texttt{right} edge coming from \vSimpleTimes{}
+For example, in \autoref{fig:A simple tree with a hole-b} the absence of a right edge coming from \vSimpleTimes{}
 corresponds to the hole on the right of the~\texttt{*} in~\texttt{x * \hole}.
 
 \subsection{Single-User Actions}
@@ -1653,7 +1653,7 @@ We discuss cursor representations and cursor sharing in more detail in \autoref{
 
 To start our examples, Alice moves her cursor to the hole in~\texttt{x * \hole} in \autoref{fig:A simple tree with a hole-b}
 and constructs the variable~\texttt{y} as shown in \autoref{fig:Construction-b}.
-This action corresponds to creating \eConstructionY{} from \vSimpleX{} at the \texttt{R} position to a newly
+This action corresponds to creating \eConstructionY{} from \vSimpleTimes{} at the \texttt{R} position to a newly
 created vertex, \vConstructionY{}, containing the variable reference~\texttt{y}.
 The resulting graph, shown in \autoref{fig:Construction-b}, represents the expression \texttt{x * y}.
 
@@ -1661,13 +1661,14 @@ The resulting graph, shown in \autoref{fig:Construction-b}, represents the expre
 \label{sub:Deletion}
 
 Next Alice deletes~\texttt{x} so that the code becomes~\texttt{\hole{} * y}.
-This is modeled by deleting \eConstructionY{} as shown in \autoref{fig:Change-a}.
-Notice that \vConstructionY{} continues to exist, and if it had any children, those children would remain connected to it.
+This is modeled by deleting \eSimpleX{} as shown in \autoref{fig:Change-a}.
+Notice that \vSimpleX{} continues to exist, and if it had any children, those children would remain connected to it.
 In our system, once a vertex is created it is never deleted.
 This allows further manipulations of those vertices by other users as shown later in this section.
 Note that we omit such orphaned vertexes from the remaining diagrams if they are not relevant to the exposition.
 
 Once an edge with a particular identifier is deleted, it cannot be recreated.
+
 Thus if Alice performed an ``undo'' on this deletion, Grove would create a fresh edge between \vSimpleTimes{} and \vSimpleX{}.
 
 \subsubsection{Wrapping Actions}
@@ -1684,6 +1685,8 @@ This corresponds to the following sequence of graph edits, shown in \autoref{fig
 (b) add a fresh~\texttt{+} vertex (\vWrapPlus{}) as a child of the root vertex, and
 (c) add an edge to \vSimpleTimes{} in the left child position of this new~\texttt{+} vertex.
 (The choice of wrapping with a bias for the left child position is arbitrary.)
+
+\newcommand{\eWrapTimesWrapC}{\eWrapTimes}
 
 \subsubsection{Repositioning Actions}
 \label{sub:Repositioning}
@@ -1706,7 +1709,7 @@ Thus the code is actually \textit{repositioned}, not copied.
 For example, in \autoref{fig:Move} Alice continues by
 repositioning \texttt{\hole{} * y} from the left child of \texttt{+} to its right child.
 This corresponds to the following sequence of graph edits, shown in \autoref{fig:Move}:
-(a) delete \eWrapPlus{} leaving \vSimpleTimes{} temporarily orphaned and
+(a) delete \eWrapTimesWrapC{} leaving \vSimpleTimes{} temporarily orphaned and
 (b) add \eMoveTimes{} to \vSimpleTimes{} in the right child position of \vWrapPlus{}.
 
 \figureMovement
@@ -1737,16 +1740,16 @@ that cause cycles or vertices with multiple parents
 \label{sub:Editing Different Parts of the Code}
 
 To start, Alice and Bob both have the graph in \autoref{fig:Move-b}, which
-represents the code~\texttt{\hole{} + (\hole{} + y)}.
+represents the code~\texttt{\hole{} + (\hole{} * y)}.
 
 Alice adds~\vDifferentAlice{} as the left child of \vSimpleTimes{}
 and Bob changes \vConstructionY{} to \vDifferentBob{}.
 Before transmitting their edits to each other,
 Alice and Bob have the graphs in \autoref{fig:Editing Different Parts of the Code-a}
 and \autoref{fig:Editing Different Parts of the Code-b}, respectively.
-(Note that thee transition edge from \autoref{fig:Move-b} to
+(Note that the transition edge from \autoref{fig:Move-b} to
 \autoref{fig:Editing Different Parts of the Code-b} represents
-multiple edges (i.e., deleting~\eConstructionY{} and adding~\eDifferentBob{} along with its child~\vDifferentBob{}).
+multiple edges, i.e., deleting~\eConstructionY{} and adding~\eDifferentBob{} along with its child~\vDifferentBob{}.
 We thus mark it with a star.)\todo{star size}\todo{"sync"}
 
 Alice and Bob then transmit their graph edits to each other
@@ -1797,7 +1800,7 @@ applying them in either order produces the same results.
 
 After Alice and Bob share the edits they made in the previous subsection,
 Alice changes~\vDifferentAlice{} to~\vNestedAlice{}, which results in the graph in \autoref{fig:Editing Nested Parts of the Code-a}.
-On the other hand, Bob moves~\vSimpleTimes{} and its children from the left child of~\vWrapPlus{} to its right child
+On the other hand, Bob moves~\vSimpleTimes{} and its children from the right child of~\vWrapPlus{} to its left child
 by deleting~\eMoveTimes{} and adding~\eNestedBob{}, which results in the graph in \autoref{fig:Editing Nested Parts of the Code-b}.
 Since edits are based on edge identities,
 both Alice's and Bob's edits can be applied to the other's graph,
@@ -1823,7 +1826,7 @@ our nominal equality.
 \subsubsection{Multi-child conflicts}
 \label{sub:Multi-child conflicts}
 
-Next we address what happens whn edits conflict.
+Next we address what happens when edits conflict.
 For example, Alice adds~\vMultiChildAlice{} as the right child of~\vWrapPlus{}
 while Bob adds~\vMultiChildBob{} also as the right child of~\vWrapPlus{}.
 These result in Alice and Bob having the graphs in \autoref{fig:Multi-child-a} and \autoref{fig:Multi-child-b}, respectively.
@@ -1890,12 +1893,12 @@ We call these \emph{multi-parent conflicts}.
 An example of this is shown in \autoref{fig:Multi-parent}.
 \autoref{fig:Multi-parent-a} shows the graph after Alice and Bob have made some more edits,
 and Alice and Bob's editors are synchronized with each other.
-This graph represents the expression~\texttt{(w + \hole{}) + \hole{}}.
+This graph represents the expression~\texttt{(w * \hole{}) + \hole{}}.
 Alice moves~\vNestedAlice{} to the~\texttt{R} position of~\vSimpleTimes{},
 while Bob moves it to the~\texttt{R} position of~\vWrapPlus{}.
 This results in the graphs in \autoref{fig:Multi-parent-b} and \autoref{fig:Multi-parent-c},
-which represent respectively the expression~\texttt{(\hole{} + w) + \hole{}} for Alice
-and the expression~\texttt{(\hole{} + \hole{}) + w} for Bob.
+which represent respectively the expression~\texttt{(\hole{} * w) + \hole{}} for Alice
+and the expression~\texttt{(\hole{} * \hole{}) + w} for Bob.
 In both cases, these edits are achieved with one edge delete and one edge add.
 Alice deletes~\eNestedAlice{} and adds~\eMultiParentAlice{}, while
 Bob deletes~\eNestedAlice{} and adds~\eMultiParentBob{}.
@@ -1959,15 +1962,15 @@ the edits from multiple users are merged.
 For example, consider the situation in \autoref{fig:Multi-User Cycles}.
 \autoref{fig:Multi-User Cycles-a} shows the graph after Alice and Bob have made some more edits,
 and Alice and Bob's editors are synchronized with each other.
-This graph represents the expression~\texttt{((\hole{} + \hole{}) + (\hole{} * \hole{})) + \hole}.
+This graph represents the expression~\texttt{((\hole{} * \hole{}) * (\hole{} + \hole{})) + \hole}.
 Alice moves~\vMultiCycleTimes{} to the \texttt{R} child of~\vWrapPlus{}
 and then~\vMultiCyclePlus{} underneath.
 This results in \autoref{fig:Multi-User Cycles-b},
-which represents the expression~\texttt{(\hole{} + \hole{}) + ((\hole{} * \hole{}) + \hole{})}.
+which represents the expression~\texttt{(\hole{} * \hole{}) + ((\hole{} + \hole{}) * \hole{})}.
 On the other hand, Bob does the same
-but puts~\vMultiCycleTimes{} and under~\vMultiCyclePlus{}.
+but puts~\vMultiCycleTimes{} under~\vMultiCyclePlus{}.
 This results in \autoref{fig:Multi-User Cycles-c},
-which represents the expression~\texttt{(\hole{} + \hole{}) + ((\hole{} + \hole{}) * \hole{})}.
+which represents the expression~\texttt{(\hole{} * \hole{}) + ((\hole{} * \hole{}) + \hole{})}.
 
 On their own, neither of these edits creates a cycle.
 However, merging the edit actions of both Alice and Bob results in the graph
@@ -2006,9 +2009,9 @@ This graph represents the expression~\texttt{(\hole{} * \hole{}) + (\hole{}  * \
 Alice moves~\vMultiCycleTimes{} under~\vSimpleTimes{}.
 This results in \autoref{fig:Disconnection-b},
 which represents the expression~\texttt{(\hole{} * (\hole{} * \hole{})) + \hole}.
-On the other hand, Bob puts~\vSimpleTimes{} and under~\vMultiCycleTimes{}.
+On the other hand, Bob puts~\vSimpleTimes{} under~\vMultiCycleTimes{}.
 This results in \autoref{fig:Disconnection-c},
-which represents the expression~\texttt{\hole{} + ((\hole{} * \hole{}) * \hole{})}.
+which represents the expression~\texttt{((\hole{} * \hole{}) * \hole{}) + \hole{}}.
 
 When these edits are merged, the result is the graph in \autoref{fig:Disconnection-d}.
 Since Alice deleted~\eNestedBob{}
@@ -2147,6 +2150,8 @@ originating from that position.
 
 \subsubsection{Graph Edits}
 \label{sub:Graph Edits}
+
+% XXX deletes are idempotent
 
 We define graph edit actions as a pair of an edge state, excluding $\bot$, and an edge.
 Thus, $\alpha \in \A = \left\{\Plus, \Minus\right\} \times \E$.
