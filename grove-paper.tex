@@ -1627,7 +1627,7 @@ An edge indicates that the destination vertex is a child of the origin vertex at
 For the sake of presentation clarity, we reserve odd identifiers for vertexes and even identifiers for edges.
 
 Finally, holes are represented by the absence of a child.
-For example, in \autoref{fig:A simple tree with a hole-b} the absence of a right edge coming from \vSimpleTimes{}
+For example, in \autoref{fig:A simple tree with a hole-b} the absence of an \texttt{R} edge coming from \vSimpleTimes{}
 corresponds to the hole on the right of the~\texttt{*} in~\texttt{x * \hole}.
 
 \subsection{Single-User Actions}
@@ -1686,8 +1686,6 @@ This corresponds to the following sequence of graph edits, shown in \autoref{fig
 (c) add an edge to \vSimpleTimes{} in the left child position of this new~\texttt{+} vertex.
 (The choice of wrapping with a bias for the left child position is arbitrary.)
 
-\newcommand{\eWrapTimesWrapC}{\eWrapTimes}
-
 \subsubsection{Repositioning Actions}
 \label{sub:Repositioning}
 
@@ -1709,7 +1707,7 @@ Thus the code is actually \textit{repositioned}, not copied.
 For example, in \autoref{fig:Move} Alice continues by
 repositioning \texttt{\hole{} * y} from the left child of \texttt{+} to its right child.
 This corresponds to the following sequence of graph edits, shown in \autoref{fig:Move}:
-(a) delete \eWrapTimesWrapC{} leaving \vSimpleTimes{} temporarily orphaned and
+(a) delete \eWrapTimes{} leaving \vSimpleTimes{} temporarily orphaned and
 (b) add \eMoveTimes{} to \vSimpleTimes{} in the right child position of \vWrapPlus{}.
 
 \figureMovement
