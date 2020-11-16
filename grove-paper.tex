@@ -1496,7 +1496,7 @@
 %% Note: \begin{abstract}...\end{abstract} environment must come
 %% before \maketitle command
 \begin{abstract}
-Text of abstract \ldots.
+  Text of abstract \ldots.
 \end{abstract}
 
 
@@ -1540,46 +1540,46 @@ TODO: fix the following warning which are reported by LaTeX but not Overleaf: Cl
 
 Motivation:
 
-- collaborative editing (both synchronous ala Google Docs and asynchronous version control) 
-  is good and important as computing grows
+- collaborative editing (both synchronous ala Google Docs and asynchronous version control)
+is good and important as computing grows
 
-- semantic structure editing is good because it solves the gap problem (semantic editor services 
-  are always available) -- cite Hazelnut papers (talk about holes)
+- semantic structure editing is good because it solves the gap problem (semantic editor services
+are always available) -- cite Hazelnut papers (talk about holes)
 
 - previous approaches to collaborative editing have limitations
 
-  - diff/merge based approaches (trying to solve the inverse problem based on final states -- 
-    you lose the actual actions that were performed, and have to reconstruct them or an approx.
-    of them i.e. add line/delete line actions -- would need to adapt this to structure editing,
-    some papers have started to look at that, but fundamentally we don't want to throw away the
-    knowledge we have about the edits!)
+- diff/merge based approaches (trying to solve the inverse problem based on final states --
+you lose the actual actions that were performed, and have to reconstruct them or an approx.
+of them i.e. add line/delete line actions -- would need to adapt this to structure editing,
+some papers have started to look at that, but fundamentally we don't want to throw away the
+knowledge we have about the edits!)
 
-  - operational transforms (complexity, you have to patch previous actions based on new actions)
+- operational transforms (complexity, you have to patch previous actions based on new actions)
 
-  - CRDT-based collaborative editing (that's all been on text, not PL semantics) -- this is good
-    because it is relatively simple: you just send all the edits to all the replicas and they are 
-    convergent by design
+- CRDT-based collaborative editing (that's all been on text, not PL semantics) -- this is good
+because it is relatively simple: you just send all the edits to all the replicas and they are
+convergent by design
 
 - we want to have the same convergence for a CRDT-based collaborative structure editor that maintains
-  the sensibility invariant of Hazelnut, i.e. every editor state has meaning. mention that maintaining sensibility 
-  allows scaling of semantic editor services in the presence of large number of collaborators (in contrast,
-  using VS Code or other collaborative text editors with large numbers of collaborators means that almost always
-  the semantic editor services will be disabled because the program is going to be broken in multiple places
-  transiently)
+the sensibility invariant of Hazelnut, i.e. every editor state has meaning. mention that maintaining sensibility
+allows scaling of semantic editor services in the presence of large number of collaborators (in contrast,
+using VS Code or other collaborative text editors with large numbers of collaborators means that almost always
+the semantic editor services will be disabled because the program is going to be broken in multiple places
+transiently)
 
-  this is tricky because:
+this is tricky because:
 
-  - some edits might be conflicting -- solve this with "conflict holes"
+- some edits might be conflicting -- solve this with "conflict holes"
 
-  - adding cut/paste or delete/restore allows for degenerate programs (cycles, multiple parents, etc.)
+- adding cut/paste or delete/restore allows for degenerate programs (cycles, multiple parents, etc.)
 
 - since we are commutative, we solve both synchronus and async collaborative editing
 
-  - and this resolves issues around merges and conflicts
+- and this resolves issues around merges and conflicts
 
 - contribution of this paper is to solve these problems from type-theoretic first principles:
 
-  - ...
+- ...
 
 - Hazel
 
@@ -1616,8 +1616,8 @@ Each term constructor has an associated set of child positions.
 The~\texttt{*} constructor has positions for~\texttt{L}~(i.e., left) and~\texttt{R}~(i.e., right) children
 and the~\texttt{var} constructors have no child positions but takes an argument naming the particular
 variable referenced~(e.g.,~\texttt{x} in \texttt{var(x)}).\footnote{Note that,
-for the purposes of this paper, we represent identifiers and number literals
-indivisibly.  See Section~TODO:REF, for how we would allow editing individual characters.}
+  for the purposes of this paper, we represent identifiers and number literals
+  indivisibly.  See Section~TODO:REF, for how we would allow editing individual characters.}
 The root vertex constructor,~\textbullet, has the single child position \texttt{Root}.
 
 Each edge is labeled with a globally unique identifier~(e.g.,~1 and~3 in \autoref{fig:A simple tree with a hole-b}) and
@@ -1642,7 +1642,7 @@ with multi-user actions.
 Each user action corresponds to one or more graph edits.
 Graph edits can only add fresh edges and vertices or remove existing edges.
 
-User actions act relative to a cursor. 
+User actions act relative to a cursor.
 We do not model cursor sharing and the cursor does not appear in the underlying graph.
 We discuss cursor representations and cursor sharing in more detail in \autoref{sub:Cursors}.
 
@@ -1661,7 +1661,7 @@ The resulting graph, shown in \autoref{fig:Construction-b}, represents the expre
 \label{sub:Deletion}
 
 Next Alice deletes~\texttt{x} so that the code becomes~\texttt{\hole{} * y}.
-This is modeled by deleting \eConstructionY{} as shown in \autoref{fig:Change-a}. 
+This is modeled by deleting \eConstructionY{} as shown in \autoref{fig:Change-a}.
 Notice that \vConstructionY{} continues to exist, and if it had any children, those children would remain connected to it.
 In our system, once a vertex is created it is never deleted.
 This allows further manipulations of those vertices by other users as shown later in this section.
@@ -1677,9 +1677,9 @@ Thus if Alice performed an ``undo'' on this deletion, Grove would create a fresh
 
 Next, Alice types~\texttt{+} when the cursor is on \vSimpleTimes{}.
 If this were a hole, this would cause a construction action to be performed as in \autoref{sub:Construction} above.
-However, Alice's editor sees that this position is already occupied by the \texttt{*} expression, 
+However, Alice's editor sees that this position is already occupied by the \texttt{*} expression,
 so typing~\texttt{+} is interpreted as a wrapping action instead of a construction action.
-This corresponds to the following sequence of graph edits, shown in \autoref{fig:Wrapping}: 
+This corresponds to the following sequence of graph edits, shown in \autoref{fig:Wrapping}:
 (a) delete \eSimpleTimes{}, leaving \vSimpleTimes{} temporarily orphaned,
 (b) add a fresh~\texttt{+} vertex (\vWrapPlus{}) as a child of the root vertex, and
 (c) add an edge to \vSimpleTimes{} in the left child position of this new~\texttt{+} vertex.
@@ -1691,9 +1691,9 @@ This corresponds to the following sequence of graph edits, shown in \autoref{fig
 If a user wants to reposition code from one place to another, we have two options.
 The first is to delete the code from its old position, and
 reconstruct the code in its new position.
-However, edges and vertices have unique identifiers in Grove 
+However, edges and vertices have unique identifiers in Grove
 to support the collaborative editing features we discuss next,
-so reconstruction will not preserve identity of vertices and edges. 
+so reconstruction will not preserve identity of vertices and edges.
 Consequently, we take the second option: explicit repositioning actions that preserve identity.
 These actions would be triggered by, for example, a drag and drop, or a cut and paste
 (but not copy and paste, or a second paste after a cut, which do not need to
@@ -1706,7 +1706,7 @@ Thus the code is actually \textit{repositioned}, not copied.
 For example, in \autoref{fig:Move} Alice continues by
 repositioning \texttt{\hole{} * y} from the left child of \texttt{+} to its right child.
 This corresponds to the following sequence of graph edits, shown in \autoref{fig:Move}:
-(a) delete \eWrapPlus{} leaving \vSimpleTimes{} temporarily orphaned and 
+(a) delete \eWrapPlus{} leaving \vSimpleTimes{} temporarily orphaned and
 (b) add \eMoveTimes{} to \vSimpleTimes{} in the right child position of \vWrapPlus{}.
 
 \figureMovement
@@ -1715,10 +1715,10 @@ This corresponds to the following sequence of graph edits, shown in \autoref{fig
 \label{sub:Multi-user Interactions}
 
 Having described single-user actions,
-we turn our attention to how Grove handles multiple users. 
+we turn our attention to how Grove handles multiple users.
 This section generalizes to any number of users,
-but for simplicity we consider only two: Alice and Bob. 
-Alice and Bob each maintain their own editor instance and perform 
+but for simplicity we consider only two: Alice and Bob.
+Alice and Bob each maintain their own editor instance and perform
 actions relative to its state (using their own cursors, which we discuss in \autoref{sub:Cursors}).
 We start each user where we left off in the previous section with the state shown in \autoref{fig:Move-b}.
 
@@ -1758,19 +1758,19 @@ This results in both Alice and Bob having the graph in
 
 %\figureCommutativity
 \begin{figure}
-\centering
-\begin{tikzpicture}
-\path (-3cm, 0cm) node (a) [align=center]       {Original \\ Version};
-\path ( 0cm, 1cm) node (b) [align=center,alice node] {Alice's  \\ Version};
-\path ( 0cm,-1cm) node (c) [align=center,bob node]   {Bob's    \\ Version};
-\path ( 3cm, 0cm) node (d) [align=center]       {Synchronized \\ Version};
-\path [draw,->,alice step] (a) -- node [pos=0.7,auto,align=center] {Alice's \\ Edits} (b);
-\path [draw,->,bob step]   (a) -- node [pos=0.7,auto,swap,align=center]      {Bob's \\ Edits}   (c);
-\path [draw,->,merge step] (b) -- node [pos=0.3,auto] {Sync} (d);
-\path [draw,->,merge step] (c) -- node [pos=0.3,auto,swap]      {Sync} (d);
-\end{tikzpicture}
-\caption{Commutativity of Edits.}
-\label{fig:Commutativity}
+  \centering
+  \begin{tikzpicture}
+    \path (-3cm, 0cm) node (a) [align=center]       {Original \\ Version};
+    \path ( 0cm, 1cm) node (b) [align=center,alice node] {Alice's  \\ Version};
+    \path ( 0cm,-1cm) node (c) [align=center,bob node]   {Bob's    \\ Version};
+    \path ( 3cm, 0cm) node (d) [align=center]       {Synchronized \\ Version};
+    \path [draw,->,alice step] (a) -- node [pos=0.7,auto,align=center] {Alice's \\ Edits} (b);
+    \path [draw,->,bob step]   (a) -- node [pos=0.7,auto,swap,align=center]      {Bob's \\ Edits}   (c);
+    \path [draw,->,merge step] (b) -- node [pos=0.3,auto] {Sync} (d);
+    \path [draw,->,merge step] (c) -- node [pos=0.3,auto,swap]      {Sync} (d);
+  \end{tikzpicture}
+  \caption{Commutativity of Edits.}
+  \label{fig:Commutativity}
 \end{figure}
 
 \subsubsection{Commutativity}
@@ -1846,8 +1846,8 @@ For example, one could delete \eMultiChildBob{} and then change~\vMultiChildAlic
 to be~\texttt{x * y}.
 (Note that users can continue to edit the code while in this conflicted state.
 It just must be resolved before the the code is run.\footnote{It
-may be possible to develop evaluation models that allow these sorts of conflicts,
-but that is beyond the scope of this paper.})
+  may be possible to develop evaluation models that allow these sorts of conflicts,
+  but that is beyond the scope of this paper.})
 
 TODO: need example of fully-automatic resolution and semi-automatic resolution.
 Note that as a convenience to the user, certain simple
@@ -2055,18 +2055,6 @@ and this simplicity aids in the predictability.
 % XXX "p" is overloaded - could mean pattern or position
 
 \begin{figure}
-<<<<<<< Updated upstream
-\[
-\arraycolsep=0pt
-\begin{array}{lrlll}
- \textrm{Patterns:}          & p    & {}\in Pat & {}::={} & x \mid \_ \\
- \textrm{Expressions:\qquad} & e    & {}\in Exp & {}::={} & x \mid \lambda p\mathord{:}\tau.e \mid e~e \mid e + e \mid n \mid \_ \\
- \textrm{Types:}             & \tau & {}\in Typ & {}::={} & \tau \rightarrow \tau \mid Num \mid \_ \\
-\end{array}
-\]
-\caption{Syntax as a grammar for the lambda calculus that we are considering.}
-\label{fig:Syntax as a grammar}
-=======
   \[
     \arraycolsep=0pt
     \begin{array}{lrlll}
@@ -2077,7 +2065,6 @@ and this simplicity aids in the predictability.
   \]
   \caption{Syntax as a grammar for the lambda calculus that we are considering.}
   \label{fig:Syntax as a grammar}
->>>>>>> Stashed changes
 \end{figure}
 
 \subsection{Syntax}
@@ -2088,37 +2075,11 @@ standard for a simply-typed lambda calculus except that all types of terms have
 holes (represented by $\hole$). In particular, the argument to a lambda can be
 either a bound variable or a hole.
 
-<<<<<<< Updated upstream
-In order to model this we define 
-
-
-Turn that into a constructor set K + index set I + arity function (has type: K -> $\wp$(I)).
-=======
 % In order to model this we define
->>>>>>> Stashed changes
 
 % Turn that into a constructor set K + position set P + arity function (has type: K -> $\wp$(P)).
 
 \begin{figure}
-<<<<<<< Updated upstream
-\[
-\arraycolsep=0pt
-\begin{array}{ll}
- \arity : \K \rightarrow & \wp(\I) \\
- \hline
- \arity(\Root)={}     & \left\{ \Root \right\} \\
- \arity(\PatVar)={}   & \left\{ \right\} \\
- \arity(\ExpVar)={}   & \left\{ \right\} \\
- \arity(\ExpLam)={}   & \left\{ \LamParam, \LamType, \LamBody \right\} \\
- \arity(\ExpApp)={}   & \left\{ \AppFun, \AppArg \right\} \\
- \arity(\ExpPlus)={}  & \left\{ \PlusLeft, \PlusRight \right\} \\
- \arity(\TypArrow)={} & \left\{ \ArrowArg, \ArrowResult \right\} \\
- \arity(\TypNum)={}   & \left\{ \right\} \\
-\end{array}
-\]
-\caption{Constructors, Indexes and Arity}
-\label{fig:Constructors, Indexes and Arity}
-=======
   \[
     \arraycolsep=0pt
     \begin{array}{ll}
@@ -2136,7 +2097,6 @@ Turn that into a constructor set K + index set I + arity function (has type: K -
   \]
   \caption{Constructors, Indexes and Arity}
   \label{fig:Constructors, Indexes and Arity}
->>>>>>> Stashed changes
 \end{figure}
 
 \subsection{Convergent Graphs}
@@ -2145,19 +2105,11 @@ Turn that into a constructor set K + index set I + arity function (has type: K -
 \subsubsection{Graphs}
 \label{sub:Graphs}
 
-<<<<<<< Updated upstream
-TODO: rename indices to positions
-
-TODO: look into using bold plus and minus (google results)
-
-A graph $\G : \E \rightarrow \Sigma$ is a function from edges to edge states, 
-=======
 A graph $\G : \E \rightarrow \Sigma$ is a function from edges to edge states,
->>>>>>> Stashed changes
 where $\E = \U \times \V \times \P \times \V$,
 and   unique IDs are drawn from some suitable set $\U$,
-and   vertices are drawn from $\V$, 
-and   positions are drawn from $\P$, 
+and   vertices are drawn from $\V$,
+and   positions are drawn from $\P$,
 and   edge states are drawn from $\Sigma$, all defined below.
 
 Each edge $\e = (u, v, p, v^\prime)$ has a unique name, $u \in \U$,
@@ -2168,25 +2120,6 @@ If $\G(\e)$ is $\Plus$, the edge has been created.
 If $\G(\e)$ is $\Minus$, the edge has been destroyed.
 The total ordering $\bot \sqsubset \Plus \sqsubset \Minus$ forms a lattice over $\Sigma$.
 
-<<<<<<< Updated upstream
-A vertex $v = (u, k)$ identifies a distinct instance of the constructor $k$.
-
-A constructor $k \in \K$ represents a different type of node in the target language's abstract syntax tree.
-
-A position $p \in \P$ identifies a location, adjacent to some parent vertex.
-
-Every graph contains a distinguished root vertex, root constructor, and root position, respectively named $v_0$, $k_0$, and $p_0$.
-
-
-
-% Define $\sqcup_{edge state}$ (i.e. join)
-
-% lattice ordering $\bot < + < -$ LUB e.g., join A B = C
-
-You can map from syntax to graph by selecting
-unique IDs $u$ (for both edges and vertexes).
-    - holes are not explicit in the graph
-=======
 A vertex $v = (u, k)$ identifies a distinct instance of some constructor $k$,
 where $k \in \K$ corresponds to a type of expression. Each contructor has an
 arity, which we define as a set of positions. A position $p \in \P$ identifies a
@@ -2211,7 +2144,6 @@ originating from that position.
 % You can map from syntax to graph by selecting
 % unique IDs $u$ (for both edges and vertexes).
 % - holes are not explicit in the graph
->>>>>>> Stashed changes
 
 \subsubsection{Graph Edits}
 \label{sub:Graph Edits}
@@ -2230,7 +2162,7 @@ and $\Plus \sqcup \Minus = \Minus = \Minus \sqcup \Minus$, which means that once
 We define the semantics of graph actions via the following
 transition relation between graphs.
 \[
-G \overset{\left(s,e\right)}{\longrightarrow} G\left[ e \mapsto s \sqcup G(e) \right\}
+  G \overset{\left(s,e\right)}{\longrightarrow} G\left[ e \mapsto s \sqcup G(e) \right\}
 \]
 In other words, applying graph action $\alpha = \left(s, e\right)$ to a graph $G$
 results in $G\left[e \mapsto s \sqcup G(e) \right]$ (i.e., the graph is updated at $e$ to be
@@ -2254,33 +2186,33 @@ by the commutativity of the join operations defining those graph actions.
 Discuss uniqueness of uuid
 
 \begin{lemma}[Join Commutativity]
-\label{lem:Join Commutativity}
+  \label{lem:Join Commutativity}
 \end{lemma}
 
 \begin{lemma}[Joining]
-\label{lem:Joining}
-For all graphs $G$ and $G'$ and all edit actions $\alpha$,
-$G \overset{\alpha}{\longrightarrow} G'$
-iff $G \sqcup \llbracket\alpha_1\rrbracket = G'$.
+  \label{lem:Joining}
+  For all graphs $G$ and $G'$ and all edit actions $\alpha$,
+  $G \overset{\alpha}{\longrightarrow} G'$
+  iff $G \sqcup \llbracket\alpha_1\rrbracket = G'$.
 \end{lemma}
 \begin{proof}
-If $G \overset{\alpha_1\alpha_2}{\longrightarrow} G'$
+  If $G \overset{\alpha_1\alpha_2}{\longrightarrow} G'$
 \end{proof}
 
 
 \begin{theorem}[Commutativity]
-\label{thm:Commutativity}
-For all graphs $G$ and $G'$ and all edit actions $\alpha_1$ and $\alpha_2$,
-if $G \overset{\alpha_1\alpha_2}{\longrightarrow} G'$,
-then $G \overset{\alpha_2\alpha_1}{\longrightarrow} G'$.
+  \label{thm:Commutativity}
+  For all graphs $G$ and $G'$ and all edit actions $\alpha_1$ and $\alpha_2$,
+  if $G \overset{\alpha_1\alpha_2}{\longrightarrow} G'$,
+  then $G \overset{\alpha_2\alpha_1}{\longrightarrow} G'$.
 \end{theorem}
 \begin{proof}
-Using \autoref{lem:Joining} to unfold $\rightarrow$ into $\sqcup$,
-$G \sqcup \llbracket\alpha_1 \sqcup \llbracket \sqcup \alpha_2 \rrbracket = G'$.
-Then by \autoref{lem:Join Commutativity},
-$G \sqcup \llbracket\alpha_2 \sqcup \llbracket \sqcup \alpha_1 \rrbracket = G'$.
-Finally using \autoref{lem:Joining} to fold $\sqcup$ into $\rightarrow$,
-$G \overset{\alpha_2\alpha_1}{\longrightarrow} G'$.
+  Using \autoref{lem:Joining} to unfold $\rightarrow$ into $\sqcup$,
+  $G \sqcup \llbracket\alpha_1 \sqcup \llbracket \sqcup \alpha_2 \rrbracket = G'$.
+  Then by \autoref{lem:Join Commutativity},
+  $G \sqcup \llbracket\alpha_2 \sqcup \llbracket \sqcup \alpha_1 \rrbracket = G'$.
+  Finally using \autoref{lem:Joining} to fold $\sqcup$ into $\rightarrow$,
+  $G \overset{\alpha_2\alpha_1}{\longrightarrow} G'$.
 \end{proof}
 
 \subsubsection{Agda Mechanization}
@@ -2292,20 +2224,20 @@ $G \overset{\alpha_2\alpha_1}{\longrightarrow} G'$.
 What does a graph decomposition produce? a 4-tuple (reachable, multiparented, deleted, simple cycles).
 
 A simple cycle is a set of vertices connected by a closed path, consisting
-   of:
+of:
 
-   1) two or more vertices, all descendants of each other, and
-   2) the vertices of any non-multiparent subtrees reachable from the core, and
-      not reachable from the root vertex.
+1) two or more vertices, all descendants of each other, and
+2) the vertices of any non-multiparent subtrees reachable from the core, and
+not reachable from the root vertex.
 
-  To determine the simple cycles of a graph, we:
-  
-  1) check if any vertex in the graph is a descendant of itself or some other
-     vertex that is (a descendant of itself),
-  2) find the least vertex in the core of this new(ly discovered) cycle, and
-  3) return a tree connecting every vertex reachable from the least (vertex).
+To determine the simple cycles of a graph, we:
 
-  The least vertex of a cycle is the one that was created first. To ensure consistent behavior, the search for reachable vertices begins at the least vertex in a cycle.
+1) check if any vertex in the graph is a descendant of itself or some other
+vertex that is (a descendant of itself),
+2) find the least vertex in the core of this new(ly discovered) cycle, and
+3) return a tree connecting every vertex reachable from the least (vertex).
+
+The least vertex of a cycle is the one that was created first. To ensure consistent behavior, the search for reachable vertices begins at the least vertex in a cycle.
 
 <Mathematical definition of above.>
 
@@ -2315,20 +2247,20 @@ A simple cycle is a set of vertices connected by a closed path, consisting
 Mapping to b actions
 
 \[
-\begin{array}{l}
-  \textrm{User Actions}: \grave{e} \in Act ::= e \mid \#u \mid \conflict{\grave{e}}{\grave{e}} \\
-  \s : \G \to Act \times \V^{*} \times \V^{*} \times \V^{*} \\
-  \s(G) = (\grave{e}, \MP(G), \CC(G), \D(G)) \\
-  \MP(G) = \left\{ v \in \vertexes(G) \mid \exists e_1,e_2 \in \liveEdges(G), e_1= \right. \\
-      \qquad \left. (v,p_1,v_1), e_2=(v,p_2,v_2), e_1 \ne e_2 \right\} \\
-  \CC(G) = \ldots \\
-  \D(G) = \orphans(G) \setminus \left\{ v_0 \right\} \\
-  \orphans(G) = \left\{ v \in \vertexes(G) \mid \forall e=(v^\prime,p,v^{\prime\prime}) \in \right. \\
-      \qquad \left. \liveEdges(G), v^{\prime\prime} \ne v \right\} \\
-  \vertexes(G) = \left\{ v \mid \exists e = (v^\prime, p, v^{\prime\prime}) \in \edges(G), v \in \left\{ v^\prime, v^{\prime\prime}\right\} \right\} \\
-  \edges(G) = \left\{ e \mid G(e) \ne \bot \right\} \\
-  \liveEdges(G) = \left\{ e \mid G(e) = + \right\} \\
-\end{array}
+  \begin{array}{l}
+    \textrm{User Actions}: \grave{e} \in Act ::= e \mid \#u \mid \conflict{\grave{e}}{\grave{e}}                                                       \\
+    \s : \G \to Act \times \V^{*} \times \V^{*} \times \V^{*}                                                                                          \\
+    \s(G) = (\grave{e}, \MP(G), \CC(G), \D(G))                                                                                                         \\
+    \MP(G) = \left\{ v \in \vertexes(G) \mid \exists e_1,e_2 \in \liveEdges(G), e_1= \right.                                                           \\
+    \qquad \left. (v,p_1,v_1), e_2=(v,p_2,v_2), e_1 \ne e_2 \right\}                                                                                   \\
+    \CC(G) = \ldots                                                                                                                                    \\
+    \D(G) = \orphans(G) \setminus \left\{ v_0 \right\}                                                                                                 \\
+    \orphans(G) = \left\{ v \in \vertexes(G) \mid \forall e=(v^\prime,p,v^{\prime\prime}) \in \right.                                                  \\
+    \qquad \left. \liveEdges(G), v^{\prime\prime} \ne v \right\}                                                                                       \\
+    \vertexes(G) = \left\{ v \mid \exists e = (v^\prime, p, v^{\prime\prime}) \in \edges(G), v \in \left\{ v^\prime, v^{\prime\prime}\right\} \right\} \\
+    \edges(G) = \left\{ e \mid G(e) \ne \bot \right\}                                                                                                  \\
+    \liveEdges(G) = \left\{ e \mid G(e) = + \right\}                                                                                                   \\
+  \end{array}
 \]
 
 Sensibility -- mapping back from graphs
@@ -2361,13 +2293,13 @@ TODO: our model supports treating these as a cons-list of characters
 
 \section{Implementation}
 \label{sec:Implementation}
-GRV -- how it is implemented, how it connects to the formalism, describe the graph, 
+GRV -- how it is implemented, how it connects to the formalism, describe the graph,
 
 We implemented GRV as a core OCaml library in approximately 1,500 lines of code, and a basic Web interface in approximately 600 lines of OCaml code and 250 lines of HTML+CSS+Javascript.
 
 Compared to the core language, our implementation lacks support for lists and case expressions.
 
-Optimizations: least fixed point 
+Optimizations: least fixed point
 
 \section{Related Work}
 \label{sec:Related Work}
@@ -2414,7 +2346,7 @@ GUI for string conflicts: use popups
 
 %% Acknowledgments
 \begin{acks}                            %% acks environment is optional
-                                        %% contents suppressed with 'anonymous'
+  %% contents suppressed with 'anonymous'
   %% Commands \grantsponsor{<sponsorID>}{<name>}{<url>} and
   %% \grantnum[<url>]{<sponsorID>}{<number>} should be used to
   %% acknowledge financial support and will be used by metadata
@@ -2452,12 +2384,12 @@ TODO: put all intermediate states for all graphs along with the edge actions
 \subsection{Concepts}
 
 \begin{tabular}{cl@{\hspace{1.5cm}}cl@{\hspace{1.5cm}}cl@{\hspace{1.5cm}}cl}
-  $\A$ & Actions & $\S$ & Edge States   \\
-%  $\C$ & Cursors & $\U$ & UUIDs         \\
-  $\E$ & Edges   & $\V$ & Vertexes      \\
-  $\G$ & Graphs  & $\AA$ & Graph Actions \\
-  $\I$ & Indices & $\EE$ & Editors       \\
-  $\K$ & Constructors                   \\
+  $\A$ & Actions      & $\S$  & Edge States   \\
+  %  $\C$ & Cursors & $\U$ & UUIDs         \\
+  $\E$ & Edges        & $\V$  & Vertexes      \\
+  $\G$ & Graphs       & $\AA$ & Graph Actions \\
+  $\I$ & Indices      & $\EE$ & Editors       \\
+  $\K$ & Constructors                         \\
 \end{tabular}
 
 A \emph{UUID} $u \in \U$ is a universally unique identifier.
@@ -2529,28 +2461,28 @@ An \emph{environment} $(E^{*}, A^{*}) \in \EE^{*} \times \AA^{*}$ is a set of co
 \paragraph{Edges} \par
 
 \begin{align*}
-             \edges(G) &= \dom(G) \\
-         \liveEdges(G) &= \{ \e \in \edges(G) | G(\e)=+ \}              \\
-  \vertexChildren(G,v) &= \{ ((v',i),v'',u) \in \liveEdges(G) | v'=v \} \\
-  \cursorChildren(G,c) &= \{ (c',v,u) \in \liveEdges(G) | c'=c \}       \\
-         \parents(G,v) &= \{ (c,v',u) \in \liveEdges(G) | v'=v \}
+  \edges(G)            & = \dom(G)                                       \\
+  \liveEdges(G)        & = \{ \e \in \edges(G) | G(\e)=+ \}              \\
+  \vertexChildren(G,v) & = \{ ((v',i),v'',u) \in \liveEdges(G) | v'=v \} \\
+  \cursorChildren(G,c) & = \{ (c',v,u) \in \liveEdges(G) | c'=c \}       \\
+  \parents(G,v)        & = \{ (c,v',u) \in \liveEdges(G) | v'=v \}
 \end{align*}
 
 \paragraph{Vertexes} \par
 
 \begin{align*}
-        \vertexes(G) &= \{ v \in \V | \exists (c,v,u) \in \edges(G) \}               \\
-    \liveVertexes(G) &= \{ v \in \V | \exists (c,v,u) \in \liveEdges(G) \}           \\
- \childVertexes(G,v) &= \{ v' \in \V | \exists (c,v',u) \in \vertexChildren(G,v) \}  \\
-         \orphans(G) &= \{ v \in \liveVertexes(G) | \abs{\parents(G,v)} = 0 \}       \\
-    \multiparents(G) &= \{ v \in \liveVertexes(G) | \abs{\parents(G,v)} > 1 \}       \\
-        \vertex(G,u) &= v \in \vertexes(G) \iff (\exists k \in \K)(v = (k,u))
+  \vertexes(G)        & = \{ v \in \V | \exists (c,v,u) \in \edges(G) \}              \\
+  \liveVertexes(G)    & = \{ v \in \V | \exists (c,v,u) \in \liveEdges(G) \}          \\
+  \childVertexes(G,v) & = \{ v' \in \V | \exists (c,v',u) \in \vertexChildren(G,v) \} \\
+  \orphans(G)         & = \{ v \in \liveVertexes(G) | \abs{\parents(G,v)} = 0 \}      \\
+  \multiparents(G)    & = \{ v \in \liveVertexes(G) | \abs{\parents(G,v)} > 1 \}      \\
+  \vertex(G,u)        & = v \in \vertexes(G) \iff (\exists k \in \K)(v = (k,u))
 \end{align*}
 
 \paragraph{Graph Actions} \par
 
 $\known(E_1 \cdots E_n) = A_{H1}^{*} \cdots A_{Hn}^{*}
-\iff (\forall j=1,\ldots,n)(E_j = (G_j,c_j,A_{Qj}^{*},A_{Hj}^{*},u_j))$
+  \iff (\forall j=1,\ldots,n)(E_j = (G_j,c_j,A_{Qj}^{*},A_{Hj}^{*},u_j))$
 
 \section{Operational Semantics}
 
@@ -2560,32 +2492,32 @@ $\boxed{E,A -->a E,A}$
 
 \begin{mathpar}
   \inferrule{
-    \leftIndex(i) = i'
+  \leftIndex(i) = i'
   }{
-    (G,(v,i),A_Q^{*},A_H^{*},u),A \xrightarrow{\Left} (G,(v,i'),A_Q^{*},A_H^{*},u),A
+  (G,(v,i),A_Q^{*},A_H^{*},u),A \xrightarrow{\Left} (G,(v,i'),A_Q^{*},A_H^{*},u),A
   }
 
   \inferrule{
-    \rightIndex(i) = i'
+  \rightIndex(i) = i'
   }{
-    (G,(v,i),A_Q^{*},A_H^{*},u),A \xrightarrow{\Right} (G,(v,i'),A_Q^{*},A_H^{*},u),A
+  (G,(v,i),A_Q^{*},A_H^{*},u),A \xrightarrow{\Right} (G,(v,i'),A_Q^{*},A_H^{*},u),A
   }
 
   \inferrule{
-    \parents(v) = \{(c',v',u')\}
+  \parents(v) = \{(c',v',u')\}
   }{
-    (G,(v,i),A_Q^{*},A_H^{*},u),A \xrightarrow{\Up} (G,c',A_Q^{*},A_H^{*},u),A
+  (G,(v,i),A_Q^{*},A_H^{*},u),A \xrightarrow{\Up} (G,c',A_Q^{*},A_H^{*},u),A
   }
 
   \inferrule{
-    \cursorChildren(c) = \{(c',(k,u_k),u')\} \\
-    \downIndex(k) = i
+  \cursorChildren(c) = \{(c',(k,u_k),u')\} \\
+  \downIndex(k) = i
   }{
-    (G,c,A_Q^{*},A_H^{*},u),A \xrightarrow{\Down} (G,((k,u_k),i),A_Q^{*},A_H^{*},u),A
+  (G,c,A_Q^{*},A_H^{*},u),A \xrightarrow{\Down} (G,((k,u_k),i),A_Q^{*},A_H^{*},u),A
   }
 
   \inferrule{}{
-    (G,c,A_Q^{*},A_H^{*},u),A \xrightarrow{\Select~c'} (G,c',A_Q^{*},A_H^{*},u),A
+  (G,c,A_Q^{*},A_H^{*},u),A \xrightarrow{\Select~c'} (G,c',A_Q^{*},A_H^{*},u),A
   }
 \end{mathpar}
 
@@ -2593,41 +2525,41 @@ $\boxed{E,A -->a E,A}$
 
 \begin{mathpar}
   \inferrule{
-    \defaultIndex(c) = TODO(Was None) \\
-    u, u_k \in \U \text{ fresh} \\
-    A_H' = [(c,(k,u_k),u) :-> +]
+  \defaultIndex(c) = TODO(Was None) \\
+  u, u_k \in \U \text{ fresh} \\
+  A_H' = [(c,(k,u_k),u) :-> +]
   }{
-    (G,c,A_Q^{*},A_H^{*},u),A \xrightarrow{\Create~k} (G A_H',c,A_Q^{*},A_H^{*}A_H',u),A
+  (G,c,A_Q^{*},A_H^{*},u),A \xrightarrow{\Create~k} (G A_H',c,A_Q^{*},A_H^{*}A_H',u),A
   }
 
   \inferrule{
-    \defaultIndex(c) = i' \\
-    c' = ((k,u_k),i') \\
-    u, u_k \in \U \text{ fresh} \\
-    \\\\
-    \cursorChildren(G,c) = \{(c_j,v_j,u_j')\}_{j=1}^n \\
-    A_H'^{*} =
+  \defaultIndex(c) = i' \\
+  c' = ((k,u_k),i') \\
+  u, u_k \in \U \text{ fresh} \\
+  \\\\
+  \cursorChildren(G,c) = \{(c_j,v_j,u_j')\}_{j=1}^n \\
+  A_H'^{*} =
     [(c  ,(k,u_k),u  ) :-> +]
     [(c' ,v_j    ,u_j') :-> +]_{j=1}^n
-    [(c_j,v_j    ,u_j') :-> -]_{j=1}^n
+  [(c_j,v_j    ,u_j') :-> -]_{j=1}^n
   }{
-    (G,c,A_Q^{*},A_H^{*},u),A \xrightarrow{\Create~k}
-    (G A_H'^{*},c',A_Q^{*},A_H^{*}A_H'^{*},u),A
+  (G,c,A_Q^{*},A_H^{*},u),A \xrightarrow{\Create~k}
+  (G A_H'^{*},c',A_Q^{*},A_H^{*}A_H'^{*},u),A
   }
 
   \inferrule{
-    \cursorChildren(G,c) = \{\e_j\}_{j=1}^n \\
-    A_H'^{*} = [\e_j :-> -]_{j=1}^n
+  \cursorChildren(G,c) = \{\e_j\}_{j=1}^n \\
+  A_H'^{*} = [\e_j :-> -]_{j=1}^n
   }{
-    (G,c,A_Q^{*},A_H^{*},u),A \xrightarrow{\Destroy}
-    (G A_H'^{*},c,A_Q^{*},A_H^{*}A_H'^{*},u),A
+  (G,c,A_Q^{*},A_H^{*},u),A \xrightarrow{\Destroy}
+  (G A_H'^{*},c,A_Q^{*},A_H^{*}A_H'^{*},u),A
   }
 
   \inferrule{
-    A_H = [(c,v,u') :-> +] \\
-    u' \text{ fresh}
+  A_H = [(c,v,u') :-> +] \\
+  u' \text{ fresh}
   }{
-    (G,c,A_Q^{*},A_H^{*},u),A \xrightarrow{\Restore~v} (G A_H,c,A_Q^{*},A_H^{*}A_H,u),A %
+  (G,c,A_Q^{*},A_H^{*},u),A \xrightarrow{\Restore~v} (G A_H,c,A_Q^{*},A_H^{*}A_H,u),A %
   }
 \end{mathpar}
 
@@ -2637,10 +2569,10 @@ $\boxed{E,A -->a E,A}$
 %
 \begin{mathpar}
   \inferrule{
-    a \in \A^{edit} \\
-    (G,c,A_Q^{*},A_H^{*},u),A -->a (G',c',A_Q^{*},A_H'^{*},u),A
+  a \in \A^{edit} \\
+  (G,c,A_Q^{*},A_H^{*},u),A -->a (G',c',A_Q^{*},A_H'^{*},u),A
   }{
-    (G,c,A_Q^{*},A_H^{*},u),A -->a (G',c',A_Q^{*}a,A_H'^{*},u),A
+  (G,c,A_Q^{*},A_H^{*},u),A -->a (G',c',A_Q^{*}a,A_H'^{*},u),A
   }
 \end{mathpar}
 
@@ -2663,16 +2595,16 @@ $\boxed{(E,A)^{*} -->a (E,A)^{*}}$
 %
 \begin{mathpar}
   \inferrule{
-    E_j = (G_j,c_j,A_{Qj}^{*},A_{Hj}^{*},u_j) \\
-    E_j,A_j \xrightarrow{a'^{*}} (G_j',c_j',A_{Qj}'^{*}, A_{Hj}'^{*},u_j),A_j' \\
-    E_j' =
-    ( G_j'
-    , c_j'
-    , A_{Qj}'^{*} \setminus a'^{*}
-    , A_{Hj}'^{*} \setminus \known(E_1 \cdots E_n),u_j) \\
-    j = 1,\ldots,n
+  E_j = (G_j,c_j,A_{Qj}^{*},A_{Hj}^{*},u_j) \\
+  E_j,A_j \xrightarrow{a'^{*}} (G_j',c_j',A_{Qj}'^{*}, A_{Hj}'^{*},u_j),A_j' \\
+  E_j' =
+  ( G_j'
+  , c_j'
+  , A_{Qj}'^{*} \setminus a'^{*}
+  , A_{Hj}'^{*} \setminus \known(E_1 \cdots E_n),u_j) \\
+  j = 1,\ldots,n
   }{
-    (E_1,A_1) \cdots (E_n,A_n) \xrightarrow{\Send~ a'^{*} } (E_1',A_1') \cdots (E_n',A_n')
+  (E_1,A_1) \cdots (E_n,A_n) \xrightarrow{\Send~ a'^{*} } (E_1',A_1') \cdots (E_n',A_n')
   }
 \end{mathpar}
 
