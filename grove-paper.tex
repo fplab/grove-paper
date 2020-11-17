@@ -78,6 +78,16 @@
 \usepackage{array}
 \usepackage{todonotes}
 
+% Load MnSymbol without clobbering \ast
+% See https://tex.stackexchange.com/a/269691
+\usepackage{amsmath}% needed before mathabx
+\let\amsast=\ast
+\usepackage[matha]{mathabx}% needed to prevent \ast getting clobbered
+\let\abxast=\ast
+\usepackage{MnSymbol}
+\let\mnast=\ast
+\let\ast=\abxast
+
 % \selectcolormodel{gray}
 
 % math ligatures
@@ -186,7 +196,7 @@
 \tikzset{merge edge/.style={merge, edge style}, font={\bfseries\small}}
 \tikzset{merge node/.style={merge}}
 \tikzset{merge step/.style={merge,decorate,decoration={coil,amplitude=1.0pt,segment length=7.0pt,aspect=0}}}
-\tikzset{star/.style={edge node={node[inner sep=0pt,at end,sloped] {\textbf{\huge${}^{*}$}}}}}
+\tikzset{star/.style={edge node={node[inner sep=0pt,at end,sloped] {\textbf{\huge${}^{\ast}$}}}}}
 
 %%%%%%%%
 % Lang components
@@ -345,6 +355,11 @@
 \newcommand{\Edge}[1]{Edge~#1}
 \newcommand{\Vertex}[1]{Vertex~#1}
 \newcommand{\figureCode}[1]{\textbf{\texttt{#1}}\vskip1em}
+\newcommand{\multiChild}[2]{\textcolor{red}{\{} #1 \textcolor{red}{|} #2 \textcolor{red}{\}}}
+\newcommand{\multiVertex}[1]{\textcolor{red}{\ensuremath{\mathbf{\curlyveedownarrow_{#1}}}}}
+\newcommand{\cycleVertex}[1]{\textcolor{red}{\ensuremath{\mathbf{\rcirclearrowleft_{#1}}}}}
+\newcommand{\orphanVertex}[1]{\textcolor{red}{\ensuremath{\mathbf{\ndownarrow_{#1}}}}}
+\newcommand{\parens}[1]{\textcolor{gray}{(}#1\textcolor{gray}{)}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% \figureSimple
@@ -370,6 +385,7 @@
 \centering
 \caption{}
 \label{fig:A simple tree with a hole-b}
+\figureCode{x * \hole{}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style, color=black] -> {
@@ -413,6 +429,7 @@
 \label{fig:Construction and Deletion-a}
 \label{fig:Construction}
 \label{fig:Construction-b}
+\figureCode{x * y}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -438,6 +455,7 @@
 \label{fig:Construction and Deletion-b}
 \label{fig:Change-a}
 \label{fig:Change}
+\figureCode{\hole{} * y}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -477,6 +495,7 @@
 \end{tikzpicture}
 }
 \label{fig:Wrapping-a}
+\figureCode{\hole{}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style]
@@ -501,6 +520,7 @@
 \end{tikzpicture}
 }
 \label{fig:Wrapping-b}
+\figureCode{\hole{} + \hole{}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -527,6 +547,7 @@
 \end{tikzpicture}
 }
 \label{fig:Wrapping-c}
+\figureCode{\hole{} * y + \hole{}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -568,6 +589,7 @@
 \end{tikzpicture}
 }
 \label{fig:Move-a}
+\figureCode{\hole{} + \hole{}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -594,6 +616,7 @@
 \end{tikzpicture}
 }
 \label{fig:Move-b}
+\figureCode{\hole{} + \hole{} * y}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -635,6 +658,7 @@
 \end{tikzpicture}
 }
 \label{fig:Editing Different Parts of the Code-a}
+\figureCode{\hole{} + u * y}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -661,6 +685,7 @@
 \end{tikzpicture}
 }
 \label{fig:Editing Different Parts of the Code-b}
+\figureCode{\hole{} + \hole{} * v}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -688,6 +713,7 @@
 \end{tikzpicture}
 }
 \label{fig:Editing Different Parts of the Code-c}
+\figureCode{\hole{} + u * v}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -855,6 +881,7 @@
 \end{tikzpicture}
 }
 \label{fig:Multi-child-a}
+\figureCode{w * v + x}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -883,6 +910,7 @@
 \end{tikzpicture}
 }
 \label{fig:Multi-child-b}
+\figureCode{w * v + y}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -910,6 +938,7 @@
 \end{tikzpicture}
 }
 \label{fig:Multi-child-c}
+\figureCode{w * v + \multiChild{x}{y}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -963,6 +992,7 @@
 \end{tikzpicture}
 }
 \label{fig:Multi-parent-a}
+\figureCode{w * \hole{} + \hole{}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -989,6 +1019,7 @@
 \end{tikzpicture}
 }
 \label{fig:Multi-parent-b}
+\figureCode{\hole{} * w + \hole{}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1015,6 +1046,7 @@
 \end{tikzpicture}
 }
 \label{fig:Multi-parent-c}
+\figureCode{\hole{} * \hole{} + w}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1039,6 +1071,7 @@
 \end{tikzpicture}
 }
 \label{fig:Multi-parent-d}
+\figureCode{\hole{} * \multiVertex{18} + \multiVertex{18}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1066,6 +1099,7 @@
 \end{tikzpicture}
 }
 \label{fig:Multi-parent-e}
+\figureCode{\hole{} * w + \hole{}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1223,6 +1257,7 @@
 \end{tikzpicture}
 }
 \label{fig:Multi-User Cycles-a}
+\figureCode{\parens{\hole{} * \hole{}} * \parens{\hole{} + \hole{}} + \hole{}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1249,6 +1284,7 @@
 \end{tikzpicture}
 }
 \label{fig:Multi-User Cycles-b}
+\figureCode{\hole{} * \hole{} + \parens{\hole{} + \hole{}} * \hole{}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1278,6 +1314,7 @@
 \end{tikzpicture}
 }
 \label{fig:Multi-User Cycles-c}
+\figureCode{\hole{} * \hole{} + \parens{\hole{} * \hole{} + \hole{}}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1308,6 +1345,7 @@
 \end{tikzpicture}
 }
 \label{fig:Multi-User Cycles-d}
+\figureCode{\parens{\hole{} * \hole{}} + \multiChild{\multiVertex{30}}{\multiVertex{32}}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1361,6 +1399,7 @@
 \end{tikzpicture}
 }
 \label{fig:Disconnection-a}
+\figureCode{\hole{} * \hole{} + \hole{} * \hole{}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1384,6 +1423,7 @@
 \end{tikzpicture}
 }
 \label{fig:Disconnection-b}
+\figureCode{\hole{} * \parens{\hole{} * \hole{}} + \hole{}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1410,6 +1450,7 @@
 \end{tikzpicture}
 }
 \label{fig:Disconnection-c}
+\figureCode{\hole{} + \parens{\hole{} * \hole{}} * \hole{}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1437,6 +1478,7 @@
 \end{tikzpicture}
 }
 \label{fig:Disconnection-d}
+\figureCode{\hole{} + \hole{}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
