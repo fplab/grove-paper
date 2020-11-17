@@ -1746,7 +1746,7 @@ and \autoref{fig:Editing Different Parts of the Code-b}, respectively.
 (Note that thee transition edge from \autoref{fig:Move-b} to
 \autoref{fig:Editing Different Parts of the Code-b} represents
 multiple edges (i.e., deleting~\eConstructionY{} and adding~\eDifferentBob{} along with its child~\vDifferentBob{}).
-We thus mark it with a star.)\todo{star size}\todo{"sync"}
+We thus mark it with a star.)
 
 Alice and Bob then transmit their graph edits to each other
 and apply the other's graph edits to their own copy of the graph.
@@ -2026,6 +2026,14 @@ that did not have disconnected vertexes.
 
 \subsection{Cursors}
 \label{sub:Cursors}
+
+Like Hazel, cursor position are a position in the tree, not a particular character.
+They wrap around an expression
+
+In most cases, cursor on position.  This has the advantage of remaining stable
+if the other user deletes the code under the cursor.
+However, when there are multiple children, cursors need to be specific
+to a particular edge.
 
 Cursor is either on edge or on position
 
