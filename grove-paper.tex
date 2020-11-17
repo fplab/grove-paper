@@ -2053,15 +2053,15 @@ The formalism is rather simple, \autoref{sec:Grove By Example} shows
 that it is sufficient to handle many common situations,
 and this simplicity aids in the predictability.
 
-% XXX "p" is overloaded - could mean pattern or position
-
 \begin{figure}
   \[
     \arraycolsep=0pt
     \begin{array}{lrlll}
-      \textrm{Patterns:}          & p    & {}\in Pat & {}::={} & x \mid \hole                                                            \\
-      \textrm{Expressions:\qquad} & e    & {}\in Exp & {}::={} & x \mid \lambda p\mathord{:}\tau.e \mid e~e \mid e + e \mid n \mid \hole \\
-      \textrm{Types:}             & \tau & {}\in Typ & {}::={} & \tau \rightarrow \tau \mid Num \mid \hole                               \\
+      \textrm{Operators:}         & op   & {}\in Ops & {}::={} & + \mid * \\
+      \textrm{Patterns:}          & q    & {}\in Pat & {}::={} & x \mid \hole \mid \{q|\ldots|q\} \\
+      \textrm{Expressions:\qquad} & e    & {}\in Exp & {}::={} & x \mid \lambda q \mathord{:}\tau.e \mid e~e \mid e~op~e \mid n \\
+                                  &      &           &         & \phantom{x} \mid \hole \mid \{e|\ldots|e\} \\
+      \textrm{Types:}             & \tau & {}\in Typ & {}::={} & \tau \rightarrow \tau \mid Num \mid \hole \mid \{ \tau | \ldots | \tau \} \\
     \end{array}
   \]
   \caption{Syntax as a grammar for the lambda calculus that we are considering.}
@@ -2073,8 +2073,7 @@ and this simplicity aids in the predictability.
 
 The language we are modeling is shown in \autoref{fig:Syntax as a grammar},
 standard for a simply-typed lambda calculus except that all types of terms have
-holes (represented by $\hole$). In particular, the argument to a lambda can be
-either a bound variable or a hole.
+unfilled holes (represented by $\hole$), and most types of terms have conflict holes (of the form $\{\cdot | \ldots | \cdot\}$). In particular, the argument to a lambda can be either a bound variable or a hole.
 
 % In order to model this we define
 
@@ -2084,16 +2083,17 @@ either a bound variable or a hole.
   \[
     \arraycolsep=0pt
     \begin{array}{ll}
-      \arity : \K \rightarrow & \wp(\P)                                        \\
+      \arity : \K \hfil \rightarrow & \wp(\P)                                        \\
       \hline
-      \arity(\Root)={}        & \left\{ \Root \right\}                         \\
-      \arity(\PatVar)={}      & \left\{ \right\}                               \\
-      \arity(\ExpVar)={}      & \left\{ \right\}                               \\
-      \arity(\ExpLam)={}      & \left\{ \LamParam, \LamType, \LamBody \right\} \\
-      \arity(\ExpApp)={}      & \left\{ \AppFun, \AppArg \right\}              \\
-      \arity(\ExpPlus)={}     & \left\{ \PlusLeft, \PlusRight \right\}         \\
-      \arity(\TypArrow)={}    & \left\{ \ArrowArg, \ArrowResult \right\}       \\
-      \arity(\TypNum)={}      & \left\{ \right\}                               \\
+      \arity(k_0)={}        & \left\{ \Root \right\}                         \\
+      \arity(x \in Pat)={}      & \left\{ \right\}                               \\
+      \arity(x \in Exp)={}      & \left\{ \right\}                               \\
+      \arity(\lambda q \mathord{:}\tau.e)={}      & \left\{ \mathtt{Param}, \mathtt{Type}, \mathtt{Body} \right\} \\
+      \arity(e~e)={}      & \left\{ \mathtt{Fun}, \mathtt{Arg} \right\}              \\
+      \arity(e~op~e)={}     & \left\{ \mathtt{L}, \mathtt{R} \right\}         \\
+      \arity(n)={}      & \left\{ \right\}                               \\
+      \arity(\tau \rightarrow \tau)={}    & \left\{ \mathtt{Arg}, \mathtt{Result} \right\}       \\
+      \arity(Num)={}      & \left\{ \right\}                               \\
     \end{array}
   \]
   \caption{Constructors, Indexes and Arity}
@@ -2108,10 +2108,10 @@ either a bound variable or a hole.
 
 A graph $\G : \E \rightarrow \Sigma$ is a function from edges to edge states,
 where $\E = \U \times \V \times \P \times \V$,
-and   unique IDs are drawn from some suitable set $\U$,
-and   vertices are drawn from $\V$,
-and   positions are drawn from $\P$,
-and   edge states are drawn from $\Sigma$, all defined below.
+unique IDs are drawn from some suitable set $\U$,
+vertices are drawn from $\V$,
+positions are drawn from $\P$,
+and edge states are drawn from $\Sigma$, all defined below.
 
 Each edge $\e = (u, v, p, v^\prime)$ has a unique name, $u \in \U$,
 and connects the child position $p$ of a source vertex $v$ to a target vertex $v^\prime$.
@@ -2122,25 +2122,26 @@ If $\G(\e)$ is $\Minus$, the edge has been destroyed.
 The total ordering $\bot \sqsubset \Plus \sqsubset \Minus$ forms a lattice over $\Sigma$.
 
 A vertex $v = (u, k)$ identifies a distinct instance of some constructor $k$,
-where $k \in \K$ corresponds to a type of expression. Each contructor has an
-arity, which we define as a set of positions. A position $p \in \P$ identifies a
+where $k \in \K$ corresponds to one of the forms defined in \autoref{fig:Syntax
+as a grammar} that is not an operator or a hole. Each contructor has an arity,
+which we define as a set of positions. A position $p \in \P$ identifies a
 location, adjacent to some parent vertex, from which edges to child vertices may
 originate. The $\arity$ function in \autoref{fig:Constructors, Indexes and
-  Arity} gives the complete mapping from expression constructors to potential edge
+Arity} gives the complete mapping from constructors to potential edge
 positions. Every graph contains a distinguished root vertex, root constructor,
 and root position, respectively named $v_0$, $k_0$, and $p_0$.
 
 A graph can be derived from an expression in the calculus by starting with an
-empty graph, selecting unique ids $u, u_k$ and a constructor $k$ for the
-outermost expression, and creating the edge $\e = (u, v_0, p_0, (u_k, k))$.
-Then, for each sub-expression at some position $p \in \arity(k)$, select unique
-id $u'$ and constructor $k'$, and create the edge $e' = (u', v, p, v')$, where
-$v = (u_k, k)$ and $v' = (u', k')$. Continuing in this manner, treat each
-sub-expression, starting with the ones at positions in $\arity(k')$, as if it
-were the outermost and create an edge to the vertices representing each of its
-immediate sub-expressions. Note that holes are not modeled explicitly in the
-graph. When an expression has a hole, it means that the graph has no edges
-originating from that position.
+empty graph, selecting unique ids $u, u_k$ and constructor $k$ for the outermost
+expression, and creating edge $\e = (u, v_0, p_0, (u_k, k))$. Then, for each
+sub-term at some position $p \in \arity(k)$, select unique id $u'$ and
+constructor $k'$ and create edge $e' = (u', v, p, v')$ with $v = (u_k, k)$, $v'
+= (u', k')$. Continuing in this manner, treat each sub-term, starting with the
+ones at positions in $\arity(k')$, as if it were the outermost and create edges
+to the vertices representing its immediate sub-terms until only operators and
+holes remain. Note that empty holes are not modeled explicitly in the graph.
+Wherever an empty hole term appears, the graph has no edges originating from
+that position.
 
 % You can map from syntax to graph by selecting
 % unique IDs $u$ (for both edges and vertexes).
@@ -2149,27 +2150,26 @@ originating from that position.
 \subsubsection{Graph Edits}
 \label{sub:Graph Edits}
 
-% XXX deletes are idempotent
+We define a graph edit $\alpha \in \A = \left\{\Plus, \Minus\right\} \times \E$
+as a pair of an edge state, excluding $\bot$, and an edge. As a shorthand, we
+define $+\e$ to be $(\Plus, \e)$ and $-\e$ to be $(\Minus, \e)$.
 
-We define graph edit actions as a pair of an edge state, excluding $\bot$, and an edge.
-Thus, $\alpha \in \A = \left\{\Plus, \Minus\right\} \times \E$.
-As a shorthand, we define $+e$ to be $(\Plus, e)$ and $-e$ to be $(\Minus, e)$.
+We define the join operation $s_1 \sqcup s_2$ to be the least upper bound of
+$s_1$ and $s_2$ with respect to the $\sqsubset$ ordering. Accordingly, $\Plus
+\sqcup \bot = \Plus$ means that edges can only be created if they do not already
+exist, and $\Plus \sqcup \Minus = \Minus = \Minus \sqcup \Minus$ means that once
+an edge is deleted it can never be restored.
 
-We define the join operation $s_1 \sqcup s\_2$ to be the least upper bound of $s_1$ and $s_2$ with respect to the $\sqsubset$ ordering.
-For example,
-$\Plus \sqcup \bot = \Plus$, which means edges can be created if they have never existed,
-and $\Plus \sqcup \Minus = \Minus = \Minus \sqcup \Minus$, which means that once an edge is deleted it can never be restored.
-
-%smallest element of $\Sigma$ that is greater than or equal to both $s_1$ and $s_2$.
-
-We define the semantics of graph actions via the following
-transition relation between graphs.
+We define the semantics of graph actions via the following transition relation
+between graphs.
 \[
-  G \overset{\left(s,e\right)}{\longrightarrow} G\left[ e \mapsto s \sqcup G(e) \right\}
+  G \overset{(s,\e)}{\longrightarrow} G\left[ \e \mapsto s \sqcup G(\e) \right\}
 \]
-In other words, applying graph action $\alpha = \left(s, e\right)$ to a graph $G$
-results in $G\left[e \mapsto s \sqcup G(e) \right]$ (i.e., the graph is updated at $e$ to be
-the join of $s$ with whatever was already at $e$).
+In words, applying graph action $\left(s, \e\right)$ to graph $G$ results in the
+updated graph $G' = G\left[\e \mapsto s \sqcup G(\e) \right]$, wherein the edge
+state associated with edge $\e$ in $G$ becomes the join of $s$ with the state of
+$\e$ in $G$, and $G'(\e') = G(\e')$ for all other $\e' \ne \e$ in the domain of
+$G$.
 
 % Graph action semantics is a transition system between graphs.
 % (join with whatever it was before)
@@ -2224,7 +2224,19 @@ Discuss uniqueness of uuid
 \subsection{Graph Decomposition}
 \label{sub:Graph Decomposition}
 
-What does a graph decomposition produce? a 4-tuple (reachable, multiparented, deleted, simple cycles).
+If we translate the graph into expressions in the calculus, interactions with
+the graph can be modeled as a stream of user actions as described in
+\autoref{sub:User Actions}. Our decomposition algorithm partitions the graph
+into disjount connected components. We encode cycles by resolving all but one
+vertex of each multi-edge into a by-id reference to the one vertex.
+
+The result of decomposition is a 4-tuple $(e, MP, D, SC) \in Exp \times
+\wp({Exp}) \times \wp({Exp}) \times \wp({Exp})$. Expression $e$ covers the
+portion of the graph reachable from the root vertex $v_0$. $MP$ contains the
+expressions that involve vertices with multiple parents. $D$ contains deleted
+expressions, i.e., those not reachable from $v_0$, that do not contain cycles.
+$SC$ contains the deleted expressions that do not involve multiple parents but
+do contain cycles.
 
 A simple cycle is a set of vertices connected by a closed path, consisting
 of:
@@ -2266,11 +2278,11 @@ Mapping to b actions
   \end{array}
 \]
 
-Sensibility -- mapping back from graphs
-to well-typed states that fixes holes
-
 \section{Type System}
 \label{sec:Type System}
+
+Sensibility -- mapping back from graphs
+to well-typed states that fixes holes
 
 TODO: somewhere in here, maybe multiple places, we want to talk about typing the intermediate states that arise (background for structured editing)
 
