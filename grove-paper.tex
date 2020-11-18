@@ -360,6 +360,7 @@
 \newcommand{\cycleVertex}[1]{\textcolor{red}{\ensuremath{\mathbf{\rcirclearrowleft_{#1}}}}}
 \newcommand{\orphanVertex}[1]{\textcolor{red}{\ensuremath{\mathbf{\ndownarrow_{#1}}}}}
 \newcommand{\parens}[1]{\textcolor{gray}{(}#1\textcolor{gray}{)}}
+\newcommand{\otherVertexVskip}{\vskip0.5em}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% \figureSimple
@@ -956,7 +957,7 @@
 \end{tikzpicture}
 }
 \label{fig:MultiParent:a}
-\figureCode{w * \hole{} + \hole{}}%
+\figureCode{w * \hole{} + \hole{}\otherVertexVskip\phantom{\multiVertex{18} = w}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -983,7 +984,7 @@
 \end{tikzpicture}
 }
 \label{fig:MultiParent:b}
-\figureCode{\hole{} * w + \hole{}}%
+\figureCode{\hole{} * w + \hole{}\otherVertexVskip\phantom{\multiVertex{18} = w}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1010,7 +1011,7 @@
 \end{tikzpicture}
 }
 \label{fig:MultiParent:c}
-\figureCode{\hole{} * \hole{} + w}%
+\figureCode{\hole{} * \hole{} + w\otherVertexVskip\phantom{\multiVertex{18} = w}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1035,7 +1036,7 @@
 \end{tikzpicture}
 }
 \label{fig:MultiParent:d}
-\figureCode{\hole{} * \multiVertex{18} + \multiVertex{18}}%
+\figureCode{\hole{} * \multiVertex{18} + \multiVertex{18}\otherVertexVskip\multiVertex{18} = w}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1063,7 +1064,7 @@
 \end{tikzpicture}
 }
 \label{fig:MultiParent:e}
-\figureCode{\hole{} * w + \hole{}}%
+\figureCode{\hole{} * w + \hole{}\otherVertexVskip\phantom{\multiVertex{18} = w}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1099,20 +1100,22 @@
 \newcommand{\figureCycle}{
 \begin{figure*}
 %\hfill
-\hskip0.12\columnwidth
+\hskip0.07\columnwidth
 %%%%%%%%
-\begin{subfigure}[t]{0.21\textwidth}
+\begin{subfigure}[t]{0.23\textwidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (-7.5em,0cm) node (node/MultiParent/ex) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:MultiParent:e}}}};
+\path (-9em,0cm) node (node/MultiParent/ex) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:MultiParent:e}}}};
 %%%%
 \path (0cm,0cm) node (node/Cycle/a) [anchor=base] {\strut};
 \path [draw,->,alice step] (node/MultiParent/ex) to[star] (-2em, 0cm |- node/Cycle/a);
 \end{tikzpicture}
 }
 \label{fig:Cycle:a}
-\figureCode{\parens{\hole{} * \hole{}} *\\\parens{\hole{} + \hole{}}+ \hole{}}%
+\figureCode{\parens{\hole{} * \hole{}} * \parens{\hole{} + \hole{}} + \hole{}%
+  \otherVertexVskip\phantom{\multiVertex{30} = \multiVertex{32} * \hole{}}%
+  \\\phantom{\multiVertex{32} = \multiVertex{30} * \hole{}}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1130,7 +1133,7 @@
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.21\textwidth}
+\begin{subfigure}[t]{0.23\textwidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -1139,7 +1142,9 @@
 \end{tikzpicture}
 }
 \label{fig:Cycle:b}
-\figureCode{\hole{} * \hole{} +\\\parens{\hole{} + \hole{}} * \hole{}}%
+\figureCode{\hole{} * \hole{} + \parens{\hole{} + \hole{}} * \hole{}%
+  \otherVertexVskip\phantom{\multiVertex{30} = \multiVertex{32} * \hole{}}%
+  \\\phantom{\multiVertex{32} = \multiVertex{30} * \hole{}}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1160,7 +1165,7 @@
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.21\textwidth}
+\begin{subfigure}[t]{0.23\textwidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -1169,7 +1174,9 @@
 \end{tikzpicture}
 }
 \label{fig:Cycle:c}
-\figureCode{\hole{} * \hole{} +\\\parens{\hole{} * \hole{} + \hole{}}}%
+\figureCode{\hole{} * \hole{} + \parens{\hole{} * \hole{} + \hole{}}%
+  \otherVertexVskip\phantom{\multiVertex{30} = \multiVertex{32} * \hole{}}%
+  \\\phantom{\multiVertex{32} = \multiVertex{30} * \hole{}}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1190,7 +1197,7 @@
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.21\textwidth}
+\begin{subfigure}[t]{0.23\textwidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -1200,7 +1207,9 @@
 \end{tikzpicture}
 }
 \label{fig:Cycle:d}
-\figureCode{\parens{\hole{} * \hole{}} +\\\multiChild{\multiVertex{30}}{\multiVertex{32}}}%
+\figureCode{\parens{\hole{} * \hole{}} + \multiChild{\multiVertex{30}}{\multiVertex{32}}%
+  \otherVertexVskip\multiVertex{30} = \multiVertex{32} * \hole{}%
+  \\\multiVertex{32} = \multiVertex{30} * \hole{}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1218,7 +1227,7 @@
 \end{tikzpicture}
 \end{subfigure}
 %%%%%%%%
-\hfill{}
+%\hfill{}
 \caption{Example of Cycles.}
 \label{fig:Cycle}
 \end{figure*}
@@ -1245,7 +1254,7 @@
 \end{tikzpicture}
 }
 \label{fig:Disconnect:a}
-\figureCode{\hole{} * \hole{} + \hole{} * \hole{}\\x}%
+\figureCode{\hole{} * \hole{} + \hole{} * \hole{}\otherVertexVskip\strut}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1269,7 +1278,7 @@
 \end{tikzpicture}
 }
 \label{fig:Disconnect:b}
-\figureCode{\hole{} * \parens{\hole{} * \hole{}} + \hole{}\\}%
+\figureCode{\hole{} * \parens{\hole{} * \hole{}} + \hole{}\otherVertexVskip\strut}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1296,7 +1305,7 @@
 \end{tikzpicture}
 }
 \label{fig:Disconnect:c}
-\figureCode{\hole{} + \parens{\hole{} * \hole{}} * \hole{}\\}%
+\figureCode{\hole{} + \parens{\hole{} * \hole{}} * \hole{}\otherVertexVskip\strut}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1324,7 +1333,7 @@
 \end{tikzpicture}
 }
 \label{fig:Disconnect:d}
-\figureCode{\hole{} + \hole{}\\\cycleVertex{2} = \hole{} * \parens{\cycleVertex{2} * \hole{}}}%
+\figureCode{\hole{} + \hole{}\otherVertexVskip\cycleVertex{2} = \hole{} * \parens{\cycleVertex{2} * \hole{}}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1592,6 +1601,23 @@ This corresponds to the following sequence of graph edits, shown in \autoref{fig
 
 \figureDifferentParts
 
+%\figureCommutativity
+\begin{figure}
+  \centering
+  \begin{tikzpicture}
+    \path (-3cm, 0cm) node (a) [align=center]       {Original \\ Version};
+    \path ( 0cm, 1cm) node (b) [align=center,alice node] {Alice's  \\ Version};
+    \path ( 0cm,-1cm) node (c) [align=center,bob node]   {Bob's    \\ Version};
+    \path ( 3cm, 0cm) node (d) [align=center]       {Synchronized \\ Version};
+    \path [draw,->,alice step] (a) -- node [pos=0.7,auto,align=center] {Alice's \\ Edits} (b);
+    \path [draw,->,bob step]   (a) -- node [pos=0.7,auto,swap,align=center]      {Bob's \\ Edits}   (c);
+    \path [draw,->,merge step] (b) -- node [pos=0.3,auto] {Sync} (d);
+    \path [draw,->,merge step] (c) -- node [pos=0.3,auto,swap]      {Sync} (d);
+  \end{tikzpicture}
+  \caption{Commutativity of Edits.}
+  \label{fig:Commutativity}
+\end{figure}
+
 \subsection{Multi-user Interactions}
 \label{sub:Multi-user Interactions}
 
@@ -1637,23 +1663,6 @@ This results in both Alice and Bob having the graph in
 
 
 \figureNestedParts
-
-%\figureCommutativity
-\begin{figure}
-  \centering
-  \begin{tikzpicture}
-    \path (-3cm, 0cm) node (a) [align=center]       {Original \\ Version};
-    \path ( 0cm, 1cm) node (b) [align=center,alice node] {Alice's  \\ Version};
-    \path ( 0cm,-1cm) node (c) [align=center,bob node]   {Bob's    \\ Version};
-    \path ( 3cm, 0cm) node (d) [align=center]       {Synchronized \\ Version};
-    \path [draw,->,alice step] (a) -- node [pos=0.7,auto,align=center] {Alice's \\ Edits} (b);
-    \path [draw,->,bob step]   (a) -- node [pos=0.7,auto,swap,align=center]      {Bob's \\ Edits}   (c);
-    \path [draw,->,merge step] (b) -- node [pos=0.3,auto] {Sync} (d);
-    \path [draw,->,merge step] (c) -- node [pos=0.3,auto,swap]      {Sync} (d);
-  \end{tikzpicture}
-  \caption{Commutativity of Edits.}
-  \label{fig:Commutativity}
-\end{figure}
 
 \subsubsection{Commutativity}
 \label{sub:Commutativity}
