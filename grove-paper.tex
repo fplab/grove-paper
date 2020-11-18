@@ -368,22 +368,29 @@
 \newvertex{SimpleTimes}{*}%
 \newedge{SimpleX}{L}%
 \newvertex{SimpleX}{x}%
+\newedge{ConstructionY}{R}%
+\newvertex{ConstructionY}{y}%
 \newcommand{\figureSimple}{
 \begin{figure}
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.49\linewidth}
+% \begin{subfigure}[t]{0.49\linewidth}
+% \centering
+% \caption{}
+% \label{fig:A simple tree with a hole-a}
+% \includegraphics{code-views/simple.png}
+% \end{subfigure}
+% %%%%%%%%
+% \hfill
+% %%%%%%%%
+\begin{subfigure}[t]{0.32\linewidth}
 \centering
-\caption{}
-\label{fig:A simple tree with a hole-a}
-\includegraphics{code-views/simple.png}
-\end{subfigure}
-%%%%%%%%
-\hfill
-%%%%%%%%
-\begin{subfigure}[t]{0.49\linewidth}
-\centering
-\caption{}
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,0cm) node (fig-Simple-a) [anchor=base] {\strut};
+%\path [draw,->,alice step] (fig-A simple tree with a hole-b-x) to (-2em, 0cm |- fig-Construction);
+\end{tikzpicture}
+}
 \label{fig:A simple tree with a hole-b}
 \figureCode{x * \hole{}}%
 \begin{tikzpicture}
@@ -398,32 +405,12 @@
 \end{tikzpicture}
 \end{subfigure}
 %%%%%%%%
-\hfill{}
-\caption{Example of Code that Includes a Hole.
-\autoref{fig:A simple tree with a hole-a}:~User Interface for the Code.
-\autoref{fig:A simple tree with a hole-b}:~Graph Representation of the Code.}
-\label{fig:A simple tree with a hole}
-\end{figure}
-}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% \figureConstructionAndDeletion
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newedge{ConstructionY}{R}%
-\newvertex{ConstructionY}{y}%
-\newcommand{\figureConstructionAndDeletion}{
-\begin{figure}
-%\hfill
-\hskip0.12\linewidth
-%%%%%%%%
-\begin{subfigure}[t]{0.43\linewidth}
+\begin{subfigure}[t]{0.32\linewidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (-7.5em,0cm) node (fig-A simple tree with a hole-b-x) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:A simple tree with a hole-b}}}};
-%%%%
 \path (0cm,0cm) node (fig-Construction) [anchor=base] {\strut};
-\path [draw,->,alice step] (fig-A simple tree with a hole-b-x) to (-2em, 0cm |- fig-Construction);
+\path [draw,->,alice step] (fig-Simple-a) to (-2em, 0cm |- fig-Construction);
 \end{tikzpicture}
 }
 \label{fig:Construction and Deletion-a}
@@ -432,19 +419,19 @@
 \figureCode{x * y}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
- root[root style] -> {
+  root[root style] -> {
   "\vSimpleTimes" [> "\eSimpleTimes"] -> {
-   "\vSimpleX" [> "\eSimpleX"'],
-   "\vConstructionY" [> "\eConstructionY", >alice edge, alice node]
+    "\vSimpleX" [> "\eSimpleX"'],
+    "\vConstructionY" [> "\eConstructionY", >alice edge, alice node]
   }
- }
+  }
 };
 \end{tikzpicture}
 \end{subfigure}
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.43\linewidth}
+\begin{subfigure}[t]{0.32\linewidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -458,23 +445,40 @@
 \figureCode{\hole{} * y}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
- root[root style] -> {
+  root[root style] -> {
   "\vSimpleTimes" [> "\eSimpleTimes"] -> {
-   {},
-   "\vConstructionY" [> "\eConstructionY"]
+    {},
+    "\vConstructionY" [> "\eConstructionY"]
   }
- }
+  }
 };
 \path (-0.25cm,-1.7cm) graph[graph style] {
- "\vSimpleX"
+  "\vSimpleX"
 };
 \end{tikzpicture}
 \end{subfigure}
-%%%%%%%%
+%%%%  
 \hfill{}
-\caption{Example of Construction and Deletion.}
+\caption{Example of Code that Includes a Hole.
+\autoref{fig:A simple tree with a hole-a}:~User Interface for the Code.
+\autoref{fig:A simple tree with a hole-b}:~Graph Representation of the Code.}
+\label{fig:A simple tree with a hole}
 \end{figure}
 }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \figureConstructionAndDeletion
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \newcommand{\figureConstructionAndDeletion}{
+% \begin{figure}
+% %\hfill
+% \hskip0.12\linewidth
+% %%%%%%%%
+% %%%%%%%%
+% \hfill{}
+% \caption{Example of Construction and Deletion.}
+% \end{figure}
+% }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% \figureWrapping
@@ -484,14 +488,16 @@
 \newedge{WrapTimes}{L}
 \newcommand{\figureWrapping}{
 \begin{figure}
-\hfill
+\hskip0.12\linewidth
 %%%%%%%%
-\begin{subfigure}[t]{0.32\linewidth}
+\begin{subfigure}[t]{0.28\linewidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
+\path (-7.5em,0cm) node (fig-A simple tree with a hole-c-x) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:Construction and Deletion-b}}}};
+%%%%
 \path (0cm,0cm) node (fig-Wrapping-a) [anchor=base] {\strut};
-\path [draw,->,alice step] (fig-Deletion) to (-2em, 0cm |- fig-Wrapping-a);
+\path [draw,->,alice step] (fig-A simple tree with a hole-c-x) to (-2em, 0cm |- fig-Wrapping-a);
 \end{tikzpicture}
 }
 \label{fig:Wrapping-a}
@@ -511,7 +517,7 @@
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.32\linewidth}
+\begin{subfigure}[t]{0.28\linewidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -538,7 +544,7 @@
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.32\linewidth}
+\begin{subfigure}[t]{0.28\linewidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -564,7 +570,7 @@
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Example of Wrapping.  (Note that this figure omits the orphaned \vSimpleX{} since it is no longer relevant to our narrative.)}
+\caption{Example of Wrapping.  (Note that this figure omits the orphaned \vSimpleX{} since it is no longer relevant to the narrative of this paper.)}
 \label{fig:Wrapping}
 \end{figure}
 }
@@ -575,17 +581,17 @@
 \newedge{MoveTimes}{R}
 \newcommand{\figureMovement}{
 \begin{figure}
-%\hfill
-\hskip0.12\linewidth
+\hfill
+%\hskip0.12\linewidth
 %%%%%%%%
 \begin{subfigure}[t]{0.43\linewidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (-7.5em,0cm) node (fig-Wrapping-c-x) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:Wrapping-c}}}};
+%\path (-7.5em,0cm) node (fig-Wrapping-c-x) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:Wrapping-c}}}};
 %%%%
 \path (0cm,0cm) node (fig-Moving-a) [anchor=base] {\strut};
-\path [draw,->,alice step] (fig-Wrapping-c-x) to (-2em, 0cm |- fig-Moving-a);
+\path [draw,->,alice step] (fig-Wrapping-c) to (-2em, 0cm |- fig-Moving-a);
 \end{tikzpicture}
 }
 \label{fig:Move-a}
@@ -647,14 +653,16 @@
 \newvertex{DifferentBob}{v}
 \newcommand{\figureEditingDifferentParts}{
 \begin{figure}
-\hfill
+%\hfill
+\hskip0.12\linewidth
 %%%%%%%%
-\begin{subfigure}[t]{0.32\linewidth}
+\begin{subfigure}[t]{0.28\linewidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
+\path (-7.5em,0cm) node (fig-Moving-b-x) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:Editing Nested Parts of the Code-b}}}};
 \path (0cm,0cm) node (fig-Editing Different Parts of the Code-a) [anchor=base] {\strut};
-\path [draw,->,alice step] (fig-Moving-b) to (-2em, 0cm |- fig-Editing Different Parts of the Code-a);
+\path [draw,->,alice step] (fig-Moving-b-x) to (-2em, 0cm |- fig-Editing Different Parts of the Code-a);
 \end{tikzpicture}
 }
 \label{fig:Editing Different Parts of the Code-a}
@@ -676,12 +684,12 @@
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.32\linewidth}
+\begin{subfigure}[t]{0.28\linewidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
 \path (0cm,0cm) node (fig-Editing Different Parts of the Code-b) [anchor=base] {\strut};
-\path [draw,->,bob step] (fig-Moving-b) to [out=15,in=165,star] (-2em, 0cm |- fig-Editing Different Parts of the Code-b);
+\path [draw,->,bob step] (fig-Moving-b-x) to [out=15,in=165,star] (-2em, 0cm |- fig-Editing Different Parts of the Code-b);
 \end{tikzpicture}
 }
 \label{fig:Editing Different Parts of the Code-b}
@@ -703,7 +711,7 @@
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.32\linewidth}
+\begin{subfigure}[t]{0.28\linewidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -766,17 +774,17 @@
 \newedge{NestedBob}{L}
 \newcommand{\figureEditingNestedParts}{
 \begin{figure}
-%\hfill
-\hskip0.12\linewidth
+\hfill
+%\hskip0.12\linewidth
 %%%%%%%%
 \begin{subfigure}[t]{0.25\linewidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (-7.5em,0cm) node (fig-Editing Different Parts of the Code-c-x) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:Editing Different Parts of the Code-c}}}};
+%\path (-7.5em,0cm) node (fig-Editing Different Parts of the Code-c-x) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:Editing Different Parts of the Code-c}}}};
 %%%%
 \path (0cm,0cm) node (fig-Editing Nested Parts of the Code-a) [anchor=base] {\strut};
-\path [draw,->,alice step] (fig-Editing Different Parts of the Code-c-x) to[star] (-2em, 0cm |- fig-Editing Nested Parts of the Code-a);
+\path [draw,->,alice step] (fig-Editing Different Parts of the Code-c) to[star] (-2em, 0cm |- fig-Editing Nested Parts of the Code-a);
 \end{tikzpicture}
 }
 \label{fig:Editing Nested Parts of the Code-a}
@@ -803,7 +811,7 @@
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
 \path (0cm,0cm) node (fig-Editing Nested Parts of the Code-b) [anchor=base] {\strut};
-\path [draw,->,bob step] (fig-Editing Different Parts of the Code-c-x) to [out=15,in=165,star] (-2em, 0cm |- fig-Editing Nested Parts of the Code-b);
+\path [draw,->,bob step] (fig-Editing Different Parts of the Code-c) to [out=15,in=165,star] (-2em, 0cm |- fig-Editing Nested Parts of the Code-b);
 \end{tikzpicture}
 }
 \label{fig:Editing Nested Parts of the Code-b}
@@ -1676,6 +1684,8 @@ Finally, holes are represented by the absence of a child.
 For example, in \autoref{fig:A simple tree with a hole-b} the absence of an \texttt{R} edge coming from \vSimpleTimes{}
 corresponds to the hole on the right of the~\texttt{*} in~\texttt{x * \hole}.
 
+\figureWrapping
+
 \subsection{Single-User Actions}
 \label{sub:Single-User Actions}
 
@@ -1695,7 +1705,7 @@ We discuss cursor representations and cursor sharing in more detail in \autoref{
 \subsubsection{Construction Actions}
 \label{sub:Construction}
 
-\figureConstructionAndDeletion
+%\figureConstructionAndDeletion
 
 To start our examples, Alice moves her cursor to the hole in~\texttt{x * \hole} in \autoref{fig:A simple tree with a hole-b}
 and constructs the variable~\texttt{y} as shown in \autoref{fig:Construction-b}.
@@ -1705,6 +1715,8 @@ The resulting graph, shown in \autoref{fig:Construction-b}, represents the expre
 
 \subsubsection{Deletion Actions}
 \label{sub:Deletion}
+
+\figureMovement
 
 Next Alice deletes~\texttt{x} so that the code becomes~\texttt{\hole{} * y}.
 This is modeled by deleting \eSimpleX{} as shown in \autoref{fig:Change-a}.
@@ -1719,8 +1731,6 @@ Thus if Alice performed an ``undo'' on this deletion, Grove would create a fresh
 
 \subsubsection{Wrapping Actions}
 \label{sub:Wrapping}
-
-\figureWrapping
 
 Next, Alice types~\texttt{+} when the cursor is on \vSimpleTimes{}.
 If this were a hole, this would cause a construction action to be performed as in \autoref{sub:Construction} above.
@@ -1756,7 +1766,7 @@ This corresponds to the following sequence of graph edits, shown in \autoref{fig
 (a) delete \eWrapTimes{} leaving \vSimpleTimes{} temporarily orphaned and
 (b) add \eMoveTimes{} to \vSimpleTimes{} in the right child position of \vWrapPlus{}.
 
-\figureMovement
+\figureEditingDifferentParts
 
 \subsection{Multi-user Interactions}
 \label{sub:Multi-user Interactions}
@@ -1801,7 +1811,8 @@ and apply the other's graph edits to their own copy of the graph.
 This results in both Alice and Bob having the graph in
 \autoref{fig:Editing Different Parts of the Code-c}.
 
-\figureEditingDifferentParts
+
+\figureEditingNestedParts
 
 %\figureCommutativity
 \begin{figure}
@@ -1838,7 +1849,6 @@ applying them in either order produces the same results.
 \subsubsection{Editing Nested Parts of the Code}
 \label{sub:Editing Nested Parts of the Code}
 
-\figureEditingNestedParts
 
 \figureMultiChild
 
