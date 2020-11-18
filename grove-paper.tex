@@ -77,6 +77,7 @@
 \usepackage{fontawesome}
 \usepackage{array}
 \usepackage{todonotes}
+\usepackage[ruled]{algorithm2e}
 
 % Load MnSymbol without clobbering \ast
 % See https://tex.stackexchange.com/a/269691
@@ -92,6 +93,7 @@
 
 % math ligatures
 \mathlig{::=}{\coloncolonequals}
+\mathlig{:=}{\colonequals}
 \mathlig{|-}{\vdash}
 \mathlig{:->}{\mapsto}
 \mathlig{-->a}{\overset{a}{\longrightarrow}}
@@ -1229,6 +1231,13 @@
 %%%%%%%%
 %\hfill{}
 \caption{Example of Cycles.}
+% TODO replace screenshots with text
+% TODO make ref code gray
+% TODO move whole figure left
+% TODO remove cursor from screenshots
+% TODO add multiparent box
+% TODO only show parens where needed - figure 10, 11 - by associativity
+% TODO repplace cycle screenshot with cycles box 
 \label{fig:Cycle}
 \end{figure*}
 }
@@ -1990,6 +1999,7 @@ and this simplicity aids in the predictability.
     \end{array}
   \]
   \caption{Syntax as a grammar for the lambda calculus that we are considering.}
+  % TODO add references into multiparent store and cycles store
   \label{fig:Syntax as a grammar}
 \end{figure}
 
@@ -2024,6 +2034,9 @@ unfilled holes (represented by $\hole$), and most types of terms have conflict h
   \caption{Constructors, Indexes and Arity}
   \label{fig:Constructors, Indexes and Arity}
 \end{figure}
+
+% NOTE base grammar has holes. rooted expression grammar has refs, conflicts, and multiparents
+% NOTE ref = expression reference or vertex reference
 
 \subsection{Convergent Graphs}
 \label{sub:Convergent Graphs}
@@ -2149,11 +2162,50 @@ Discuss uniqueness of uuid
 \subsection{Graph Decomposition}
 \label{sub:Graph Decomposition}
 
-If we translate the graph into expressions in the calculus, interactions with
-the graph can be modeled as a stream of user actions as described in
-\autoref{sub:User Actions}. Our decomposition algorithm partitions the graph
-into disjount connected components. We encode cycles by resolving all but one
-vertex of each multi-edge into a by-id reference to the one vertex.
+Translating a graph into expressions in the calculus allows us to model
+user interaction as a stream of edits as described in \autoref{sub:User
+Actions}. Our decomposition algorithm partitions the graph into disjount
+connected components. We encode cycles by resolving all but one vertex of each
+multi-edge into a by-id reference to the one vertex.
+
+\begin{algorithm}[t]
+  \caption{Graph Decomposition}
+  \label{fig:Graph Decomposition}
+
+  \DontPrintSemicolon
+  \SetAlgoNoLine
+  \SetKwFunction{reachable}{reachable}
+  \SetKwFunction{simpleCycles}{simpleCycles}
+  \SetKwProg{Fn}{function}{}{end}
+
+  \KwIn{Graph $G$}
+  \KwOut{Decomposition of $G$ into cycle-free expressions}
+
+  $liveEdges := \{\e : G(\e) = \Plus\}$\;
+  $liveVertexes := \bigcup_{(u, v, p, v') \in liveEdges} \{v, v'\}$\;
+  $allVertexes := \bigcup_{(u, v, p, v') \in \dom(G)} \{v, v'\}$\;
+  $multiparented := \{v \in allVertexes : \exists (u_1, v_1, p_1, v), (u_2, v_2, p_2, v) \in \dom(G), v_1 \ne v_2\}$\;
+  $deleted := allVertexes \setminus liveVertexes \setminus \{v_0\}$\;
+  $MP := \{\reachable(v, \varnothing) : v \in multiparented\}$\;
+  $D := \{\reachable(v, \varnothing) : v \in deleted\}$\;
+  \Return{$(\reachable(v_0, \varnothing), MP, D, \simpleCycles(deleted))$}\;
+  \;
+
+  \Fn{\reachable $((u, k), seen)$}{
+    \If{$(u, k) \in multiparented \cup seen$}{
+      \Return{$u$}
+    }
+    $childEdges := \{(u', v, p, v') \in liveEdges : v = (u, k)\}$\;
+    $children := \{(p, \reachable(v, seen \cup \{u\})) : (p, v) \in childEdges\}$\;
+    \Return{$(k, children)$}
+  }
+  \;
+
+  \Fn{\simpleCycles $(remaining)$}{
+    \Return{}
+  }
+  \;
+\end{algorithm}
 
 The result of decomposition is a 4-tuple $(e, MP, D, SC) \in Exp \times
 \wp({Exp}) \times \wp({Exp}) \times \wp({Exp})$. Expression $e$ covers the
