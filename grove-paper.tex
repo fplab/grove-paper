@@ -87,6 +87,8 @@
 \usepackage{MnSymbol}
 \let\mnast=\ast
 \let\ast=\abxast
+%\def\*{\ast}
+\DeclareMathSymbol{*}{\mathbin}{symbols}{"03} % \ast
 
 % \selectcolormodel{gray}
 
@@ -458,7 +460,7 @@
 \newedge{WrapTimes}{L}
 \newcommand{\figureWrap}{
 \begin{figure}
-\hskip0.12\linewidth
+\hskip0.12\columnwidth
 %%%%%%%%
 \begin{subfigure}[t]{0.28\linewidth}
 \centering
@@ -552,7 +554,7 @@
 \newcommand{\figureMove}{
 \begin{figure}
 \hfill
-%\hskip0.12\linewidth
+%\hskip0.12\columnwidth
 %%%%%%%%
 \begin{subfigure}[t]{0.43\linewidth}
 \centering
@@ -622,7 +624,7 @@
 \newcommand{\figureDifferentParts}{
 \begin{figure}
 %\hfill
-\hskip0.12\linewidth
+\hskip0.12\columnwidth
 %%%%%%%%
 \begin{subfigure}[t]{0.28\linewidth}
 \centering
@@ -743,7 +745,7 @@
 \newcommand{\figureNestedParts}{
 \begin{figure}
 \hfill
-%\hskip0.12\linewidth
+%\hskip0.12\columnwidth
 %%%%%%%%
 \begin{subfigure}[t]{0.25\linewidth}
 \centering
@@ -839,9 +841,9 @@
 \newedge{MultiChildBob}{R}
 \newvertex{MultiChildBob}{y}
 \newcommand{\figureMultiChild}{
-\begin{figure*}
+\begin{figure}
 %\hfill
-\hskip0.12\linewidth
+\hskip0.12\columnwidth
 %%%%%%%%
 \begin{subfigure}[t]{0.21\linewidth}
 \centering
@@ -901,7 +903,7 @@
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.21\linewidth}
+\begin{subfigure}[t]{0.4\linewidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -929,19 +931,10 @@
 \end{tikzpicture}
 \end{subfigure}
 %%%%%%%%
-\hfill
-%%%%%%%%
-\begin{subfigure}[t]{0.21\linewidth}
-\centering
-\caption{}
-\label{fig:MultiChild:d}
-\includegraphics{code-views/multi-child-conflict.png}
-\end{subfigure}
-%%%%%%%%
-\hfill{}
+%\hfill{}
 \caption{Example of Multi-Child Conflicts.}
 \label{fig:MultiChild}
-\end{figure*}
+\end{figure}
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -952,7 +945,7 @@
 \newcommand{\figureMultiParent}{
 \begin{figure*}
 %\hfill
-\hskip0.12\linewidth
+\hskip0.12\columnwidth
 %%%%%%%%
 \begin{subfigure}[t]{0.14\linewidth}
 \centering
@@ -1088,15 +1081,6 @@
 \end{tikzpicture}
 \end{subfigure}
 %%%%%%%%
-\hfill
-%%%%%%%%
-\begin{subfigure}[t]{0.14\linewidth}
-\centering
-\caption{}
-\label{fig:MultiParent:f}
-\includegraphics{code-views/multi-parent-conflict.png}
-\end{subfigure}
-%%%%%%%%
 \hfill{}
 \caption{Example of Multi-Parent Conflicts.}
 \label{fig:MultiParent}
@@ -1117,9 +1101,9 @@
 \newcommand{\figureCycle}{
 \begin{figure*}
 %\hfill
-\hskip0.12\linewidth
+\hskip0.12\columnwidth
 %%%%%%%%
-\begin{subfigure}[t]{0.17\textwidth}
+\begin{subfigure}[t]{0.21\textwidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -1130,7 +1114,7 @@
 \end{tikzpicture}
 }
 \label{fig:Cycle:a}
-\figureCode{\parens{\hole{} * \hole{}} * \parens{\hole{} + \hole{}} + \hole{}}%
+\figureCode{\parens{\hole{} * \hole{}} *\\\parens{\hole{} + \hole{}}+ \hole{}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1148,7 +1132,7 @@
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.17\textwidth}
+\begin{subfigure}[t]{0.21\textwidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -1157,7 +1141,7 @@
 \end{tikzpicture}
 }
 \label{fig:Cycle:b}
-\figureCode{\hole{} * \hole{} + \parens{\hole{} + \hole{}} * \hole{}}%
+\figureCode{\hole{} * \hole{} +\\\parens{\hole{} + \hole{}} * \hole{}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1178,7 +1162,7 @@
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.17\textwidth}
+\begin{subfigure}[t]{0.21\textwidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -1187,7 +1171,7 @@
 \end{tikzpicture}
 }
 \label{fig:Cycle:c}
-\figureCode{\hole{} * \hole{} + \parens{\hole{} * \hole{} + \hole{}}}%
+\figureCode{\hole{} * \hole{} +\\\parens{\hole{} * \hole{} + \hole{}}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1208,7 +1192,7 @@
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.17\textwidth}
+\begin{subfigure}[t]{0.21\textwidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -1218,7 +1202,7 @@
 \end{tikzpicture}
 }
 \label{fig:Cycle:d}
-\figureCode{\parens{\hole{} * \hole{}} + \multiChild{\multiVertex{30}}{\multiVertex{32}}}%
+\figureCode{\parens{\hole{} * \hole{}} +\\\multiChild{\multiVertex{30}}{\multiVertex{32}}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1236,15 +1220,6 @@
 \end{tikzpicture}
 \end{subfigure}
 %%%%%%%%
-\hfill
-%%%%%%%%
-\begin{subfigure}[t]{0.17\linewidth}
-\centering
-\caption{}
-\label{fig:Cycle:e}
-\includegraphics{code-views/cycle.png}
-\end{subfigure}
-%%%%%%%%
 \hfill{}
 \caption{Example of Cycles.}
 \label{fig:Cycle}
@@ -1259,9 +1234,9 @@
 \newcommand{\figureDisconnect}{
 \begin{figure*}
 %\hfill
-\hskip0.12\linewidth
+\hskip0.12\columnwidth
 %%%%%%%%
-\begin{subfigure}[t]{0.17\textwidth}
+\begin{subfigure}[t]{0.21\textwidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -1272,7 +1247,7 @@
 \end{tikzpicture}
 }
 \label{fig:Disconnect:a}
-\figureCode{\hole{} * \hole{} + \hole{} * \hole{}}%
+\figureCode{\hole{} * \hole{} + \hole{} * \hole{}\\x}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1287,7 +1262,7 @@
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.17\textwidth}
+\begin{subfigure}[t]{0.21\textwidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -1296,7 +1271,7 @@
 \end{tikzpicture}
 }
 \label{fig:Disconnect:b}
-\figureCode{\hole{} * \parens{\hole{} * \hole{}} + \hole{}}%
+\figureCode{\hole{} * \parens{\hole{} * \hole{}} + \hole{}\\}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1314,7 +1289,7 @@
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.17\textwidth}
+\begin{subfigure}[t]{0.21\textwidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -1323,7 +1298,7 @@
 \end{tikzpicture}
 }
 \label{fig:Disconnect:c}
-\figureCode{\hole{} + \parens{\hole{} * \hole{}} * \hole{}}%
+\figureCode{\hole{} + \parens{\hole{} * \hole{}} * \hole{}\\}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1341,7 +1316,7 @@
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.17\textwidth}
+\begin{subfigure}[t]{0.21\textwidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -1351,7 +1326,7 @@
 \end{tikzpicture}
 }
 \label{fig:Disconnect:d}
-\figureCode{\hole{} + \hole{}}%
+\figureCode{\hole{} + \hole{}\\\cycleVertex{2} = \hole{} * \parens{\cycleVertex{2} * \hole{}}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1363,16 +1338,6 @@
 \path[draw,->,merge edge] (times) to ["\eMultiCycleBobTimes"'anchor=north,out=-135,in=-45] (plus);
 \path[draw,->,merge edge] (plus) to ["\eMultiCycleBobPlus"anchor=south,out=45,in=135] (times);
 \end{tikzpicture}
-\end{subfigure}
-%%%%%%%%
-\hfill
-%%%%%%%%
-\begin{subfigure}[t]{0.17\linewidth}
-\centering
-\caption{}
-\label{fig:Disconnect:e}
-\includegraphics{code-views/disconnected-reachable.png}
-\includegraphics{code-views/disconnected-unreachable.png}
 \end{subfigure}
 %%%%%%%%
 \hfill{}
@@ -1710,9 +1675,6 @@ applying them in either order produces the same results.
 \subsubsection{Editing Nested Parts of the Code}
 \label{sub:Editing Nested Parts of the Code}
 
-
-\figureMultiChild
-
 After Alice and Bob share the edits they made in the previous subsection,
 Alice changes~\vDifferentPartsAlice{} to~\vNestedPartsAlice{}, which results in the graph in \autoref{fig:NestedParts:a}.
 On the other hand, Bob moves~\vSimpleTimes{} and its children from the right child of~\vWrapPlus{} to its left child
@@ -1740,6 +1702,8 @@ our nominal equality.
 
 \subsubsection{Multi-child conflicts}
 \label{sub:Multi-child conflicts}
+
+\figureMultiChild
 
 Next we address what happens when edits conflict.
 For example, Alice adds~\vMultiChildAlice{} as the right child of~\vWrapPlus{}
