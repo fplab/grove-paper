@@ -378,7 +378,7 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (0cm,0cm) node (fig-Simple-a) [anchor=base] {\strut};
+\path (0cm,0cm) node (node/Simple/a) [anchor=base] {\strut};
 \end{tikzpicture}
 }
 \label{fig:Simple:a}
@@ -399,8 +399,8 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (0cm,0cm) node (fig-Construction) [anchor=base] {\strut};
-\path [draw,->,alice step] (fig-Simple-a) to (-2em, 0cm |- fig-Construction);
+\path (0cm,0cm) node (node/Simple/b) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/Simple/a) to (-2em, 0cm |- node/Simple/b);
 \end{tikzpicture}
 }
 \label{fig:Simple:b}
@@ -423,8 +423,8 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (0cm,0cm) node (fig-Deletion) [anchor=base] {\strut};
-\path [draw,->,alice step] (fig-Construction) to (-2em, 0cm |- fig-Deletion);
+\path (0cm,0cm) node (node/Simple/c) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/Simple/b) to (-2em, 0cm |- node/Simple/c);
 \end{tikzpicture}
 }
 \label{fig:Simple:c}
@@ -464,10 +464,10 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (-7.5em,0cm) node (fig-A simple tree with a hole-c-x) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:Simple:c}}}};
+\path (-7.5em,0cm) node (node/Simple/cx) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:Simple:c}}}};
 %%%%
-\path (0cm,0cm) node (fig-Wrapping-a) [anchor=base] {\strut};
-\path [draw,->,alice step] (fig-A simple tree with a hole-c-x) to (-2em, 0cm |- fig-Wrapping-a);
+\path (0cm,0cm) node (node/Wrap/a) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/Simple/cx) to (-2em, 0cm |- node/Wrap/a);
 \end{tikzpicture}
 }
 \label{fig:Wrap:a}
@@ -491,8 +491,8 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (0cm,0cm) node (fig-Wrapping-b) [anchor=base] {\strut};
-\path [draw,->,alice step] (fig-Wrapping-a) to (-2em, 0cm |- fig-Wrapping-b);
+\path (0cm,0cm) node (node/Wrap/b) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/Wrap/a) to (-2em, 0cm |- node/Wrap/b);
 \end{tikzpicture}
 }
 \label{fig:Wrap:b}
@@ -518,8 +518,8 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (0cm,0cm) node (fig-Wrapping-c) [anchor=base] {\strut};
-\path [draw,->,alice step] (fig-Wrapping-b) to (-2em, 0cm |- fig-Wrapping-c);
+\path (0cm,0cm) node (node/Wrap/c) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/Wrap/b) to (-2em, 0cm |- node/Wrap/c);
 \end{tikzpicture}
 }
 \label{fig:Wrap:c}
@@ -558,10 +558,8 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-%\path (-7.5em,0cm) node (fig-Wrapping-c-x) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:Wrap:c}}}};
-%%%%
-\path (0cm,0cm) node (fig-Moving-a) [anchor=base] {\strut};
-\path [draw,->,alice step] (fig-Wrapping-c) to (-2em, 0cm |- fig-Moving-a);
+\path (0cm,0cm) node (node/Move/a) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/Wrap/c) to (-2em, 0cm |- node/Move/a);
 \end{tikzpicture}
 }
 \label{fig:Move:a}
@@ -587,8 +585,8 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (0cm,0cm) node (fig-Moving-b) [anchor=base] {\strut};
-\path [draw,->,alice step] (fig-Moving-a) to (-2em, 0cm |- fig-Moving-b);
+\path (0cm,0cm) node (node/Move/b) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/Move/a) to (-2em, 0cm |- node/Move/b);
 \end{tikzpicture}
 }
 \label{fig:Move:b}
@@ -630,9 +628,9 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (-7.5em,0cm) node (fig-Moving-b-x) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:NestedParts:b}}}};
-\path (0cm,0cm) node (fig-Editing Different Parts of the Code-a) [anchor=base] {\strut};
-\path [draw,->,alice step] (fig-Moving-b-x) to (-2em, 0cm |- fig-Editing Different Parts of the Code-a);
+\path (-7.5em,0cm) node (node/Move/bx) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:NestedParts:b}}}};
+\path (0cm,0cm) node (node/DifferentParts/a) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/Move/bx) to (-2em, 0cm |- node/DifferentParts/a);
 \end{tikzpicture}
 }
 \label{fig:DifferentParts:a}
@@ -658,8 +656,8 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (0cm,0cm) node (fig-Editing Different Parts of the Code-b) [anchor=base] {\strut};
-\path [draw,->,bob step] (fig-Moving-b-x) to [out=15,in=165,star] (-2em, 0cm |- fig-Editing Different Parts of the Code-b);
+\path (0cm,0cm) node (node/DifferentParts/b) [anchor=base] {\strut};
+\path [draw,->,bob step] (node/Move/bx) to [out=15,in=165,star] (-2em, 0cm |- node/DifferentParts/b);
 \end{tikzpicture}
 }
 \label{fig:DifferentParts:b}
@@ -685,9 +683,9 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (0cm,0cm) node (fig-Editing Different Parts of the Code-c) [anchor=base] {\strut};
-\path [draw,->,merge step] (fig-Editing Different Parts of the Code-a) to [out=15,in=165] (-2em, 0cm |- fig-Editing Different Parts of the Code-c);
-\path [draw,->,merge step] (fig-Editing Different Parts of the Code-b) to (-2em, 0cm |- fig-Editing Different Parts of the Code-c);
+\path (0cm,0cm) node (node/DifferentParts/c) [anchor=base] {\strut};
+\path [draw,->,merge step] (node/DifferentParts/a) to [out=15,in=165] (-2em, 0cm |- node/DifferentParts/c);
+\path [draw,->,merge step] (node/DifferentParts/b) to (-2em, 0cm |- node/DifferentParts/c);
 \end{tikzpicture}
 }
 \label{fig:DifferentParts:c}
@@ -751,8 +749,8 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (0cm,0cm) node (fig-Editing Nested Parts of the Code-a) [anchor=base] {\strut};
-\path [draw,->,alice step] (fig-Editing Different Parts of the Code-c) to[star] (-2em, 0cm |- fig-Editing Nested Parts of the Code-a);
+\path (0cm,0cm) node (node/NestedParts/a) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/DifferentParts/c) to[star] (-2em, 0cm |- node/NestedParts/a);
 \end{tikzpicture}
 }
 \label{fig:NestedParts:a}
@@ -778,8 +776,8 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (0cm,0cm) node (fig-Editing Nested Parts of the Code-b) [anchor=base] {\strut};
-\path [draw,->,bob step] (fig-Editing Different Parts of the Code-c) to [out=15,in=165,star] (-2em, 0cm |- fig-Editing Nested Parts of the Code-b);
+\path (0cm,0cm) node (node/NestedParts/b) [anchor=base] {\strut};
+\path [draw,->,bob step] (node/DifferentParts/c) to [out=15,in=165,star] (-2em, 0cm |- node/NestedParts/b);
 \end{tikzpicture}
 }
 \label{fig:NestedParts:b}
@@ -805,9 +803,9 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (0cm,0cm) node (fig-Editing Nested Parts of the Code-c) [anchor=base] {\strut};
-\path [draw,->,merge step] (fig-Editing Nested Parts of the Code-a) to [out=15,in=165] (-2em, 0cm |- fig-Editing Nested Parts of the Code-c);
-\path [draw,->,merge step] (fig-Editing Nested Parts of the Code-b) to [out=15,in=165] (-2em, 0cm |- fig-Editing Nested Parts of the Code-c);
+\path (0cm,0cm) node (node/NestedParts/c) [anchor=base] {\strut};
+\path [draw,->,merge step] (node/NestedParts/a) to [out=15,in=165] (-2em, 0cm |- node/NestedParts/c);
+\path [draw,->,merge step] (node/NestedParts/b) to [out=15,in=165] (-2em, 0cm |- node/NestedParts/c);
 \end{tikzpicture}
 }
 \label{fig:NestedParts:c}
@@ -849,10 +847,10 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (-7.5em,0cm) node (fig-Editing Nested-c-x) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:NestedParts:c}}}};
+\path (-7.5em,0cm) node (node/NestedParts/cx) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:NestedParts:c}}}};
 %%%%
-\path (0cm,0cm) node (fig-Multi-child conflict-a) [anchor=base] {\strut};
-\path [draw,->,alice step] (fig-Editing Nested-c-x) to (-2em, 0cm |- fig-Multi-child conflict-a);
+\path (0cm,0cm) node (node/MultiChild/a) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/NestedParts/cx) to (-2em, 0cm |- node/MultiChild/a);
 \end{tikzpicture}
 }
 \label{fig:MultiChild:a}
@@ -880,8 +878,8 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (0cm,0cm) node (fig-Multi-child conflict-b) [anchor=base] {\strut};
-\path [draw,->,bob step] (fig-Editing Nested-c-x) to[out=15,in=165] (-2em, 0cm |- fig-Multi-child conflict-b);
+\path (0cm,0cm) node (node/MultiChild/b) [anchor=base] {\strut};
+\path [draw,->,bob step] (node/NestedParts/cx) to[out=15,in=165] (-2em, 0cm |- node/MultiChild/b);
 \end{tikzpicture}
 }
 \label{fig:MultiChild:b}
@@ -907,9 +905,9 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (0cm,0cm) node (fig-Multi-child conflict-c) [anchor=base] {\strut};
-\path [draw,->,merge step] (fig-Multi-child conflict-a) to[out=15,in=165] (-2em, 0cm |- fig-Multi-child conflict-c);
-\path [draw,->,merge step] (fig-Multi-child conflict-b) to (-2em, 0cm |- fig-Multi-child conflict-c);
+\path (0cm,0cm) node (node/MultiChild/c) [anchor=base] {\strut};
+\path [draw,->,merge step] (node/MultiChild/a) to[out=15,in=165] (-2em, 0cm |- node/MultiChild/c);
+\path [draw,->,merge step] (node/MultiChild/b) to (-2em, 0cm |- node/MultiChild/c);
 \end{tikzpicture}
 }
 \label{fig:MultiChild:c}
@@ -960,10 +958,10 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (-7.5em,0cm) node (fig-Multi-child-c-x) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:MultiChild:c}}}};
+\path (-7.5em,0cm) node (node/MultiChild/cx) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:MultiChild:c}}}};
 %%%%
-\path (0cm,0cm) node (fig-Multi-parent-a) [anchor=base] {\strut};
-\path [draw,->,alice step] (fig-Multi-child-c-x) to[star] (-2em, 0cm |- fig-Multi-parent-a);
+\path (0cm,0cm) node (node/MultiParent/a) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/MultiChild/cx) to[star] (-2em, 0cm |- node/MultiParent/a);
 \end{tikzpicture}
 }
 \label{fig:MultiParent:a}
@@ -989,8 +987,8 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (0cm,0cm) node (fig-Multi-parent-b) [anchor=base] {\strut};
-\path [draw,->,alice step] (fig-Multi-parent-a) to[star] (-2em, 0cm |- fig-Multi-parent-b);
+\path (0cm,0cm) node (node/MultiParent/b) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/MultiParent/a) to[star] (-2em, 0cm |- node/MultiParent/b);
 \end{tikzpicture}
 }
 \label{fig:MultiParent:b}
@@ -1016,8 +1014,8 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (0cm,0cm) node (fig-Multi-parent-c) [anchor=base] {\strut};
-\path [draw,->,bob step] (fig-Multi-parent-a) to[out=15,in=165,star] (-2em, 0cm |- fig-Multi-parent-c);
+\path (0cm,0cm) node (node/MultiParent/c) [anchor=base] {\strut};
+\path [draw,->,bob step] (node/MultiParent/a) to[out=15,in=165,star] (-2em, 0cm |- node/MultiParent/c);
 \end{tikzpicture}
 }
 \label{fig:MultiParent:c}
@@ -1040,9 +1038,9 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (0cm,0cm) node (fig-Multi-parent-d) [anchor=base] {\strut};
-\path [draw,->,merge step] (fig-Multi-parent-b) to[out=15,in=165] (-2em, 0cm |- fig-Multi-parent-d);
-\path [draw,->,merge step] (fig-Multi-parent-c) to[out=15,in=165] (-2em, 0cm |- fig-Multi-parent-d);
+\path (0cm,0cm) node (node/MultiParent/d) [anchor=base] {\strut};
+\path [draw,->,merge step] (node/MultiParent/b) to[out=15,in=165] (-2em, 0cm |- node/MultiParent/d);
+\path [draw,->,merge step] (node/MultiParent/c) to[out=15,in=165] (-2em, 0cm |- node/MultiParent/d);
 \end{tikzpicture}
 }
 \label{fig:MultiParent:d}
@@ -1069,8 +1067,8 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (0cm,0cm) node (fig-Multi-parent-e) [anchor=base] {\strut};
-\path [draw,->,alice step] (fig-Multi-parent-d) to (-2em, 0cm |- fig-Multi-parent-e);
+\path (0cm,0cm) node (node/MultiParent/e) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/MultiParent/d) to (-2em, 0cm |- node/MultiParent/e);
 \end{tikzpicture}
 }
 \label{fig:MultiParent:e}
@@ -1125,10 +1123,10 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (-7.5em,0cm) node (fig-Multi-parent-e-x) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:MultiParent:e}}}};
+\path (-7.5em,0cm) node (node/MultiParent/ex) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:MultiParent:e}}}};
 %%%%
-\path (0cm,0cm) node (fig-Multi-User Cycles-a) [anchor=base] {\strut};
-\path [draw,->,alice step] (fig-Multi-parent-e-x) to[star] (-2em, 0cm |- fig-Multi-User Cycles-a);
+\path (0cm,0cm) node (node/Cycle/a) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/MultiParent/ex) to[star] (-2em, 0cm |- node/Cycle/a);
 \end{tikzpicture}
 }
 \label{fig:Cycle:a}
@@ -1154,8 +1152,8 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (0cm,0cm) node (fig-Multi-User Cycles-b) [anchor=base] {\strut};
-\path [draw,->,alice step] (fig-Multi-User Cycles-a) to[star] (-2em, 0cm |- fig-Multi-User Cycles-b);
+\path (0cm,0cm) node (node/Cycle/b) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/Cycle/a) to[star] (-2em, 0cm |- node/Cycle/b);
 \end{tikzpicture}
 }
 \label{fig:Cycle:b}
@@ -1184,8 +1182,8 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (0cm,0cm) node (fig-Multi-User Cycles-c) [anchor=base] {\strut};
-\path [draw,->,bob step] (fig-Multi-User Cycles-a) to[out=15,in=165,star] (-2em, 0cm |- fig-Multi-User Cycles-c);
+\path (0cm,0cm) node (node/Cycle/c) [anchor=base] {\strut};
+\path [draw,->,bob step] (node/Cycle/a) to[out=15,in=165,star] (-2em, 0cm |- node/Cycle/c);
 \end{tikzpicture}
 }
 \label{fig:Cycle:c}
@@ -1214,9 +1212,9 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (0cm,0cm) node (fig-Multi-User Cycles-d) [anchor=base] {\strut};
-\path [draw,->,merge step] (fig-Multi-User Cycles-b) to[out=15,in=165] (-2em, 0cm |- fig-Multi-User Cycles-d);
-\path [draw,->,merge step] (fig-Multi-User Cycles-c) to (-2em, 0cm |- fig-Multi-User Cycles-d);
+\path (0cm,0cm) node (node/Cycle/d) [anchor=base] {\strut};
+\path [draw,->,merge step] (node/Cycle/b) to[out=15,in=165] (-2em, 0cm |- node/Cycle/d);
+\path [draw,->,merge step] (node/Cycle/c) to (-2em, 0cm |- node/Cycle/d);
 \end{tikzpicture}
 }
 \label{fig:Cycle:d}
@@ -1267,10 +1265,10 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (-7.5em,0cm) node (fig-Multi-User Cycles-d-x) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:Cycle:d}}}};
+\path (-7.5em,0cm) node (node/Cycle/dx) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:Cycle:d}}}};
 %%%%
-\path (0cm,0cm) node (fig-Disconnection-a) [anchor=base] {\strut};
-\path [draw,->,alice step] (fig-Multi-User Cycles-d-x) to[star] (-2em, 0cm |- fig-Disconnection-a);
+\path (0cm,0cm) node (node/Disconnect/a) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/Cycle/dx) to[star] (-2em, 0cm |- node/Disconnect/a);
 \end{tikzpicture}
 }
 \label{fig:Disconnect:a}
@@ -1293,8 +1291,8 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (0cm,0cm) node (fig-Disconnection-b) [anchor=base] {\strut};
-\path [draw,->,alice step] (fig-Disconnection-a) to[star] (-2em, 0cm |- fig-Disconnection-b);
+\path (0cm,0cm) node (node/Disconnect/b) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/Disconnect/a) to[star] (-2em, 0cm |- node/Disconnect/b);
 \end{tikzpicture}
 }
 \label{fig:Disconnect:b}
@@ -1320,8 +1318,8 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (0cm,0cm) node (fig-Disconnection-c) [anchor=base] {\strut};
-\path [draw,->,bob step] (fig-Disconnection-a) to[out=15,in=165,star] (-2em, 0cm |- fig-Disconnection-c);
+\path (0cm,0cm) node (node/Disconnect/c) [anchor=base] {\strut};
+\path [draw,->,bob step] (node/Disconnect/a) to[out=15,in=165,star] (-2em, 0cm |- node/Disconnect/c);
 \end{tikzpicture}
 }
 \label{fig:Disconnect:c}
@@ -1347,9 +1345,9 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (0cm,0cm) node (fig-Disconnection-d) [anchor=base] {\strut};
-\path [draw,->,merge step] (fig-Disconnection-b) to[out=15,in=165] (-2em, 0cm |- fig-Disconnection-d);
-\path [draw,->,merge step] (fig-Disconnection-c) to (-2em, 0cm |- fig-Disconnection-d);
+\path (0cm,0cm) node (node/Disconnect/d) [anchor=base] {\strut};
+\path [draw,->,merge step] (node/Disconnect/b) to[out=15,in=165] (-2em, 0cm |- node/Disconnect/d);
+\path [draw,->,merge step] (node/Disconnect/c) to (-2em, 0cm |- node/Disconnect/d);
 \end{tikzpicture}
 }
 \label{fig:Disconnect:d}
