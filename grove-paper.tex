@@ -541,7 +541,7 @@
 %%%%%%%%
 \hfill{}
 \caption{Example of Wrapping.  (Note that this figure omits the orphaned \vSimpleX{} since it is no longer relevant to the narrative of this paper.)}
-\label{fig:Wrapping}
+\label{fig:Wrap}
 \end{figure}
 }
 
@@ -615,10 +615,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% \figureDifferentParts
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newedge{DifferentAlice}{L}
-\newvertex{DifferentAlice}{u}
-\newedge{DifferentBob}{R}
-\newvertex{DifferentBob}{v}
+\newedge{DifferentPartsAlice}{L}
+\newvertex{DifferentPartsAlice}{u}
+\newedge{DifferentPartsBob}{R}
+\newvertex{DifferentPartsBob}{v}
 \newcommand{\figureDifferentParts}{
 \begin{figure}
 %\hfill
@@ -628,7 +628,7 @@
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (-7.5em,0cm) node (node/Move/bx) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:NestedParts:b}}}};
+\path (-7.5em,0cm) node (node/Move/bx) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:Move:b}}}};
 \path (0cm,0cm) node (node/DifferentParts/a) [anchor=base] {\strut};
 \path [draw,->,alice step] (node/Move/bx) to (-2em, 0cm |- node/DifferentParts/a);
 \end{tikzpicture}
@@ -641,7 +641,7 @@
   "\vWrapPlus" [> "\eWrapPlus"] -> {
   {},
   "\vSimpleTimes" [> "\eMoveTimes"] -> {
-    "\vDifferentAlice" [> "\eDifferentAlice"', >alice edge, alice node],
+    "\vDifferentPartsAlice" [> "\eDifferentPartsAlice"', >alice edge, alice node],
     "\vSimpleY" [> "\eSimpleY"]
   }
   }
@@ -669,7 +669,7 @@
   {},
   "\vSimpleTimes" [> "\eMoveTimes"] -> {
     {},
-    "\vDifferentBob" [> "\eDifferentBob", >bob edge, bob node]
+    "\vDifferentPartsBob" [> "\eDifferentPartsBob", >bob edge, bob node]
   }
   }
  }
@@ -696,8 +696,8 @@
   "\vWrapPlus" [> "\eWrapPlus"] -> {
   {},
   "\vSimpleTimes" [> "\eMoveTimes"] -> {
-    "\vDifferentAlice" [> "\eDifferentAlice"', >merge edge, merge node],
-    "\vDifferentBob" [> "\eDifferentBob", >merge edge, merge node]
+    "\vDifferentPartsAlice" [> "\eDifferentPartsAlice"', >merge edge, merge node],
+    "\vDifferentPartsBob" [> "\eDifferentPartsBob", >merge edge, merge node]
   }
   }
  }
@@ -737,9 +737,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% \figureNestedParts
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newedge{NestedAlice}{L}
-\newvertex{NestedAlice}{w}
-\newedge{NestedBob}{L}
+\newedge{NestedPartsAlice}{L}
+\newvertex{NestedPartsAlice}{w}
+\newedge{NestedPartsBob}{L}
 \newcommand{\figureNestedParts}{
 \begin{figure}
 \hfill
@@ -761,8 +761,8 @@
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    {},
    "\vSimpleTimes" [> "\eMoveTimes"] -> {
-    "\vNestedAlice" [> "\eNestedAlice"', >alice edge, alice node],
-    "\vDifferentBob" [> "\eDifferentBob"]
+    "\vNestedPartsAlice" [> "\eNestedPartsAlice"', >alice edge, alice node],
+    "\vDifferentPartsBob" [> "\eDifferentPartsBob"]
    }
   }
  }
@@ -786,9 +786,9 @@
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "\vSimpleTimes" [> "\eNestedBob"', >bob edge] -> {
-    "\vDifferentAlice" [> "\eDifferentAlice"'],
-    "\vDifferentBob" [> "\eDifferentBob"]
+   "\vSimpleTimes" [> "\eNestedPartsBob"', >bob edge] -> {
+    "\vDifferentPartsAlice" [> "\eDifferentPartsAlice"'],
+    "\vDifferentPartsBob" [> "\eDifferentPartsBob"]
    },
    {}
   }
@@ -814,9 +814,9 @@
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "\vSimpleTimes" [> "\eNestedBob"', >merge edge] -> {
-    "\vNestedAlice" [> "\eNestedAlice"', >merge edge, merge node],
-    "\vDifferentBob" [> "\eDifferentBob"]
+   "\vSimpleTimes" [> "\eNestedPartsBob"', >merge edge] -> {
+    "\vNestedPartsAlice" [> "\eNestedPartsAlice"', >merge edge, merge node],
+    "\vDifferentPartsBob" [> "\eDifferentPartsBob"]
    },
    {}
   }
@@ -859,9 +859,9 @@
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "\vSimpleTimes" [> "\eNestedBob"'] -> {
-    "\vNestedAlice" [> "\eNestedAlice"'],
-    "\vDifferentBob" [> "\eDifferentBob"]
+   "\vSimpleTimes" [> "\eNestedPartsBob"'] -> {
+    "\vNestedPartsAlice" [> "\eNestedPartsAlice"'],
+    "\vDifferentPartsBob" [> "\eDifferentPartsBob"]
    },
    {
     "\vMultiChildAlice" [> "\eMultiChildAlice", >alice edge, alice node]
@@ -888,9 +888,9 @@
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "\vSimpleTimes" [> "\eNestedBob"'] -> {
-    "\vNestedAlice" [> "\eNestedAlice"'],
-    "\vDifferentBob" [> "\eDifferentBob"]
+   "\vSimpleTimes" [> "\eNestedPartsBob"'] -> {
+    "\vNestedPartsAlice" [> "\eNestedPartsAlice"'],
+    "\vDifferentPartsBob" [> "\eDifferentPartsBob"]
    },
    "\vMultiChildBob" [> "\eMultiChildBob", >bob edge, bob node]
   }
@@ -916,9 +916,9 @@
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "\vSimpleTimes" [> "\eNestedBob"'anchor=-15] -> {
-    "\vNestedAlice" [> "\eNestedAlice"'],
-    "\vDifferentBob" [> "\eDifferentBob"]
+   "\vSimpleTimes" [> "\eNestedPartsBob"'anchor=-15] -> {
+    "\vNestedPartsAlice" [> "\eNestedPartsAlice"'],
+    "\vDifferentPartsBob" [> "\eDifferentPartsBob"]
    },
    "\vMultiChildAlice" [> "\eMultiChildAlice"anchor=153, >merge edge, merge node],
    {},
@@ -970,8 +970,8 @@
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "\vSimpleTimes" [> "\eNestedBob"'] -> {
-    "\vNestedAlice" [> "\eNestedAlice"'],
+   "\vSimpleTimes" [> "\eNestedPartsBob"'] -> {
+    "\vNestedPartsAlice" [> "\eNestedPartsAlice"'],
     {}
    },
    {}
@@ -997,9 +997,9 @@
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "\vSimpleTimes" [> "\eNestedBob"'] -> {
+   "\vSimpleTimes" [> "\eNestedPartsBob"'] -> {
     {},
-    "\vNestedAlice" [> "\eMultiParentAlice"', >alice edge]
+    "\vNestedPartsAlice" [> "\eMultiParentAlice"', >alice edge]
    },
    {}
   }
@@ -1024,8 +1024,8 @@
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "\vSimpleTimes" [> "\eNestedBob"'],
-   "\vNestedAlice" [> "\eMultiParentBob", >bob edge]
+   "\vSimpleTimes" [> "\eNestedPartsBob"'],
+   "\vNestedPartsAlice" [> "\eMultiParentBob", >bob edge]
   }
  }
 };
@@ -1049,9 +1049,9 @@
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   a/{\vWrapPlus} [> "\eWrapPlus"] -> {
-   "\vSimpleTimes" [> "\eNestedBob"'] -> {
+   "\vSimpleTimes" [> "\eNestedPartsBob"'] -> {
     {},
-    b/"\vNestedAlice" [> "\eMultiParentAlice"', >merge edge]
+    b/"\vNestedPartsAlice" [> "\eMultiParentAlice"', >merge edge]
    },
    {}
   }
@@ -1077,9 +1077,9 @@
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   v8/"\vWrapPlus" [> "\eWrapPlus"] -> {
-   v2/"\vSimpleTimes" [> "\eNestedBob"'] -> {
+   v2/"\vSimpleTimes" [> "\eNestedPartsBob"'] -> {
     {},
-    "\vNestedAlice" [> "\eMultiParentAlice"']
+    "\vNestedPartsAlice" [> "\eMultiParentAlice"']
    },
    {}
   }
@@ -1135,7 +1135,7 @@
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "\vSimpleTimes" [> "\eNestedBob"'] -> {
+   "\vSimpleTimes" [> "\eNestedPartsBob"'] -> {
     "\vMultiCycleTimes" [> "\eMultiCycleTimes"', >alice edge, alice node],
     "\vMultiCyclePlus" [> "\eMultiCyclePlus", >alice edge, alice node]
    },
@@ -1162,7 +1162,7 @@
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "\vSimpleTimes" [> "\eNestedBob"'] -> {
+   "\vSimpleTimes" [> "\eNestedPartsBob"'] -> {
    },
    {
     "\vMultiCycleTimes" [> "\eMultiCycleAliceTimes", >alice edge, alice node] -> {
@@ -1192,7 +1192,7 @@
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "\vSimpleTimes" [> "\eNestedBob"'] -> {
+   "\vSimpleTimes" [> "\eNestedPartsBob"'] -> {
    },
    {
     "\vMultiCyclePlus" [> "\eMultiCycleBobPlus", >bob edge, bob node] -> {
@@ -1223,7 +1223,7 @@
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "\vSimpleTimes" [> "\eNestedBob"'anchor=-15] -> {
+   "\vSimpleTimes" [> "\eNestedPartsBob"'anchor=-15] -> {
    },
    v1/"\vMultiCycleTimes" [> "\eMultiCycleAliceTimes"anchor=155, >merge edge, merge node],
    {},
@@ -1252,11 +1252,11 @@
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% \figureDisconnection
+%% \figureDisconnect
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newedge{DisconnectionAlice}{R}
-\newedge{DisconnectionBob}{L}
-\newcommand{\figureDisconnection}{
+\newedge{DisconnectAlice}{R}
+\newedge{DisconnectBob}{L}
+\newcommand{\figureDisconnect}{
 \begin{figure*}
 %\hfill
 \hskip0.12\linewidth
@@ -1277,7 +1277,7 @@
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "\vSimpleTimes" [> "\eNestedBob"'],
+   "\vSimpleTimes" [> "\eNestedPartsBob"'],
    "\vMultiCycleTimes" [> "\eMultiCycleAliceTimes"]
   }
  }
@@ -1301,9 +1301,9 @@
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
   "\vWrapPlus" [> "\eWrapPlus"] -> {
-   "\vSimpleTimes" [> "\eNestedBob"'] -> {
+   "\vSimpleTimes" [> "\eNestedPartsBob"'] -> {
     {},
-    "\vMultiCycleTimes" [> "\eDisconnectionAlice", >alice edge]
+    "\vMultiCycleTimes" [> "\eDisconnectAlice", >alice edge]
    },
    {}
   }
@@ -1330,7 +1330,7 @@
   "\vWrapPlus" [> "\eWrapPlus"] -> {
    {},
    "\vMultiCycleTimes" [> "\eMultiCycleAliceTimes"] -> {
-    "\vSimpleTimes" [> "\eDisconnectionBob"', >bob edge],
+    "\vSimpleTimes" [> "\eDisconnectBob"', >bob edge],
     {}
    }
   }
@@ -1597,7 +1597,7 @@ Next, Alice types~\texttt{+} when the cursor is on \vSimpleTimes{}.
 If this were a hole, this would cause a construction action to be performed as in \autoref{sub:Construction} above.
 However, Alice's editor sees that this position is already occupied by the \texttt{*} expression,
 so typing~\texttt{+} is interpreted as a wrapping action instead of a construction action.
-This corresponds to the following sequence of graph edits, shown in \autoref{fig:Wrapping}:
+This corresponds to the following sequence of graph edits, shown in \autoref{fig:Wrap}:
 (a) delete \eSimpleTimes{}, leaving \vSimpleTimes{} temporarily orphaned,
 (b) add a fresh~\texttt{+} vertex (\vWrapPlus{}) as a child of the root vertex, and
 (c) add an edge to \vSimpleTimes{} in the left child position of this new~\texttt{+} vertex.
@@ -1657,14 +1657,14 @@ that cause cycles or vertices with multiple parents
 To start, Alice and Bob both have the graph in \autoref{fig:Move:b}, which
 represents the code~\texttt{\hole{} + (\hole{} * y)}.
 
-Alice adds~\vDifferentAlice{} as the left child of \vSimpleTimes{}
-and Bob changes \vSimpleY{} to \vDifferentBob{}.
+Alice adds~\vDifferentPartsAlice{} as the left child of \vSimpleTimes{}
+and Bob changes \vSimpleY{} to \vDifferentPartsBob{}.
 Before transmitting their edits to each other,
 Alice and Bob have the graphs in \autoref{fig:DifferentParts:a}
 and \autoref{fig:DifferentParts:b}, respectively.
 (Note that the transition edge from \autoref{fig:Move:b} to
 \autoref{fig:DifferentParts:b} represents
-multiple edges, i.e., deleting~\eSimpleY{} and adding~\eDifferentBob{} along with its child~\vDifferentBob{}.
+multiple edges, i.e., deleting~\eSimpleY{} and adding~\eDifferentPartsBob{} along with its child~\vDifferentPartsBob{}.
 We thus mark it with a star.)\todo{star size}\todo{"sync"}
 
 Alice and Bob then transmit their graph edits to each other
@@ -1714,9 +1714,9 @@ applying them in either order produces the same results.
 \figureMultiChild
 
 After Alice and Bob share the edits they made in the previous subsection,
-Alice changes~\vDifferentAlice{} to~\vNestedAlice{}, which results in the graph in \autoref{fig:NestedParts:a}.
+Alice changes~\vDifferentPartsAlice{} to~\vNestedPartsAlice{}, which results in the graph in \autoref{fig:NestedParts:a}.
 On the other hand, Bob moves~\vSimpleTimes{} and its children from the right child of~\vWrapPlus{} to its left child
-by deleting~\eMoveTimes{} and adding~\eNestedBob{}, which results in the graph in \autoref{fig:NestedParts:b}.
+by deleting~\eMoveTimes{} and adding~\eNestedPartsBob{}, which results in the graph in \autoref{fig:NestedParts:b}.
 Since edits are based on edge identities,
 both Alice's and Bob's edits can be applied to the other's graph,
 which results in both Alice and Bob having the graph in \autoref{fig:NestedParts:c}.
@@ -1724,7 +1724,7 @@ which results in both Alice and Bob having the graph in \autoref{fig:NestedParts
 A consequence of this design is that we allow users to modify
 parts of the code that have been deleted.  For example,
 Alice might receive Bob's deletion of~\eMoveTimes{} before making her
-changes and before receiving Bob's addition of~\eNestedBob{}.
+changes and before receiving Bob's addition of~\eNestedPartsBob{}.
 Her edits would then temporarily be within the code deleted by Bob.
 TODO: \todo{TODO}She can restore that code using a restoration action add a fresh edge to it.
 
@@ -1809,17 +1809,17 @@ An example of this is shown in \autoref{fig:MultiParent}.
 \autoref{fig:MultiParent:a} shows the graph after Alice and Bob have made some more edits,
 and Alice and Bob's editors are synchronized with each other.
 This graph represents the expression~\texttt{(w * \hole{}) + \hole{}}.
-Alice moves~\vNestedAlice{} to the~\texttt{R} position of~\vSimpleTimes{},
+Alice moves~\vNestedPartsAlice{} to the~\texttt{R} position of~\vSimpleTimes{},
 while Bob moves it to the~\texttt{R} position of~\vWrapPlus{}.
 This results in the graphs in \autoref{fig:MultiParent:b} and \autoref{fig:MultiParent:c},
 which represent respectively the expression~\texttt{(\hole{} * w) + \hole{}} for Alice
 and the expression~\texttt{(\hole{} * \hole{}) + w} for Bob.
 In both cases, these edits are achieved with one edge delete and one edge add.
-Alice deletes~\eNestedAlice{} and adds~\eMultiParentAlice{}, while
-Bob deletes~\eNestedAlice{} and adds~\eMultiParentBob{}.
-As explained in \autoref{sec:Formalism}, deletes are idempotent so Alice and Bob both deleting~\eNestedAlice{} is not a problem.
+Alice deletes~\eNestedPartsAlice{} and adds~\eMultiParentAlice{}, while
+Bob deletes~\eNestedPartsAlice{} and adds~\eMultiParentBob{}.
+As explained in \autoref{sec:Formalism}, deletes are idempotent so Alice and Bob both deleting~\eNestedPartsAlice{} is not a problem.
 However, both~\eMultiParentAlice{} (added by Alice) and~\eMultiParentBob{} (added by Bob) point to the same vertex.
-This generates \autoref{fig:MultiParent:d}, in which~\vNestedAlice{} has two parents pointing to it.
+This generates \autoref{fig:MultiParent:d}, in which~\vNestedPartsAlice{} has two parents pointing to it.
 We call this situation a multi-parent conflict.
 
 TODO: talk about how to resolve the conflict
@@ -1908,7 +1908,7 @@ cycle represents to future work.
 \subsubsection{Disconnection}
 \label{sub:Disconnection}
 
-\figureDisconnection
+\figureDisconnect
 
 \todo{UI would show orphans only once edits orphans occur}
 
@@ -1929,7 +1929,7 @@ This results in \autoref{fig:Disconnect:c},
 which represents the expression~\texttt{((\hole{} * \hole{}) * \hole{}) + \hole{}}.
 
 When these edits are merged, the result is the graph in \autoref{fig:Disconnect:d}.
-Since Alice deleted~\eNestedBob{}
+Since Alice deleted~\eNestedPartsBob{}
 and Bob deleted~\eMultiCycleAliceTimes{},
 when these are merged~\vMultiCycleTimes{} and~\vSimpleTimes{}
 are disconnected from the root.
