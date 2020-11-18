@@ -87,8 +87,6 @@
 \usepackage{MnSymbol}
 \let\mnast=\ast
 \let\ast=\abxast
-%\def\*{\ast}
-\DeclareMathSymbol{*}{\mathbin}{symbols}{"03} % \ast
 
 % \selectcolormodel{gray}
 
@@ -1977,7 +1975,7 @@ and this simplicity aids in the predictability.
   \[
     \arraycolsep=0pt
     \begin{array}{lrlll}
-      \textrm{Operators:}         & op   & {}\in Ops & {}::={} & + \mid * \\
+      \textrm{Operators:}         & op   & {}\in Ops & {}::={} & + \mid \ast{} \\
       \textrm{Patterns:}          & q    & {}\in Pat & {}::={} & x \mid \hole \mid \{q|\ldots|q\} \\
       \textrm{Expressions:\qquad} & e    & {}\in Exp & {}::={} & x \mid \lambda q \mathord{:}\tau.e \mid e~e \mid e~op~e \mid n \\
                                   &      &           &         & \phantom{x} \mid \hole \mid \{e|\ldots|e\} \\
@@ -2184,7 +2182,7 @@ Mapping to b actions
 \[
   \begin{array}{l}
     \textrm{User Actions}: \grave{e} \in Act ::= e \mid \#u \mid \conflict{\grave{e}}{\grave{e}}                                                       \\
-    \s : \G \to Act \times \V^{*} \times \V^{*} \times \V^{*}                                                                                          \\
+    \s : \G \to Act \times \V^{\ast{}} \times \V^{\ast{}} \times \V^{\ast{}}                                                                                          \\
     \s(G) = (\grave{e}, \MP(G), \CC(G), \D(G))                                                                                                         \\
     \MP(G) = \left\{ v \in \vertexes(G) \mid \exists e_1,e_2 \in \liveEdges(G), e_1= \right.                                                           \\
     \qquad \left. (v,p_1,v_1), e_2=(v,p_2,v_2), e_1 \ne e_2 \right\}                                                                                   \\
@@ -2363,7 +2361,7 @@ A \emph{graph action} $A = (\e,s,u) \in \A = \E \times \S \times \U$ is an insta
 
 \paragraph{Graph} \par
 
-A \emph{graph} $G = [\e :-> s]_{u}^{*} \in \G = \A^{*}$ is a function from edges to edge states. Denote by $G(\e) = s$ the state $s$ of edge $\e$ in graph $G$, and by $G A$ the extension of graph $G$ by graph action $A$.
+A \emph{graph} $G = [\e :-> s]_{u}^{\ast{}} \in \G = \A^{\ast{}}$ is a function from edges to edge states. Denote by $G(\e) = s$ the state $s$ of edge $\e$ in graph $G$, and by $G A$ the extension of graph $G$ by graph action $A$.
 
 \subsubsection{The Editor}
 
@@ -2377,7 +2375,7 @@ An \emph{edit action} $a \in \A^{edit}= \{ \Create \} \times \K \cup \{ \Destroy
 
 \paragraph{Communication Action} \par
 
-A \emph{communication action} $a = (\Send, A^{*}, u^{*}) \in \A^{comm} = \{ \Send \} \times \A^{*} \times \U^{*}$ applies the graph action sequence $A^{*}$ to the editors identified by UUIDs $u^{*}$.
+A \emph{communication action} $a = (\Send, A^{\ast{}}, u^{\ast{}}) \in \A^{comm} = \{ \Send \} \times \A^{\ast{}} \times \U^{\ast{}}$ applies the graph action sequence $A^{\ast{}}$ to the editors identified by UUIDs $u^{\ast{}}$.
 
 \paragraph{Action} \par
 
@@ -2385,11 +2383,11 @@ An \emph{action} $a \in \A = \A^{move} \cup \A^{edit} \cup \A^{comm}$ describes 
 
 \paragraph{Editor} \par
 
-%An \emph{editor} $E = (G,c,A_{Q}^{*},A_{H}^{*},u) \in \EE = \mathcal{G} \times \C \times \AA^{*} \times \AA^{*} \times \U$ is an instance of graph $G$ with cursor $c$, queued graph actions $A_{Q}^{*}$, and known graph action history $A_{H}^{*}$, that can be identified by UUID $u$.
+%An \emph{editor} $E = (G,c,A_{Q}^{\ast{}},A_{H}^{\ast{}},u) \in \EE = \mathcal{G} \times \C \times \AA^{\ast{}} \times \AA^{\ast{}} \times \U$ is an instance of graph $G$ with cursor $c$, queued graph actions $A_{Q}^{\ast{}}$, and known graph action history $A_{H}^{\ast{}}$, that can be identified by UUID $u$.
 
 \subsubsection{The Environment} \par
 
-An \emph{environment} $(E^{*}, A^{*}) \in \EE^{*} \times \AA^{*}$ is a set of communicating editors $E^{*}$ that share a global graph action history $A^{*}$.
+An \emph{environment} $(E^{\ast{}}, A^{\ast{}}) \in \EE^{\ast{}} \times \AA^{\ast{}}$ is a set of communicating editors $E^{\ast{}}$ that share a global graph action history $A^{\ast{}}$.
 
 \subsection{Sets and Relations}
 
@@ -2416,8 +2414,8 @@ An \emph{environment} $(E^{*}, A^{*}) \in \EE^{*} \times \AA^{*}$ is a set of co
 
 \paragraph{Graph Actions} \par
 
-$\known(E_1 \cdots E_n) = A_{H1}^{*} \cdots A_{Hn}^{*}
-  \iff (\forall j=1,\ldots,n)(E_j = (G_j,c_j,A_{Qj}^{*},A_{Hj}^{*},u_j))$
+$\known(E_1 \cdots E_n) = A_{H1}^{\ast{}} \cdots A_{Hn}^{\ast{}}
+  \iff (\forall j=1,\ldots,n)(E_j = (G_j,c_j,A_{Qj}^{\ast{}},A_{Hj}^{\ast{}},u_j))$
 
 \section{Operational Semantics}
 
@@ -2429,30 +2427,30 @@ $\boxed{E,A -->a E,A}$
   \inferrule{
   \leftIndex(i) = i'
   }{
-  (G,(v,i),A_Q^{*},A_H^{*},u),A \xrightarrow{\Left} (G,(v,i'),A_Q^{*},A_H^{*},u),A
+  (G,(v,i),A_Q^{\ast{}},A_H^{\ast{}},u),A \xrightarrow{\Left} (G,(v,i'),A_Q^{\ast{}},A_H^{\ast{}},u),A
   }
 
   \inferrule{
   \rightIndex(i) = i'
   }{
-  (G,(v,i),A_Q^{*},A_H^{*},u),A \xrightarrow{\Right} (G,(v,i'),A_Q^{*},A_H^{*},u),A
+  (G,(v,i),A_Q^{\ast{}},A_H^{\ast{}},u),A \xrightarrow{\Right} (G,(v,i'),A_Q^{\ast{}},A_H^{\ast{}},u),A
   }
 
   \inferrule{
   \parents(v) = \{(c',v',u')\}
   }{
-  (G,(v,i),A_Q^{*},A_H^{*},u),A \xrightarrow{\Up} (G,c',A_Q^{*},A_H^{*},u),A
+  (G,(v,i),A_Q^{\ast{}},A_H^{\ast{}},u),A \xrightarrow{\Up} (G,c',A_Q^{\ast{}},A_H^{\ast{}},u),A
   }
 
   \inferrule{
   \cursorChildren(c) = \{(c',(k,u_k),u')\} \\
   \downIndex(k) = i
   }{
-  (G,c,A_Q^{*},A_H^{*},u),A \xrightarrow{\Down} (G,((k,u_k),i),A_Q^{*},A_H^{*},u),A
+  (G,c,A_Q^{\ast{}},A_H^{\ast{}},u),A \xrightarrow{\Down} (G,((k,u_k),i),A_Q^{\ast{}},A_H^{\ast{}},u),A
   }
 
   \inferrule{}{
-  (G,c,A_Q^{*},A_H^{*},u),A \xrightarrow{\Select~c'} (G,c',A_Q^{*},A_H^{*},u),A
+  (G,c,A_Q^{\ast{}},A_H^{\ast{}},u),A \xrightarrow{\Select~c'} (G,c',A_Q^{\ast{}},A_H^{\ast{}},u),A
   }
 \end{mathpar}
 
@@ -2464,7 +2462,7 @@ $\boxed{E,A -->a E,A}$
   u, u_k \in \U \text{ fresh} \\
   A_H' = [(c,(k,u_k),u) :-> +]
   }{
-  (G,c,A_Q^{*},A_H^{*},u),A \xrightarrow{\Create~k} (G A_H',c,A_Q^{*},A_H^{*}A_H',u),A
+  (G,c,A_Q^{\ast{}},A_H^{\ast{}},u),A \xrightarrow{\Create~k} (G A_H',c,A_Q^{\ast{}},A_H^{\ast{}}A_H',u),A
   }
 
   \inferrule{
@@ -2473,28 +2471,28 @@ $\boxed{E,A -->a E,A}$
   u, u_k \in \U \text{ fresh} \\
   \\\\
   \cursorChildren(G,c) = \{(c_j,v_j,u_j')\}_{j=1}^n \\
-  A_H'^{*} =
+  A_H'^{\ast{}} =
     [(c  ,(k,u_k),u  ) :-> +]
     [(c' ,v_j    ,u_j') :-> +]_{j=1}^n
   [(c_j,v_j    ,u_j') :-> -]_{j=1}^n
   }{
-  (G,c,A_Q^{*},A_H^{*},u),A \xrightarrow{\Create~k}
-  (G A_H'^{*},c',A_Q^{*},A_H^{*}A_H'^{*},u),A
+  (G,c,A_Q^{\ast{}},A_H^{\ast{}},u),A \xrightarrow{\Create~k}
+  (G A_H'^{\ast{}},c',A_Q^{\ast{}},A_H^{\ast{}}A_H'^{\ast{}},u),A
   }
 
   \inferrule{
   \cursorChildren(G,c) = \{\e_j\}_{j=1}^n \\
-  A_H'^{*} = [\e_j :-> -]_{j=1}^n
+  A_H'^{\ast{}} = [\e_j :-> -]_{j=1}^n
   }{
-  (G,c,A_Q^{*},A_H^{*},u),A \xrightarrow{\Destroy}
-  (G A_H'^{*},c,A_Q^{*},A_H^{*}A_H'^{*},u),A
+  (G,c,A_Q^{\ast{}},A_H^{\ast{}},u),A \xrightarrow{\Destroy}
+  (G A_H'^{\ast{}},c,A_Q^{\ast{}},A_H^{\ast{}}A_H'^{\ast{}},u),A
   }
 
   \inferrule{
   A_H = [(c,v,u') :-> +] \\
   u' \text{ fresh}
   }{
-  (G,c,A_Q^{*},A_H^{*},u),A \xrightarrow{\Restore~v} (G A_H,c,A_Q^{*},A_H^{*}A_H,u),A %
+  (G,c,A_Q^{\ast{}},A_H^{\ast{}},u),A \xrightarrow{\Restore~v} (G A_H,c,A_Q^{\ast{}},A_H^{\ast{}}A_H,u),A %
   }
 \end{mathpar}
 
@@ -2505,41 +2503,41 @@ $\boxed{E,A -->a E,A}$
 \begin{mathpar}
   \inferrule{
   a \in \A^{edit} \\
-  (G,c,A_Q^{*},A_H^{*},u),A -->a (G',c',A_Q^{*},A_H'^{*},u),A
+  (G,c,A_Q^{\ast{}},A_H^{\ast{}},u),A -->a (G',c',A_Q^{\ast{}},A_H'^{\ast{}},u),A
   }{
-  (G,c,A_Q^{*},A_H^{*},u),A -->a (G',c',A_Q^{*}a,A_H'^{*},u),A
+  (G,c,A_Q^{\ast{}},A_H^{\ast{}},u),A -->a (G',c',A_Q^{\ast{}}a,A_H'^{\ast{}},u),A
   }
 \end{mathpar}
 
 \paragraph{Replay} \par
 
-$\boxed{E,A \xrightarrow{a^{*}} E,A}$
+$\boxed{E,A \xrightarrow{a^{\ast{}}} E,A}$
 %
 \begin{mathpar}
   \inferrule{
     E,A -->a E'',A'' \\
-    E'',A'' \xrightarrow{a^{*}} E',A' \\
+    E'',A'' \xrightarrow{a^{\ast{}}} E',A' \\
   }{
-    E,A \xrightarrow{aa^{*}} E',A'
+    E,A \xrightarrow{aa^{\ast{}}} E',A'
   }
 \end{mathpar}
 
 \paragraph{Publish} \par
 
-$\boxed{(E,A)^{*} -->a (E,A)^{*}}$
+$\boxed{(E,A)^{\ast{}} -->a (E,A)^{\ast{}}}$
 %
 \begin{mathpar}
   \inferrule{
-  E_j = (G_j,c_j,A_{Qj}^{*},A_{Hj}^{*},u_j) \\
-  E_j,A_j \xrightarrow{a'^{*}} (G_j',c_j',A_{Qj}'^{*}, A_{Hj}'^{*},u_j),A_j' \\
+  E_j = (G_j,c_j,A_{Qj}^{\ast{}},A_{Hj}^{\ast{}},u_j) \\
+  E_j,A_j \xrightarrow{a'^{\ast{}}} (G_j',c_j',A_{Qj}'^{\ast{}}, A_{Hj}'^{\ast{}},u_j),A_j' \\
   E_j' =
   ( G_j'
   , c_j'
-  , A_{Qj}'^{*} \setminus a'^{*}
-  , A_{Hj}'^{*} \setminus \known(E_1 \cdots E_n),u_j) \\
+  , A_{Qj}'^{\ast{}} \setminus a'^{\ast{}}
+  , A_{Hj}'^{\ast{}} \setminus \known(E_1 \cdots E_n),u_j) \\
   j = 1,\ldots,n
   }{
-  (E_1,A_1) \cdots (E_n,A_n) \xrightarrow{\Send~ a'^{*} } (E_1',A_1') \cdots (E_n',A_n')
+  (E_1,A_1) \cdots (E_n,A_n) \xrightarrow{\Send~ a'^{\ast{}} } (E_1',A_1') \cdots (E_n',A_n')
   }
 \end{mathpar}
 
