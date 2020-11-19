@@ -1634,9 +1634,8 @@ Having described single-user actions,
 we turn our attention to how Grove handles multiple users.
 This section generalizes to any number of users,
 but for simplicity we consider only two: Alice and Bob.
-Alice and Bob each maintain their own editor instance and perform
+Alice and Bob each maintain their own editor instances and perform
 actions relative to its state (using their own cursors, which we discuss in \autoref{sub:Cursors}).
-We start each user where we left off in the previous section with the state shown in \autoref{fig:Move:b}.
 
 \todo{START REV HERE}
 
@@ -1652,9 +1651,7 @@ that cause cycles or vertices with multiple parents
 \subsubsection{Editing Different Parts of the Code}
 \label{sub:Editing Different Parts of the Code}
 
-To start, Alice and Bob both have the graph in \autoref{fig:Move:b}, which
-represents the code~\texttt{\hole{} + (\hole{} * y)}.
-
+We start each user where we left off in the previous section with the state shown in \autoref{fig:Move:b}.
 Alice adds~\vDifferentPartsAlice{} as the left child of \vSimpleTimes{}
 and Bob changes \vSimpleY{} to \vDifferentPartsBob{}.
 Before transmitting their edits to each other,
@@ -1663,7 +1660,7 @@ and \autoref{fig:DifferentParts:b}, respectively.
 (Note that the transition edge from \autoref{fig:Move:b} to
 \autoref{fig:DifferentParts:b} represents
 multiple edges, i.e., deleting~\eSimpleY{} and adding~\eDifferentPartsBob{} along with its child~\vDifferentPartsBob{}.
-We thus mark it with a star.)\todo{star size}\todo{"sync"}
+We thus mark it with a star.)
 
 Alice and Bob then transmit their graph edits to each other
 and apply the other's graph edits to their own copy of the graph.
@@ -1685,62 +1682,59 @@ the graph in \autoref{fig:DifferentParts:c}.
 
 Stated more formally, our edit model obeys the commutativity shown in \autoref{fig:Commutativity}.
 For any sequences of edits from Alice and Bob,
-applying them in either order produces the same results.
+applying them in any order always produces the same results.
+(We show this formally in \autoref{sec:Commutativity}.)
 
 
 \subsubsection{Editing Nested Parts of the Code}
 \label{sub:Editing Nested Parts of the Code}
 
-After Alice and Bob share the edits they made in the previous subsection,
+After Alice and Bob share their edits to get the graph in \autoref{fig:DifferentParts:c},
 Alice changes~\vDifferentPartsAlice{} to~\vNestedPartsAlice{}, which results in the graph in \autoref{fig:NestedParts:a}.
-On the other hand, Bob moves~\vSimpleTimes{} and its children from the right child of~\vWrapPlus{} to its left child
+Meanwhile, Bob moves~\vSimpleTimes{} and its children from the~\texttt{R} child of~\vWrapPlus{} to its~\texttt{L} child
 by deleting~\eMoveTimes{} and adding~\eNestedPartsBob{}, which results in the graph in \autoref{fig:NestedParts:b}.
-Since edits are based on edge identities,
+Since edits are based on edge identifiers and not a location in the tree,
 both Alice's and Bob's edits can be applied to the other's graph,
-which results in both Alice and Bob having the graph in \autoref{fig:NestedParts:c}.
+which results in Alice and Bob both having the graph in \autoref{fig:NestedParts:c}.
 
-A consequence of this design is that we allow users to modify
-parts of the code that have been deleted.  For example,
+A consequence of this commutativity is that users can modify
+deleted code.  For example,
 Alice might receive Bob's deletion of~\eMoveTimes{} before making her
 changes and before receiving Bob's addition of~\eNestedPartsBob{}.
 Her edits would then temporarily be within the code deleted by Bob.
 TODO: \todo{TODO}She can restore that code using a restoration action add a fresh edge to it.
 
-TODO:figure
+\subsection{Merge Conflicts}
+\label{sub:Merge Conflicts}
 
-Contrast with a traditional diff
+While the collaborative edits discussed so far merge cleanly,
+they can also generate graphs that do not map cleanly to a syntax tree.
+We call these conflicts and consider cases for \emph{multi-child},
+\emph{multi-parent}, and \emph{cycle} conflicts.\todo{disconnect}
 
-Similar to how git merged across moves.
-A notable difference though is that \texttt{git} detects
-file moves by structural similarity rather than
-our nominal equality.
-(We exploit this in Subsection~REF:TODO).
+TODO: as with conflict in line/diff-based version control system (e.g., \texttt{git}, \texttt{mercurial}, \texttt{svn}, etc.),
+these require user intervention to resolve.
 
 \subsubsection{Multi-child conflicts}
 \label{sub:Multi-child conflicts}
 
 \figureMultiChild
 
-Next we address what happens when edits conflict.
-For example, Alice adds~\vMultiChildAlice{} as the right child of~\vWrapPlus{}
-while Bob adds~\vMultiChildBob{} also as the right child of~\vWrapPlus{}.
+As an example of a multi-chid conflict, suppose Alice and Bob both have the graph in \autoref{fig:NestedParts-c}.
+Alice then adds~\vMultiChildAlice{} as the~\texttt{R} child of~\vWrapPlus{}
+while Bob also adds~\vMultiChildBob{} as the~\texttt{R} child of~\vWrapPlus{}.
 These result in Alice and Bob having the graphs in \autoref{fig:MultiChild:a} and \autoref{fig:MultiChild:b}, respectively.
-These graphs have two different edges for the~\texttt{R} position of~\vWrapPlus{}.
-\autoref{fig:MultiChild:a} has~\eMultiChildAlice{}, which points to~\vMultiChildAlice{},
-and \autoref{fig:MultiChild:b} has~\eMultiChildBob{}, which points to~\vMultiChildBob{}.
-We call this a \emph{multi-child conflict}.
+Note that these graphs have two different edges for the~\texttt{R} position of~\vWrapPlus{}.
 
 We merge these edits by including \emph{both} edges as edges going out of the \texttt{R} position
 of \vWrapPlus{}.
-This results in \autoref{fig:MultiChild:c}.
-The conflict between Alice's and Bob's changes is
-represented by the fact that there are multiple edges going out of one index.
+This results in \autoref{fig:MultiChild:c}, where there is a multi-child conflict
+in the~\texttt{R} position of~\vWrapPlus~(i.e., there are multiple edges for the same position in a vertex).
 In the user interface, we flag this conflict with the notation~\texttt{\{ x | y \}}.
 
-This conflict must eventually be resolved by the user by deleting
-one of the edges and editing the other to be the merged value.
-For example, one could delete \eMultiChildBob{} and then change~\vMultiChildAlice{}
-to be~\texttt{x * y}.
+This conflict can be resolved by the user by deleting
+one of the edges in conflict and editing expression pointed to the other edge to be the correctly merged value.
+For example, one could delete \eMultiChildBob{} and then change~\vMultiChildAlice{} to be~\texttt{x * y}.
 (Note that users can continue to edit the code while in this conflicted state.
 It just must be resolved before the the code is run.\footnote{It
   may be possible to develop evaluation models that allow these sorts of conflicts,
@@ -1751,55 +1745,34 @@ Note that as a convenience to the user, certain simple
 conflicts might be automatically resolved,
 but we consider this a higher-level, user-interface consideration.
 
-TODO: Multiple adds cause conflicts (Not usually presented in the UI)
-
-Compare this to what happens when there are conflicts in a traditional,
-line/diff-based version control system (e.g., \texttt{git}, \texttt{mercurial}, \texttt{svn}, etc.).
-Those systems annotate files with difference markers (e.g., sequences of~\texttt{<},~\texttt{>}, or~\texttt{=})
-when a merge conflict happens.
-These show alternate versions of the code, and it is up to the user
-to replace those alternates with the desired merged result.
-
-Our tree-based model is similar in that it presents alternate versions
-of the code, and it is up to the user to replace those alternates with the desired merged result.
+This handling of conflicts is similar traditional merge conflicts in that
+it presents alternate versions of the code that the user replaces with the desired merge result.
 Our model is different in that merge conflicts in the line-based model
-prevent some semantic editor services from running
-that could continue to run in the tree-based model because
+prevent semantic editor services from running
+that could continue to run in the graph-based model because
 code inside and outside the conflict is still valid code.
-It is just the point where they meet the poses a potential problem for editor services.
-Another place our model is different
-is that changes are explicit rather than being inferred by a \texttt{diff} algorithm.
-Finally, in our model, since all changes are in terms of
-the structure of the code rather than lines,
-all changes respect that structure.
-This is unlike the line-based model where there is no guarantee
-that a merge conflict follows the grammatical structure of the code.
+It is just the where the multi-child happens that editor services may break down.
+\autoref{sec:Related Work} discusses more differences.
 
 \subsubsection{Multi-parent conflicts}
 \label{sub:Multi-parent conflicts}
 
 \figureMultiParent
 
-In addition to conflicts due to multiple edges coming \emph{out of} the same child position of a particular vertex,
-conflicts can manifest as multiple edges going \emph{into} a particular vertex.
-We call these \emph{multi-parent conflicts}.
-
-An example of this is shown in \autoref{fig:MultiParent}.
-\autoref{fig:MultiParent:a} shows the graph after Alice and Bob have made some more edits,
-and Alice and Bob's editors are synchronized with each other.
-This graph represents the expression~\texttt{(w * \hole{}) + \hole{}}.
-Alice moves~\vNestedPartsAlice{} to the~\texttt{R} position of~\vSimpleTimes{},
+While multi-child conflicts are when multiple edges are in the same \emph{child} position of a vertex,
+multi-parent conflicts are when there are multiple \emph{parents} of a vertex.
+An example of this is in \autoref{fig:MultiParent}.
+\autoref{fig:MultiParent:a} shows the graph after Alice and Bob have made some edits,
+and Alice and Bob's shared their edits with each other.
+Alice then moves~\vNestedPartsAlice{} to the~\texttt{R} position of~\vSimpleTimes{},
 while Bob moves it to the~\texttt{R} position of~\vWrapPlus{}.
-This results in the graphs in \autoref{fig:MultiParent:b} and \autoref{fig:MultiParent:c},
-which represent respectively the expression~\texttt{(\hole{} * w) + \hole{}} for Alice
-and the expression~\texttt{(\hole{} * \hole{}) + w} for Bob.
+This results in the graphs in \autoref{fig:MultiParent:b} and \autoref{fig:MultiParent:c}.
 In both cases, these edits are achieved with one edge delete and one edge add.
 Alice deletes~\eNestedPartsAlice{} and adds~\eMultiParentAlice{}, while
 Bob deletes~\eNestedPartsAlice{} and adds~\eMultiParentBob{}.
 As explained in \autoref{sec:Formalism}, deletes are idempotent so Alice and Bob both deleting~\eNestedPartsAlice{} is not a problem.
 However, both~\eMultiParentAlice{} (added by Alice) and~\eMultiParentBob{} (added by Bob) point to the same vertex.
-This generates \autoref{fig:MultiParent:d}, in which~\vNestedPartsAlice{} has two parents pointing to it.
-We call this situation a multi-parent conflict.
+When their edits are merged, the result is \autoref{fig:MultiParent:d}, in which~\vNestedPartsAlice{} has two parents pointing to it.
 
 TODO: talk about how to resolve the conflict
 
@@ -1846,6 +1819,8 @@ TODO: talk about how to resolve the conflict
 
 \figureCycle
 
+TODO: technically a multi-parent conflict
+
 TODO: paragraph about why single-user cycles cannot happen.
 While single-user edits can be checked to see
 whether they create a cycle and thus the system
@@ -1853,25 +1828,25 @@ can immediately warn the user,
 multi-user edits may not manifest cycles until after
 the edits from multiple users are merged.
 
+In addition to multi-child and multi-parent conflicts, merges
+can cause cycles in the graph.\footnote{In theory a single user could
+generate cycles, but this could be detected immediately and the user action
+that caused that cycle rejected.
+Thus, we are only concerned with cycles that cannot be immediately detected
+and prevented by the editor.}
 For example, consider the situation in \autoref{fig:Cycle}.
-\autoref{fig:Cycle:a} shows the graph after Alice and Bob have made some more edits,
-and Alice and Bob's editors are synchronized with each other.
-This graph represents the expression~\texttt{((\hole{} * \hole{}) * (\hole{} + \hole{})) + \hole}.
-Alice moves~\vMultiCycleTimes{} to the \texttt{R} child of~\vWrapPlus{}
-and then~\vMultiCyclePlus{} underneath.
-This results in \autoref{fig:Cycle:b},
-which represents the expression~\texttt{(\hole{} * \hole{}) + ((\hole{} + \hole{}) * \hole{})}.
-On the other hand, Bob does the same
-but puts~\vMultiCycleTimes{} under~\vMultiCyclePlus{}.
-This results in \autoref{fig:Cycle:c},
-which represents the expression~\texttt{(\hole{} * \hole{}) + ((\hole{} * \hole{}) + \hole{})}.
+\autoref{fig:Cycle:a} shows the graph after Alice and Bob have made some edits,
+and shared them with each other.
+Alice then moves~\vMultiCycleTimes{} to the \texttt{R} child of~\vWrapPlus{}
+and then~\vMultiCyclePlus{} underneath that.
+Bob does the same but puts~\vMultiCycleTimes{} under~\vMultiCyclePlus{}.
+This results in \autoref{fig:Cycle:b} and \autoref{fig:Cycle:c}, respectively.
 
 On their own, neither of these edits creates a cycle.
 However, merging the edit actions of both Alice and Bob results in the graph
 in \autoref{fig:Cycle:d}, which has a cycle
 between~\vMultiCycleTimes{} and~\vMultiCyclePlus{}.
-This situation is akin to a merge conflict in traditional version control systems.
-Resolving it requires user input, but is as simple as
+As with the other kinds of conflict, resolving it requires user input, but is as simple as
 either deleting~\eMultiCycleBobPlus{} and~\eMultiCycleBobTimes{}~(thus favoring Alice's version)
 or deleting~\eMultiCycleAliceTimes{} and~\eMultiCycleAlicePlus{}~(thus favoring Bob's version).
 Since a cycle like this that is connected to the root vertex always
@@ -1883,30 +1858,29 @@ We leave the user interface considerations of resolving the conflict such a
 cycle represents to future work.
 
 
-\subsubsection{Disconnection}
-\label{sub:Disconnection}
+\paragraph{Disconnected Cycles}
 
 \figureDisconnect
+
+TODO: technically a cycle
+
+TODO: in general detect when there are or were edits to something now deleted
 
 \todo{UI would show orphans only once edits orphans occur}
 
 Finally, when multi-user edits are merged,
-parts of the graph can become disconnected
-even though they are connected in each user's
+parts of the graph can become disconnected from the root
+even though they are connected to the root in each user's
 copy of the graph before the merge.
 
-For example, consider the situation in \autoref{fig:Disconnection}.
-\autoref{fig:Disconnect:a} shows the graph after Alice and Bob have made some more edits,
-and Alice and Bob's editors are synchronized with each other.
-This graph represents the expression~\texttt{(\hole{} * \hole{}) + (\hole{}  * \hole{})}.
-Alice moves~\vMultiCycleTimes{} under~\vSimpleTimes{}.
-This results in \autoref{fig:Disconnect:b},
-which represents the expression~\texttt{(\hole{} * (\hole{} * \hole{})) + \hole}.
-On the other hand, Bob puts~\vSimpleTimes{} under~\vMultiCycleTimes{}.
-This results in \autoref{fig:Disconnect:c},
-which represents the expression~\texttt{((\hole{} * \hole{}) * \hole{}) + \hole{}}.
+For example, consider the situation in \autoref{fig:Disconnection-a},
+which shows the graph after Alice and Bob have made some edits,
+and shared their edits with each other.
+Alice then moves~\vMultiCycleTimes{} under~\vSimpleTimes{},
+while Bob moves~\vSimpleTimes{} under~\vMultiCycleTimes{}.
+This results in \autoref{fig:Disconnect:b} and \autoref{fig:Disconnect:c}, respectively.
 
-When these edits are merged, the result is the graph in \autoref{fig:Disconnect:d}.
+When these edits are merged, the result is \autoref{fig:Disconnect:d}.
 Since Alice deleted~\eNestedPartsBob{}
 and Bob deleted~\eMultiCycleAliceTimes{},
 when these are merged~\vMultiCycleTimes{} and~\vSimpleTimes{}
@@ -1919,7 +1893,7 @@ are duplicates of the other.
 
 Fortunately, we can detect this situation and warn the user
 since the disconnection appears after merging two graphs
-that did not have disconnected vertexes.
+in which vertexes were not already disconnected.
 
 \subsection{Cursors}
 \label{sub:Cursors}
@@ -2117,6 +2091,7 @@ $G$.
 % Joining anything with $\Minus$ is always $\Minus$ (once an edge is marked as deleted, it is permanently deleted).
 
 \subsection{Commutativity}
+\label{sub:Commutativity}
 
 In order to define commutativity, we first define a lattice over $G$.
 Then we show that for any graphs $G$ and $G'$ and graph action $\alpha$,
@@ -2291,6 +2266,29 @@ Optimizations: least fixed point
 
 \section{Related Work}
 \label{sec:Related Work}
+
+Contrast with a traditional diff
+
+Similar to how git merged across moves.
+A notable difference though is that \texttt{git} detects
+file moves by structural similarity rather than
+our nominal equality.
+(We exploit this in Subsection~REF:TODO).
+
+Compare this to what happens when there are conflicts in a traditional,
+line/diff-based version control system (e.g., \texttt{git}, \texttt{mercurial}, \texttt{svn}, etc.).
+Those systems annotate files with difference markers (e.g., sequences of~\texttt{<},~\texttt{>}, or~\texttt{=})
+when a merge conflict happens.
+These show alternate versions of the code, and it is up to the user
+to replace those alternates with the desired merged result.
+
+Another place our model is different
+is that changes are explicit rather than being inferred by a \texttt{diff} algorithm.
+Finally, in our model, since all changes are in terms of
+the structure of the code rather than lines,
+all changes respect that structure.
+This is unlike the line-based model where there is no guarantee
+that a merge conflict follows the grammatical structure of the code.
 
 Hazel
 \citep{Omar:2019:10.1145/3290327}
