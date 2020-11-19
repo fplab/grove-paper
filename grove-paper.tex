@@ -2044,7 +2044,7 @@ unfilled holes (represented by $\hole$), and most types of terms have conflict h
 \subsubsection{Graphs}
 \label{sub:Graphs}
 
-A graph $\G : \E \rightarrow \Sigma$ is a function from edges to edge states,
+A graph $G : \E \rightarrow \Sigma$ is a function from edges to edge states,
 where $\E = \U \times \V \times \P \times \V$,
 unique IDs are drawn from some suitable set $\U$,
 vertices are drawn from $\V$,
@@ -2052,23 +2052,24 @@ positions are drawn from $\P$,
 and edge states are drawn from $\Sigma$, all defined below.
 
 Each edge $\e = (u, v, p, v^\prime)$ has a unique name, $u \in \U$,
-and connects the child position $p$ of a source vertex $v$ to a target vertex $v^\prime$.
-The state of each edge, $\e$, is determined by the corresponding edge state, $\G(\e) \in \Sigma = \{ \bot, \Plus, \Minus \}$.
-If $\G(\e) = \bot$, then $\e$ does not yet exist.
-If $\G(\e)$ is $\Plus$, the edge has been created.
-If $\G(\e)$ is $\Minus$, the edge has been destroyed.
+and connects the child position $p$ of source vertex $v$ to target vertex $v^\prime$.
+The state of each edge, $\e$, is determined by the corresponding edge state, $G(\e) \in \Sigma = \{ \bot, \Plus, \Minus \}$.
+When $G(\e) = \bot$, $\e$ has not been created yet.
+When $G(\e)$ is $\Plus$, the edge has been created.
+When $G(\e)$ is $\Minus$, the edge has been destroyed.
 The total ordering $\bot \sqsubset \Plus \sqsubset \Minus$ forms a lattice over $\Sigma$.
 
-A vertex $v = (u, k)$ identifies a distinct instance of some constructor $k$,
-where $k \in \K$ corresponds to one of the forms defined in \autoref{fig:Syntax
-as a grammar} that is not an operator or a hole. Each contructor has an arity,
-which we define as a set of positions. A position $p \in \P$ identifies a
-location, adjacent to some parent vertex, from which edges to child vertices may
-originate. The $\arity$ function in \autoref{fig:Constructors, Indexes and
-Arity} gives the complete mapping from constructors to potential edge
-positions. Every graph contains a distinguished root vertex, root constructor,
-and root position, respectively named $v_0$, $k_0$, and $p_0$.
+A vertex $v = (u, k)$ identifies a distinct instance of some constructor $k \in
+\K$, corresponding to a form defined in \autoref{fig:Syntax as a grammar} that
+is neither an operator nor a hole. Each contructor has an arity, which we define
+as a set of positions. A position $p \in \P$ identifies a location, adjacent to
+some source vertex, from which edges to target vertices may originate. The
+$\arity$ function in \autoref{fig:Constructors, Indexes and Arity} gives the
+complete mapping from constructors to potential edge positions. Every graph
+contains a distinguished root vertex, root constructor, and root position,
+respectively named $v_0$, $k_0$, and $p_0$.
 
+% TODO: should graph "recomposition" have an algorithm, too?
 A graph can be derived from an expression in the calculus by starting with an
 empty graph, selecting unique ids $u, u_k$ and constructor $k$ for the outermost
 expression, and creating edge $\e = (u, v_0, p_0, (u_k, k))$. Then, for each
@@ -2076,10 +2077,10 @@ sub-term at some position $p \in \arity(k)$, select unique id $u'$ and
 constructor $k'$ and create edge $e' = (u', v, p, v')$ with $v = (u_k, k)$, $v'
 = (u', k')$. Continuing in this manner, treat each sub-term, starting with the
 ones at positions in $\arity(k')$, as if it were the outermost and create edges
-to the vertices representing its immediate sub-terms until only operators and
-holes remain. Note that empty holes are not modeled explicitly in the graph.
-Wherever an empty hole term appears, the graph has no edges originating from
-that position.
+to the vertices representing its immediate sub-terms until only empty holes
+remain. Note that empty holes are not modeled explicitly in the graph. Wherever
+an empty hole appears in an expression, the corresponding graph position has no
+edges originating from it.
 
 % You can map from syntax to graph by selecting
 % unique IDs $u$ (for both edges and vertexes).
@@ -2175,36 +2176,31 @@ multi-edge into a by-id reference to the one vertex.
   \DontPrintSemicolon
   \SetAlgoNoLine
   \SetKwFunction{reachable}{reachable}
-  \SetKwFunction{simpleCycles}{simpleCycles}
   \SetKwProg{Fn}{function}{}{end}
 
   \KwIn{Graph $G$}
-  \KwOut{Decomposition of $G$ into cycle-free expressions}
+  \KwOut{A partitioning of the edges of $G$}
 
-  $liveEdges := \{\e : G(\e) = \Plus\}$\;
-  $liveVertexes := \bigcup_{(u, v, p, v') \in liveEdges} \{v, v'\}$\;
-  $allVertexes := \bigcup_{(u, v, p, v') \in \dom(G)} \{v, v'\}$\;
-  $multiparented := \{v \in allVertexes : \exists (u_1, v_1, p_1, v), (u_2, v_2, p_2, v) \in \dom(G), v_1 \ne v_2\}$\;
-  $deleted := allVertexes \setminus liveVertexes \setminus \{v_0\}$\;
-  $MP := \{\reachable(v, \varnothing) : v \in multiparented\}$\;
-  $D := \{\reachable(v, \varnothing) : v \in deleted\}$\;
-  \Return{$(\reachable(v_0, \varnothing), MP, D, \simpleCycles(deleted))$}\;
-  \;
-
-  \Fn{\reachable $((u, k), seen)$}{
-    \If{$(u, k) \in multiparented \cup seen$}{
-      \Return{$u$}
-    }
-    $childEdges := \{(u', v, p, v') \in liveEdges : v = (u, k)\}$\;
-    $children := \{(p, \reachable(v, seen \cup \{u\})) : (p, v) \in childEdges\}$\;
-    \Return{$(k, children)$}
+  $live := \{\e : G(\e) = \Plus\}$\;
+  $R := \{\reachable(\e) : \e = (u, v_0, p, v) \in live\}$\;
+  $D := \{\reachable(\e) : \e \notin live\}$\;
+  $muliparent := \{(u,v,p,v') \in live : \exists (u_1, v_1, p_1, v), (u_2, v_2, p_2, v) \in live, v_1 \ne v_2\}$\;
+  $MP := \{\reachable(\e) : \e \in multiparent\}$\;
+  $SC := \varnothing$\;
+  $remaining := \{\e \notin \edges(R \cup D \cup MP)\}$\;
+  \While{$remaining \ne \varnothing$}{
+    $(root, cycle) := \reachable(\min(remaining))$\;
+    $remaining := remaining \setminus \{root\} \setminus cycle$\;
+    $SC := SC \cup \{(root, cycle)\}$\;
   }
+  \Return{$(R, D, MP, SC)$}\;
   \;
 
-  \Fn{\simpleCycles $(remaining)$}{
-    \Return{}
+  \Fn{$\reachable\ ((u, v, p, v'))$}{
+    $children := \{(u', v', p', v'') \in live\}$\;
+    $descendants := \bigcup_{\e \in children} \reachable(\e)$\;
+    \Return{$((u, v, p, v'), descendants)$}
   }
-  \;
 \end{algorithm}
 
 The result of decomposition is a 4-tuple $(e, MP, D, SC) \in Exp \times
