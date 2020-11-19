@@ -1614,14 +1614,14 @@ This corresponds to the following sequence of graph edits, shown in \autoref{fig
 \begin{figure}
   \centering
   \begin{tikzpicture}
-    \path (-3cm, 0cm) node (a) [align=center]       {Original \\ Version};
+    \path (-3cm, 0cm) node (a) [align=center]            {Original \\ Version};
     \path ( 0cm, 1cm) node (b) [align=center,alice node] {Alice's  \\ Version};
     \path ( 0cm,-1cm) node (c) [align=center,bob node]   {Bob's    \\ Version};
-    \path ( 3cm, 0cm) node (d) [align=center]       {Synchronized \\ Version};
-    \path [draw,->,alice step] (a) -- node [pos=0.7,auto,align=center] {Alice's \\ Edits} (b);
-    \path [draw,->,bob step]   (a) -- node [pos=0.7,auto,swap,align=center]      {Bob's \\ Edits}   (c);
-    \path [draw,->,merge step] (b) -- node [pos=0.3,auto] {Sync} (d);
-    \path [draw,->,merge step] (c) -- node [pos=0.3,auto,swap]      {Sync} (d);
+    \path ( 3cm, 0cm) node (d) [align=center]            {Synchronized \\ Version};
+    \path [draw,->,alice step] (a) -- node [pos=0.7,align=center,auto]      {Alice's \\ Edits} (b);
+    \path [draw,->,bob step]   (a) -- node [pos=0.7,align=center,auto,swap] {Bob's \\ Edits}   (c);
+    \path [draw,->,merge step] (b) -- node [pos=0.3,align=center,auto]      {Share \\ Edits} (d);
+    \path [draw,->,merge step] (c) -- node [pos=0.3,align=center,auto,swap] {Share \\ Edits} (d);
   \end{tikzpicture}
   \caption{Commutativity of Edits.}
   \label{fig:Commutativity}
