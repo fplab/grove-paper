@@ -1898,22 +1898,35 @@ in which vertexes were not already disconnected.
 \subsection{Cursors}
 \label{sub:Cursors}
 
-Finally we address the question of cursors.
+\paragraph{Representation}
 
-All edits use edge and vertex identifiers.
-Thus cursor positions do not affect the interpretation of graph edits.
-Cursors are not considered part of the graph representation,
+For most editing a cursor is represented by a position within a vertex.
+For example, in TODO, Bob's cursor might be at the TODO position of the TODO:vertex.
+Representing it this way means that if Bob or some other user deletes TODO:vertex
+and replaces it with a different vertex, Bob's cursor is still valid.
+We specify a position within a vertex instead of a vertex because TODO.
+
+However, there is one case where we need a more precise cursor.
+That is when a vertex has a multi-child conflict (e.g. TODO in FIG:TODO).
+We want users to beable to put their cussor on either the conflict as a whole
+(e.g., TODO: \{ x | y \})
+or on an individual element (e.g., x or y).
+In the former case, a pair of a vertex and a child position suffices.
+For the latter case, we represent cursors by an edge identifier (e.g., TODO in TODO:FIG).
+
+\paragraph{Communication}
+
+All in our system edits use edge and vertex identifiers, and user
+cursors do not affect the interpretation of graph edits.
+Thus, cursors are not part of the graph representation
 and need not be communicated to other users.
 
-COMMUNICATION
+However, in a collaborative setting, seeing the cursors of other users
+and be useful.
+Thus, the editor announce cursor position to other editors,
+At any point in time, the announcement for a particular user with
+the most recent timestamp is used.
 
-TODO: use Alice and Bob
-
-However as a convienience to other users, the current cursor position
-may be transmitted to other users.
-In this role, cursors are merely advisory and we can follow the simple
-protocol of the sender marking every cursor announcement with a timestamp
-and the receiver displaying the cursor position With the most recently received position being the one displayed.
 Note that this cursor position may refer to edges or verticies that
 do not yet exist on the receivers machine.
 In these cases, we can either not display the other user's cursor (and perhaps
@@ -1921,27 +1934,6 @@ have a visual display flagging this fact), or we can display the most recent
 cursor that represents a valid position in the local graph (perhaps
 shown in a fadded color to show that this cursor is known to not be up to date).
 (Or perhaps, all cursors always fade/decay over time like on radar blips.)
-
-Don't model communication but would be separate layer anyway
-
-REPRESENTATION
-
-For most editing a cursor is represented by a position within a vertex.
-For example, in TODO, Bob's cursor might be at the TODO position of the TODO:vertex.
-Representing it this way means that if Bob or some other user deletes TODO:vertex
-and replaces it with a different vertex, Bob's cursor doesn't move.
-We specify a position within a vertex instead of a vertex because TODO.
-
-However, there is one case where we need a more precise cursor.
-That is when a vertex has multiple children in a particular position
-and we want the cursor to be on a specific child.
-In that case, we represent the cursor by an edge identifier.
-An example of this is seen in REF:figure.
-If Bob's cursor is on the \texttt{\{ x | y \}} as a whole,
-Bob's cursor would be the pair of the vertex id TODO and the position~\texttt{R}.
-If Bob's cursor is on a particular element in the multi-child,
-say the~\texttt{x}, then we represent the cursor position with edge identifier TODO:edge.
-
 
 \section{Formalism}
 \label{sec:Formalism}
