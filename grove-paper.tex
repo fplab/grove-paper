@@ -383,7 +383,7 @@
 \begin{tikzpicture}[remember picture, overlay]
 \path (0cm,0cm) node (node/Simple/a) [anchor=base] {\strut};
 \end{tikzpicture}
-}
+}%
 \label{fig:Simple:a}
 \figureCode{x * \hole{}}%
 \begin{tikzpicture}
@@ -405,7 +405,7 @@
 \path (0cm,0cm) node (node/Simple/b) [anchor=base] {\strut};
 \path [draw,->,alice step] (node/Simple/a) to (-2em, 0cm |- node/Simple/b);
 \end{tikzpicture}
-}
+}%
 \label{fig:Simple:b}
 \figureCode{x * y}%
 \begin{tikzpicture}
@@ -429,7 +429,7 @@
 \path (0cm,0cm) node (node/Simple/c) [anchor=base] {\strut};
 \path [draw,->,alice step] (node/Simple/b) to (-2em, 0cm |- node/Simple/c);
 \end{tikzpicture}
-}
+}%
 \label{fig:Simple:c}
 \figureCode{\hole{} * y}%
 \begin{tikzpicture}
@@ -448,7 +448,7 @@
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Code that Includes a Hole and Some Simple Edits.}
+\caption{Code that Includes a Hole and Some Simple Edits.}%
 \label{fig:Simple}
 \end{figure}
 }
@@ -472,7 +472,7 @@
 \path (0cm,0cm) node (node/Wrap/a) [anchor=base] {\strut};
 \path [draw,->,alice step] (node/Simple/cx) to (-2em, 0cm |- node/Wrap/a);
 \end{tikzpicture}
-}
+}%
 \label{fig:Wrap:a}
 \figureCode{\hole{}}%
 \begin{tikzpicture}
@@ -497,7 +497,7 @@
 \path (0cm,0cm) node (node/Wrap/b) [anchor=base] {\strut};
 \path [draw,->,alice step] (node/Wrap/a) to (-2em, 0cm |- node/Wrap/b);
 \end{tikzpicture}
-}
+}%
 \label{fig:Wrap:b}
 \figureCode{\hole{} + \hole{}}%
 \begin{tikzpicture}
@@ -524,7 +524,7 @@
 \path (0cm,0cm) node (node/Wrap/c) [anchor=base] {\strut};
 \path [draw,->,alice step] (node/Wrap/b) to (-2em, 0cm |- node/Wrap/c);
 \end{tikzpicture}
-}
+}%
 \label{fig:Wrap:c}
 \figureCode{\hole{} * y + \hole{}}%
 \begin{tikzpicture}
@@ -543,7 +543,7 @@
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Example of Wrapping.  (Note that this figure omits the orphaned \vSimpleX{} since it is no longer relevant to the narrative of this paper.)}
+\caption{Example of Wrapping.  (Note that this figure omits the orphaned \vSimpleX{} since it is no longer relevant to the narrative of this paper.)}%
 \label{fig:Wrap}
 \end{figure}
 }
@@ -564,7 +564,7 @@
 \path (0cm,0cm) node (node/Move/a) [anchor=base] {\strut};
 \path [draw,->,alice step] (node/Wrap/c) to (-2em, 0cm |- node/Move/a);
 \end{tikzpicture}
-}
+}%
 \label{fig:Move:a}
 \figureCode{\hole{} + \hole{}}%
 \begin{tikzpicture}
@@ -591,7 +591,7 @@
 \path (0cm,0cm) node (node/Move/b) [anchor=base] {\strut};
 \path [draw,->,alice step] (node/Move/a) to (-2em, 0cm |- node/Move/b);
 \end{tikzpicture}
-}
+}%
 \label{fig:Move:b}
 \figureCode{\hole{} + \hole{} * y}%
 \begin{tikzpicture}
@@ -610,7 +610,7 @@
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Example of Repositioning Code.}
+\caption{Example of Repositioning Code.}%
 \label{fig:Move}
 \end{figure}
 }
@@ -635,7 +635,7 @@
 \path (0cm,0cm) node (node/DifferentParts/a) [anchor=base] {\strut};
 \path [draw,->,alice step] (node/Move/bx) to (-2em, 0cm |- node/DifferentParts/a);
 \end{tikzpicture}
-}
+}%
 \label{fig:DifferentParts:a}
 \figureCode{\hole{} + u * y}%
 \begin{tikzpicture}
@@ -662,7 +662,7 @@
 \path (0cm,0cm) node (node/DifferentParts/b) [anchor=base] {\strut};
 \path [draw,->,bob step] (node/Move/bx) to [out=15,in=165,star] (-2em, 0cm |- node/DifferentParts/b);
 \end{tikzpicture}
-}
+}%
 \label{fig:DifferentParts:b}
 \figureCode{\hole{} + \hole{} * v}%
 \begin{tikzpicture}
@@ -690,7 +690,7 @@
 \path [draw,->,merge step] (node/DifferentParts/a) to [out=15,in=165] (-2em, 0cm |- node/DifferentParts/c);
 \path [draw,->,merge step] (node/DifferentParts/b) to (-2em, 0cm |- node/DifferentParts/c);
 \end{tikzpicture}
-}
+}%
 \label{fig:DifferentParts:c}
 \figureCode{\hole{} + u * v}%
 \begin{tikzpicture}
@@ -709,7 +709,7 @@
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Example of Users Editing Different Parts of the Code.}
+\caption{Example of Users Editing Different Parts of the Code.}%
 \label{fig:DifferentParts}
 \end{figure}
 }
@@ -755,7 +755,7 @@
 \path (0cm,0cm) node (node/NestedParts/a) [anchor=base] {\strut};
 \path [draw,->,alice step] (node/DifferentParts/c) to[star] (-2em, 0cm |- node/NestedParts/a);
 \end{tikzpicture}
-}
+}%
 \label{fig:NestedParts:a}
 \figureCode{\hole{} + w * v}%
 \begin{tikzpicture}
@@ -782,7 +782,7 @@
 \path (0cm,0cm) node (node/NestedParts/b) [anchor=base] {\strut};
 \path [draw,->,bob step] (node/DifferentParts/c) to [out=15,in=165,star] (-2em, 0cm |- node/NestedParts/b);
 \end{tikzpicture}
-}
+}%
 \label{fig:NestedParts:b}
 \figureCode{u * v + \hole{}}%
 \begin{tikzpicture}
@@ -810,7 +810,7 @@
 \path [draw,->,merge step] (node/NestedParts/a) to [out=15,in=165] (-2em, 0cm |- node/NestedParts/c);
 \path [draw,->,merge step] (node/NestedParts/b) to [out=15,in=165] (-2em, 0cm |- node/NestedParts/c);
 \end{tikzpicture}
-}
+}%
 \label{fig:NestedParts:c}
 \figureCode{w * v + \hole{}}%
 \begin{tikzpicture}
@@ -829,7 +829,7 @@
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Example of Users Editing Nested Parts of the Code.}
+\caption{Example of Users Editing Nested Parts of the Code.}%
 \label{fig:NestedParts}
 \end{figure}
 }
@@ -855,7 +855,7 @@
 \path (0cm,0cm) node (node/MultiChild/a) [anchor=base] {\strut};
 \path [draw,->,alice step] (node/NestedParts/cx) to (-2em, 0cm |- node/MultiChild/a);
 \end{tikzpicture}
-}
+}%
 \label{fig:MultiChild:a}
 \figureCode{w * v + x}%
 \begin{tikzpicture}
@@ -884,7 +884,7 @@
 \path (0cm,0cm) node (node/MultiChild/b) [anchor=base] {\strut};
 \path [draw,->,bob step] (node/NestedParts/cx) to[out=15,in=165] (-2em, 0cm |- node/MultiChild/b);
 \end{tikzpicture}
-}
+}%
 \label{fig:MultiChild:b}
 \figureCode{w * v + y}%
 \begin{tikzpicture}
@@ -912,7 +912,7 @@
 \path [draw,->,merge step] (node/MultiChild/a) to[out=15,in=165] (-2em, 0cm |- node/MultiChild/c);
 \path [draw,->,merge step] (node/MultiChild/b) to (-2em, 0cm |- node/MultiChild/c);
 \end{tikzpicture}
-}
+}%
 \label{fig:MultiChild:c}
 \figureCode{w * v + \multiChild{x}{y}}%
 \begin{tikzpicture}
@@ -933,7 +933,7 @@
 \end{subfigure}
 %%%%%%%%
 %\hfill{}
-\caption{Example of Multi-Child Conflicts.}
+\caption{Example of Multi-Child Conflicts.}%
 \label{fig:MultiChild}
 \end{figure}
 }
@@ -957,7 +957,7 @@
 \path (0cm,0cm) node (node/MultiParent/a) [anchor=base] {\strut};
 \path [draw,->,alice step] (node/MultiChild/cx) to[star] (-2em, 0cm |- node/MultiParent/a);
 \end{tikzpicture}
-}
+}%
 \label{fig:MultiParent:a}
 \figureCode{w * \hole{} + \hole{}\otherVertexVskip\phantom{\multiVertex{18} = w}}%
 \begin{tikzpicture}
@@ -984,7 +984,7 @@
 \path (0cm,0cm) node (node/MultiParent/b) [anchor=base] {\strut};
 \path [draw,->,alice step] (node/MultiParent/a) to[star] (-2em, 0cm |- node/MultiParent/b);
 \end{tikzpicture}
-}
+}%
 \label{fig:MultiParent:b}
 \figureCode{\hole{} * w + \hole{}\otherVertexVskip\phantom{\multiVertex{18} = w}}%
 \begin{tikzpicture}
@@ -1011,7 +1011,7 @@
 \path (0cm,0cm) node (node/MultiParent/c) [anchor=base] {\strut};
 \path [draw,->,bob step] (node/MultiParent/a) to[out=15,in=165,star] (-2em, 0cm |- node/MultiParent/c);
 \end{tikzpicture}
-}
+}%
 \label{fig:MultiParent:c}
 \figureCode{\hole{} * \hole{} + w\otherVertexVskip\phantom{\multiVertex{18} = w}}%
 \begin{tikzpicture}
@@ -1036,7 +1036,7 @@
 \path [draw,->,merge step] (node/MultiParent/b) to[out=15,in=165] (-2em, 0cm |- node/MultiParent/d);
 \path [draw,->,merge step] (node/MultiParent/c) to[out=15,in=165] (-2em, 0cm |- node/MultiParent/d);
 \end{tikzpicture}
-}
+}%
 \label{fig:MultiParent:d}
 \figureCode{\hole{} * \multiVertex{18} + \multiVertex{18}\otherVertexVskip\multiVertex{18} = w}%
 \begin{tikzpicture}
@@ -1064,7 +1064,7 @@
 \path (0cm,0cm) node (node/MultiParent/e) [anchor=base] {\strut};
 \path [draw,->,alice step] (node/MultiParent/d) to (-2em, 0cm |- node/MultiParent/e);
 \end{tikzpicture}
-}
+}%
 \label{fig:MultiParent:e}
 \figureCode{\hole{} * w + \hole{}\otherVertexVskip\phantom{\multiVertex{18} = w}}%
 \begin{tikzpicture}
@@ -1083,7 +1083,7 @@
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Example of Multi-Parent Conflicts.}
+\caption{Example of Multi-Parent Conflicts.}%
 \label{fig:MultiParent}
 \end{figure*}
 }
@@ -1113,7 +1113,7 @@
 \path (0cm,0cm) node (node/Cycle/a) [anchor=base] {\strut};
 \path [draw,->,alice step] (node/MultiParent/ex) to[star] (-2em, 0cm |- node/Cycle/a);
 \end{tikzpicture}
-}
+}%
 \label{fig:Cycle:a}
 \figureCode{\parens{\hole{} * \hole{}} * \parens{\hole{} + \hole{}} + \hole{}%
   \otherVertexVskip\phantom{\multiVertex{30} = \multiVertex{32} * \hole{}}%
@@ -1142,7 +1142,7 @@
 \path (0cm,0cm) node (node/Cycle/b) [anchor=base] {\strut};
 \path [draw,->,alice step] (node/Cycle/a) to[star] (-2em, 0cm |- node/Cycle/b);
 \end{tikzpicture}
-}
+}%
 \label{fig:Cycle:b}
 \figureCode{\hole{} * \hole{} + \parens{\hole{} + \hole{}} * \hole{}%
   \otherVertexVskip\phantom{\multiVertex{30} = \multiVertex{32} * \hole{}}%
@@ -1174,7 +1174,7 @@
 \path (0cm,0cm) node (node/Cycle/c) [anchor=base] {\strut};
 \path [draw,->,bob step] (node/Cycle/a) to[out=15,in=165,star] (-2em, 0cm |- node/Cycle/c);
 \end{tikzpicture}
-}
+}%
 \label{fig:Cycle:c}
 \figureCode{\hole{} * \hole{} + \parens{\hole{} * \hole{} + \hole{}}%
   \otherVertexVskip\phantom{\multiVertex{30} = \multiVertex{32} * \hole{}}%
@@ -1207,7 +1207,7 @@
 \path [draw,->,merge step] (node/Cycle/b) to[out=15,in=165] (-2em, 0cm |- node/Cycle/d);
 \path [draw,->,merge step] (node/Cycle/c) to (-2em, 0cm |- node/Cycle/d);
 \end{tikzpicture}
-}
+}%
 \label{fig:Cycle:d}
 \figureCode{\parens{\hole{} * \hole{}} + \multiChild{\multiVertex{30}}{\multiVertex{32}}%
   \otherVertexVskip\multiVertex{30} = \multiVertex{32} * \hole{}%
@@ -1237,7 +1237,7 @@
 % TODO remove cursor from screenshots
 % TODO add multiparent box
 % TODO only show parens where needed - figure 10, 11 - by associativity
-% TODO repplace cycle screenshot with cycles box 
+% TODO repplace cycle screenshot with cycles box %
 \label{fig:Cycle}
 \end{figure*}
 }
@@ -1261,7 +1261,7 @@
 \path (0cm,0cm) node (node/Disconnect/a) [anchor=base] {\strut};
 \path [draw,->,alice step] (node/Cycle/dx) to[star] (-2em, 0cm |- node/Disconnect/a);
 \end{tikzpicture}
-}
+}%
 \label{fig:Disconnect:a}
 \figureCode{\hole{} * \hole{} + \hole{} * \hole{}\otherVertexVskip\strut}%
 \begin{tikzpicture}
@@ -1285,7 +1285,7 @@
 \path (0cm,0cm) node (node/Disconnect/b) [anchor=base] {\strut};
 \path [draw,->,alice step] (node/Disconnect/a) to[star] (-2em, 0cm |- node/Disconnect/b);
 \end{tikzpicture}
-}
+}%
 \label{fig:Disconnect:b}
 \figureCode{\hole{} * \parens{\hole{} * \hole{}} + \hole{}\otherVertexVskip\strut}%
 \begin{tikzpicture}
@@ -1312,7 +1312,7 @@
 \path (0cm,0cm) node (node/Disconnect/c) [anchor=base] {\strut};
 \path [draw,->,bob step] (node/Disconnect/a) to[out=15,in=165,star] (-2em, 0cm |- node/Disconnect/c);
 \end{tikzpicture}
-}
+}%
 \label{fig:Disconnect:c}
 \figureCode{\hole{} + \parens{\hole{} * \hole{}} * \hole{}\otherVertexVskip\strut}%
 \begin{tikzpicture}
@@ -1340,7 +1340,7 @@
 \path [draw,->,merge step] (node/Disconnect/b) to[out=15,in=165] (-2em, 0cm |- node/Disconnect/d);
 \path [draw,->,merge step] (node/Disconnect/c) to (-2em, 0cm |- node/Disconnect/d);
 \end{tikzpicture}
-}
+}%
 \label{fig:Disconnect:d}
 \figureCode{\hole{} + \hole{}\otherVertexVskip\cycleVertex{2} = \hole{} * \parens{\cycleVertex{2} * \hole{}}}%
 \begin{tikzpicture}
@@ -1357,7 +1357,7 @@
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Example of Disconnection.}
+\caption{Example of Disconnection.}%
 \label{fig:Disconnection}
 \end{figure*}
 }
@@ -1433,7 +1433,7 @@
 \maketitle
 
 
-\section{Introduction}
+\section{Introduction}%
 \label{sec:Introduction}
 
 TODO: fix the following warning which are reported by LaTeX but not Overleaf: Class acmart Warning: A possible image without description on input line 321.
@@ -1483,10 +1483,10 @@ this is tricky because:
 
 - Hazel
 
-\subsection{Contributions and Paper Organization}
+\subsection{Contributions and Paper Organization}%
 \label{sec:Contributions and Paper Organization}
 
-\section{Grove By Example}
+\section{Grove By Example}%
 \label{sec:Grove By Example}
 
 This section introduces collaborative structure editing in Grove.
@@ -1495,7 +1495,7 @@ We begin in \autoref{sub:Program Representation} by covering how we use graphs t
 and \autoref{sub:Multi-user Interactions} explores actions performed by multiple users, Alice and Bob,
 each of whom is editing their own instance of a program.
 
-\subsection{Program Representation}
+\subsection{Program Representation}%
 \label{sub:Program Representation}
 
 \figureSimple
@@ -1530,7 +1530,7 @@ corresponds to the hole on the right of the~\texttt{*} in~\texttt{x * \hole}.
 
 \figureWrap
 
-\subsection{Single-User Actions}
+\subsection{Single-User Actions}%
 \label{sub:Single-User Actions}
 
 In the remainder of this section,
@@ -1546,7 +1546,7 @@ User actions act relative to a cursor.
 We do not model cursor sharing and the cursor does not appear in the underlying graph.
 We discuss cursor representations and cursor sharing in more detail in \autoref{sub:Cursors}.
 
-\subsubsection{Construction Actions}
+\subsubsection{Construction Actions}%
 \label{sub:Construction}
 
 To start our examples, Alice moves her cursor to the hole in~\texttt{x * \hole} in \autoref{fig:Simple:a}
@@ -1555,7 +1555,7 @@ This action corresponds to creating \eSimpleY{} from \vSimpleTimes{} at the \tex
 created vertex, \vSimpleY{}, containing the variable reference~\texttt{y}.
 The resulting graph, shown in \autoref{fig:Simple:b}, represents the expression \texttt{x * y}.
 
-\subsubsection{Deletion Actions}
+\subsubsection{Deletion Actions}%
 \label{sub:Deletion}
 
 \figureMove
@@ -1571,7 +1571,7 @@ Once an edge with a particular identifier is deleted, it cannot be recreated.
 
 Thus if Alice performed an ``undo'' on this deletion, Grove would create a fresh edge between \vSimpleTimes{} and \vSimpleX{}.
 
-\subsubsection{Wrapping Actions}
+\subsubsection{Wrapping Actions}%
 \label{sub:Wrapping}
 
 Next, Alice types~\texttt{+} when the cursor is on \vSimpleTimes{}.
@@ -1584,7 +1584,7 @@ This corresponds to the following sequence of graph edits, shown in \autoref{fig
 (c) add an edge to \vSimpleTimes{} in the left child position of this new~\texttt{+} vertex.
 (The choice of wrapping with a bias for the left child position is arbitrary.)
 
-\subsubsection{Repositioning Actions}
+\subsubsection{Repositioning Actions}%
 \label{sub:Repositioning}
 
 If a user wants to reposition code from one place to another, we have two options.
@@ -1627,7 +1627,7 @@ This corresponds to the following sequence of graph edits, shown in \autoref{fig
   \label{fig:Commutativity}
 \end{figure}
 
-\subsection{Multi-user Interactions}
+\subsection{Multi-user Interactions}%
 \label{sub:Multi-user Interactions}
 
 Having described single-user actions,
@@ -1637,29 +1637,21 @@ but for simplicity we consider only two: Alice and Bob.
 Alice and Bob each maintain their own editor instances and perform
 actions relative to its state (using their own cursors, which we discuss in \autoref{sub:Cursors}).
 
-\todo{START REV HERE}
+We also assume Alice and Bob have some way to create globally unique identifiers for verticies and edges
+(e.g., GUIDs).
 
-TODO: mention that id numbers are global (or maybe use A1 and B1 for different users?)
-
-TODO: (Place somewhere) This move semantics gives us a richer structure than
-when treating code as a list of lines.  We exploit
-this in Section~REF:TODO in order merge edits that involve moving code.
-
-TODO: Common scenarios first and then consider more unusual scenarios
-that cause cycles or vertices with multiple parents
-
-\subsubsection{Editing Different Parts of the Code}
+\subsubsection{Editing Different Parts of the Code}%
 \label{sub:Editing Different Parts of the Code}
 
 We start each user where we left off in the previous section with the state shown in \autoref{fig:Move:b}.
-Alice adds~\vDifferentPartsAlice{} as the left child of \vSimpleTimes{}
+Alice then adds~\vDifferentPartsAlice{} as the left child of \vSimpleTimes{},
 and Bob changes \vSimpleY{} to \vDifferentPartsBob{}.
 Before transmitting their edits to each other,
-Alice and Bob have the graphs in \autoref{fig:DifferentParts:a}
+Alice and Bob thus have the graphs in \autoref{fig:DifferentParts:a}
 and \autoref{fig:DifferentParts:b}, respectively.
 (Note that the transition edge from \autoref{fig:Move:b} to
 \autoref{fig:DifferentParts:b} represents
-multiple edges, i.e., deleting~\eSimpleY{} and adding~\eDifferentPartsBob{} along with its child~\vDifferentPartsBob{}.
+multiple graph-edit steps, i.e., deleting~\eSimpleY{} and adding~\eDifferentPartsBob{} along with its child~\vDifferentPartsBob{}.
 We thus mark it with a star.)
 
 Alice and Bob then transmit their graph edits to each other
@@ -1670,70 +1662,79 @@ This results in both Alice and Bob having the graph in
 
 \figureNestedParts
 
-\subsubsection{Commutativity}
-\label{sub:Commutativity}
+\subsubsection{Commutativity}%
+\label{sub:Commutativity:informal}
 
 Note that aside from transmitting edge deletions and additions,
 merging requires no coordination between Alice and Bob.
 For example, suppose Alice and Bob did not transmit their edits to each other
-but to a third user, Chris, that has the original graph in \autoref{fig:Move:b}.
+but instead to a third user, Chris.
 Chris can apply the edits from Alice and Bob in any order and will always get
 the graph in \autoref{fig:DifferentParts:c}.
 
-Stated more formally, our edit model obeys the commutativity shown in \autoref{fig:Commutativity}.
+In other words, our edit model obeys the commutativity shown in \autoref{fig:Commutativity}.
 For any sequences of edits from Alice and Bob,
 applying them in any order always produces the same results.
-(We show this formally in \autoref{sec:Commutativity}.)
+(We show this formally in \autoref{sub:Commutativity:informal}.)
 
 
-\subsubsection{Editing Nested Parts of the Code}
+\subsubsection{Editing Nested Parts of the Code}%%
 \label{sub:Editing Nested Parts of the Code}
 
 After Alice and Bob share their edits to get the graph in \autoref{fig:DifferentParts:c},
 Alice changes~\vDifferentPartsAlice{} to~\vNestedPartsAlice{}, which results in the graph in \autoref{fig:NestedParts:a}.
 Meanwhile, Bob moves~\vSimpleTimes{} and its children from the~\texttt{R} child of~\vWrapPlus{} to its~\texttt{L} child
 by deleting~\eMoveTimes{} and adding~\eNestedPartsBob{}, which results in the graph in \autoref{fig:NestedParts:b}.
-Since edits are based on edge identifiers and not a location in the tree,
+Since edits are based on edge identifiers and not locations in a tree,
 both Alice's and Bob's edits can be applied to the other's graph,
 which results in Alice and Bob both having the graph in \autoref{fig:NestedParts:c}.
 
-A consequence of this commutativity is that users can modify
-deleted code.  For example,
-Alice might receive Bob's deletion of~\eMoveTimes{} before making her
-changes and before receiving Bob's addition of~\eNestedPartsBob{}.
-Her edits would then temporarily be within the code deleted by Bob.
+Commutativity has consequences for this scenario.
+Commutativity require that edits produce the same result regardless of the order in which they are applied.
+So, if Alice receives Bob's deletion of~\eMoveTimes{} then makes her
+changes before receiving Bob's addition of~\eNestedPartsBob{},
+the result must still be the graph in \autoref{fig:NestedParts:c}.
+In that case, her edits would then temporarily be within the code deleted by Bob.
+Thus, our semantics must allows users to edit deleted code.
+(Whether or how this is presented in the user interface is another question.)
+
 TODO: \todo{TODO}She can restore that code using a restoration action add a fresh edge to it.
 
-\subsection{Merge Conflicts}
+\subsection{Merge Conflicts}%
 \label{sub:Merge Conflicts}
 
 While the collaborative edits discussed so far merge cleanly,
 they can also generate graphs that do not map cleanly to a syntax tree.
 We call these conflicts and consider cases for \emph{multi-child},
-\emph{multi-parent}, and \emph{cycle} conflicts.\todo{disconnect}
+\emph{multi-parent}, and \emph{cycle} conflicts.
 
-TODO: as with conflict in line/diff-based version control system (e.g., \texttt{git}, \texttt{mercurial}, \texttt{svn}, etc.),
-these require user intervention to resolve.
+As with conflict in line/diff-based version-control
+system~(e.g., \texttt{git}, \texttt{mercurial}, \texttt{svn}, etc.),
+these all require user intervention to resolve.
 
-\subsubsection{Multi-child conflicts}
+We consider common merge scenarios first, and then consider more unusual scenarios.
+
+\subsubsection{Multi-child conflicts}%
 \label{sub:Multi-child conflicts}
 
 \figureMultiChild
 
-As an example of a multi-chid conflict, suppose Alice and Bob both have the graph in \autoref{fig:NestedParts-c}.
+As an example of a multi-chid conflict, suppose Alice and Bob both have the graph in \autoref{fig:NestedParts:c}.
 Alice then adds~\vMultiChildAlice{} as the~\texttt{R} child of~\vWrapPlus{}
 while Bob also adds~\vMultiChildBob{} as the~\texttt{R} child of~\vWrapPlus{}.
 These result in Alice and Bob having the graphs in \autoref{fig:MultiChild:a} and \autoref{fig:MultiChild:b}, respectively.
-Note that these graphs have two different edges for the~\texttt{R} position of~\vWrapPlus{}.
+Note that these graphs have two different edges, \eMultiChildAlice{} and \eMultiChildBob{}, for the~\texttt{R} position of~\vWrapPlus{}.
 
-We merge these edits by including \emph{both} edges as edges going out of the \texttt{R} position
-of \vWrapPlus{}.
+We merge these edits by including \emph{both} \eMultiChildAlice{} and \eMultiChildBob{}
+as edges going out of the \texttt{R} position of \vWrapPlus{}.
 This results in \autoref{fig:MultiChild:c}, where there is a multi-child conflict
 in the~\texttt{R} position of~\vWrapPlus~(i.e., there are multiple edges for the same position in a vertex).
 In the user interface, we flag this conflict with the notation~\texttt{\{ x | y \}}.
 
+TODO: "delete both"
+
 This conflict can be resolved by the user by deleting
-one of the edges in conflict and editing expression pointed to the other edge to be the correctly merged value.
+one of the edges in conflict and editing the expression pointed to by the other edge to be the correctly merged value.
 For example, one could delete \eMultiChildBob{} and then change~\vMultiChildAlice{} to be~\texttt{x * y}.
 (Note that users can continue to edit the code while in this conflicted state.
 It just must be resolved before the the code is run.\footnote{It
@@ -1754,7 +1755,7 @@ code inside and outside the conflict is still valid code.
 It is just the where the multi-child happens that editor services may break down.
 \autoref{sec:Related Work} discusses more differences.
 
-\subsubsection{Multi-parent conflicts}
+\subsubsection{Multi-parent conflicts}%
 \label{sub:Multi-parent conflicts}
 
 \figureMultiParent
@@ -1763,7 +1764,7 @@ While multi-child conflicts are when multiple edges are in the same \emph{child}
 multi-parent conflicts are when there are multiple \emph{parents} of a vertex.
 An example of this is in \autoref{fig:MultiParent}.
 \autoref{fig:MultiParent:a} shows the graph after Alice and Bob have made some edits,
-and Alice and Bob's shared their edits with each other.
+and Alice and Bob shared their edits with each other.
 Alice then moves~\vNestedPartsAlice{} to the~\texttt{R} position of~\vSimpleTimes{},
 while Bob moves it to the~\texttt{R} position of~\vWrapPlus{}.
 This results in the graphs in \autoref{fig:MultiParent:b} and \autoref{fig:MultiParent:c}.
@@ -1814,7 +1815,7 @@ TODO: talk about how to resolve the conflict
 % disallow such edits to at least warn users when their
 % edits would create a cycle.
 
-\subsubsection{Cycles}
+\subsubsection{Cycles}%
 \label{sub:Multi-User Cycles}
 
 \figureCycle
@@ -1873,7 +1874,7 @@ parts of the graph can become disconnected from the root
 even though they are connected to the root in each user's
 copy of the graph before the merge.
 
-For example, consider the situation in \autoref{fig:Disconnection-a},
+For example, consider the situation in \autoref{fig:Disconnect:a},
 which shows the graph after Alice and Bob have made some edits,
 and shared their edits with each other.
 Alice then moves~\vMultiCycleTimes{} under~\vSimpleTimes{},
@@ -1895,7 +1896,7 @@ Fortunately, we can detect this situation and warn the user
 since the disconnection appears after merging two graphs
 in which vertexes were not already disconnected.
 
-\subsection{Cursors}
+\subsection{Cursors}%
 \label{sub:Cursors}
 
 \paragraph{Representation}
@@ -1935,7 +1936,7 @@ cursor that represents a valid position in the local graph (perhaps
 shown in a fadded color to show that this cursor is known to not be up to date).
 (Or perhaps, all cursors always fade/decay over time like on radar blips.)
 
-\section{Formalism}
+\section{Formalism}%
 \label{sec:Formalism}
 
 We will now make the intuitions developed in the previous section precise
@@ -1969,7 +1970,7 @@ and this simplicity aids in the predictability.
   \label{fig:Syntax as a grammar}
 \end{figure}
 
-\subsection{Syntax}
+\subsection{Syntax}%
 \label{sub:Syntax}
 
 The language we are modeling is shown in \autoref{fig:Syntax as a grammar},
@@ -2004,10 +2005,10 @@ unfilled holes (represented by $\hole$), and most types of terms have conflict h
 % NOTE base grammar has holes. rooted expression grammar has refs, conflicts, and multiparents
 % NOTE ref = expression reference or vertex reference
 
-\subsection{Convergent Graphs}
+\subsection{Convergent Graphs}%
 \label{sub:Convergent Graphs}
 
-\subsubsection{Graphs}
+\subsubsection{Graphs}%
 \label{sub:Graphs}
 
 A graph $G : \E \rightarrow \Sigma$ is a function from edges to edge states,
@@ -2052,7 +2053,7 @@ edges originating from it.
 % unique IDs $u$ (for both edges and vertexes).
 % - holes are not explicit in the graph
 
-\subsubsection{Graph Edits}
+\subsubsection{Graph Edits}%
 \label{sub:Graph Edits}
 
 We define a graph edit $\alpha \in \A = \left\{\Plus, \Minus\right\} \times \E$
@@ -2082,8 +2083,8 @@ $G$.
 % Intuitively, joining any edge state with $\bot$ is always the non-$\bot$ edge state (once an edge exists, it always exists).
 % Joining anything with $\Minus$ is always $\Minus$ (once an edge is marked as deleted, it is permanently deleted).
 
-\subsection{Commutativity}
-\label{sub:Commutativity}
+\subsection{Commutativity}%
+\label{sub:Commutativity:formal}
 
 In order to define commutativity, we first define a lattice over $G$.
 Then we show that for any graphs $G$ and $G'$ and graph action $\alpha$,
@@ -2124,10 +2125,10 @@ Discuss uniqueness of uuid
   $G \overset{\alpha_2\alpha_1}{\longrightarrow} G'$.
 \end{proof}
 
-\subsubsection{Agda Mechanization}
+\subsubsection{Agda Mechanization}%
 \label{sub:Agda Mechanization}
 
-\subsection{Graph Decomposition}
+\subsection{Graph Decomposition}%
 \label{sub:Graph Decomposition}
 
 Translating a graph into expressions in the calculus allows us to model
@@ -2196,7 +2197,7 @@ The least vertex of a cycle is the one that was created first. To ensure consist
 
 <Mathematical definition of above.>
 
-\subsection{User Actions}
+\subsection{User Actions}%
 \label{sub:User Actions}
 
 Mapping to b actions
@@ -2218,7 +2219,7 @@ Mapping to b actions
   \end{array}
 \]
 
-\section{Type System}
+\section{Type System}%
 \label{sec:Type System}
 
 Sensibility -- mapping back from graphs
@@ -2246,7 +2247,7 @@ TODO: leaves
 
 TODO: our model supports treating these as a cons-list of characters
 
-\section{Implementation}
+\section{Implementation}%
 \label{sec:Implementation}
 GRV -- how it is implemented, how it connects to the formalism, describe the graph,
 
@@ -2256,7 +2257,7 @@ Compared to the core language, our implementation lacks support for lists and ca
 
 Optimizations: least fixed point
 
-\section{Related Work}
+\section{Related Work}%
 \label{sec:Related Work}
 
 Contrast with a traditional diff
@@ -2303,8 +2304,12 @@ Unision?
 
 Homotopical Patch Theorey: https://www.cambridge.org/core/journals/journal-of-functional-programming/article/homotopical-patch-theory/42AD8BB8A91688BCAC16FD4D6A2C3FE7
 
-\section{Discussion and Conclusion}
+\section{Discussion and Conclusion}%
 \label{sec:Discussion and Conclusion}
+
+TODO: (Place somewhere) This move semantics gives us a richer structure than
+when treating code as a list of lines.  We exploit
+this in Section~REF:TODO in order merge edits that involve moving code.
 
 TODO: Traditional diff: no relation (and indent might change)
 
@@ -2315,7 +2320,7 @@ TODO: cache eviction algorithm
 TODO: Finally, note that through we present several complex scenarios, this is merely for presentation.
 In practice, these complex scenarios occur less frequently than portrayed here.
 
-\subsection{Variable names, strings, and numbers}
+\subsection{Variable names, strings, and numbers}%
 \label{sub:Variable names, strings, and numbers}
 
 NOTE: we could implement each digit as a separate characters
@@ -2351,7 +2356,7 @@ GUI for string conflicts: use popups
 
 \clearpage % Put these appendixes on separate pages so we can easily remove them from the document.  Also ensure all figures have been placed.
 
-\section{Supplemental Material: Complete Graph Sequences for All Figures}
+\section{Supplemental Material: Complete Graph Sequences for All Figures}%
 \label{apx:Supplemental Material: Complete Graph Sequences for All Figures}
 
 TODO: put all intermediate states for all graphs along with the edge actions
