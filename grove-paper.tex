@@ -1498,7 +1498,7 @@ each of whom is editing their own instance of a program.
 \subsection{Program Representation}%
 \label{sub:Program Representation}
 
-\figureSimple
+\figureSimple{}
 
 The \textit{program state} for each editor instance in Grove consists of a graph that represents the program being edited.
 This can be presented to the user as an expression containing holes.
@@ -1528,7 +1528,7 @@ Finally, holes are represented by the absence of a child.
 For example, in \autoref{fig:Simple:a} the absence of an \texttt{R} edge coming from \vSimpleTimes{}
 corresponds to the hole on the right of the~\texttt{*} in~\texttt{x * \hole}.
 
-\figureWrap
+\figureWrap{}
 
 \subsection{Single-User Actions}%
 \label{sub:Single-User Actions}
@@ -1558,7 +1558,7 @@ The resulting graph, shown in \autoref{fig:Simple:b}, represents the expression 
 \subsubsection{Deletion Actions}%
 \label{sub:Deletion}
 
-\figureMove
+\figureMove{}
 
 Next Alice deletes~\texttt{x} so that the code becomes~\texttt{\hole{} * y}.
 This is modeled by deleting \eSimpleX{} as shown in \autoref{fig:Simple:c}.
@@ -1608,9 +1608,9 @@ This corresponds to the following sequence of graph edits, shown in \autoref{fig
 (a) delete \eWrapTimes{} leaving \vSimpleTimes{} temporarily orphaned and
 (b) add \eMoveTimes{} to \vSimpleTimes{} in the right child position of \vWrapPlus{}.
 
-\figureDifferentParts
+\figureDifferentParts{}
 
-%\figureCommutativity
+%\figureCommutativity{}
 \begin{figure}
   \centering
   \begin{tikzpicture}
@@ -1660,7 +1660,7 @@ This results in both Alice and Bob having the graph in
 \autoref{fig:DifferentParts:c}.
 
 
-\figureNestedParts
+\figureNestedParts{}
 
 \subsubsection{Commutativity}%
 \label{sub:Commutativity:informal}
@@ -1717,7 +1717,7 @@ We consider common merge scenarios first, and then consider more unusual scenari
 \subsubsection{Multi-child conflicts}%
 \label{sub:Multi-child conflicts}
 
-\figureMultiChild
+\figureMultiChild{}
 
 As an example of a multi-chid conflict, suppose Alice and Bob both have the graph in \autoref{fig:NestedParts:c}.
 Alice then adds~\vMultiChildAlice{} as the~\texttt{R} child of~\vWrapPlus{}
@@ -1758,7 +1758,7 @@ It is just the where the multi-child happens that editor services may break down
 \subsubsection{Multi-parent conflicts}%
 \label{sub:Multi-parent conflicts}
 
-\figureMultiParent
+\figureMultiParent{}
 
 While multi-child conflicts are when multiple edges are in the same \emph{child} position of a vertex,
 multi-parent conflicts are when there are multiple \emph{parents} of a vertex.
@@ -1782,7 +1782,7 @@ TODO: talk about how to resolve the conflict
 
 % TODO: cut this section
 
-% \figureSingleUserCycles
+% \figureSingleUserCycles{}
 
 % Another case we must consider is when cycles appear in the graph.
 % We categorize these into cycles caused by the action of a single user
@@ -1818,16 +1818,7 @@ TODO: talk about how to resolve the conflict
 \subsubsection{Cycles}%
 \label{sub:Multi-User Cycles}
 
-\figureCycle
-
-TODO: technically a multi-parent conflict
-
-TODO: paragraph about why single-user cycles cannot happen.
-While single-user edits can be checked to see
-whether they create a cycle and thus the system
-can immediately warn the user,
-multi-user edits may not manifest cycles until after
-the edits from multiple users are merged.
+\figureCycle{}
 
 In addition to multi-child and multi-parent conflicts, merges
 can cause cycles in the graph.\footnote{In theory a single user could
@@ -1847,9 +1838,22 @@ On their own, neither of these edits creates a cycle.
 However, merging the edit actions of both Alice and Bob results in the graph
 in \autoref{fig:Cycle:d}, which has a cycle
 between~\vMultiCycleTimes{} and~\vMultiCyclePlus{}.
-As with the other kinds of conflict, resolving it requires user input, but is as simple as
-either deleting~\eMultiCycleBobPlus{} and~\eMultiCycleBobTimes{}~(thus favoring Alice's version)
-or deleting~\eMultiCycleAliceTimes{} and~\eMultiCycleAlicePlus{}~(thus favoring Bob's version).
+As with the other kinds of conflict, resolving it requires user input.
+For example, by either deleting both~\eMultiCycleBobPlus{} and~\eMultiCycleBobTimes{}~(thus favoring Alice's version)
+or deleting both~\eMultiCycleAliceTimes{} and~\eMultiCycleAlicePlus{}~(thus favoring Bob's version).
+
+\paragraph{Disconnected Cycles}
+
+\figureDisconnect{}
+
+TODO: technically a cycle
+
+TODO: in general detect when there are or were edits to something now deleted
+
+\todo{UI would show orphans only once edits orphans occur}
+
+Finally, there is a particular type of cycle worth discussing.
+
 Since a cycle like this that is connected to the root vertex always
 contains vertexes with multiple parents that if removed would break the cycle,
 we use the user interface described in \autoref{sub:Multi-parent conflicts}
@@ -1857,17 +1861,6 @@ to display these kinds of programs.
 For example, \autoref{fig:Cycle:d} would be displayed.
 We leave the user interface considerations of resolving the conflict such a
 cycle represents to future work.
-
-
-\paragraph{Disconnected Cycles}
-
-\figureDisconnect
-
-TODO: technically a cycle
-
-TODO: in general detect when there are or were edits to something now deleted
-
-\todo{UI would show orphans only once edits orphans occur}
 
 Finally, when multi-user edits are merged,
 parts of the graph can become disconnected from the root
