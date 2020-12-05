@@ -2250,6 +2250,16 @@ Compared to the core language, our implementation lacks support for lists and ca
 
 Optimizations: least fixed point
 
+Related: hypertree decomposition is an established topic in AI/DB. Apparently,
+it's NP-complete in general, so people look for tractable subproblems. Recent
+work focuses on reduction to SMT and parallelizability for large db-like
+querying of large graphs, but some papers also focus on efficient decompopsition
+for "nearly acyclic" graphs. The closest I could find to what we're already
+doing are the k-decomp / opt-k-decomp / det-k-decomp algoriths in this paper:
+https://dl.acm.org/doi/10.1145/1412228.1412229, except we're getting determinism
+for free (i.e., not having to guess-and-check pivot points) by virtue of our
+global root and uuid-based total ordering on basically everything.
+
 \section{Related Work}%
 \label{sec:Related Work}
 
