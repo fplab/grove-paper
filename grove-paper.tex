@@ -1633,12 +1633,20 @@ This corresponds to the following sequence of graph edits, shown in \autoref{fig
 Having described single-user actions,
 we turn our attention to how Grove handles multiple users.
 This section generalizes to any number of users,
-but for simplicity we consider only two: Alice and Bob.
+but for simplicity we consider only two in our examples: Alice and Bob.
 Alice and Bob each maintain their own editor instances and perform
 actions relative to its state (using their own cursors, which we discuss in \autoref{sub:Cursors}).
 
-We also assume Alice and Bob have some way to create globally unique identifiers for verticies and edges
-(e.g., GUIDs).
+Users coordinate by sharing with one another the graph edits corresponding to each
+action~(e.g., via direct network connections or relayed through a server).
+TODO: CITE(how to share network data -- DHT? consensus? ).
+The granularity of communication may vary.
+For real-time collaborative editing, edits may be sent as they occur.
+For version control, edits may be batched together in the form of commits.
+As we will show, these edits are commutative, so editors converge to the same state
+when all edits are shared.
+We assume users have some way to create globally unique identifiers for
+verticies and edges without coordination~(e.g.,~GUIDs TODO:CITE:GUIDS).
 
 \subsubsection{Editing Different Parts of the Code}%
 \label{sub:Editing Different Parts of the Code}
@@ -1659,12 +1667,12 @@ and apply the other's graph edits to their own copy of the graph.
 This results in both Alice and Bob having the graph in
 \autoref{fig:DifferentParts:c}.
 
-
 \figureNestedParts{}
 
 \subsubsection{Commutativity}%
 \label{sub:Commutativity:informal}
 
+\todo{rev}
 Note that aside from transmitting edge deletions and additions,
 merging requires no coordination between Alice and Bob.
 For example, suppose Alice and Bob did not transmit their edits to each other
