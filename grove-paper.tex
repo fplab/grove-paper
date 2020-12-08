@@ -1911,23 +1911,23 @@ We specify a position within a vertex instead of a vertex because TODO.
 However, there is one case where we need a more precise cursor.
 That is when a vertex has a multi-child conflict (e.g. TODO in FIG:TODO).
 We want users to beable to put their cussor on either the conflict as a whole
-(e.g., TODO: \{ x | y \})
-or on an individual element (e.g., x or y).
+(e.g., TODO: \texttt{\{ x | y \}})
+or on an individual element (e.g., \texttt{x} or \texttt{y}).
 In the former case, a pair of a vertex and a child position suffices.
 For the latter case, we represent cursors by an edge identifier (e.g., TODO in TODO:FIG).
 
 \paragraph{Communication}
 
-All in our system edits use edge and vertex identifiers, and user
+In our system all edits use edge and vertex identifiers, and user
 cursors do not affect the interpretation of graph edits.
-Thus, cursors are not part of the graph representation
-and need not be communicated to other users.
-
+Thus, cursors need not be communicated to other users.
 However, in a collaborative setting, seeing the cursors of other users
-and be useful.
-Thus, the editor announce cursor position to other editors,
-At any point in time, the announcement for a particular user with
-the most recent timestamp is used.
+can be useful.
+For this purpose, editors can announce their cursor position to other editors.
+At any point in time, the announcement
+with the most recent timestamp
+for a particular user
+is used.
 
 Note that this cursor position may refer to edges or verticies that
 do not yet exist on the receivers machine.
