@@ -2136,6 +2136,30 @@ Discuss uniqueness of uuid
 \subsection{Graph Decomposition}%
 \label{sub:Graph Decomposition}
 
+Graph decomposition occurs in three steps.
+
+First, a linear scan is performed over every edge that has been created or
+deleted. The vertices at both ends are partitioned into three sets:
+multi-parented, single-parented, or orphaned. Maps for O($\log n$) parent and
+child edge set lookups are also created.
+
+Second, the subgraphs rooted at vertices with more or less than one parent are
+traversed and equivalent tree structures are generated over components that are
+connected by single-parented vertices. Cycles are broken with UUID vertex
+references. Single-parented vertices reachable from the root vertex are also
+traversed.
+
+Finally, any remaining single-parented vertices are parts of wreaths. A wreath
+is a cycle of single-parented vertices that each may have single-parented
+descendants.
+
+Wreath traversal occurs in two directions. A vertex is chosen as an arbitrary
+starting point and its parents are traversed and marked as seen. Any vertex that
+has been seen twice must be on the cycle. We take the first one as the root of
+the wreath and traverse its children to produce a tree that covers the wreath.
+Any remaining single-parented vertices must be parts of other wreaths and are
+wreath-traversed until there are no more single-parented vertices left.
+
 % To render the graph as disjoint fragments of program code, we decompose the
 % graph into an equivalent representation using trees. The result is a 4-tuple,
 % where the first component is a tree, the second and third components are sets of
