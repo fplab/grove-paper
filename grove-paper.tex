@@ -77,7 +77,7 @@
 \usepackage{fontawesome}
 \usepackage{array}
 \usepackage{todonotes}
-\usepackage[ruled]{algorithm2e}
+% \usepackage[ruled]{algorithm2e}
 
 % Load MnSymbol without clobbering \ast
 % See https://tex.stackexchange.com/a/269691
@@ -263,7 +263,6 @@
 \DeclareMathOperator{\childVertexes}{\text{childVertexes}}
 \DeclareMathOperator{\cursorChildren}{\text{cursorChildren}}
 \DeclareMathOperator{\vertexChildren}{\text{vertexChildren}}
-\DeclareMathOperator{\deleted}{\text{deleted}}
 \DeclareMathOperator{\dom}{\text{dom}}
 \DeclareMathOperator{\edges}{\text{edges}}
 \DeclareMathOperator{\known}{\text{known}}
@@ -271,7 +270,6 @@
 \DeclareMathOperator{\liveVertexes}{\text{liveVertexes}}
 \DeclareMathOperator{\multiparents}{\text{multiparents}}
 \DeclareMathOperator{\orphans}{\text{orphans}}
-\DeclareMathOperator{\parents}{\text{parents}}
 \DeclareMathOperator{\parentVertexes}{\text{parentVertexes}}
 \DeclareMathOperator{\reachable}{\text{reachable}}
 \DeclareMathOperator{\seen}{\text{seen}}
@@ -283,6 +281,12 @@
 \DeclareMathOperator{\rightIndex}{\text{rightIndex}}
 \DeclareMathOperator{\downIndex}{\text{downIndex}}
 \DeclareMathOperator{\defaultIndex}{\text{defaultIndex}}
+
+% graph decomposition operators
+\DeclareMathOperator{\parents}{\text{parents}}
+\DeclareMathOperator{\multiParented}{\text{multiParented}}
+\DeclareMathOperator{\singleParented}{\text{singleParented}}
+\DeclareMathOperator{\deleted}{\text{deleted}}
 
 % Define outline versions of + and -
 \def\outlinepad{0.4pt}
@@ -2072,7 +2076,7 @@ between graphs.
 \[
   G \overset{(s,\e)}{\longrightarrow} G\left[ \e \mapsto s \sqcup G(\e) \right\}
 \]
-In words, applying graph action $\left(s, \e\right)$ to graph $G$ results in the
+Applying graph action $\left(s, \e\right)$ to graph $G$ results in the
 updated graph $G' = G\left[\e \mapsto s \sqcup G(\e) \right]$, wherein the edge
 state associated with edge $\e$ in $G$ becomes the join of $s$ with the state of
 $\e$ in $G$, and $G'(\e') = G(\e')$ for all other $\e' \ne \e$ in the domain of
@@ -2132,71 +2136,132 @@ Discuss uniqueness of uuid
 \subsection{Graph Decomposition}%
 \label{sub:Graph Decomposition}
 
-Translating a graph into expressions in the calculus allows us to model
-user interaction as a stream of edits as described in \autoref{sub:User
-Actions}. Our decomposition algorithm partitions the graph into disjount
-connected components. We encode cycles by resolving all but one vertex of each
-multi-edge into a by-id reference to the one vertex.
+% To render the graph as disjoint fragments of program code, we decompose the
+% graph into an equivalent representation using trees. The result is a 4-tuple,
+% where the first component is a tree, the second and third components are sets of
+% trees, and the fourth component is a set of cycles.
 
-\begin{algorithm}[t]
-  \caption{Graph Decomposition}
-  \label{fig:Graph Decomposition}
+% 1. ($O(n \log n)$ for maps, $O(n)$ for hash table) linear scan to partition vertices according to # of parents: multiple parents, single parents, no parents.
 
-  \DontPrintSemicolon
-  \SetAlgoNoLine
-  \SetKwFunction{reachable}{reachable}
-  \SetKwProg{Fn}{function}{}{end}
+% 2. ($n \log n$?) scan to discover edges leading to single-parented vertices reachable from root (and remove from single-parented set)
 
-  \KwIn{Graph $G$}
-  \KwOut{A partitioning of the edges of $G$}
+% 3. ($n \log n$?) scan to discover edges leading to single-parented vertices reachable from multi-parented vertices (and remove from single-parented set).
 
-  $live := \{\e : G(\e) = \Plus\}$\;
-  $R := \{\reachable(\e) : \e = (u, v_0, p, v) \in live\}$\;
-  $D := \{\reachable(\e) : \e \notin live\}$\;
-  $muliparent := \{(u,v,p,v') \in live : \exists (u_1, v_1, p_1, v), (u_2, v_2, p_2, v) \in live, v_1 \ne v_2\}$\;
-  $MP := \{\reachable(\e) : \e \in multiparent\}$\;
-  $SC := \varnothing$\;
-  $remaining := \{\e \notin \edges(R \cup D \cup MP)\}$\;
-  \While{$remaining \ne \varnothing$}{
-    $(root, cycle) := \reachable(\min(remaining))$\;
-    $remaining := remaining \setminus \{root\} \setminus cycle$\;
-    $SC := SC \cup \{(root, cycle)\}$\;
-  }
-  \Return{$(R, D, MP, SC)$}\;
-  \;
+% 4. ($n \log n$?) scan to discover edges leading to single-parented [deleted]
 
-  \Fn{$\reachable\ ((u, v, p, v'))$}{
-    $children := \{(u', v', p', v'') \in live\}$\;
-    $descendants := \bigcup_{\e \in children} \reachable(\e)$\;
-    \Return{$((u, v, p, v'), descendants)$}
-  }
-\end{algorithm}
+% 5. simple cycles—reverse traversal, then forward traversal. Here's where we want to prove some things (e.g., dangling vertices are not deleted)
 
-The result of decomposition is a 4-tuple $(e, MP, D, SC) \in Exp \times
-\wp({Exp}) \times \wp({Exp}) \times \wp({Exp})$. Expression $e$ covers the
-portion of the graph reachable from the root vertex $v_0$. $MP$ contains the
-expressions that involve vertices with multiple parents. $D$ contains deleted
-expressions, i.e., those not reachable from $v_0$, that do not contain cycles.
-$SC$ contains the deleted expressions that do not involve multiple parents but
-do contain cycles.
+% tree ::= Vertex (Constructor) | Ref (Vertex.Id) | Conflict (tree list)
 
-A simple cycle is a set of vertices connected by a closed path, consisting
-of:
+%
+% ... () of sets of
+% (poly)trees) wherein each multi-edge has been resolved into a simple edge with
+% one or more symbolic references to it.
 
-1) two or more vertices, all descendants of each other, and
-2) the vertices of any non-multiparent subtrees reachable from the core, and
-not reachable from the root vertex.
+% Our decomposition algorithm first separates the graph into three disjoint sets of
+% vertices according to the number of parents and presence of simple cycles.
+% %
+% The first set is the single-parented vertices that have the root as an ancestor.
+% The second set is the vertices that have a multi-parented vertex as an ancestor.
+% The third 
 
-To determine the simple cycles of a graph, we:
+% We then derive equivalent tree representations of connected components by tracing
+% the ancestry, taken as the transitive closure of the childhood relation, of the
+% vertices in each set.
 
-1) check if any vertex in the graph is a descendant of itself or some other
-vertex that is (a descendant of itself),
-2) find the least vertex in the core of this new(ly discovered) cycle, and
-3) return a tree connecting every vertex reachable from the least (vertex).
 
-The least vertex of a cycle is the one that was created first. To ensure consistent behavior, the search for reachable vertices begins at the least vertex in a cycle.
+% set contains the multi-parented vertices and
+% their non-multiparented descendants. The second set contains the vertices with
+% no parents and their non-multiparented descendants. We can determine both of
+% these sets with a single pass over all of the live vertices in the graph. The
+% third set contains the single-parented vertices that are descendants of the root
+% vertex.
 
-<Mathematical definition of above.>
+% The first set contains all of the
+% vertices that have the root as an ancestor. 
+
+% : vertices with multiple parents, vertices with no parents,
+% single-parented vertices reachable from the root, and everything else.
+
+
+% separate it into 
+% components that only touch  detect any vertices that either have multiple parents or no parents
+% at all.
+
+% partition its vertices into three disjoint sets: multi-parented, deleted,
+% and any remaining vertices participating in a live edge. We then partition the
+% graph into four non-overlapping sets of trees: multi-parented, single-parented
+% reachable from root, deleted, and simple cycles.
+ 
+%  detect any multi-parented
+% vertices and use them to partition the remaining vertices of the graph into .
+
+% Our decomposition algorithm partitions the graph into trees of
+% connected components. Cycles are resolved by replacing all but one vertex of
+% each multi-edge with a by-id reference.
+
+% Translating a graph into expressions in the calculus allows us to model user
+% interaction as a stream of edits as described in \autoref{sub:User Actions}. 
+
+% \begin{algorithm}[t]
+%   \caption{Graph Decomposition}
+%   \label{fig:Graph Decomposition}
+
+%   \DontPrintSemicolon
+%   \SetAlgoNoLine
+%   \SetKwFunction{reachable}{reachable}
+%   \SetKwProg{Fn}{function}{}{end}
+
+%   \KwIn{Graph $G$}
+%   \KwOut{A partitioning of the edges of $G$}
+
+%   $live := \{\e : G(\e) = \Plus\}$\;
+%   $R := \{\reachable(\e) : \e = (u, v_0, p, v) \in live\}$\;
+%   $D := \{\reachable(\e) : \e \notin live\}$\;
+%   $muliparent := \{(u,v,p,v') \in live : \exists (u_1, v_1, p_1, v), (u_2, v_2, p_2, v) \in live, v_1 \ne v_2\}$\;
+%   $MP := \{\reachable(\e) : \e \in multiparent\}$\;
+%   $SC := \varnothing$\;
+%   $remaining := \{\e \notin \edges(R \cup D \cup MP)\}$\;
+%   \While{$remaining \ne \varnothing$}{
+%     $(root, cycle) := \reachable(\min(remaining))$\;
+%     $remaining := remaining \setminus \{root\} \setminus cycle$\;
+%     $SC := SC \cup \{(root, cycle)\}$\;
+%   }
+%   \Return{$(R, D, MP, SC)$}\;
+%   \;
+
+%   \Fn{$\reachable\ ((u, v, p, v'))$}{
+%     $children := \{(u', v', p', v'') \in live\}$\;
+%     $descendants := \bigcup_{\e \in children} \reachable(\e)$\;
+%     \Return{$((u, v, p, v'), descendants)$}
+%   }
+% \end{algorithm}
+
+% The result of decomposition is a 4-tuple $(e, MP, D, SC) \in Exp \times
+% \wp({Exp}) \times \wp({Exp}) \times \wp({Exp})$. Expression $e$ covers the
+% portion of the graph reachable from the root vertex $v_0$. $MP$ contains the
+% expressions that involve vertices with multiple parents. $D$ contains deleted
+% expressions, i.e., those not reachable from $v_0$, that do not contain cycles.
+% $SC$ contains the deleted expressions that do not involve multiple parents but
+% do contain cycles.
+
+% A simple cycle is a set of vertices connected by a closed path, consisting
+% of:
+
+% 1) two or more vertices, all descendants of each other, and
+% 2) the vertices of any non-multiparent subtrees reachable from the core, and
+% not reachable from the root vertex.
+
+% To determine the simple cycles of a graph, we:
+
+% 1) check if any vertex in the graph is a descendant of itself or some other
+% vertex that is (a descendant of itself),
+% 2) find the least vertex in the core of this new(ly discovered) cycle, and
+% 3) return a tree connecting every vertex reachable from the least (vertex).
+
+% The least vertex of a cycle is the one that was created first. To ensure consistent behavior, the search for reachable vertices begins at the least vertex in a cycle.
+
+% <Mathematical definition of above.>
 
 \subsection{User Actions}%
 \label{sub:User Actions}
