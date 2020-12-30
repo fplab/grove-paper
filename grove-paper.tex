@@ -2160,6 +2160,18 @@ the wreath and traverse its children to produce a tree that covers the wreath.
 Any remaining single-parented vertices must be parts of other wreaths and are
 wreath-traversed until there are no more single-parented vertices left.
 
+\begin{figure}
+  \[
+    \arraycolsep=0pt
+    \begin{array}{lrlll}
+      \textrm{Trees:\qquad}  & t & {}\in Tree & {}::={} & \textrm{Ref}(v) \mid \textrm{Con}(v, m) \\
+      \textrm{Maps:}         & m & {}\in Map & {}::={} & [\,] \mid (p \mapsto [t, \ldots, t]); m \\
+    \end{array}
+  \]
+  \caption{Syntax of trees.}
+  \label{fig:Syntax of trees as a grammar}
+\end{figure}
+
 % To render the graph as disjoint fragments of program code, we decompose the
 % graph into an equivalent representation using trees. The result is a 4-tuple,
 % where the first component is a tree, the second and third components are sets of
