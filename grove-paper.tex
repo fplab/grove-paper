@@ -2136,6 +2136,45 @@ Discuss uniqueness of uuid
 \subsection{Graph Decomposition}%
 \label{sub:Graph Decomposition}
 
+% XXX
+
+(illustrative running example: 1 of each: mp, d, r, sc)
+
+declarative section: give a hint what decomposition does (incl. wreaths): take a
+graph, turn it into a grove (i.e., 4-tuple) which is what we actually present to
+users and use for things like type checking. In this section, we present an
+algorithm that declaratively say what a grove is and how it connects to the
+graph.
+
+We can't turn the graph into a single tree, so we turn it into a forest. A
+forest is a collection of trees, in fact it's a 4-tuple consisting of a rooted tree
+and 3 sets of trees: mp, d, sc. Before discussing what these sets are, let's 
+define what a tree is.
+
+here's what a tree is. why do we care what a tree is? because we can map them to
+the expressions in figure 11. Explain what a Ref is wrt forest roots. (Maybe
+mention that only well-sorted trees can be mapped, which we discuss below.)
+
+There's this weird stuff left over; we call them wreaths and put them in the 4th
+tuple component.
+
+here's what a wreath is (= a connected graph where each vertex has exactly one
+parent)
+
+(show what a wreath looks like)
+
+here's what a grove is
+
+here are some properties that show how to get one from the other, and to/from
+graph
+
+algorithmic section: if we want to implement these conversions, here are the
+steps (without introducing new concepts):
+
+- linear scan
+- breaking out roots
+- ...
+
 Graph decomposition occurs in three steps.
 
 First, a linear scan is performed over every edge that has been created or
@@ -2149,9 +2188,14 @@ connected by single-parented vertices. Cycles are broken with UUID vertex
 references. Single-parented vertices reachable from the root vertex are also
 traversed.
 
-Finally, any remaining single-parented vertices are parts of wreaths. A wreath
-is a cycle of single-parented vertices that each may have single-parented
+Finally, once we've already accounted for things with more or less than one
+parent, everything else must be single parented. We call these things wreaths. A
+wreath is a cycle of single-parented vertices that each may have single-parented
 descendants.
+
+lemma: a wreath is a cycle with trees hanging off of it
+
+lemma: wreath traversal always produces a valid tree
 
 Wreath traversal occurs in two directions. A vertex is chosen as an arbitrary
 starting point and its parents are traversed and marked as seen. Any vertex that
@@ -2160,16 +2204,53 @@ the wreath and traverse its children to produce a tree that covers the wreath.
 Any remaining single-parented vertices must be parts of other wreaths and are
 wreath-traversed until there are no more single-parented vertices left.
 
+% XXX
+
+decomposition produces sets of trees. As long as everything is well sorted, we
+can use them to produce expressions in the main grammar. (alt: define wrt the
+graph instead, once we establish the graph can be turned into expressions)
+
+*** well-sortedness judgment on trees: the tree only has valid positions for the
+constructors, and the child at each position has the sort corresponding to its
+position, and edges in position maps all start at the given constructor.
+
+``A graph has this property iff these conditions hold''
+
+then we can define a total mapping from well-sorted trees to expressions
+(because the tree structure is very generic, so this ties them back to the
+earlier grammar.)
+
+forest = 4-tuple
+
+forest validity: each of the trees in the forest are well sorted, and all Refs
+point to roots of other trees of the correct sort.
+
+every valid forest corresponds to a well behaved grove (i.e., ``expression
+forest'')
+
+soundness: if you start with a valid graph, you get a well behaved grove that
+connects every vertex (and only those vertices) in the graph. (i.e., if you turn
+it back into a graph, it's the same graph (modulo edge IDs unless we add $\e$ to
+Refs??? OR make Ref nullary and pull edge/vertex info from the position map and
+add Root sort
+
+OR:
+
+use edge IDs instead of edges and build a mapping from vertices to
+sorts---change the $\e$s to $u$s)
+
+
+
 \begin{figure}
   \[
     \arraycolsep=0pt
     \begin{array}{lrlll}
-      \textrm{Trees:\qquad}  & t & {}\in Tree & {}::={} & \textrm{Ref}(v) \mid \textrm{Con}(v, m) \\
-      \textrm{Maps:}         & m & {}\in Map & {}::={} & [\,] \mid (p \mapsto [t, \ldots, t]); m \\
+      \textrm{Trees:\qquad}  & t & {}\in Tree & {}::={} & \textrm{Con}(v, m) \mid \textrm{Ref}(v) \\
+      \textrm{Maps:}         & m & {}\in Map & {}::={} & [\,] \mid (p \mapsto [(\e, t), \ldots, (\e, t)]); m \\
     \end{array}
   \]
-  \caption{Syntax of trees.}
-  \label{fig:Syntax of trees as a grammar}
+  \caption{Syntax of graph decomposition trees as a grammar.}
+  \label{fig:Syntax of graph decomposition trees}
 \end{figure}
 
 % To render the graph as disjoint fragments of program code, we decompose the
