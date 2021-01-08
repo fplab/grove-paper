@@ -2484,6 +2484,12 @@ Hazel~\citep{Omar:2019:10.1145/3290327}
 
 \subsubsection{Tree diff}
 
+We are using action based instead of tree diff
+
+We have to deal with merge
+
+We have to deal with edits from multiple people
+
 J. W. Hunt and M. D. McIlroy. 1976. An Algorithm for Differential File Comparison. Technical Report CSTR 41. Bell Laboratories, Murray Hill, NJ.
 
 Type-directed diffing of structured data \url{https://dl.acm.org/doi/10.1145/3122975.3122976}
@@ -2539,7 +2545,45 @@ Pijul and (Anu is a rewrite of Pijul and seems to have been subsumed into Pijul)
 
 \subsection{Collaborative Editing}
 
-CRDTs
+Collaborative Structure Editing
+
+SmallTalk collaboration with images
+
+TouchDevelop papers
+
+
+\subsection{CRDTs}
+(Are we a known CRDT?)
+
+Bottom = Tombstone
+
+https://www.waitingforcode.com/big-data-algorithms/conflict-free-replicated-data-types-flags-graphs-maps/read
+ - Add-Remove Partial Order data type
+ - 2P2P-Sets
+ - Replicated Growable Array
+
+ commutative replicated data types CmRDT
+ convergent replicated data types, or CvRDTs
+ Delta state CRDTs[12][13] (or simply Delta CRDTs
+ 
+\url{https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type}
+ - LWW-Element-Set (Last-Write-Wins-Element-Set)
+ - OR-Set (Observed-Remove Set) 
+
+PN-Set
+
+https://medium.com/@amberovsky/crdt-conflict-free-replicated-data-types-b4bfc8459d26
+ removeVertex() has priority, all incident edges are removed
+ addEdge() has priority, all removed vertices are re-added
+ Delay removeVertex() execution till all concurrent removeVertex() are executed.
+First one is 2P2P-Set
+
+textcomp Genealogical Symbols
+\textborn
+\textdied
+
+2P-Sets
+Anomaly: Creating a lone deleted vertex requires create and delete of otherwise unneeded edge
 
 Operational Transforms
 
