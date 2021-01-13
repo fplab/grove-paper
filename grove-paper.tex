@@ -223,6 +223,7 @@
 \def\ExpApp{\mathsf{Exp\_app}}
 \def\ExpNum{\mathsf{Exp\_num}}
 \def\ExpPlus{\mathsf{Exp\_plus}}
+\def\ExpTimes{\mathsf{Exp\_times}}
 \def\PatVar{\mathsf{Pat\_var}}
 \def\TypNum{\mathsf{Typ\_num}}
 \def\TypArrow{\mathsf{Typ\_arrow}}
@@ -1963,11 +1964,10 @@ and this simplicity aids in the predictability.
   \[
     \arraycolsep=0pt
     \begin{array}{lrlll}
-      \textrm{Operators:}         & op   & {}\in Ops & {}::={} & + \mid \ast{} \\
-      \textrm{Patterns:}          & q    & {}\in Pat & {}::={} & x \mid \hole \mid \{q|\ldots|q\} \\
-      \textrm{Expressions:\qquad} & e    & {}\in Exp & {}::={} & x \mid \lambda q \mathord{:}\tau.e \mid e~e \mid e~op~e \mid n \\
-                                  &      &           &         & \phantom{x} \mid \hole \mid \{e|\ldots|e\} \\
-      \textrm{Types:}             & \tau & {}\in Typ & {}::={} & \tau \rightarrow \tau \mid Num \mid \hole \mid \{ \tau | \ldots | \tau \} \\
+      \textrm{Patterns:}          & q    & {}\in Pat & {}::={} & x^u \mid \hole \mid \{q | \ldots | q\} \\
+      \textrm{Types:}             & \tau & {}\in Typ & {}::={} & \tau \rightarrow^u \tau \mid Num^u \mid \hole \mid \{ \tau | \ldots | \tau \} \\
+      \textrm{Expressions:\qquad} & e    & {}\in Exp & {}::={} & x^u \mid \lambda^u q \mathord{:}\tau.e \mid (e~e)^u \mid n^u \\
+                                  &      &           &         & ~\mid e~\texttt{+}^u~e \mid e~\texttt{*}^u~e \mid \hole \mid \{e|\ldots|e\} \\
     \end{array}
   \]
   \caption{Syntax as a grammar for the lambda calculus that we are considering.}
@@ -1979,8 +1979,10 @@ and this simplicity aids in the predictability.
 \label{sub:Syntax}
 
 The language we are modeling is shown in \autoref{fig:Syntax as a grammar},
-standard for a simply-typed lambda calculus except that all types of terms have
-unfilled holes (represented by $\hole$), and most types of terms have conflict holes (of the form $\{\cdot | \ldots | \cdot\}$). In particular, the argument to a lambda can be either a bound variable or a hole.
+standard for a simply-typed lambda calculus except that all sorts have empty
+holes (represented by $\hole$) and conflict holes (of the form $\{q | \ldots |
+q\}$). In particular, the argument to a lambda can be either a bound variable or
+a hole. All constructors carry a superscripted identifier $u \in \U$.
 
 % In order to model this we define
 
@@ -1992,15 +1994,16 @@ unfilled holes (represented by $\hole$), and most types of terms have conflict h
     \begin{array}{ll}
       \arity : \K \hfil \rightarrow & \wp(\P)                                        \\
       \hline
-      \arity(k_0)={}        & \left\{ \Root \right\}                         \\
-      \arity(x \in Pat)={}      & \left\{ \right\}                               \\
-      \arity(x \in Exp)={}      & \left\{ \right\}                               \\
-      \arity(\lambda q \mathord{:}\tau.e)={}      & \left\{ \mathtt{Param}, \mathtt{Type}, \mathtt{Body} \right\} \\
-      \arity(e~e)={}      & \left\{ \mathtt{Fun}, \mathtt{Arg} \right\}              \\
-      \arity(e~op~e)={}     & \left\{ \mathtt{L}, \mathtt{R} \right\}         \\
-      \arity(n)={}      & \left\{ \right\}                               \\
-      \arity(\tau \rightarrow \tau)={}    & \left\{ \mathtt{Arg}, \mathtt{Result} \right\}       \\
-      \arity(Num)={}      & \left\{ \right\}                               \\
+      \arity(\Root)={}        & \left\{ \Root \right\}                         \\
+      \arity(\PatVar)={}      & \left\{ \right\}                               \\
+      \arity(\ExpVar)={}      & \left\{ \right\}                               \\
+      \arity(\ExpLam)={}      & \left\{ \mathtt{Param}, \mathtt{Type}, \mathtt{Body} \right\} \\
+      \arity(\ExpApp)={}      & \left\{ \mathtt{Fun}, \mathtt{Arg} \right\}              \\
+      \arity(\ExpPlus)={}     & \left\{ \mathtt{L}, \mathtt{R} \right\}         \\
+      \arity(\ExpTimes)={}    & \left\{ \mathtt{L}, \mathtt{R} \right\}         \\
+      \arity(\ExpNum)={}      & \left\{ \right\}                               \\
+      \arity(\TypArrow)={}    & \left\{ \mathtt{Arg}, \mathtt{Result} \right\}       \\
+      \arity(\TypNum)={}      & \left\{ \right\}                               \\
     \end{array}
   \]
   \caption{Constructors, Indexes and Arity}
