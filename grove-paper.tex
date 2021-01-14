@@ -1964,29 +1964,28 @@ and this simplicity aids in the predictability.
   \[
     \arraycolsep=0pt
     \begin{array}{lrlll}
-      \textrm{Patterns:}          & q    & {}\in Pat & {}::={} & x^u \mid \hole \mid \{q | \ldots | q\} \\
-      \textrm{Types:}             & \tau & {}\in Typ & {}::={} & \tau \rightarrow^u \tau \mid Num^u \mid \hole \mid \{ \tau | \ldots | \tau \} \\
-      \textrm{Expressions:\qquad} & e    & {}\in Exp & {}::={} & x^u \mid \lambda^u q \mathord{:}\tau.e \mid (e~e)^u \mid n^u \\
-                                  &      &           &         & ~\mid e~\texttt{+}^u~e \mid e~\texttt{*}^u~e \mid \hole \mid \{e|\ldots|e\} \\
+      q    & {}\in Pat & {}::={} & x^u \mid \hole \mid \{q | \ldots | q\} \mid \#u \\
+      \tau & {}\in Typ & {}::={} & \tau \rightarrow^u \tau \mid Num^u \mid \hole \mid \{ \tau | \ldots | \tau \} \mid \#u \\
+      e    & {}\in Exp & {}::={} & x^u \mid \lambda^u q \mathord{:}\tau.e \mid (e~e)^u \mid n^u \\
+           &           &         & ~\mid e~\texttt{+}^u~e \mid e~\texttt{*}^u~e \mid \hole \mid \{e|\ldots|e\} \mid \#u \\
     \end{array}
   \]
-  \caption{Syntax as a grammar for the lambda calculus that we are considering.}
-  % TODO add references into multiparent store and cycles store
-  \label{fig:Syntax as a grammar}
+  \caption{Base syntax, as a grammar, for the lambda calculus that we are considering.}
+  \label{fig:Base syntax}
 \end{figure}
 
 \subsection{Syntax}%
 \label{sub:Syntax}
 
-The language we are modeling is shown in \autoref{fig:Syntax as a grammar},
-standard for a simply-typed lambda calculus except that all sorts have empty
-holes (represented by $\hole$) and conflict holes (of the form $\{q | \ldots |
-q\}$). In particular, the argument to a lambda can be either a bound variable or
-a hole. All constructors carry a superscripted identifier $u \in \U$.
+The language we are modeling is shown in \autoref{fig:Base syntax}, standard for
+a simply-typed lambda calculus except that all sorts have empty holes
+(represented by $\hole$) and conflict holes (of the form $\{q | \ldots | q\}$).
+In particular, the argument of a lambda can be either a bound variable or a
+hole. Additionally, all non-hole forms carry a superscripted identifier $u \in
+\U$.
 
-% In order to model this we define
-
-% Turn that into a constructor set K + position set P + arity function (has type: K -> $\wp$(P)).
+% Turn that into a constructor set K + position set P + arity function (has
+% type: K -> $\wp$(P)).
 
 \begin{figure}
   \[
@@ -2010,9 +2009,6 @@ a hole. All constructors carry a superscripted identifier $u \in \U$.
   \label{fig:Constructors, Indexes and Arity}
 \end{figure}
 
-% NOTE base grammar has holes. rooted expression grammar has refs, conflicts, and multiparents
-% NOTE ref = expression reference or vertex reference
-
 \subsection{Convergent Graphs}%
 \label{sub:Convergent Graphs}
 
@@ -2026,13 +2022,13 @@ vertices are drawn from $\V$,
 positions are drawn from $\P$,
 and edge states are drawn from $\Sigma$, all defined below.
 
-Each edge $\e = (u, v, p, v^\prime)$ has a unique name, $u \in \U$,
-and connects the child position $p$ of source vertex $v$ to target vertex $v^\prime$.
-The state of each edge, $\e$, is determined by the corresponding edge state, $G(\e) \in \Sigma = \{ \bot, \Plus, \Minus \}$.
-When $G(\e) = \bot$, $\e$ has not been created yet.
-When $G(\e)$ is $\Plus$, the edge has been created.
-When $G(\e)$ is $\Minus$, the edge has been destroyed.
-The total ordering $\bot \sqsubset \Plus \sqsubset \Minus$ forms a lattice over $\Sigma$.
+Each edge $\e = (u, v, p, v^\prime)$ has a unique name, $u \in \U$, and connects
+the child position $p$ of originating vertex $v$ to destination vertex
+$v^\prime$. The state of each edge, $\e$, is determined by the corresponding
+edge state, $G(\e) \in \Sigma = \{ \bot, \Plus, \Minus \}$. When $G(\e) = \bot$,
+$\e$ has not been created yet. When $G(\e)$ is $\Plus$, the edge has been
+created. When $G(\e)$ is $\Minus$, the edge has been destroyed. The total
+ordering $\bot \sqsubset \Plus \sqsubset \Minus$ forms a lattice over $\Sigma$.
 
 A vertex $v = (u, k)$ identifies a distinct instance of some constructor $k \in
 \K$, corresponding to a form defined in \autoref{fig:Syntax as a grammar} that
@@ -2139,20 +2135,49 @@ Discuss uniqueness of uuid
 \subsection{Graph Decomposition}%
 \label{sub:Graph Decomposition}
 
-% XXX
+% TODO: clean up and move rooted expression grammar
+
+% NOTE base grammar has holes. rooted expression grammar has refs, conflicts,
+% and multiparents
+
+% TODO add references into multiparent store and cycles store
 
 (illustrative running example: 1 of each: mp, d, r, sc)
 
-declarative section: give a hint what decomposition does (incl. wreaths): take a
-graph, turn it into a grove (i.e., 4-tuple) which is what we actually present to
-users and use for things like type checking. In this section, we present an
-algorithm that declaratively say what a grove is and how it connects to the
-graph.
+% NOTE: this whole section is for describing the 4-tuple
 
-We can't turn the graph into a single tree, so we turn it into a forest. A
-forest is a collection of trees, in fact it's a 4-tuple consisting of a rooted tree
-and 3 sets of trees: mp, d, sc. Before discussing what these sets are, let's 
-define what a tree is.
+Tree-like structures are often easier to work with than arbitrary graphs
+directly, for example to present the graph to users, or for type checking, so we
+decompose it into a grove.
+
+A grove is a 4-tuple of the following form:
+\[
+  (e, MP, NP, W)
+\]
+The first component is an expression, governed by the grammar in
+\autoref{fig:Base syntax}, determined by starting at the root of the graph and
+including every connected vertex that has a single parent. In positions where
+there are no children, we leave an empty hole, $\hole$. In positions where there
+are multiple children, we leave a conflict hole of the form $\{e_1 | \ldots |
+e_n\}$. Whenever we encounter a vertex with multiple parents, we refer to it
+indirectly by reference $\#u$. We collect the expressions corresponding to
+vertices with multiple parents in the set $MP$.
+
+These first two components do not account for vertices with no parents. We
+include the expressions corresponding to these vertices in the set $NP$.
+
+We've accounted for vertices with multiple parents, with no parents, and with
+one parent connected to the root. This leaves only vertices with one parent that
+are not connected to the root. These vertices form structures we call wreaths.
+
+Wreaths:
+
+Three components are  <describe each of the components:
+The first component is ... trees. The fourth component is ... wreaths>. 
+
+A forest is a collection of trees, in fact it is a 4-tuple consisting of
+a rooted tree $R$ and 3 sets of trees: $MP, D, W$. Before discussing what these
+sets are, let's define what a tree is.
 
 here's what a tree is. why do we care what a tree is? because we can map them to
 the expressions in figure 11. Explain what a Ref is wrt forest roots. (Maybe
