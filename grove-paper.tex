@@ -2606,21 +2606,32 @@ https://www.waitingforcode.com/big-data-algorithms/conflict-free-replicated-data
    - Last parent writter wins (prevents cycles)
      Equivalent to us if we filter multiparent edges, different for cycles, no way to delete?
 
+A commutative replicated data type for cooperative editing
+  \url{https://hal.inria.fr/inria-00445975/document}
+  Describes TreeDoc but this uses a document model that is a list (tree is just how it is implemented)
+
+Logoot : a Scalable Optimistic Replication Algorithm for Collaborative Editing on P2P Networks
+  \url{}
+
+Specification and Complexity of Collaborative Text Editing
+  \url{https://www.microsoft.com/en-us/research/wp-content/uploads/2016/07/podc16-complete.pdf}
+
+
+
 ...
  commutative replicated data types CmRDT
  convergent replicated data types, or CvRDTs
  Delta state CRDTs[12][13] (or simply Delta CRDTs
 
 The Causal Graph CRDT for Complex Document Structure
+  \url{https://dl.acm.org/doi/10.1145/3209280.3229110}
 
 \url{https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type}
- - LWW-Element-Set (Last-Write-Wins-Element-Set)
- - OR-Set (Observed-Remove Set)
 
 G-Set
-2P-Set
 PN-Set
-LWW-element-Register
+2P-Set
+LWW-element-Set (Last-Write-Wins)
 OR-Set
 MV-Register: Multi-Value Register
 U-Set (this is what we are for edges, not OR-set due to duplicates)
@@ -2640,30 +2651,26 @@ https://medium.com/@amberovsky/crdt-conflict-free-replicated-data-types-b4bfc845
 First one is 2P2P-Set
 
 https://crdt.tech/papers.html
-[35]
-    Mahsa Najafzadeh, Marc Shapiro, and Patrick Eugster. Co-design and verification of an available file system. In 19th International Conference on Verification, Model Checking, and Abstract Interpretation, VMCAI 2018, pages 358--381. Springer LNCS volume 10747, January 2018. [ bib | DOI | .pdf ]
 
-        Keywords: trees 
+Mahsa Najafzadeh, Marc Shapiro, and Patrick Eugster. Co-design and verification of an available file system. In 19th International Conference on Verification, Model Checking, and Abstract Interpretation, VMCAI 2018, pages 358--381. Springer LNCS volume 10747, January 2018. [ bib | DOI | .pdf ]
+  http://dx.doi.org/10.1007/978-3-319-73721-8_17
+  https://pages.lip6.fr/Marc.Shapiro/papers/VMCAI-2018-filesys.pdf
 
-[41]
-    Martin Kleppmann and Alastair R Beresford. A conflict-free replicated JSON datatype. IEEE Transactions on Parallel and Distributed Systems, 28(10):2733--2746, April 2017. [ bib | DOI | arXiv ]
+Martin Kleppmann and Alastair R Beresford. A conflict-free replicated JSON datatype. IEEE Transactions on Parallel and Distributed Systems, 28(10):2733--2746, April 2017. [ bib | DOI | arXiv ]
+  http://dx.doi.org/10.1109/TPDS.2017.2697382
+  http://arxiv.org/abs/1608.03960
 
-        Keywords: trees 
+Vinh Tao, Marc Shapiro, and Vianney Rancurel. Merging semantics for conflict updates in geo-distributed file systems. In 8th ACM International Systems and Storage Conference, SYSTOR 2015. ACM, May 2015. [ bib | DOI | .pdf ]
+  http://dx.doi.org/10.1145/2757667.2757683
+  https://pages.lip6.fr/Marc.Shapiro/papers/geodistr-FS-Systor-2015.pdf
 
-[67]
-    Vinh Tao, Marc Shapiro, and Vianney Rancurel. Merging semantics for conflict updates in geo-distributed file systems. In 8th ACM International Systems and Storage Conference, SYSTOR 2015. ACM, May 2015. [ bib | DOI | .pdf ]
+Mehdi Ahmed-Nacer, Stéphane Martin, and Pascal Urso. File system on CRDT. Research Report RR-8027, INRIA, July 2012. [ bib | arXiv | http ]
+  http://arxiv.org/abs/1207.5990
+  https://hal.inria.fr/hal-00720681/
 
-        Keywords: trees 
-
-[95]
-    Mehdi Ahmed-Nacer, Stéphane Martin, and Pascal Urso. File system on CRDT. Research Report RR-8027, INRIA, July 2012. [ bib | arXiv | http ]
-
-        Keywords: trees 
-
-[103]
-    Stéphane Martin, Pascal Urso, and Stéphane Weiss. Scalable XML collaborative editing with undo. In On the Move to Meaningful Internet Systems (OTM), pages 507--514. Springer LNCS volume 6426, October 2010. [ bib | DOI | arXiv ]
-
-        Keywords: trees, undo 
+Stéphane Martin, Pascal Urso, and Stéphane Weiss. Scalable XML collaborative editing with undo. In On the Move to Meaningful Internet Systems (OTM), pages 507--514. Springer LNCS volume 6426, October 2010. [ bib | DOI | arXiv ]
+  http://dx.doi.org/10.1007/978-3-642-16934-2_37
+  http://arxiv.org/abs/1010.3615
 
 
 
