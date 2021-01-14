@@ -1991,18 +1991,18 @@ hole. Additionally, all non-hole forms carry a superscripted identifier $u \in
   \[
     \arraycolsep=0pt
     \begin{array}{ll}
-      \arity : \K \hfil \rightarrow & \wp(\P)                                        \\
+      \arity : \K \hfil \rightarrow & \wp(\P \times \{Exp, Pat, Typ\}) \\
       \hline
-      \arity(\Root)={}        & \left\{ \Root \right\}                         \\
-      \arity(\PatVar)={}      & \left\{ \right\}                               \\
-      \arity(\ExpVar)={}      & \left\{ \right\}                               \\
-      \arity(\ExpLam)={}      & \left\{ \mathtt{Param}, \mathtt{Type}, \mathtt{Body} \right\} \\
-      \arity(\ExpApp)={}      & \left\{ \mathtt{Fun}, \mathtt{Arg} \right\}              \\
-      \arity(\ExpPlus)={}     & \left\{ \mathtt{L}, \mathtt{R} \right\}         \\
-      \arity(\ExpTimes)={}    & \left\{ \mathtt{L}, \mathtt{R} \right\}         \\
-      \arity(\ExpNum)={}      & \left\{ \right\}                               \\
-      \arity(\TypArrow)={}    & \left\{ \mathtt{Arg}, \mathtt{Result} \right\}       \\
-      \arity(\TypNum)={}      & \left\{ \right\}                               \\
+      \arity(\Root)={} & \left\{ \Root \right\} \\
+      \arity(\PatVar)={} & \left\{ \right\} \\
+      \arity(\ExpVar)={} & \left\{ \right\} \\
+      \arity(\ExpLam)={} & \left\{ (\mathtt{Param}, Pat), (\mathtt{Type}, Typ), (\mathtt{Body}, Exp) \right\} \\
+      \arity(\ExpApp)={} & \left\{ (\mathtt{Fun}, Exp), (\mathtt{Arg}, Exp) \right\} \\
+      \arity(\ExpPlus)={} & \left\{ (\mathtt{L}, Exp), (\mathtt{R}, Exp) \right\} \\
+      \arity(\ExpTimes)={} & \left\{ (\mathtt{L}, Exp), (\mathtt{R}, Exp) \right\} \\
+      \arity(\ExpNum)={} & \left\{ \right\} \\
+      \arity(\TypArrow)={} & \left\{ (\mathtt{Arg} Typ), (\mathtt{Result}, Typ) \right\} \\
+      \arity(\TypNum)={} & \left\{ \right\} \\
     \end{array}
   \]
   \caption{Constructors, Indexes and Arity}
