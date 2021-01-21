@@ -1981,7 +1981,7 @@ The language we are modeling is shown in \autoref{fig:Base syntax}, standard for
 a simply-typed lambda calculus except that all sorts have empty holes
 (represented by $\hole$) and conflict holes (of the form $\{q | \ldots | q\}$).
 In particular, the argument of a lambda can be either a bound variable or a
-hole. Additionally, all non-hole forms carry a superscripted identifier $u \in
+hole. Additionally, all non-hole forms have a superscripted identifier $u \in
 \U$.
 
 % Turn that into a constructor set K + position set P + arity function (has
@@ -2001,7 +2001,7 @@ hole. Additionally, all non-hole forms carry a superscripted identifier $u \in
       \arity(\ExpPlus)={} & \left\{ (\mathtt{L}, Exp), (\mathtt{R}, Exp) \right\} \\
       \arity(\ExpTimes)={} & \left\{ (\mathtt{L}, Exp), (\mathtt{R}, Exp) \right\} \\
       \arity(\ExpNum)={} & \left\{ \right\} \\
-      \arity(\TypArrow)={} & \left\{ (\mathtt{Arg} Typ), (\mathtt{Result}, Typ) \right\} \\
+      \arity(\TypArrow)={} & \left\{ (\mathtt{Arg}, Typ), (\mathtt{Result}, Typ) \right\} \\
       \arity(\TypNum)={} & \left\{ \right\} \\
     \end{array}
   \]
@@ -2031,13 +2031,13 @@ created. When $G(\e)$ is $\Minus$, the edge has been destroyed. The total
 ordering $\bot \sqsubset \Plus \sqsubset \Minus$ forms a lattice over $\Sigma$.
 
 A vertex $v = (u, k)$ identifies a distinct instance of some constructor $k \in
-\K$, corresponding to a form defined in \autoref{fig:Syntax as a grammar} that
-is neither an operator nor a hole. Each contructor has an arity, which we define
-as a set of positions. A position $p \in \P$ identifies a location, adjacent to
-some source vertex, from which edges to target vertices may originate. The
-$\arity$ function in \autoref{fig:Constructors, Indexes and Arity} gives the
-complete mapping from constructors to potential edge positions. Every graph
-contains a distinguished root vertex, root constructor, and root position,
+\K$, corresponding to a non-hole form defined in \autoref{fig:Base syntax}. Each
+contructor has an arity, which we define as a set of positions. A position $p
+\in \P$ identifies a location at some originating vertex from which edges to
+destination vertices may originate. The $\arity$ function in
+\autoref{fig:Constructors, Indexes and Arity} gives the complete mapping from
+constructors to potential edge positions with their corresponding sorts. Every
+graph contains a distinguished root vertex, root constructor, and root position,
 respectively named $v_0$, $k_0$, and $p_0$.
 
 % TODO: should graph "recomposition" have an algorithm, too?
@@ -2046,9 +2046,9 @@ empty graph, selecting unique ids $u, u_k$ and constructor $k$ for the outermost
 expression, and creating edge $\e = (u, v_0, p_0, (u_k, k))$. Then, for each
 sub-term at some position $p \in \arity(k)$, select unique id $u'$ and
 constructor $k'$ and create edge $e' = (u', v, p, v')$ with $v = (u_k, k)$, $v'
-= (u', k')$. Continuing in this manner, treat each sub-term, starting with the
-ones at positions in $\arity(k')$, as if it were the outermost and create edges
-to the vertices representing its immediate sub-terms until only empty holes
+= (u', k')$. Continuing in this manner, treat each sub-term as if it were the
+outermost, starting with the ones at positions in $\arity(k')$, and create edges
+to the vertices representing their immediate sub-terms until only empty holes
 remain. Note that empty holes are not modeled explicitly in the graph. Wherever
 an empty hole appears in an expression, the corresponding graph position has no
 edges originating from it.
@@ -2135,66 +2135,53 @@ Discuss uniqueness of uuid
 \subsection{Graph Decomposition}%
 \label{sub:Graph Decomposition}
 
-% TODO: clean up and move rooted expression grammar
-
 % NOTE base grammar has holes. rooted expression grammar has refs, conflicts,
 % and multiparents
 
 % TODO add references into multiparent store and cycles store
 
-(illustrative running example: 1 of each: mp, d, r, sc)
-
 % NOTE: this whole section is for describing the 4-tuple
 
-Tree-like structures are often easier to work with than arbitrary graphs
-directly, for example to present the graph to users, or for type checking, so we
-decompose it into a grove.
+Trees are often easier to work with than arbitrary graphs directly, for example
+to present the graph to users or for type checking. A graph is not necessarily a
+tree, but we can decompose any graph into a collection of tree-like structure we
+call a grove.
 
 A grove is a 4-tuple of the following form:
 \[
   (e, MP, NP, W)
 \]
-The first component is an expression, governed by the grammar in
-\autoref{fig:Base syntax}, determined by starting at the root of the graph and
-including every connected vertex that has a single parent. In positions where
-there are no children, we leave an empty hole, $\hole$. In positions where there
-are multiple children, we leave a conflict hole of the form $\{e_1 | \ldots |
-e_n\}$. Whenever we encounter a vertex with multiple parents, we refer to it
-indirectly by reference $\#u$. We collect the expressions corresponding to
-vertices with multiple parents in the set $MP$.
+The first component $e$ is an expression as governed by the grammar in
+\autoref{fig:Base syntax}. We determine $e$ by starting at the root of the graph
+and including every connected vertex that has a single parent. In positions
+where there are no children, we leave an empty hole $\hole$. In positions where
+there are multiple children, we leave a conflict hole of the form $\{e_1 |
+\ldots | e_n\}$. Whenever we encounter a vertex with multiple parents, we leave
+an indirect reference $\#u$, where $u$ is the unique identifier of the
+referenced vertex, and add its corresponding expression to the second component
+$MP$.
 
 These first two components do not account for vertices with no parents. We
-include the expressions corresponding to these vertices in the set $NP$.
+include the expressions corresponding to these vertices in the third component
+$NP$.
 
-We've accounted for vertices with multiple parents, with no parents, and with
-one parent connected to the root. This leaves only vertices with one parent that
-are not connected to the root. These vertices form structures we call wreaths.
+We've accounted for single-parented vertices connected to the root,
+single-parented vertices connected to multi-parented vertices, and vertices with
+no parents. This leaves only single-parented vertices that are not connected to
+the root or any multi-parented vertices. These vertices form cyclic structures
+we call wreaths.
 
-Wreaths:
+A wreath is a cycle, potentially with acyclic branches. Wreaths are connected
+graphs where each vertex has exactly one incoming edge. The fourth component $W$
+is the set of expressions determined by extracting wreaths from any vertices not
+in the other three components.
 
-Three components are  <describe each of the components:
-The first component is ... trees. The fourth component is ... wreaths>. 
+% expression = tree
 
-A forest is a collection of trees, in fact it is a 4-tuple consisting of
-a rooted tree $R$ and 3 sets of trees: $MP, D, W$. Before discussing what these
-sets are, let's define what a tree is.
+% (show what a wreath looks like)
 
-here's what a tree is. why do we care what a tree is? because we can map them to
-the expressions in figure 11. Explain what a Ref is wrt forest roots. (Maybe
-mention that only well-sorted trees can be mapped, which we discuss below.)
-
-There's this weird stuff left over; we call them wreaths and put them in the 4th
-tuple component.
-
-here's what a wreath is (= a connected graph where each vertex has exactly one
-parent)
-
-(show what a wreath looks like)
-
-here's what a grove is
-
-here are some properties that show how to get one from the other, and to/from
-graph
+% here are some properties that show how to get one from the other, and to/from
+% graph
 
 algorithmic section: if we want to implement these conversions, here are the
 steps (without introducing new concepts):
