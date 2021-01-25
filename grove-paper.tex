@@ -2144,22 +2144,31 @@ Discuss uniqueness of uuid
 
 Trees are often easier to work with than arbitrary graphs directly, for example
 to present the graph to users or for type checking. A graph is not necessarily a
-tree, but we can decompose any graph into a collection of tree-like structure we
-call a grove.
+tree, but we can decompose any graph into a collection of expressions, governed
+by the grammar in \autoref{fig:Base syntax}, organized into a structure we call
+a grove.
 
 A grove is a 4-tuple of the following form:
 \[
   (e, MP, NP, W)
 \]
-The first component $e$ is an expression as governed by the grammar in
-\autoref{fig:Base syntax}. We determine $e$ by starting at the root of the graph
-and including every connected vertex that has a single parent. In positions
-where there are no children, we leave an empty hole $\hole$. In positions where
-there are multiple children, we leave a conflict hole of the form $\{e_1 |
-\ldots | e_n\}$. Whenever we encounter a vertex with multiple parents, we leave
-an indirect reference $\#u$, where $u$ is the unique identifier of the
-referenced vertex, and add its corresponding expression to the second component
-$MP$.
+The first component $e$ is the rooted expression.
+The second component $MP$ is the set of expressions rooted at a vertex with multiple parents.
+The third component $NP$ is the set of expressions rooted at a vertex with no parents.
+The fourth component $W$ is the set of expressions derived from the remaining vertices, which must necessarily 
+form cyclic structures we call wreaths, where each vertex has exactly one parent.
+For example, the grove corresponding to the graph in Figure~XXX is ...
+% TODO: add ref to example figure
+
+% TODO: define helper function for finding the expression rooted at some vertex
+
+We determine $e$ by starting at the root of the graph and including every connected
+vertex that has a single parent. In positions where there are no children, we
+leave an empty hole $\hole$. In positions where there are multiple children, we
+leave a conflict hole of the form $\{e_1 | \ldots | e_n\}$. Whenever we
+encounter a vertex with multiple parents, we add its corresponding expression to
+the second component $MP$ and leave an indirect reference $\#u$, where $u$ is
+the unique identifier of the referenced vertex
 
 These first two components do not account for vertices with no parents. We
 include the expressions corresponding to these vertices in the third component
@@ -2171,10 +2180,10 @@ no parents. This leaves only single-parented vertices that are not connected to
 the root or any multi-parented vertices. These vertices form cyclic structures
 we call wreaths.
 
-A wreath is a cycle, potentially with acyclic branches. Wreaths are connected
-graphs where each vertex has exactly one incoming edge. The fourth component $W$
-is the set of expressions determined by extracting wreaths from any vertices not
-in the other three components.
+% A wreath is a cycle, potentially with acyclic branches. Wreaths are connected
+% graphs where each vertex has exactly one incoming edge. The fourth component $W$
+% is the set of expressions determined by extracting wreaths from any vertices not
+% in the other three components.
 
 % expression = tree
 
