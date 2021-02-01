@@ -284,7 +284,14 @@
 \DeclareMathOperator{\defaultIndex}{\text{defaultIndex}}
 
 % graph decomposition operators
+\DeclareMathOperator{\expr}{\text{expr}}
+\DeclareMathOperator{\patt}{\text{patt}}
+\DeclareMathOperator{\type}{\text{type}}
 \DeclareMathOperator{\parents}{\text{parents}}
+\DeclareMathOperator{\ancestors}{\text{ancestors}}
+\DeclareMathOperator{\vertices}{\text{vertices}}
+\DeclareMathOperator{\children}{\text{children}}
+
 \DeclareMathOperator{\multiParented}{\text{multiParented}}
 \DeclareMathOperator{\singleParented}{\text{singleParented}}
 \DeclareMathOperator{\deleted}{\text{deleted}}
@@ -2017,7 +2024,7 @@ hole. Additionally, all non-hole forms have a superscripted identifier $u \in
 
 A graph $G : \E \rightarrow \Sigma$ is a function from edges to edge states,
 where $\E = \U \times \V \times \P \times \V$,
-unique IDs are drawn from some suitable set $\U$,
+unique IDs are drawn from some suitable set $\U$ equipped with a total ordering,
 vertices are drawn from $\V$,
 positions are drawn from $\P$,
 and edge states are drawn from $\Sigma$, all defined below.
@@ -2145,22 +2152,132 @@ Discuss uniqueness of uuid
 Trees are often easier to work with than arbitrary graphs directly, for example
 to present the graph to users or for type checking. A graph is not necessarily a
 tree, but we can decompose any graph into a collection of expressions, governed
-by the grammar in \autoref{fig:Base syntax}, organized into a structure we call
-a grove.
+by the grammar in \autoref{fig:Base syntax}, which we organize into a structure
+we call a grove.
 
 A grove is a 4-tuple of the following form:
 \[
-  (e, MP, NP, W)
+  (e_r, MP, NP, W)
 \]
-The first component $e$ is the rooted expression.
+where
+\begin{align*}
+  e_r &= \expr(v_0) \\
+  MP &= \{\expr(v) : |\parents(v)| > 1\} \\
+  NP &= \{\expr(v) : |\parents(v)| = 0 \land v \ne v_0\} \\
+  W  &= \{\expr(v) : |\parents(v)| = 1 \wedge v = \min(\ancestors(v))\}
+\end{align*}
+
+The first component $e_r$ is the expression rooted at the root vertex $v_0$.
 The second component $MP$ is the set of expressions rooted at a vertex with multiple parents.
 The third component $NP$ is the set of expressions rooted at a vertex with no parents.
-The fourth component $W$ is the set of expressions derived from the remaining vertices, which must necessarily 
-form cyclic structures we call wreaths, where each vertex has exactly one parent.
-For example, the grove corresponding to the graph in Figure~XXX is ...
-% TODO: add ref to example figure
+The fourth component $W$ is the set of expressions derived from the remaining vertices, which must necessarily form cyclic structures we call wreaths, where each vertex has exactly one parent. In each of these, $\parents(v)$ is defined as follows.  \[ \parents(v) = \{v' : \exists \e = (u, v', p, v), G(\e) = \Plus\}  \] \\
 
-% TODO: define helper function for finding the expression rooted at some vertex
+For example, the grove corresponding to the graph in Figure~XXX is ...
+
+\begin{figure}[b]
+  \centering
+  \begin{tikzpicture}
+    \path (0cm,0cm) graph[graph style] {
+      root[root style] -> {
+       a/{\vWrapPlus} [> "\eWrapPlus"] -> {
+        "\vSimpleTimes" [> "\eNestedPartsBob"'] -> {
+         {},
+         b/"\vNestedPartsAlice" [> "\eMultiParentAlice"', >merge edge]
+        },
+        {}
+       }
+      },
+    };
+    \path [draw,->,merge edge] (a) to ["\eMultiParentBob",out=-60,in=60] (b);
+    \path (1cm,-1cm) graph[graph style] { plus/"\vSimpleTimes" };
+    \path (2cm,-1cm) graph[graph style] { times/"\vMultiCycleTimes" };
+    \path (2cm,-2cm) graph[graph style] { plus2/"\vSimpleTimes" };
+    \path[draw,->,merge edge] (times) to ["\eMultiCycleBobTimes"'anchor=north,out=-135,in=-45] (plus);
+    \path[draw,->,merge edge] (plus) to ["\eMultiCycleBobPlus"anchor=south,out=45,in=135] (times);
+    \path[draw,->,merge edge] (times) to ["\eMultiCycleBobPlus"anchor=west,out=-90,in=90] (plus2);
+    \path (1.5cm,-2.5cm) graph[graph style] { plus/"\vSimpleTimes" };
+  \end{tikzpicture}
+  \caption{Caption goes here}%
+  \label{fig:Decomposition example}
+\end{figure}  
+
+Figure YYY defines $\expr(v)$ wich determines the expression for a given vertex $v$.
+There's one rule for each constructor form, e.g., $\ExpApp$.
+In each child position, e.g., $\AppFun, \AppArg$, we call an auxiliary function $\expr'(v, p)$ which ... (explain different cases and what's going on here).
+
+% TODO: add conflict hole to no-parent vertex
+
+\begin{figure*}
+\begin{align*}
+  e_r &= \expr(v_0) \\
+  MP &= \{\expr(v) : |\parents(v)| > 1\} \\
+  NP &= \{\expr(v) : |\parents(v)| = 0 \land v \ne v_0\} \\
+  W  &= \{\expr(v) : |\parents(v)| = 1 \wedge v = \min(\ancestors(v))\}
+\end{align*}
+
+\begin{align*}
+  \parents(v) &= \{v' : \exists \e = (u, v', p, v), G(\e) = \Plus\} \\
+  \ancestors(v) &= \parents(v) \cup \ancestors(\parents(v))
+\end{align*}
+
+\begin{displaymath}
+\begin{array}{l}
+  \expr(v=(u, Root)) = expr'(v, Root) \\
+  \expr(v=(u, \ExpVar(x))) = x^u \\
+  \expr(v=(u, \ExpApp)) = (\expr'(v, \AppFun)~\expr'(v, \AppArg))^u \\
+  \expr(v=(u, \ExpLam)) = \lambda^u \patt'(v, \LamParam) : \type'(v, \LamType) . \expr'(v, \LamBody) \\
+\end{array}
+\end{displaymath}
+
+% \begin{align*}
+%   \expr(v=(u, Root)) &= expr'(v, Root) \\
+%   \expr(v=(u, \ExpVar(x))) &= x^u \\
+%   \expr(v=(u, \ExpApp)) &= (\expr'(v, \AppFun)~\expr'(v, \AppArg))^u \\
+%   % | Exp_var of (string)
+%   % | Exp_lam
+%   % | Exp_app
+%   % | Exp_num of (int)
+%   % | Exp_plus
+%   % | Exp_times
+%   % | Exp_nil
+%   % | Exp_cons
+%   % | Exp_case
+%   % (**** Pat ****)
+%   % | Pat_var of (string)
+%   % (**** Typ ****)
+%   % | Typ_num
+%   % | Typ_arrow
+%   % | Typ_list
+% \end{align*}
+
+% DONE: add ref case to expr'
+% TODO: point out cleverness in W set-builder def -- say that v being the min ancestor of itself means it is part of the cycle
+% TODO: note to take least fixed point of ancestors
+
+% Michael's suggestion:
+%   f : A -> A U parents(v) U ancestors(v)
+%   take lfp of f
+
+% when talking about why W is defined that way: after explaining intuition, say
+% ``we can formalize this intuition by taking the lfp of <the function f>.''
+% fixed-point theory is part of the set of assumptions in this paper.
+
+\begin{align*}
+  \expr'(v,p) = \begin{cases}
+    \hole & \children(v,p) = \varnothing \\
+    \expr(v') & \children(v,p) = \{v'\} \\
+    \#u & \children(v,p) = \{v'=(u,k)\} \land |\parents(v')| > 1 \\
+    \#u & \children(v,p) = \{v'=(u,k)\} \land |\parents(v')| = 1 \land v' = \min(\ancestors(v')) \\
+    \{\expr(v_1) | \ldots | \expr(v_n)\} & \children(v,p) = \{v_1, \ldots, v_n\} \\
+  \end{cases}
+\end{align*}
+
+\begin{align*}
+  \children(v, p) = \{v' : \exists \e (u, v, p, v'), G(\e) = \Plus\}
+\end{align*}
+\end{figure*}
+
+% TODO: add text around these definitions -- turn them into paragraphs.
 
 We determine $e$ by starting at the root of the graph and including every connected
 vertex that has a single parent. In positions where there are no children, we
