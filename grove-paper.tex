@@ -2174,7 +2174,7 @@ The fourth component $W$ is the set of expressions derived from the remaining ve
 
 For example, the grove corresponding to the graph in Figure~XXX is ...
 
-\begin{figure}[b]
+\begin{figure}
   \centering
   \begin{tikzpicture}
     \path (0cm,0cm) graph[graph style] {
@@ -2249,18 +2249,6 @@ In each child position, e.g., $\AppFun, \AppArg$, we call an auxiliary function 
 %   % | Typ_arrow
 %   % | Typ_list
 % \end{align*}
-
-% DONE: add ref case to expr'
-% TODO: point out cleverness in W set-builder def -- say that v being the min ancestor of itself means it is part of the cycle
-% TODO: note to take least fixed point of ancestors
-
-% Michael's suggestion:
-%   f : A -> A U parents(v) U ancestors(v)
-%   take lfp of f
-
-% when talking about why W is defined that way: after explaining intuition, say
-% ``we can formalize this intuition by taking the lfp of <the function f>.''
-% fixed-point theory is part of the set of assumptions in this paper.
 
 \begin{align*}
   \expr'(v,p) = \begin{cases}
