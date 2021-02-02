@@ -1,6 +1,6 @@
 %% For double-blind review submission, w/o CCS and ACM Reference (max submission space)
 %\documentclass[acmsmall,review,anonymous,nonacm]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
-\documentclass[sigplan,10pt,review,anonymous]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
+\documentclass[acmsmall,10pt,review,anonymous]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
 %% For double-blind review submission, w/ CCS and ACM Reference
 %\documentclass[acmsmall,review,anonymous]{acmart}\settopmatter{printfolios=true}
 %% For single-blind review submission, w/o CCS and ACM Reference (max submission space)
@@ -471,8 +471,10 @@
 \newedge{WrapPlus}{Root}
 \newvertex{WrapPlus}{+}
 \newedge{WrapTimes}{L}
-\newcommand{\figureWrap}{
+\newcommand{\figureWrapMove}{
 \begin{figure}
+\centering
+\begin{minipage}[t]{.45\linewidth}
 \hskip0.12\columnwidth
 %%%%%%%%
 \begin{subfigure}[t]{0.28\linewidth}
@@ -557,15 +559,19 @@
 \hfill{}
 \caption{Example of Wrapping.  (Note that this figure omits the orphaned \vSimpleX{} since it is no longer relevant to the narrative of this paper.)}%
 \label{fig:Wrap}
-\end{figure}
-}
-
+\end{minipage}
+% \end{figure}
+% }
+%
+\hfil
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% \figureMove
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newedge{MoveTimes}{R}
-\newcommand{\figureMove}{
-\begin{figure}
+% \newcommand{\figureMove}{
+% \begin{figure}[H]
+\begin{minipage}[t]{.45\linewidth}
 \hfill
 %\hskip0.12\columnwidth
 %%%%%%%%
@@ -624,6 +630,7 @@
 \hfill{}
 \caption{Example of Repositioning Code.}%
 \label{fig:Move}
+\end{minipage}
 \end{figure}
 }
 
@@ -634,8 +641,10 @@
 \newvertex{DifferentPartsAlice}{u}
 \newedge{DifferentPartsBob}{R}
 \newvertex{DifferentPartsBob}{v}
-\newcommand{\figureDifferentParts}{
+% \newcommand{\figureDifferentParts}{
+\newcommand{\figureDifferentPartsNestedParts}{
 \begin{figure}
+\begin{minipage}[t]{0.45\linewidth}
 %\hfill
 \hskip0.12\columnwidth
 %%%%%%%%
@@ -723,9 +732,12 @@
 \hfill{}
 \caption{Example of Users Editing Different Parts of the Code.}%
 \label{fig:DifferentParts}
-\end{figure}
-}
-
+\end{minipage}
+% \end{figure}
+% }
+%
+\hfil
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% \figureCommutativity
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -748,15 +760,16 @@
 % \label{fig:Commutativity}
 % \end{figure}
 % }
-
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% \figureNestedParts
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newedge{NestedPartsAlice}{L}
 \newvertex{NestedPartsAlice}{w}
 \newedge{NestedPartsBob}{L}
-\newcommand{\figureNestedParts}{
-\begin{figure}
+% \newcommand{\figureNestedParts}{
+% \begin{figure}
+\begin{minipage}[t]{0.45\linewidth}
 \hfill
 %\hskip0.12\columnwidth
 %%%%%%%%
@@ -843,6 +856,7 @@
 \hfill{}
 \caption{Example of Users Editing Nested Parts of the Code.}%
 \label{fig:NestedParts}
+\end{minipage}
 \end{figure}
 }
 
@@ -1116,7 +1130,7 @@
 %\hfill
 \hskip0.07\columnwidth
 %%%%%%%%
-\begin{subfigure}[t]{0.23\textwidth}
+\begin{subfigure}[t]{0.2\textwidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -1147,7 +1161,7 @@
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.23\textwidth}
+\begin{subfigure}[t]{0.2\textwidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -1179,7 +1193,7 @@
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.23\textwidth}
+\begin{subfigure}[t]{0.2\textwidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -1211,7 +1225,7 @@
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.23\textwidth}
+\begin{subfigure}[t]{0.2\textwidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -1540,7 +1554,8 @@ Finally, holes are represented by the absence of a child.
 For example, in \autoref{fig:Simple:a} the absence of an \texttt{R} edge coming from \vSimpleTimes{}
 corresponds to the hole on the right of the~\texttt{*} in~\texttt{x * \hole}.
 
-\figureWrap{}
+\figureWrapMove{}
+% \figureMove{}
 
 \subsection{Single-User Actions}%
 \label{sub:Single-User Actions}
@@ -1570,7 +1585,7 @@ The resulting graph, shown in \autoref{fig:Simple:b}, represents the expression 
 \subsubsection{Deletion Actions}%
 \label{sub:Deletion}
 
-\figureMove{}
+% \figureMove{}
 
 Next Alice deletes~\texttt{x} so that the code becomes~\texttt{\hole{} * y}.
 This is modeled by deleting \eSimpleX{} as shown in \autoref{fig:Simple:c}.
@@ -1620,7 +1635,8 @@ This corresponds to the following sequence of graph edits, shown in \autoref{fig
 (a) delete \eWrapTimes{} leaving \vSimpleTimes{} temporarily orphaned and
 (b) add \eMoveTimes{} to \vSimpleTimes{} in the right child position of \vWrapPlus{}.
 
-\figureDifferentParts{}
+% \figureDifferentParts{}
+\figureDifferentPartsNestedParts{}
 
 %\figureCommutativity{}
 \begin{figure}
@@ -1679,7 +1695,7 @@ and apply the other's graph edits to their own copy of the graph.
 This results in both Alice and Bob having the graph in
 \autoref{fig:DifferentParts:c}.
 
-\figureNestedParts{}
+% \figureNestedParts{}
 
 \subsubsection{Commutativity}%
 \label{sub:Commutativity:informal}
@@ -2218,6 +2234,7 @@ In each child position, e.g., $\AppFun, \AppArg$, we call an auxiliary function 
 \begin{align*}
   \parents(v) &= \{v' : \exists \e = (u, v', p, v), G(\e) = \Plus\} \\
   \ancestors(v) &= \parents(v) \cup \ancestors(\parents(v))
+  \children(v, p) = \{v' : \exists \e (u, v, p, v'), G(\e) = \Plus\}
 \end{align*}
 
 \begin{displaymath}
@@ -2260,9 +2277,6 @@ In each child position, e.g., $\AppFun, \AppArg$, we call an auxiliary function 
   \end{cases}
 \end{align*}
 
-\begin{align*}
-  \children(v, p) = \{v' : \exists \e (u, v, p, v'), G(\e) = \Plus\}
-\end{align*}
 \end{figure*}
 
 % TODO: add text around these definitions -- turn them into paragraphs.
