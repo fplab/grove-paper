@@ -2190,28 +2190,47 @@ The fourth component $W$ is the set of expressions derived from the remaining ve
 
 For example, the grove corresponding to the graph in Figure~XXX is ...
 
+\newvertex{DecompPlusA}{+}
+\newedge{DecompTimesA}{L}
+\newvertex{DecompTimesA}{*}
+\newedge{DecompPlusAX}{R}
+\newvertex{DecompX}{x}
+\newedge{DecompTimesAX}{R}
+%
+\newedge{DecompPlusB}{L}
+\newvertex{DecompPlusB}{+}
+\newedge{DecompTimesB}{R}
+\newvertex{DecompTimesB}{*}
+\newedge{DecompY}{R}
+\newvertex{DecompY}{y}
+\newedge{DecompZ}{R}
+\newvertex{DecompZ}{z}
+%
+\newedge{DecompTimes}{L}
 \begin{figure}
   \centering
   \begin{tikzpicture}
     \path (0cm,0cm) graph[graph style] {
       root[root style] -> {
-       a/{\vWrapPlus} [> "\eWrapPlus"] -> {
-        "\vSimpleTimes" [> "\eNestedPartsBob"'] -> {
+       a/{\vDecompPlusA} [> "\eSimpleTimes"] -> {
+        "\vDecompTimesA" [> "\eDecompTimesA"'] -> {
          {},
-         b/"\vNestedPartsAlice" [> "\eMultiParentAlice"', >merge edge]
+         b/"\vDecompX" [> "\eDecompTimesAX"']
         },
         {}
        }
       },
     };
-    \path [draw,->,merge edge] (a) to ["\eMultiParentBob",out=-60,in=60] (b);
-    \path (1cm,-1cm) graph[graph style] { plus/"\vSimpleTimes" };
-    \path (2cm,-1cm) graph[graph style] { times/"\vMultiCycleTimes" };
-    \path (2cm,-2cm) graph[graph style] { plus2/"\vSimpleTimes" };
-    \path[draw,->,merge edge] (times) to ["\eMultiCycleBobTimes"'anchor=north,out=-135,in=-45] (plus);
-    \path[draw,->,merge edge] (plus) to ["\eMultiCycleBobPlus"anchor=south,out=45,in=135] (times);
-    \path[draw,->,merge edge] (times) to ["\eMultiCycleBobPlus"anchor=west,out=-90,in=90] (plus2);
-    \path (1.5cm,-2.5cm) graph[graph style] { plus/"\vSimpleTimes" };
+    \path [draw,->] (a) to ["\eDecompPlusAX",out=-60,in=60] (b);
+    %
+    \path (2cm,-0.85cm) graph[graph style] { plus/"\vDecompPlusB" };
+    \path (3cm,-0.85cm) graph[graph style] { times/"\vDecompTimesB" };
+    \path (3.25cm,-1.75cm) graph[graph style] { y/"\vDecompY" };
+    \path[draw,->] (times) to ["\eDecompPlusB"'anchor=north,out=-135,in=-45] (plus);
+    \path[draw,->] (plus) to ["\eDecompTimesB"anchor=south,out=45,in=135] (times);
+    \path[draw,->] (times) to ["\eDecompY"anchor=west] (y);
+    %
+    \path (1.55cm,-2.1cm) graph[graph style] { plus/"\vDecompZ" };
   \end{tikzpicture}
   \caption{Caption goes here}%
   \label{fig:Decomposition example}
