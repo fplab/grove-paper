@@ -237,6 +237,8 @@
 \def\AppArg{\mathsf{App\_arg}}
 \def\PlusLeft{\mathsf{Plus\_left}}
 \def\PlusRight{\mathsf{Plus\_right}}
+\def\TimesLeft{\mathsf{Times\_left}}
+\def\TimesRight{\mathsf{Times\_right}}
 \def\ArrowArg{\mathsf{Arrow\_arg}}
 \def\ArrowResult{\mathsf{Arrow\_result}}
 
@@ -1388,6 +1390,55 @@
 \end{figure*}
 }
 
+\newvertex{DecompPlusA}{+}
+\newedge{DecompTimesA}{L}
+\newvertex{DecompTimesA}{*}
+\newedge{DecompPlusAX}{R}
+\newvertex{DecompX}{x}
+\newedge{DecompTimesAX}{R}
+%
+\newedge{DecompPlusB}{L}
+\newvertex{DecompPlusB}{+}
+\newedge{DecompTimesB}{R}
+\newvertex{DecompTimesB}{*}
+\newedge{DecompY}{R}
+\newvertex{DecompY}{y}
+\newedge{DecompZ}{R}
+\newvertex{DecompZ}{z}
+%
+\newedge{DecompTimes}{L}
+%
+\newcommand{\figureDecompExample}{
+\begin{figure}
+  \centering
+  \begin{tikzpicture}
+    \path (0cm,0cm) graph[graph style] {
+      root[root style] -> {
+       a/{\vDecompPlusA} [> "\eSimpleTimes"] -> {
+        "\vDecompTimesA" [> "\eDecompTimesA"'] -> {
+         {},
+         b/"\vDecompX" [> "\eDecompTimesAX"']
+        },
+        {}
+       }
+      },
+    };
+    \path [draw,->] (a) to ["\eDecompPlusAX",out=-60,in=60] (b);
+    %
+    \path (2cm,-0.85cm) graph[graph style] { plus/"\vDecompPlusB" };
+    \path (3cm,-0.85cm) graph[graph style] { times/"\vDecompTimesB" };
+    \path (3.25cm,-1.75cm) graph[graph style] { y/"\vDecompY" };
+    \path[draw,->] (times) to ["\eDecompPlusB"'anchor=north,out=-135,in=-45] (plus);
+    \path[draw,->] (plus) to ["\eDecompTimesB"anchor=south,out=45,in=135] (times);
+    \path[draw,->] (times) to ["\eDecompY"anchor=west] (y);
+    %
+    \path (1.55cm,-2.1cm) graph[graph style] { plus/"\vDecompZ" };
+  \end{tikzpicture}
+  \caption{Caption goes here}%
+  \label{fig:Decomposition example}
+\end{figure}
+}
+
 \begin{document}
 
 %% Title information
@@ -2010,6 +2061,8 @@ hole. Additionally, all non-hole forms have a superscripted identifier $u \in
 % Turn that into a constructor set K + position set P + arity function (has
 % type: K -> $\wp$(P)).
 
+% TODO: replace positions with macros
+
 \begin{figure}
   \[
     \arraycolsep=0pt
@@ -2019,7 +2072,7 @@ hole. Additionally, all non-hole forms have a superscripted identifier $u \in
       \arity(\Root)={} & \left\{ \Root \right\} \\
       \arity(\PatVar(x))={} & \left\{ \right\} \\
       \arity(\ExpVar(x))={} & \left\{ \right\} \\
-      \arity(\ExpLam)={} & \left\{ (\mathtt{Param}, Pat), (\mathtt{Type}, Typ), (\mathtt{Body}, Exp) \right\} \\
+      \arity(\ExpLam)={} & \left\{ (\LamParam, Pat), (\mathtt{Type}, Typ), (\mathtt{Body}, Exp) \right\} \\
       \arity(\ExpApp)={} & \left\{ (\mathtt{Fun}, Exp), (\mathtt{Arg}, Exp) \right\} \\
       \arity(\ExpPlus)={} & \left\{ (\mathtt{L}, Exp), (\mathtt{R}, Exp) \right\} \\
       \arity(\ExpTimes)={} & \left\{ (\mathtt{L}, Exp), (\mathtt{R}, Exp) \right\} \\
@@ -2169,51 +2222,7 @@ tree, but we can decompose any graph into a collection of expressions, governed
 by the grammar in \autoref{fig:Base syntax}, which we organize into a structure
 we call a grove.
 
-\newvertex{DecompPlusA}{+}
-\newedge{DecompTimesA}{L}
-\newvertex{DecompTimesA}{*}
-\newedge{DecompPlusAX}{R}
-\newvertex{DecompX}{x}
-\newedge{DecompTimesAX}{R}
-%
-\newedge{DecompPlusB}{L}
-\newvertex{DecompPlusB}{+}
-\newedge{DecompTimesB}{R}
-\newvertex{DecompTimesB}{*}
-\newedge{DecompY}{R}
-\newvertex{DecompY}{y}
-\newedge{DecompZ}{R}
-\newvertex{DecompZ}{z}
-%
-\newedge{DecompTimes}{L}
-\begin{figure}
-  \centering
-  \begin{tikzpicture}
-    \path (0cm,0cm) graph[graph style] {
-      root[root style] -> {
-       a/{\vDecompPlusA} [> "\eSimpleTimes"] -> {
-        "\vDecompTimesA" [> "\eDecompTimesA"'] -> {
-         {},
-         b/"\vDecompX" [> "\eDecompTimesAX"']
-        },
-        {}
-       }
-      },
-    };
-    \path [draw,->] (a) to ["\eDecompPlusAX",out=-60,in=60] (b);
-    %
-    \path (2cm,-0.85cm) graph[graph style] { plus/"\vDecompPlusB" };
-    \path (3cm,-0.85cm) graph[graph style] { times/"\vDecompTimesB" };
-    \path (3.25cm,-1.75cm) graph[graph style] { y/"\vDecompY" };
-    \path[draw,->] (times) to ["\eDecompPlusB"'anchor=north,out=-135,in=-45] (plus);
-    \path[draw,->] (plus) to ["\eDecompTimesB"anchor=south,out=45,in=135] (times);
-    \path[draw,->] (times) to ["\eDecompY"anchor=west] (y);
-    %
-    \path (1.55cm,-2.1cm) graph[graph style] { plus/"\vDecompZ" };
-  \end{tikzpicture}
-  \caption{Caption goes here}%
-  \label{fig:Decomposition example}
-\end{figure}  
+\figureDecompExample
 
 % \newcommand{\multiVertex}[1]{\textcolor{red}{\ensuremath{\mathbf{\curlyveedownarrow_{#1}}}}}
 % \newcommand{\cycleVertex}[1]{\textcolor{red}{\ensuremath{\mathbf{\rcirclearrowleft_{#1}}}}}
@@ -2256,41 +2265,69 @@ In $W$, $\ancestors(v)$ is the set of vertices for which there is a path to $v$.
 Note that $v = \min(\ancestors(v))$ only if $v$ is part of a cycle.
 
 % TODO: replace # with \multiVertex and \cycleVertex
+% TODO: distinguish between multi-parent and cycle refs in text
 % TODO: update \multiChild with more than 2 children and use it for conflict holes
 % TODO: gray out ids in the grammar and expressions
 % TODO: add a child to z^58 and rotate 51-52
 % TODO: move example grove to right of its diagram
-% TODO: distinguish between multi-parent and cycle refs
+% TODO: use mathord for spaces around + / *
+% TODO: figure out why + --> "" and * --> "\times"
+% TODO: keep condensed "|"s for conflict holes in grammar, but not other places
+% TODO: make lfp a math function
 
 \begin{figure}
   \begin{displaymath}
     \begin{array}{l}
       \expr(v=(u, Root)) = expr'(v, Root) \\
       \expr(v=(u, \ExpVar(x))) = x^u \\
-      \expr(v=(u, \ExpApp)) = (\expr'(v, \AppFun)~\expr'(v, \AppArg))^u \\
       \expr(v=(u, \ExpLam)) = \lambda^u \patt'(v, \LamParam) : \type'(v, \LamType) . \expr'(v, \LamBody) \\
+      \expr(v=(u, \ExpApp)) = (\expr'(v, \AppFun)~\expr'(v, \AppArg))^u \\
+      \expr(v=(u, \ExpNum(n))) = n^u \\
+      \expr(v=(u, \ExpPlus)) = \expr'(v, \PlusLeft)~\texttt{+}^u~\expr'(v, \PlusRight) \\
+      \expr(v=(u, \ExpTimes)) = \expr'(v, \TimesLeft)~\texttt{*}^u~\expr'(v, \TimesRight) \\
+      \patt(q=(u, \PatVar(x))) = \patt'(q, ) \\
+      \type(\tau=(u, \TypArrow)) = \type'(\tau, \ArrowArg) \rightarrow \type'(\tau, \ArrowResult)
+      \type(\tau=(u, \TypNum) = Num^u \\
     \end{array}
   \end{displaymath}
+
+% TODO: make macros for + and *
+% TODO: comment these out:
+%   % | Exp_nil
+%   % | Exp_cons
+%   % | Exp_case
+%   % | Typ_list
 
   \begin{align*}
     \expr'(v,p) = \begin{cases}
       \hole & \children(v,p) = \varnothing \\
-      \expr(v') & \children(v,p) = \{v'\} \land |\parents(v')| = 1 \\
-                & \phantom{\children(v,p)} \land v' \ne \min(\ancestors(v')) \\
-      \#u & \children(v,p) = \{v'\} \land |\parents(v')| > 1 \\
-      \#u & \children(v,p) = \{v'=(u,k)\} \land |\parents(v')| = 1 \\
+      \{\expr(v_1) \mid \ldots \mid \expr(v_n)\} & \children(v,p) = \{v_1, \ldots, v_n\} \\
+      \multiVertex{u} & \children(v,p) = \{v'\} \land |\parents(v')| > 1 \\
+      \cycleVertex{u} & \children(v,p) = \{v'=(u,k)\} \land |\parents(v')| = 1 \\
           & \phantom{\children(v,p)} \land v' = \min(\ancestors(v')) \\
-      \{\expr(v_1) | \ldots | \expr(v_n)\} & \children(v,p) = \{v_1, \ldots, v_n\} \\
+      \expr(v') & \text{otherwise} \\
+    \end{cases}
+  \end{align*}
+
+  \begin{align*}
+    \expr'(v,p) = \begin{cases}
+      \hole & \children(v,p) = \varnothing \\
+      \{\expr(v_1) \mid \ldots \mid \expr(v_n)\} & \children(v,p) = \{v_1, \ldots, v_n\} \\
+      \multiVertex{u} & \children(v,p) = \{v'\} \land |\parents(v')| > 1 \\
+      \cycleVertex{u} & \children(v,p) = \{v'=(u,k)\} \land |\parents(v')| = 1 \\
+          & \phantom{\children(v,p)} \land v' = \min(\ancestors(v')) \\
+      \expr(v') & \text{otherwise} \\
     \end{cases}
   \end{align*}
 
   \begin{align*}
     \parents(v) &= \{v' : \exists \e = (u, v', p, v), G(\e) = \Plus\} \\
-    \ancestors(v) &= \parents(v) \cup \ancestors(\parents(v)) \\
+    \ancestors(v) &= \left( \textrm{lfp}(\ancestors') \right)(v) \\
+    \ancestors'(v) &= \parents(v) \cup \ancestors'(\parents(v)) \\
     \children(v, p) &= \{v' : \exists \e (u, v, p, v'), G(\e) = \Plus\} \\
     \min(\{v_1 = (u_1, k_1), \ldots, v_n = (u_n, k_n)\}) &= (u_j, k_j) \text{ s.t. } j \in \{1, \ldots, n\} \land u_j \le u_i \forall i \in \{1, \ldots, n\}
       \end{align*}
-  \caption{Caption2 goes here. Note that $\ancestors(v)$ is defined as the least fixed point of the equation above.}
+  \caption{Caption2 goes here. Note that $\ancestors(v)$ is defined as the least fixed point of $a$.}
   \label{fig:Decomposition expr}
 \end{figure}
 
@@ -2302,27 +2339,6 @@ Note that $v = \min(\ancestors(v))$ only if $v$ is part of a cycle.
   \ancestors(v) &= \parents(v) \cup \ancestors(\parents(v))
   \children(v, p) = \{v' : \exists \e (u, v, p, v'), G(\e) = \Plus\}
 \end{align*}
-
-% \begin{align*}
-%   \expr(v=(u, Root)) &= expr'(v, Root) \\
-%   \expr(v=(u, \ExpVar(x))) &= x^u \\
-%   \expr(v=(u, \ExpApp)) &= (\expr'(v, \AppFun)~\expr'(v, \AppArg))^u \\
-%   % | Exp_var of (string)
-%   % | Exp_lam
-%   % | Exp_app
-%   % | Exp_num of (int)
-%   % | Exp_plus
-%   % | Exp_times
-%   % | Exp_nil
-%   % | Exp_cons
-%   % | Exp_case
-%   % (**** Pat ****)
-%   % | Pat_var of (string)
-%   % (**** Typ ****)
-%   % | Typ_num
-%   % | Typ_arrow
-%   % | Typ_list
-% \end{align*}
 
 \end{figure}
 
