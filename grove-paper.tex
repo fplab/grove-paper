@@ -2216,11 +2216,8 @@ Discuss uniqueness of uuid
 
 % NOTE: this whole section is for describing the 4-tuple
 
-Trees are often easier to work with than arbitrary graphs directly, for example
-to present the graph to users or for type checking. A graph is not necessarily a
-tree, but we can decompose any graph into a collection of expressions, governed
-by the grammar in \autoref{fig:Base syntax}, which we organize into a structure
-we call a grove.
+Trees are often easier to work with than arbitrary graphs directly, for example to present the graph to users or for type checking.
+A graph can be decomposed into a collection of expressions governed by the grammar in \autoref{fig:Base syntax}, which we organize into a structure called a grove.
 
 \figureDecompExample
 
@@ -2249,8 +2246,14 @@ For example, the grove corresponding to the graph in \autoref{fig:Decomposition 
 Let us now examine each of the four components in more detail.
 The first component $e_r$ is the expression derived from the root vertex $v_0$.
 \autoref{fig:Decomposition expr} defines $\expr(v)$ wich determines the expression derived from $v$.
-There's one rule for each constructor form, e.g., $\ExpApp$.
-In each child position, e.g., $\AppFun, \AppArg$, we call an auxiliary function $\expr'(v, p)$ which ... (explain different cases and what's going on here).
+There is one rule for each constructor form.
+For example, the expression derived from $v_{38} = (38, \ExpPlus)$ is $\expr'(v_{38}, \PlusLeft) \text{+}^{38} \expr'(v_{38}, \PlusRight)$.
+In each child position, $\expr'(v, p)$ determines the sub-expression derived from the children of $v$ at position $p$.
+An empty hole $\hole$ appears if there are no children at the given position.
+A conflict hole $...$  appears if there are multiple children.
+If there is one child, the expression is determined recursively unless that child appears in $MP$ or $W$, discussed below, in which case we leave a reference, $\multiVertex{u}$ or $\cycleVertex{u}$ respectively.
+For the $\ExpLam$ case, we define $\patt(q)$ and $\type(\tau)$ similarly.
+
 
 The second component $MP$ is the set of expressions derived from a vertex with multiple parents.
 Wherever an edge to such a vertex appears, we place a reference to it $\#u$.
@@ -2285,8 +2288,8 @@ Note that $v = \min(\ancestors(v))$ only if $v$ is part of a cycle.
       \expr(v=(u, \ExpNum(n))) = n^u \\
       \expr(v=(u, \ExpPlus)) = \expr'(v, \PlusLeft)~\texttt{+}^u~\expr'(v, \PlusRight) \\
       \expr(v=(u, \ExpTimes)) = \expr'(v, \TimesLeft)~\texttt{*}^u~\expr'(v, \TimesRight) \\
-      \patt(q=(u, \PatVar(x))) = \patt'(q, ) \\
-      \type(\tau=(u, \TypArrow)) = \type'(\tau, \ArrowArg) \rightarrow \type'(\tau, \ArrowResult)
+      \patt(v=(u, \PatVar(x))) = x^u \\
+      \type(\tau=(u, \TypArrow)) = \type'(\tau, \ArrowArg) \rightarrow \type'(\tau, \ArrowResult) \\
       \type(\tau=(u, \TypNum) = Num^u \\
     \end{array}
   \end{displaymath}
@@ -2310,13 +2313,24 @@ Note that $v = \min(\ancestors(v))$ only if $v$ is part of a cycle.
   \end{align*}
 
   \begin{align*}
-    \expr'(v,p) = \begin{cases}
+    \patt'(v,p) = \begin{cases}
       \hole & \children(v,p) = \varnothing \\
-      \{\expr(v_1) \mid \ldots \mid \expr(v_n)\} & \children(v,p) = \{v_1, \ldots, v_n\} \\
+      \{\patt(v_1) \mid \ldots \mid \patt(v_n)\} & \children(v,p) = \{v_1, \ldots, v_n\} \\
       \multiVertex{u} & \children(v,p) = \{v'\} \land |\parents(v')| > 1 \\
       \cycleVertex{u} & \children(v,p) = \{v'=(u,k)\} \land |\parents(v')| = 1 \\
           & \phantom{\children(v,p)} \land v' = \min(\ancestors(v')) \\
-      \expr(v') & \text{otherwise} \\
+      \patt(v') & \text{otherwise} \\
+    \end{cases}
+  \end{align*}
+
+  \begin{align*}
+    \type'(v,p) = \begin{cases}
+      \hole & \children(v,p) = \varnothing \\
+      \{\type(v_1) \mid \ldots \mid \type(v_n)\} & \children(v,p) = \{v_1, \ldots, v_n\} \\
+      \multiVertex{u} & \children(v,p) = \{v'\} \land |\parents(v')| > 1 \\
+      \cycleVertex{u} & \children(v,p) = \{v'=(u,k)\} \land |\parents(v')| = 1 \\
+          & \phantom{\children(v,p)} \land v' = \min(\ancestors(v')) \\
+      \type(v') & \text{otherwise} \\
     \end{cases}
   \end{align*}
 
