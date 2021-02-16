@@ -2330,15 +2330,6 @@ Note that $v = \min(\ancestors(v))$ only if $v$ is part of a cycle.
 
 % TODO: add conflict hole to no-parent vertex
 
-\begin{figure}[b]
-\begin{align*}
-  \parents(v) &= \{v' : \exists \e = (u, v', p, v), G(\e) = \Plus\} \\
-  \ancestors(v) &= \parents(v) \cup \ancestors(\parents(v))
-  \children(v, p) = \{v' : \exists \e (u, v, p, v'), G(\e) = \Plus\}
-\end{align*}
-
-\end{figure}
-
 % TODO: add text around these definitions -- turn them into paragraphs.
 
 We determine $e$ by starting at the root of the graph and including every connected
