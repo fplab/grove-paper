@@ -2256,10 +2256,9 @@ In the example, $x_{\id{42}}$ is referenced twice in $e_r$.
 The third component $NP$ is the set of expressions rooted at a vertex with no parents, other than the root vertex.
 In the example, $z^{\id{58}}$ has no parents (because it was deleted), so it appears only in $NP$.
 
-The fourth component $W$ is the set of expressions derived from the remaining vertices, which must necessarily form cyclic structures we call wreaths, where each vertex has exactly one parent.
-
+The fourth component $W$ is the set of expressions derived from the remaining vertices, which form cyclic structures we call wreaths, where each vertex has exactly one parent.
 In $W$, $\ancestors(v)$ is the set of vertices for which there is a path to $v$.
-Note that $v = \min(\ancestors(v))$ only if $v$ is part of a cycle.
+Note that $v = \min(\ancestors(v))$, where $\min(\{v_{\id{u_1}}, \ldots, v_{\id{u_n}}\}) = v_{\id{u_k}}$ such that $u_k = \min(\{u_{\id{1}}, \ldots, u_{\id{n}}\})$, holds only if $v$ is part of a cycle.
 
 \begin{figure}
   \begin{displaymath}
