@@ -1410,6 +1410,8 @@
 \newcommand{\figureDecompExample}{
 \begin{figure}
   \centering
+  \begin{subfigure}{0.5\textwidth}
+    \centering
   \begin{tikzpicture}
     \path (0cm,0cm) graph[graph style] {
       root[root style] -> {
@@ -1433,7 +1435,21 @@
     %
     \path (1.55cm,-2.1cm) graph[graph style] { plus/"\vDecompZ" };
   \end{tikzpicture}
-  \caption{Caption goes here}%
+    \caption{subcaption 1 goes here}%
+    \label{fig:Decomposition example graph}
+  \end{subfigure}%
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \begin{align*}
+      e_r &= \hole~\texttt{*}^{\id{40}}~\multiVertex{42}~\texttt{+}^{\id{38}}~\multiVertex{42} \\
+      MP &= \{x^{\id{42}}\} \\
+      NP &= \{z^{\id{52}}\} \\
+      W &= \{\hole~\texttt{+}^{\id{46}}~\cycleVertex{46}~\texttt{*}^{\id{48}}~y^{\id{50}}\} \\
+    \end{align*}
+    \caption{subcaption 2 goes here}%
+    \label{fig:Decomposition example grove}
+  \end{subfigure}
+  \caption{Main caption goes here}%
   \label{fig:Decomposition example}
 \end{figure}
 }
@@ -2231,13 +2247,8 @@ where
   NP &= \{\expr(v) : |\parents(v)| = 0 \land v \ne v_0\} \\
   W  &= \{\expr(v) : |\parents(v)| = 1 \wedge v = \min(\ancestors(v))\}
 \end{align*}
-For example, the grove corresponding to the graph in \autoref{fig:Decomposition example} is
-\begin{align*}
-  e_r &= \hole~\texttt{*}^{\id{40}}~\multiVertex{42}~\texttt{+}^{\id{38}}~\multiVertex{42} \\
-  MP &= \{x^{\id{42}}\} \\
-  NP &= \{z^{\id{52}}\} \\
-  W &= \{\hole~\texttt{+}^{\id{46}}~\cycleVertex{46}~\texttt{*}^{\id{48}}~y^{\id{50}}\} \\
-\end{align*}
+For example, the grove corresponding to the graph in \autoref{fig:Decomposition example graph} is
+given in \autoref{fig:Decomposition example grove}.
 
 Let us now examine each of the four components in more detail.
 The first component $e_r$ is the expression derived from the root vertex $v_0$.
@@ -2277,7 +2288,6 @@ Note that $v = \min(\ancestors(v))$, where $\min(\{v_{\id{u_1}}, \ldots, v_{\id{
     \end{array}
   \end{displaymath}
 
-% TODO: make macros for + and *
 % TODO: comment these out:
 %   % | Exp_nil
 %   % | Exp_cons
