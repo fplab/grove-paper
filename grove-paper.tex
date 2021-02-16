@@ -93,7 +93,7 @@
 
 \def\_{\texttt{\textunderscore}}
 
-% \newcommand{\id}[1]{\textcolor{gray}{#1}}
+\newcommand{\id}[1]{\textcolor{gray}{\ensuremath{#1}}}
 
 
 %%%%%%%%
@@ -164,7 +164,7 @@
 }}
 \tikzset{graphs/root style/.style={
  %draw=none,
- as={\textbullet$_{0}$}
+ as={\textbullet$_{\id{0}}$}
 }}
 \tikzset{alice/.style={
   color=red!80!black,
@@ -348,7 +348,7 @@
 \expandafter\newcommand\csname vid#1\endcsname{}% This is just to check if this is a redefinition
 \expandafter\global\expandafter\edef\csname vid#1\endcsname{\theNodeVertexCounter}%
 \expandafter\newcommand\csname v#1\endcsname{}% This is just to check if this is a redefinition
-\expandafter\gdef\csname v#1\endcsname{\texttt{#2}\ensuremath{_{\csname vid#1\endcsname}}}%
+\expandafter\gdef\csname v#1\endcsname{\texttt{#2}\ensuremath{_{\id{\csname vid#1\endcsname}}}}%
 }
 \newcommand{\newedge}[2]{%
 \ifodd\theNodeVertexCounter
@@ -359,7 +359,7 @@
 \expandafter\newcommand\csname eid#1\endcsname{}% This is just to check if this is a redefinition
 \expandafter\global\expandafter\edef\csname eid#1\endcsname{\theNodeVertexCounter}%
 \expandafter\newcommand\csname e#1\endcsname{}% This is just to check if this is a redefinition
-\expandafter\gdef\csname e#1\endcsname{\texttt{#2}\ensuremath{_{\csname eid#1\endcsname}}}%
+\expandafter\gdef\csname e#1\endcsname{\texttt{#2}\ensuremath{_{\id{\csname eid#1\endcsname}}}}%
 }
 \setcounter{NodeVertexCounter}{-1}
 \newvertex{Root}{Root}
@@ -370,8 +370,8 @@
 \newcommand{\Edge}[1]{Edge~#1}
 \newcommand{\Vertex}[1]{Vertex~#1}
 \newcommand{\figureCode}[1]{\textbf{\texttt{#1}}\vskip1em}
-\newcommand{\multiVertex}[1]{\textcolor{red}{\ensuremath{\mathbf{\curlyveedownarrow_{#1}}}}}
-\newcommand{\cycleVertex}[1]{\textcolor{red}{\ensuremath{\mathbf{\rcirclearrowleft_{#1}}}}}
+\newcommand{\multiVertex}[1]{\textcolor{red}{\ensuremath{\curlyveedownarrow_{\id{#1}}}}}
+\newcommand{\cycleVertex}[1]{\textcolor{red}{\ensuremath{\rcirclearrowleft_{\id{#1}}}}}
 \newcommand{\orphanVertex}[1]{\textcolor{red}{\ensuremath{\mathbf{\ndownarrow_{#1}}}}}
 \newcommand{\parens}[1]{\textcolor{gray}{(}#1\textcolor{gray}{)}}
 \newcommand{\otherVertexVskip}{\vskip0.5em}
@@ -2036,10 +2036,10 @@ and this simplicity aids in the predictability.
   \[
     \arraycolsep=0pt
     \begin{array}{lrlll}
-      q    & {}\in Pat & {}::={} & x^u \mid \hole \mid \conflictHole{q,\ldots,q} \mid \multiVertex{u} \mid \cycleVertex{u} \\
-      \tau & {}\in Typ & {}::={} & \tau \rightarrow^u \tau \mid Num^u \mid \hole \mid \conflictHole{\tau,\ldots,\tau} \mid \multiVertex{u} \mid \cycleVertex{u} \\
-      e    & {}\in Exp & {}::={} & x^u \mid \lambda^u q \mathord{:}\tau.e \mid (e~e)^u \mid n^u \\
-           &           &         & ~\mid e~\texttt{+}^u~e \mid e~\texttt{*}^u~e \mid \hole \mid \conflictHole{e,\ldots,e} \mid \multiVertex{u} \mid \cycleVertex{u} \\
+      q    & {}\in Pat & {}::={} & x^{\id{u}} \mid \hole \mid \conflictHole{q,\ldots,q} \mid \multiVertex{u} \mid \cycleVertex{u} \\
+      \tau & {}\in Typ & {}::={} & \tau \rightarrow^{\id{u}} \tau \mid Num^{\id{u}} \mid \hole \mid \conflictHole{\tau,\ldots,\tau} \mid \multiVertex{u} \mid \cycleVertex{u} \\
+      e    & {}\in Exp & {}::={} & x^{\id{u}} \mid \lambda^{\id{u}} q \mathord{:}\tau.e \mid (e~e)^{\id{u}} \mid n^{\id{u}} \\
+           &           &         & ~\mid e~\texttt{+}^{\id{u}}~e \mid e~\texttt{*}^{\id{u}}~e \mid \hole \mid \conflictHole{e,\ldots,e} \mid \multiVertex{u} \mid \cycleVertex{u} \\
     \end{array}
   \]
   \caption{Base syntax, as a grammar, for the lambda calculus that we are considering.}
@@ -2232,30 +2232,29 @@ where
 \end{align*}
 For example, the grove corresponding to the graph in \autoref{fig:Decomposition example} is
 \begin{align*}
-  e_r &= \hole~\texttt{*}^{40}~\multiVertex{42}~\texttt{+}^{38}~\multiVertex{42} \\
-  MP &= \{x^{42}\} \\
-  NP &= \{z^{52}\} \\
-  W &= \{\hole~\texttt{+}^{46}~\cycleVertex{46}~\texttt{*}^{48}~y^{50}\} \\
+  e_r &= \hole~\texttt{*}^{\id{40}}~\multiVertex{42}~\texttt{+}^{\id{38}}~\multiVertex{42} \\
+  MP &= \{x^{\id{42}}\} \\
+  NP &= \{z^{\id{52}}\} \\
+  W &= \{\hole~\texttt{+}^{\id{46}}~\cycleVertex{46}~\texttt{*}^{\id{48}}~y^{\id{50}}\} \\
 \end{align*}
 
 Let us now examine each of the four components in more detail.
 The first component $e_r$ is the expression derived from the root vertex $v_0$.
 \autoref{fig:Decomposition expr} defines $\expr(v)$ wich determines the expression derived from $v$.
 There is one rule for each constructor form.
-For example, the expression derived from $v_{38} = (38, \ExpPlus)$ is $\expr'(v_{38}, \PlusLeft) \text{+}^{38} \expr'(v_{38}, \PlusRight)$.
+For example, the expression derived from $v_{\id{u}} = (u, \ExpPlus)$ is $\expr'(v_{\id{u}}, \PlusLeft) \text{+}^{\id{u}} \expr'(v_{\id{u}}, \PlusRight)$.
 In each child position, $\expr'(v, p)$ determines the sub-expression derived from the children of $v$ at position $p$.
 An empty hole $\hole$ appears if there are no children at the given position.
 A conflict hole $\conflictHole{e_1,\ldots,e_n}$ appears if there are multiple children.
 If there is one child, the expression is determined recursively unless that child appears in $MP$ or $W$, discussed below, in which case we leave a reference, $\multiVertex{u}$ or $\cycleVertex{u}$ respectively.
 For the $\ExpLam$ case, we define $\patt(q)$ and $\type(\tau)$ similarly.
 
-
 The second component $MP$ is the set of expressions derived from a vertex with multiple parents.
 Wherever an edge to such a vertex appears, we place a reference to it $\multiVertex{u}$.
-In the example, $x^{48}$ is referenced twice in $e_r$.
+In the example, $x_{\id{42}}$ is referenced twice in $e_r$.
 
 The third component $NP$ is the set of expressions rooted at a vertex with no parents, other than the root vertex.
-In the example, $z^{58}$ has no parents (because it was deleted), so it appears only in $NP$.
+In the example, $z^{\id{58}}$ has no parents (because it was deleted), so it appears only in $NP$.
 
 The fourth component $W$ is the set of expressions derived from the remaining vertices, which must necessarily form cyclic structures we call wreaths, where each vertex has exactly one parent.
 
@@ -2266,15 +2265,15 @@ Note that $v = \min(\ancestors(v))$ only if $v$ is part of a cycle.
   \begin{displaymath}
     \begin{array}{l}
       \expr(v=(u, Root)) = expr'(v, Root) \\
-      \expr(v=(u, \ExpVar(x))) = x^u \\
-      \expr(v=(u, \ExpLam)) = \lambda^u \patt'(v, \LamParam) : \type'(v, \LamType) . \expr'(v, \LamBody) \\
-      \expr(v=(u, \ExpApp)) = (\expr'(v, \AppFun)~\expr'(v, \AppArg))^u \\
-      \expr(v=(u, \ExpNum(n))) = n^u \\
-      \expr(v=(u, \ExpPlus)) = \expr'(v, \PlusLeft)~\texttt{+}^u~\expr'(v, \PlusRight) \\
-      \expr(v=(u, \ExpTimes)) = \expr'(v, \TimesLeft)~\texttt{*}^u~\expr'(v, \TimesRight) \\
-      \patt(v=(u, \PatVar(x))) = x^u \\
-      \type(\tau=(u, \TypArrow)) = \type'(\tau, \ArrowArg) \rightarrow \type'(\tau, \ArrowResult) \\
-      \type(\tau=(u, \TypNum) = Num^u \\
+      \expr(v=(u, \ExpVar(x))) = x^{\id{u}} \\
+      \expr(v=(u, \ExpLam)) = \lambda^{\id{u}} \patt'(v, \LamParam) : \type'(v, \LamType) . \expr'(v, \LamBody) \\
+      \expr(v=(u, \ExpApp)) = (\expr'(v, \AppFun)~\expr'(v, \AppArg))^{\id{u}} \\
+      \expr(v=(u, \ExpNum(n))) = n^{\id{u}} \\
+      \expr(v=(u, \ExpPlus)) = \expr'(v, \PlusLeft)~\texttt{+}^{\id{u}}~\expr'(v, \PlusRight) \\
+      \expr(v=(u, \ExpTimes)) = \expr'(v, \TimesLeft)~\texttt{*}^{\id{u}}~\expr'(v, \TimesRight) \\
+      \patt(v=(u, \PatVar(x))) = x^{\id{u}} \\
+      \type(\tau=(u, \TypArrow)) = \type'(\tau, \ArrowArg) \rightarrow^{\id{u}} \type'(\tau, \ArrowResult) \\
+      \type(\tau=(u, \TypNum) = Num^{\id{u}} \\
     \end{array}
   \end{displaymath}
 
