@@ -332,8 +332,8 @@
 
 \newcommand{\hole}{\ensuremath{\square}} %\textcolor{violet}{\llparenthesis}}\textcolor{violet}{\rrparenthesis}}
 \newcommand{\conflictHole}[1]{%
-  {\noexpandarg\StrSubstitute{#1}{,}{\textcolor{red}{\;\textbf{|}\;}}[\myargs]
-  {\textcolor{red}{\textbf{\{}} \myargs \textcolor{red}{\textbf{\}}}}}}
+{\noexpandarg\StrSubstitute{#1}{,}{\textcolor{red}{\;\textbf{|}\;}}[\myargs]%
+{\textcolor{red}{\textbf{\{}}\myargs\textcolor{red}{\textbf{\}}}}}}%
 
 % Calling \newvertex{Foo}{bar} defines
 %   \vidFoo to be a new id number, and
@@ -370,7 +370,6 @@
 \newcommand{\Edge}[1]{Edge~#1}
 \newcommand{\Vertex}[1]{Vertex~#1}
 \newcommand{\figureCode}[1]{\textbf{\texttt{#1}}\vskip1em}
-\newcommand{\multiChild}[2]{\textcolor{red}{\{} #1 \textcolor{red}{|} #2 \textcolor{red}{\}}}
 \newcommand{\multiVertex}[1]{\textcolor{red}{\ensuremath{\mathbf{\curlyveedownarrow_{#1}}}}}
 \newcommand{\cycleVertex}[1]{\textcolor{red}{\ensuremath{\mathbf{\rcirclearrowleft_{#1}}}}}
 \newcommand{\orphanVertex}[1]{\textcolor{red}{\ensuremath{\mathbf{\ndownarrow_{#1}}}}}
@@ -941,7 +940,7 @@
 \end{tikzpicture}
 }%
 \label{fig:MultiChild:c}
-\figureCode{w * v + \multiChild{x}{y}}%
+\figureCode{w * v + \conflictHole{x,y}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -1236,7 +1235,7 @@
 \end{tikzpicture}
 }%
 \label{fig:Cycle:d}
-\figureCode{\parens{\hole{} * \hole{}} + \multiChild{\multiVertex{30}}{\multiVertex{32}}%
+\figureCode{\parens{\hole{} * \hole{}} + \conflictHole{\multiVertex{30},\multiVertex{32}}%
   \otherVertexVskip\multiVertex{30} = \multiVertex{32} * \hole{}%
   \\\multiVertex{32} = \multiVertex{30} * \hole{}}%
 \begin{tikzpicture}
