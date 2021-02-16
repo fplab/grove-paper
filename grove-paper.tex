@@ -93,7 +93,7 @@
 
 \def\_{\texttt{\textunderscore}}
 
-\newcommand{\conflict}[2]{\llparenthesis#1|#2\rrparenthesis}
+% \newcommand{\id}[1]{\textcolor{gray}{#1}}
 
 
 %%%%%%%%
@@ -2591,22 +2591,22 @@ sorts---change the $\e$s to $u$s)
 
 Mapping to b actions
 
-\[
-  \begin{array}{l}
-    \textrm{User Actions}: \grave{e} \in Act ::= e \mid \#u \mid \conflict{\grave{e}}{\grave{e}}                                                       \\
-    \s : \G \to Act \times \V^{\ast{}} \times \V^{\ast{}} \times \V^{\ast{}}                                                                                          \\
-    \s(G) = (\grave{e}, \MP(G), \CC(G), \D(G))                                                                                                         \\
-    \MP(G) = \left\{ v \in \vertexes(G) \mid \exists e_1,e_2 \in \liveEdges(G), e_1= \right.                                                           \\
-    \qquad \left. (v,p_1,v_1), e_2=(v,p_2,v_2), e_1 \ne e_2 \right\}                                                                                   \\
-    \CC(G) = \ldots                                                                                                                                    \\
-    \D(G) = \orphans(G) \setminus \left\{ v_0 \right\}                                                                                                 \\
-    \orphans(G) = \left\{ v \in \vertexes(G) \mid \forall e=(v^\prime,p,v^{\prime\prime}) \in \right.                                                  \\
-    \qquad \left. \liveEdges(G), v^{\prime\prime} \ne v \right\}                                                                                       \\
-    \vertexes(G) = \left\{ v \mid \exists e = (v^\prime, p, v^{\prime\prime}) \in \edges(G), v \in \left\{ v^\prime, v^{\prime\prime}\right\} \right\} \\
-    \edges(G) = \left\{ e \mid G(e) \ne \bot \right\}                                                                                                  \\
-    \liveEdges(G) = \left\{ e \mid G(e) = + \right\}                                                                                                   \\
-  \end{array}
-\]
+% \[
+%   \begin{array}{l}
+%     \textrm{User Actions}: \grave{e} \in Act ::= e \mid \#u \mid \conflict{\grave{e}}{\grave{e}}                                                       \\
+%     \s : \G \to Act \times \V^{\ast{}} \times \V^{\ast{}} \times \V^{\ast{}}                                                                                          \\
+%     \s(G) = (\grave{e}, \MP(G), \CC(G), \D(G))                                                                                                         \\
+%     \MP(G) = \left\{ v \in \vertexes(G) \mid \exists e_1,e_2 \in \liveEdges(G), e_1= \right.                                                           \\
+%     \qquad \left. (v,p_1,v_1), e_2=(v,p_2,v_2), e_1 \ne e_2 \right\}                                                                                   \\
+%     \CC(G) = \ldots                                                                                                                                    \\
+%     \D(G) = \orphans(G) \setminus \left\{ v_0 \right\}                                                                                                 \\
+%     \orphans(G) = \left\{ v \in \vertexes(G) \mid \forall e=(v^\prime,p,v^{\prime\prime}) \in \right.                                                  \\
+%     \qquad \left. \liveEdges(G), v^{\prime\prime} \ne v \right\}                                                                                       \\
+%     \vertexes(G) = \left\{ v \mid \exists e = (v^\prime, p, v^{\prime\prime}) \in \edges(G), v \in \left\{ v^\prime, v^{\prime\prime}\right\} \right\} \\
+%     \edges(G) = \left\{ e \mid G(e) \ne \bot \right\}                                                                                                  \\
+%     \liveEdges(G) = \left\{ e \mid G(e) = + \right\}                                                                                                   \\
+%   \end{array}
+% \]
 
 \section{Type System}%
 \label{sec:Type System}
