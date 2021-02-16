@@ -1814,7 +1814,7 @@ We merge these edits by including \emph{both} \eMultiChildAlice{} and \eMultiChi
 as edges going out of the \texttt{R} position of \vWrapPlus{}.
 This results in \autoref{fig:MultiChild:c}, where there is a multi-child conflict
 in the~\texttt{R} position of~\vWrapPlus~(i.e., there are multiple edges for the same position in a vertex).
-In the user interface, we flag this conflict with the notation~\conflictHole{x, y}.
+In the user interface, we flag this conflict with the notation~\conflictHole{x,y}.
 
 TODO: "delete both"
 
@@ -2036,10 +2036,10 @@ and this simplicity aids in the predictability.
   \[
     \arraycolsep=0pt
     \begin{array}{lrlll}
-      q    & {}\in Pat & {}::={} & x^u \mid \hole \mid \conflictHole{q, \ldots, q} \mid \multiVertex{u} \mid \cycleVertex{u} \\
-      \tau & {}\in Typ & {}::={} & \tau \rightarrow^u \tau \mid Num^u \mid \hole \mid \conflictHole{\tau, \ldots, \tau} \mid \multiVertex{u} \mid \cycleVertex{u} \\
+      q    & {}\in Pat & {}::={} & x^u \mid \hole \mid \conflictHole{q,\ldots,q} \mid \multiVertex{u} \mid \cycleVertex{u} \\
+      \tau & {}\in Typ & {}::={} & \tau \rightarrow^u \tau \mid Num^u \mid \hole \mid \conflictHole{\tau,\ldots,\tau} \mid \multiVertex{u} \mid \cycleVertex{u} \\
       e    & {}\in Exp & {}::={} & x^u \mid \lambda^u q \mathord{:}\tau.e \mid (e~e)^u \mid n^u \\
-           &           &         & ~\mid e~\texttt{+}^u~e \mid e~\texttt{*}^u~e \mid \hole \mid \conflictHole{e, \ldots, e} \mid \multiVertex{u} \mid \cycleVertex{u} \\
+           &           &         & ~\mid e~\texttt{+}^u~e \mid e~\texttt{*}^u~e \mid \hole \mid \conflictHole{e,\ldots,e} \mid \multiVertex{u} \mid \cycleVertex{u} \\
     \end{array}
   \]
   \caption{Base syntax, as a grammar, for the lambda calculus that we are considering.}
@@ -2049,7 +2049,7 @@ and this simplicity aids in the predictability.
 \subsection{Syntax}%
 \label{sub:Syntax}
 
-The language we are modeling is shown in \autoref{fig:Base syntax}, standard for a simply-typed lambda calculus except that all sorts have empty holes (represented by $\hole$) and conflict holes (of the form $\conflictHole{q, \ldots, q}$).
+The language we are modeling is shown in \autoref{fig:Base syntax}, standard for a simply-typed lambda calculus except that all sorts have empty holes (represented by $\hole$) and conflict holes (of the form $\conflictHole{q,\ldots,q}$).
 In particular, the argument of a lambda can be either a bound variable or a hole.
 Additionally, all non-hole forms have a superscripted identifier $u \in \U$.
 
@@ -2245,7 +2245,7 @@ There is one rule for each constructor form.
 For example, the expression derived from $v_{38} = (38, \ExpPlus)$ is $\expr'(v_{38}, \PlusLeft) \text{+}^{38} \expr'(v_{38}, \PlusRight)$.
 In each child position, $\expr'(v, p)$ determines the sub-expression derived from the children of $v$ at position $p$.
 An empty hole $\hole$ appears if there are no children at the given position.
-A conflict hole $\conflictHole{e_1, \ldots, e_n}$ appears if there are multiple children.
+A conflict hole $\conflictHole{e_1,\ldots,e_n}$ appears if there are multiple children.
 If there is one child, the expression is determined recursively unless that child appears in $MP$ or $W$, discussed below, in which case we leave a reference, $\multiVertex{u}$ or $\cycleVertex{u}$ respectively.
 For the $\ExpLam$ case, we define $\patt(q)$ and $\type(\tau)$ similarly.
 
@@ -2299,7 +2299,7 @@ Note that $v = \min(\ancestors(v))$ only if $v$ is part of a cycle.
   \begin{align*}
     \expr'(v,p) = \begin{cases}
       \hole & \children(v,p) = \varnothing \\
-      \conflictHole{\expr(v_1), \ldots, \expr(v_n)} & \children(v,p) = \{v_1, \ldots, v_n\} \\
+      \conflictHole{\expr(v_1),\ldots,\expr(v_n)} & \children(v,p) = \{v_1, \ldots, v_n\} \\
       \multiVertex{u} & \children(v,p) = \{v'\} \land |\parents(v')| > 1 \\
       \cycleVertex{u} & \children(v,p) = \{v'=(u,k)\} \land |\parents(v')| = 1 \\
           & \phantom{\children(v,p)} \land v' = \min(\ancestors(v')) \\
@@ -2310,7 +2310,7 @@ Note that $v = \min(\ancestors(v))$ only if $v$ is part of a cycle.
   \begin{align*}
     \patt'(v,p) = \begin{cases}
       \hole & \children(v,p) = \varnothing \\
-      \conflictHole{\patt(v_1), \ldots, \patt(v_n)} & \children(v,p) = \{v_1, \ldots, v_n\} \\
+      \conflictHole{\patt(v_1),\ldots,\patt(v_n)} & \children(v,p) = \{v_1, \ldots, v_n\} \\
       \multiVertex{u} & \children(v,p) = \{v'\} \land |\parents(v')| > 1 \\
       \cycleVertex{u} & \children(v,p) = \{v'=(u,k)\} \land |\parents(v')| = 1 \\
           & \phantom{\children(v,p)} \land v' = \min(\ancestors(v')) \\
@@ -2321,7 +2321,7 @@ Note that $v = \min(\ancestors(v))$ only if $v$ is part of a cycle.
   \begin{align*}
     \type'(v,p) = \begin{cases}
       \hole & \children(v,p) = \varnothing \\
-      \conflictHole{\type(v_1), \ldots, \type(v_n)} & \children(v,p) = \{v_1, \ldots, v_n\} \\
+      \conflictHole{\type(v_1),\ldots,\type(v_n)} & \children(v,p) = \{v_1, \ldots, v_n\} \\
       \multiVertex{u} & \children(v,p) = \{v'\} \land |\parents(v')| > 1 \\
       \cycleVertex{u} & \children(v,p) = \{v'=(u,k)\} \land |\parents(v')| = 1 \\
           & \phantom{\children(v,p)} \land v' = \min(\ancestors(v')) \\
@@ -2356,7 +2356,7 @@ Note that $v = \min(\ancestors(v))$ only if $v$ is part of a cycle.
 We determine $e$ by starting at the root of the graph and including every connected
 vertex that has a single parent. In positions where there are no children, we
 leave an empty hole $\hole$. In positions where there are multiple children, we
-leave a conflict hole of the form $\conflictHole{e_1, \ldots, e_n}$. Whenever we
+leave a conflict hole of the form $\conflictHole{e_1,\ldots,e_n}$. Whenever we
 encounter a vertex with multiple parents, we add its corresponding expression to
 the second component $MP$ and leave an indirect reference $\#u$, where $u$ is
 the unique identifier of the referenced vertex
