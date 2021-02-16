@@ -285,6 +285,7 @@
 \DeclareMathOperator{\ancestors}{\text{ancestors}}
 \DeclareMathOperator{\vertices}{\text{vertices}}
 \DeclareMathOperator{\children}{\text{children}}
+\DeclareMathOperator{\lfp}{\text{lfp}}
 
 \DeclareMathOperator{\multiParented}{\text{multiParented}}
 \DeclareMathOperator{\singleParented}{\text{singleParented}}
@@ -2318,12 +2319,12 @@ Note that $v = \min(\ancestors(v))$, where $\min(\{v_{\id{u_1}}, \ldots, v_{\id{
 
   \begin{align*}
     \parents(v) &= \{v' : \exists \e = (u, v', p, v), G(\e) = \Plus\} \\
-    \ancestors(v) &= \left( \textrm{lfp}(\ancestors') \right)(v) \\
+    \ancestors(v) &= \left( \lfp(\ancestors') \right)(v) \\
     \ancestors'(v) &= \parents(v) \cup \ancestors'(\parents(v)) \\
     \children(v, p) &= \{v' : \exists \e (u, v, p, v'), G(\e) = \Plus\} \\
     \min(\{v_1 = (u_1, k_1), \ldots, v_n = (u_n, k_n)\}) &= (u_j, k_j) \text{ s.t. } j \in \{1, \ldots, n\} \land u_j \le u_i \forall i \in \{1, \ldots, n\}
       \end{align*}
-  \caption{Caption2 goes here. Note that $\ancestors(v)$ is defined as the least fixed point of $a$.}
+  \caption{Caption2 goes here. Note that $\ancestors$ is defined as the least fixed point of $\ancestors'$.}
   \label{fig:Decomposition expr}
 \end{figure}
 
