@@ -2232,10 +2232,10 @@ where
 \end{align*}
 For example, the grove corresponding to the graph in \autoref{fig:Decomposition example} is
 \begin{align*}
-  e_r &= \hole~\texttt{*}^{46}~\#48~\texttt{+}^{44}~\#48 \\
-  MP &= \{x^{48}\} \\
-  NP &= \{z^{58}\} \\
-  W &= \{\hole~\texttt{+}^{52}~\#52~\texttt{*}^{54}~y^{56}\} \\
+  e_r &= \hole~\texttt{*}^{40}~\multiVertex{42}~\texttt{+}^{38}~\multiVertex{42} \\
+  MP &= \{x^{42}\} \\
+  NP &= \{z^{52}\} \\
+  W &= \{\hole~\texttt{+}^{46}~\cycleVertex{46}~\texttt{*}^{48}~y^{50}\} \\
 \end{align*}
 
 Let us now examine each of the four components in more detail.
@@ -2251,7 +2251,7 @@ For the $\ExpLam$ case, we define $\patt(q)$ and $\type(\tau)$ similarly.
 
 
 The second component $MP$ is the set of expressions derived from a vertex with multiple parents.
-Wherever an edge to such a vertex appears, we place a reference to it $\#u$.
+Wherever an edge to such a vertex appears, we place a reference to it $\multiVertex{u}$.
 In the example, $x^{48}$ is referenced twice in $e_r$.
 
 The third component $NP$ is the set of expressions rooted at a vertex with no parents, other than the root vertex.
@@ -2347,7 +2347,7 @@ vertex that has a single parent. In positions where there are no children, we
 leave an empty hole $\hole$. In positions where there are multiple children, we
 leave a conflict hole of the form $\conflictHole{e_1,\ldots,e_n}$. Whenever we
 encounter a vertex with multiple parents, we add its corresponding expression to
-the second component $MP$ and leave an indirect reference $\#u$, where $u$ is
+the second component $MP$ and leave an indirect reference $\multiVertex{u}$, where $u$ is
 the unique identifier of the referenced vertex
 
 These first two components do not account for vertices with no parents. We
