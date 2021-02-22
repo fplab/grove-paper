@@ -371,8 +371,8 @@
 \newcommand{\Edge}[1]{Edge~#1}
 \newcommand{\Vertex}[1]{Vertex~#1}
 \newcommand{\figureCode}[1]{\textbf{\texttt{#1}}\vskip1em}
-\newcommand{\multiVertex}[1]{\textcolor{red}{\ensuremath{\curlyveedownarrow_{\id{#1}}}}}
-\newcommand{\cycleVertex}[1]{\textcolor{red}{\ensuremath{\rcirclearrowleft_{\id{#1}}}}}
+\newcommand{\multiVertex}[1]{\textcolor{red}{\ensuremath{\curlyveedownarrow_{#1}}}}
+\newcommand{\cycleVertex}[1]{\textcolor{red}{\ensuremath{\rcirclearrowleft_{#1}}}}
 \newcommand{\orphanVertex}[1]{\textcolor{red}{\ensuremath{\mathbf{\ndownarrow_{#1}}}}}
 \newcommand{\parens}[1]{\textcolor{gray}{(}#1\textcolor{gray}{)}}
 \newcommand{\otherVertexVskip}{\vskip0.5em}
@@ -1412,29 +1412,29 @@
   \centering
   \begin{subfigure}{0.5\textwidth}
     \centering
-  \begin{tikzpicture}
-    \path (0cm,0cm) graph[graph style] {
-      root[root style] -> {
-       a/{\vDecompPlusA} [> "\eSimpleTimes"] -> {
-        "\vDecompTimesA" [> "\eDecompTimesA"'] -> {
-         {},
-         b/"\vDecompX" [> "\eDecompTimesAX"']
+    \begin{tikzpicture}
+      \path (0cm,0cm) graph[graph style] {
+        root[root style] -> {
+        a/{\vDecompPlusA} [> "\eSimpleTimes"] -> {
+          "\vDecompTimesA" [> "\eDecompTimesA"'] -> {
+          {},
+          b/"\vDecompX" [> "\eDecompTimesAX"']
+          },
+          {}
+        }
         },
-        {}
-       }
-      },
-    };
-    \path [draw,->] (a) to ["\eDecompPlusAX",out=-60,in=60] (b);
-    %
-    \path (2cm,-0.85cm) graph[graph style] { plus/"\vDecompPlusB" };
-    \path (3cm,-0.85cm) graph[graph style] { times/"\vDecompTimesB" };
-    \path (3.25cm,-1.75cm) graph[graph style] { y/"\vDecompY" };
-    \path[draw,->] (times) to ["\eDecompPlusB"'anchor=north,out=-135,in=-45] (plus);
-    \path[draw,->] (plus) to ["\eDecompTimesB"anchor=south,out=45,in=135] (times);
-    \path[draw,->] (times) to ["\eDecompY"anchor=west] (y);
-    %
-    \path (1.55cm,-2.1cm) graph[graph style] { plus/"\vDecompZ" };
-  \end{tikzpicture}
+      };
+      \path [draw,->] (a) to ["\eDecompPlusAX",out=-60,in=60] (b);
+      %
+      \path (2cm,-0.85cm) graph[graph style] { plus/"\vDecompPlusB" };
+      \path (3cm,-0.85cm) graph[graph style] { times/"\vDecompTimesB" };
+      \path (3.25cm,-1.75cm) graph[graph style] { y/"\vDecompY" };
+      \path[draw,->] (times) to ["\eDecompPlusB"'anchor=north,out=-135,in=-45] (plus);
+      \path[draw,->] (plus) to ["\eDecompTimesB"anchor=south,out=45,in=135] (times);
+      \path[draw,->] (times) to ["\eDecompY"anchor=west] (y);
+      %
+      \path (1.55cm,-2.1cm) graph[graph style] { plus/"\vDecompZ" };
+    \end{tikzpicture}
     \caption{subcaption 1 goes here}%
     \label{fig:Decomposition example graph}
   \end{subfigure}%
@@ -2105,7 +2105,7 @@ Additionally, all non-hole forms have a superscripted identifier $u \in \U$.
 
 A graph $G : \E \rightarrow \Sigma$ is a function from edges to edge states,
 where $\E = \U \times \V \times \P \times \V$,
-unique IDs are drawn from some suitable set $\U$ equipped with a total ordering,
+unique IDs are drawn from some suitable set $\U$ equipped with a total ordering $\leq$,
 vertices are drawn from $\V$,
 positions are drawn from $\P$,
 and edge states are drawn from $\Sigma$, all defined below.
@@ -2254,7 +2254,7 @@ Let us now examine each of the four components in more detail.
 The first component $e_r$ is the expression derived from the root vertex $v_0$.
 \autoref{fig:Decomposition expr} defines $\expr(v)$ wich determines the expression derived from $v$.
 There is one rule for each constructor form.
-For example, the expression derived from $v_{\id{u}} = (u, \ExpPlus)$ is $\expr'(v_{\id{u}}, \PlusLeft) \text{+}^{\id{u}} \expr'(v_{\id{u}}, \PlusRight)$.
+For example, the expression derived from ${+}_{\id{38}} = (38, \ExpPlus)$ is $\expr'({+}_{\id{38}}, \PlusLeft) \text{+}^{\id{38}} \expr'({+}_{\id{38}}, \PlusRight)$.
 In each child position, $\expr'(v, p)$ determines the sub-expression derived from the children of $v$ at position $p$.
 An empty hole $\hole$ appears if there are no children at the given position.
 A conflict hole $\conflictHole{e_1,\ldots,e_n}$ appears if there are multiple children.
@@ -2269,8 +2269,11 @@ The third component $NP$ is the set of expressions rooted at a vertex with no pa
 In the example, $z^{\id{58}}$ has no parents (because it was deleted), so it appears only in $NP$.
 
 The fourth component $W$ is the set of expressions derived from the remaining vertices, which form cyclic structures we call wreaths, where each vertex has exactly one parent.
-In $W$, $\ancestors(v)$ is the set of vertices for which there is a path to $v$.
-Note that $v = \min(\ancestors(v))$, where $\min(\{v_{\id{u_1}}, \ldots, v_{\id{u_n}}\}) = v_{\id{u_k}}$ such that $u_k = \min(\{u_{\id{1}}, \ldots, u_{\id{n}}\})$, holds only if $v$ is part of a cycle.
+Every wreath consists of a single cycle where each vertex in the cycle may have additional children that are not part of the cycle.
+We need to break the cycle to be able to turn a wreath into a tree.
+To break the cycle, we arbitrarily choose the vertex on the cycle with the smallest id according to the total ordering on $\U$.
+Formally, we choose the vertex $v$ such that $v = \min(\ancestors(v))$ because
+every vertex on the cycle is its own ancestor.
 
 \begin{figure}
   \begin{displaymath}
@@ -2349,25 +2352,6 @@ leave a conflict hole of the form $\conflictHole{e_1,\ldots,e_n}$. Whenever we
 encounter a vertex with multiple parents, we add its corresponding expression to
 the second component $MP$ and leave an indirect reference $\multiVertex{u}$, where $u$ is
 the unique identifier of the referenced vertex
-
-These first two components do not account for vertices with no parents. We
-include the expressions corresponding to these vertices in the third component
-$NP$.
-
-We've accounted for single-parented vertices connected to the root,
-single-parented vertices connected to multi-parented vertices, and vertices with
-no parents. This leaves only single-parented vertices that are not connected to
-the root or any multi-parented vertices. These vertices form cyclic structures
-we call wreaths.
-
-% A wreath is a cycle, potentially with acyclic branches. Wreaths are connected
-% graphs where each vertex has exactly one incoming edge. The fourth component $W$
-% is the set of expressions determined by extracting wreaths from any vertices not
-% in the other three components.
-
-% expression = tree
-
-% (show what a wreath looks like)
 
 % here are some properties that show how to get one from the other, and to/from
 % graph
