@@ -2236,6 +2236,11 @@ A graph can be decomposed into a collection of expressions governed by the gramm
 % \newcommand{\multiVertex}[1]{\textcolor{red}{\ensuremath{\mathbf{\curlyveedownarrow_{#1}}}}}
 % \newcommand{\cycleVertex}[1]{\textcolor{red}{\ensuremath{\mathbf{\rcirclearrowleft_{#1}}}}}
 
+% TODO: make sure we're not claiming to invent the term "unicycular graph"
+% TODO: move "algorithmic section" to Implementation section
+% TODO: maybe add a forward reference at end here to Implementation section
+% TODO: clean up old comments below
+
 A grove is a 4-tuple of the following form:
 \[
   (e_r, MP, NP, W)
@@ -2429,14 +2434,15 @@ OR:
 use edge IDs instead of edges and build a mapping from vertices to
 sorts---change the $\e$s to $u$s)
 
-
+% TODO: clean up this figure
+% TODO: move to implementation section
 
 \begin{figure}
   \[
     \arraycolsep=0pt
     \begin{array}{lrlll}
-      \textrm{Trees:\qquad}  & t & {}\in Tree & {}::={} & \textrm{Con}(v, m) \mid \textrm{Ref}(v) \\
-      \textrm{Maps:}         & m & {}\in Map & {}::={} & [\,] \mid (p \mapsto [(\e, t), \ldots, (\e, t)]); m \\
+      \textrm{Trees:\qquad}  & t & {}\in Tree & {}::={} & \textrm{Vertex}(v, m) \mid \textrm{Ref}(v) \\
+      \textrm{Maps:}         & m & {}\in Map & {}::={} & \varnothing \mid p \mapsto [(\e, t), \ldots, (\e, t)]; m \\
     \end{array}
   \]
   \caption{Syntax of graph decomposition trees as a grammar.}
@@ -2573,7 +2579,25 @@ sorts---change the $\e$s to $u$s)
 \subsection{User Actions}%
 \label{sub:User Actions}
 
-Mapping to b actions
+% TODO: define a grammar for user actions --> mapping to sequences of underlying graph edits
+% TODO: define well-sorted graph & theorem: graph is well sorted => exists a decomposition
+
+move = delete + add
+
+other composite edits
+
+remember commutativity diagram: we want edits on trees to be equivalent to edits on graphs
+
+given a semantics for user actions, we can show that operating on the grove is equivalent to operating on the graph.
+This way is more efficient (less annoying?) because then we don't have to deal with decomposition for every edit.
+(we probably want to do it this way in Hazel)
+
+OR
+
+We could go the indirect route and avoid having to prove the theorem.
+(this way is easier to start with, and it's how GRV works)
+
+% Mapping to b actions
 
 % \[
 %   \begin{array}{l}
@@ -2614,14 +2638,11 @@ non-empty holes
 
 User must supply edge selection for multi-parent
 
-\section{TODO}
-
-TODO: leaves
-
-TODO: our model supports treating these as a cons-list of characters
-
 \section{Implementation}%
 \label{sec:Implementation}
+
+% TODO: talk about performance: O(decomp) given "size of the graph" (probably linear in # edges)
+
 GRV -- how it is implemented, how it connects to the formalism, describe the graph,
 
 We implemented GRV as a core OCaml library in approximately 1,500 lines of code, and a basic Web interface in approximately 600 lines of OCaml code and 250 lines of HTML+CSS+Javascript.
@@ -2629,16 +2650,6 @@ We implemented GRV as a core OCaml library in approximately 1,500 lines of code,
 Compared to the core language, our implementation lacks support for lists and case expressions.
 
 Optimizations: least fixed point
-
-Related: hypertree decomposition is an established topic in AI/DB. Apparently,
-it's NP-complete in general, so people look for tractable subproblems. Recent
-work focuses on reduction to SMT and parallelizability for large db-like
-querying of large graphs, but some papers also focus on efficient decompopsition
-for "nearly acyclic" graphs. The closest I could find to what we're already
-doing are the k-decomp / opt-k-decomp / det-k-decomp algoriths in this paper:
-https://dl.acm.org/doi/10.1145/1412228.1412229, except we're getting determinism
-for free (i.e., not having to guess-and-check pivot points) by virtue of our
-global root and uuid-based total ordering on basically everything.
 
 \section{Related Work}%
 \label{sec:Related Work}
@@ -2872,6 +2883,10 @@ Homotopical patch theory: \url{https://dl.acm.org/doi/10.1145/2628136.2628158}
 \section{Discussion and Conclusion}%
 \label{sec:Discussion and Conclusion}
 
+TODO: leaves
+
+TODO: our model supports treating these as a cons-list of characters
+
 TODO: (Place somewhere) This move semantics gives us a richer structure than
 when treating code as a list of lines.  We exploit
 this in Section~REF:TODO in order merge edits that involve moving code.
@@ -2925,241 +2940,5 @@ GUI for string conflicts: use popups
 \label{apx:Supplemental Material: Complete Graph Sequences for All Figures}
 
 TODO: put all intermediate states for all graphs along with the edge actions
-
-% \section{Appendix}
-% \label{apx:Appendix}
-
-% \subsection{Concepts}
-
-% \begin{tabular}{cl@{\hspace{1.5cm}}cl@{\hspace{1.5cm}}cl@{\hspace{1.5cm}}cl}
-%   $\A$ & Actions      & $\S$  & Edge States   \\
-%   %  $\C$ & Cursors & $\U$ & UUIDs         \\
-%   $\E$ & Edges        & $\V$  & Vertexes      \\
-%   $\G$ & Graphs       & $\AA$ & Graph Actions \\
-%   $\I$ & Indices      & $\EE$ & Editors       \\
-%   $\K$ & Constructors                         \\
-% \end{tabular}
-
-% A \emph{UUID} $u \in \U$ is a universally unique identifier.
-
-% \subsubsection{The Target Language}
-
-% \paragraph{Constructor} \par
-
-% A \emph{constructor} $k \in \K$ represents a node in the target language's abstract syntax tree (AST). Let $k_{root}$ be the root AST node.
-
-% \paragraph{Index} \par
-
-% An \emph{index} $i \in \I$ identifies a position, relative to some parent constructor, of a potential child node in the target language's AST. Let $i_{root}$ be the hyper-position of all rooted constructors.
-
-% \subsubsection{The Graph}
-
-% \paragraph{Vertex} \par
-
-% A \emph{vertex} $v = (k, u) \in \V = \K \times \U$ is a distinct instance of constructor $k$; that is, one that can be identified by UUID $u$. Let $v_{root} = (k_{root}, u_{root})$ be the root vertex of a graph. The \emph{rooted vertexes} of a graph are the immediate children of its $v_{root}$.
-
-% \paragraph{Cursor} \par
-
-% %A \emph{cursor} $c = (v,i) \in \C = \V \times \I$ is a reference to the (possibly empty) set of all vertexes with parent vertex $v$ and child index $i$. Let $c_{root} = (v_{root}, i_{root})$ be the \emph{root cursor}, a reference to all of the rooted vertexes, of a graph.
-
-% \paragraph{Edge} \par
-
-% %An \emph{edge} $\e = (c, v, u) \in \E = \C \times \V \times \U$ adds vertex $v$ with the set of vertexes referenced by cursor $c$.
-
-% \paragraph{Edge State} \par
-
-% An \emph{edge state} $s \in \S = \{\bot,+,-\}$ determines whether an edge does not exist ($\bot$), has been created (+), or has been destroyed (-).
-
-% \paragraph{Graph Action} \par
-
-% A \emph{graph action} $A = (\e,s,u) \in \A = \E \times \S \times \U$ is an instance of a binding from edge $\e$ to edge state $s$ that can be identified by UUID $u$. Denote by $[\e :-> s]_{u}$ a binding from edge $\e$ to edge state $s$ (identified by UUID $u$).
-
-% \paragraph{Graph} \par
-
-% A \emph{graph} $G = [\e :-> s]_{u}^{\ast{}} \in \G = \A^{\ast{}}$ is a function from edges to edge states. Denote by $G(\e) = s$ the state $s$ of edge $\e$ in graph $G$, and by $G A$ the extension of graph $G$ by graph action $A$.
-
-% \subsubsection{The Editor}
-
-% \paragraph{Move Action} \par
-
-% %A \emph{move action} $a \in \A^{move} = \{ \Left,\Right,\Up,\Down \} \cup \{ \Select \} \times \C$ re-positions the cursor.
-
-% \paragraph{Edit Action} \par
-
-% An \emph{edit action} $a \in \A^{edit}= \{ \Create \} \times \K \cup \{ \Destroy \} \cup \{ \Restore \} \times \V$ adds or removes an edge at the cursor.
-
-% \paragraph{Communication Action} \par
-
-% A \emph{communication action} $a = (\Send, A^{\ast{}}, u^{\ast{}}) \in \A^{comm} = \{ \Send \} \times \A^{\ast{}} \times \U^{\ast{}}$ applies the graph action sequence $A^{\ast{}}$ to the editors identified by UUIDs $u^{\ast{}}$.
-
-% \paragraph{Action} \par
-
-% An \emph{action} $a \in \A = \A^{move} \cup \A^{edit} \cup \A^{comm}$ describes a change to one or more editors.
-
-% \paragraph{Editor} \par
-
-% %An \emph{editor} $E = (G,c,A_{Q}^{\ast{}},A_{H}^{\ast{}},u) \in \EE = \mathcal{G} \times \C \times \AA^{\ast{}} \times \AA^{\ast{}} \times \U$ is an instance of graph $G$ with cursor $c$, queued graph actions $A_{Q}^{\ast{}}$, and known graph action history $A_{H}^{\ast{}}$, that can be identified by UUID $u$.
-
-% \subsubsection{The Environment} \par
-
-% An \emph{environment} $(E^{\ast{}}, A^{\ast{}}) \in \EE^{\ast{}} \times \AA^{\ast{}}$ is a set of communicating editors $E^{\ast{}}$ that share a global graph action history $A^{\ast{}}$.
-
-% \subsection{Sets and Relations}
-
-% \paragraph{Edges} \par
-
-% \begin{align*}
-%   \edges(G)            & = \dom(G)                                       \\
-%   \liveEdges(G)        & = \{ \e \in \edges(G) | G(\e)=+ \}              \\
-%   \vertexChildren(G,v) & = \{ ((v',i),v'',u) \in \liveEdges(G) | v'=v \} \\
-%   \cursorChildren(G,c) & = \{ (c',v,u) \in \liveEdges(G) | c'=c \}       \\
-%   \parents(G,v)        & = \{ (c,v',u) \in \liveEdges(G) | v'=v \}
-% \end{align*}
-
-% \paragraph{Vertexes} \par
-
-% \begin{align*}
-%   \vertexes(G)        & = \{ v \in \V | \exists (c,v,u) \in \edges(G) \}              \\
-%   \liveVertexes(G)    & = \{ v \in \V | \exists (c,v,u) \in \liveEdges(G) \}          \\
-%   \childVertexes(G,v) & = \{ v' \in \V | \exists (c,v',u) \in \vertexChildren(G,v) \} \\
-%   \orphans(G)         & = \{ v \in \liveVertexes(G) | \abs{\parents(G,v)} = 0 \}      \\
-%   \multiparents(G)    & = \{ v \in \liveVertexes(G) | \abs{\parents(G,v)} > 1 \}      \\
-%   \vertex(G,u)        & = v \in \vertexes(G) \iff (\exists k \in \K)(v = (k,u))
-% \end{align*}
-
-% \paragraph{Graph Actions} \par
-
-% $\known(E_1 \cdots E_n) = A_{H1}^{\ast{}} \cdots A_{Hn}^{\ast{}}
-%   \iff (\forall j=1,\ldots,n)(E_j = (G_j,c_j,A_{Qj}^{\ast{}},A_{Hj}^{\ast{}},u_j))$
-
-% \section{Operational Semantics}
-
-% \subsection{Movement}
-
-% $\boxed{E,A -->a E,A}$
-
-% \begin{mathpar}
-%   \inferrule{
-%   \leftIndex(i) = i'
-%   }{
-%   (G,(v,i),A_Q^{\ast{}},A_H^{\ast{}},u),A \xrightarrow{\Left} (G,(v,i'),A_Q^{\ast{}},A_H^{\ast{}},u),A
-%   }
-
-%   \inferrule{
-%   \rightIndex(i) = i'
-%   }{
-%   (G,(v,i),A_Q^{\ast{}},A_H^{\ast{}},u),A \xrightarrow{\Right} (G,(v,i'),A_Q^{\ast{}},A_H^{\ast{}},u),A
-%   }
-
-%   \inferrule{
-%   \parents(v) = \{(c',v',u')\}
-%   }{
-%   (G,(v,i),A_Q^{\ast{}},A_H^{\ast{}},u),A \xrightarrow{\Up} (G,c',A_Q^{\ast{}},A_H^{\ast{}},u),A
-%   }
-
-%   \inferrule{
-%   \cursorChildren(c) = \{(c',(k,u_k),u')\} \\
-%   \downIndex(k) = i
-%   }{
-%   (G,c,A_Q^{\ast{}},A_H^{\ast{}},u),A \xrightarrow{\Down} (G,((k,u_k),i),A_Q^{\ast{}},A_H^{\ast{}},u),A
-%   }
-
-%   \inferrule{}{
-%   (G,c,A_Q^{\ast{}},A_H^{\ast{}},u),A \xrightarrow{\Select~c'} (G,c',A_Q^{\ast{}},A_H^{\ast{}},u),A
-%   }
-% \end{mathpar}
-
-% \subsection{Editing}
-
-% \begin{mathpar}
-%   \inferrule{
-%   \defaultIndex(c) = TODO(Was None) \\
-%   u, u_k \in \U \text{ fresh} \\
-%   A_H' = [(c,(k,u_k),u) :-> +]
-%   }{
-%   (G,c,A_Q^{\ast{}},A_H^{\ast{}},u),A \xrightarrow{\Create~k} (G A_H',c,A_Q^{\ast{}},A_H^{\ast{}}A_H',u),A
-%   }
-
-%   \inferrule{
-%   \defaultIndex(c) = i' \\
-%   c' = ((k,u_k),i') \\
-%   u, u_k \in \U \text{ fresh} \\
-%   \\\\
-%   \cursorChildren(G,c) = \{(c_j,v_j,u_j')\}_{j=1}^n \\
-%   A_H'^{\ast{}} =
-%     [(c  ,(k,u_k),u  ) :-> +]
-%     [(c' ,v_j    ,u_j') :-> +]_{j=1}^n
-%   [(c_j,v_j    ,u_j') :-> -]_{j=1}^n
-%   }{
-%   (G,c,A_Q^{\ast{}},A_H^{\ast{}},u),A \xrightarrow{\Create~k}
-%   (G A_H'^{\ast{}},c',A_Q^{\ast{}},A_H^{\ast{}}A_H'^{\ast{}},u),A
-%   }
-
-%   \inferrule{
-%   \cursorChildren(G,c) = \{\e_j\}_{j=1}^n \\
-%   A_H'^{\ast{}} = [\e_j :-> -]_{j=1}^n
-%   }{
-%   (G,c,A_Q^{\ast{}},A_H^{\ast{}},u),A \xrightarrow{\Destroy}
-%   (G A_H'^{\ast{}},c,A_Q^{\ast{}},A_H^{\ast{}}A_H'^{\ast{}},u),A
-%   }
-
-%   \inferrule{
-%   A_H = [(c,v,u') :-> +] \\
-%   u' \text{ fresh}
-%   }{
-%   (G,c,A_Q^{\ast{}},A_H^{\ast{}},u),A \xrightarrow{\Restore~v} (G A_H,c,A_Q^{\ast{}},A_H^{\ast{}}A_H,u),A %
-%   }
-% \end{mathpar}
-
-% \subsection{Communication}
-
-% \paragraph{Record} \par
-% %
-% \begin{mathpar}
-%   \inferrule{
-%   a \in \A^{edit} \\
-%   (G,c,A_Q^{\ast{}},A_H^{\ast{}},u),A -->a (G',c',A_Q^{\ast{}},A_H'^{\ast{}},u),A
-%   }{
-%   (G,c,A_Q^{\ast{}},A_H^{\ast{}},u),A -->a (G',c',A_Q^{\ast{}}a,A_H'^{\ast{}},u),A
-%   }
-% \end{mathpar}
-
-% \paragraph{Replay} \par
-
-% $\boxed{E,A \xrightarrow{a^{\ast{}}} E,A}$
-% %
-% \begin{mathpar}
-%   \inferrule{
-%     E,A -->a E'',A'' \\
-%     E'',A'' \xrightarrow{a^{\ast{}}} E',A' \\
-%   }{
-%     E,A \xrightarrow{aa^{\ast{}}} E',A'
-%   }
-% \end{mathpar}
-
-% \paragraph{Publish} \par
-
-% $\boxed{(E,A)^{\ast{}} -->a (E,A)^{\ast{}}}$
-% %
-% \begin{mathpar}
-%   \inferrule{
-%   E_j = (G_j,c_j,A_{Qj}^{\ast{}},A_{Hj}^{\ast{}},u_j) \\
-%   E_j,A_j \xrightarrow{a'^{\ast{}}} (G_j',c_j',A_{Qj}'^{\ast{}}, A_{Hj}'^{\ast{}},u_j),A_j' \\
-%   E_j' =
-%   ( G_j'
-%   , c_j'
-%   , A_{Qj}'^{\ast{}} \setminus a'^{\ast{}}
-%   , A_{Hj}'^{\ast{}} \setminus \known(E_1 \cdots E_n),u_j) \\
-%   j = 1,\ldots,n
-%   }{
-%   (E_1,A_1) \cdots (E_n,A_n) \xrightarrow{\Send~ a'^{\ast{}} } (E_1',A_1') \cdots (E_n',A_n')
-%   }
-% \end{mathpar}
-
-% Missing Action.env members: Record / Report / Stop / Replay, Dump / Load, Clone / Drop
-
-% $G \overset{\left(e,s\right)}{\longrightarrow} G\left[ e \mapsto s \sqcup G(e) \right]$
-
-% % Edge.Map.add action.value.edge (join old_state new_state) graph
 
 \end{document}
