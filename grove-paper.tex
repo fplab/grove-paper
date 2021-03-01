@@ -2235,6 +2235,7 @@ A graph can be decomposed into a collection of expressions governed by the gramm
 
 % TODO: make sure we're not claiming to invent the term "unicycular graph"
 % TODO: maybe add a forward reference at end here to Implementation section
+% TODO: make ID of y lower than the unicycle root, to show what we're minimizing
 
 A grove is a 4-tuple of the following form:
 \[
@@ -2268,12 +2269,17 @@ In the example, $x_{\id{42}}$ is referenced twice in $e_r$.
 The third component $NP$ is the set of expressions rooted at a vertex with no parents, other than the root vertex.
 In the example, $z^{\id{58}}$ has no parents (because it was deleted), so it appears only in $NP$.
 
-The fourth component $U$ is the set of expressions derived from the remaining vertices, which form unicycular graphs where each vertex has exactly one parent.
-Every unicycular graph consists of a single cycle where each vertex in the cycle may have additional children that are not part of the cycle.
+The fourth component $U$ is the set of expressions derived from the remaining vertices which necessarily have exactly one parent.
+These vertices form structures formally called unicycular graphs~\citep{DBLP:journals/algorithmica/KruskalRS90}, or \emph{unicycles} for short.
+Every unicycle consists of a single cycle where each vertex in the cycle may have additional children that are not part of the cycle.
 Breaking the cycle turns a unicyclic graph into a tree.
-To break the cycle, we arbitrarily choose the vertex on the cycle with the smallest id according to the total ordering on $\U$.
+% TODO: try clearing up "the root" as e.g., "the component root" or "the root of this components of the grove"
+% TODO: make sure we say "the graph root" when talking about the actual root, and "the component root" everywhere else.
+To break the cycle, we arbitrarily choose the vertex on the cycle with the smallest id, $u$, as the root of that tree.
 Formally, we choose the vertex $v$ such that $v = \min(\ancestors(v))$ because
 only a vertex on the cycle can be its own ancestor.
+When an edge to this vertex appears, we place a reference to it $\cycleVertex{u}$.
+In our example, ${+}_{\id{46}}$ is referenced by the $LEFT$ edge of ${*}_{\id{48}}$.
 
 \begin{figure}
   \begin{displaymath}
@@ -2341,17 +2347,6 @@ only a vertex on the cycle can be its own ancestor.
   \label{fig:Decomposition expr}
 \end{figure}
 
-lemma: a unicycular graph is a cycle with trees hanging off of it
-
-lemma: unicycular graph traversal always produces a valid tree
-
-Unicycular graph traversal occurs in two directions. A vertex is chosen as an arbitrary
-starting point and its parents are traversed and marked as seen. Any vertex that
-has been seen twice must be on the cycle. We take the first one as the root of
-the unicycular graph and traverse its children to produce a tree that covers the unicycular graph.
-Any remaining single-parented vertices must be parts of other unicycular graphs and are
-traversed until there are no more single-parented vertices left.
-
 % XXX
 
 decomposition produces sets of trees. As long as everything is well sorted, we
@@ -2390,21 +2385,6 @@ use edge IDs instead of edges and build a mapping from vertices to
 sorts---change the $\e$s to $u$s)
 
 % TODO: maybe add a forward reference here to Implementation section
-
-% TODO: clean up this figure
-% TODO: move to implementation section
-
-\begin{figure}
-  \[
-    \arraycolsep=0pt
-    \begin{array}{lrlll}
-      \textrm{Trees:\qquad}  & t & {}\in Tree & {}::={} & \textrm{Vertex}(v, m) \mid \textrm{Ref}(v) \\
-      \textrm{Maps:}         & m & {}\in Map & {}::={} & \varnothing \mid p \mapsto [(\e, t), \ldots, (\e, t)]; m \\
-    \end{array}
-  \]
-  \caption{Syntax of graph decomposition trees as a grammar.}
-  \label{fig:Syntax of graph decomposition trees}
-\end{figure}
 
 \subsection{User Actions}%
 \label{sub:User Actions}
@@ -2472,6 +2452,15 @@ User must supply edge selection for multi-parent
 \section{Implementation}%
 \label{sec:Implementation}
 
+% TODO: talk about code generation somewhere in here
+
+% TODO: talk about:
+% - decomp vertex set generation and unicycle traversal
+% - how to choose which branch of expr' to take
+% - lfp(ancestors') and min of it
+
+% TODO: can we save any of this in a README or code comments?
+
 % TODO: talk about performance: O(decomp) given "size of the graph" (probably linear in # edges)
 
 GRV -- how it is implemented, how it connects to the formalism, describe the graph,
@@ -2519,6 +2508,32 @@ parent, everything else must be single parented. We call these things unicycular
 unicycular graph is a cycle of single-parented vertices that each may have single-parented
 descendants.
 
+% TODO: use code generation instead: have Lang.ml generate expr / expr' / ... for us; then we don't need this figure.
+% TODO: maybe show this figure and say that it's possible to handle generically without code generation
+
+% \begin{figure}
+%   \[
+%     \arraycolsep=0pt
+%     \begin{array}{lrlll}
+%       \textrm{Trees:\qquad}  & t & {}\in Tree & {}::={} & \textrm{Vertex}(v, m) \mid \textrm{Ref}(v) \\
+%       \textrm{Maps:}         & m & {}\in Map & {}::={} & \varnothing \mid p \mapsto [(\e, t), \ldots, (\e, t)]; m \\
+%     \end{array}
+%   \]
+%   \caption{Syntax of graph decomposition trees as a grammar.}
+%   \label{fig:Syntax of graph decomposition trees}
+% \end{figure}
+
+
+lemma: a unicycle is a cycle with trees hanging off of it
+
+lemma: unicycle traversal always produces a valid tree
+
+Unicycular graph traversal occurs in two directions. A vertex is chosen as an arbitrary
+starting point and its parents are traversed and marked as seen. Any vertex that
+has been seen twice must be on the cycle. We take the first one as the root of
+the unicycle and traverse its children to produce a tree that covers the unicycular graph.
+Any remaining single-parented vertices must be parts of other unicycular graphs and are
+unicycle-traversed until there are no more single-parented vertices left.
 
 \section{Related Work}%
 \label{sec:Related Work}
