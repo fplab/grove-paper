@@ -2233,13 +2233,8 @@ A graph can be decomposed into a collection of expressions governed by the gramm
 
 \figureDecompExample
 
-% \newcommand{\multiVertex}[1]{\textcolor{red}{\ensuremath{\mathbf{\curlyveedownarrow_{#1}}}}}
-% \newcommand{\cycleVertex}[1]{\textcolor{red}{\ensuremath{\mathbf{\rcirclearrowleft_{#1}}}}}
-
 % TODO: make sure we're not claiming to invent the term "unicycular graph"
-% TODO: move "algorithmic section" to Implementation section
 % TODO: maybe add a forward reference at end here to Implementation section
-% TODO: clean up old comments below
 
 A grove is a 4-tuple of the following form:
 \[
@@ -2346,44 +2341,6 @@ only a vertex on the cycle can be its own ancestor.
   \label{fig:Decomposition expr}
 \end{figure}
 
-% TODO: add conflict hole to no-parent vertex
-
-We determine $e$ by starting at the root of the graph and including every connected
-vertex that has a single parent. In positions where there are no children, we
-leave an empty hole $\hole$. In positions where there are multiple children, we
-leave a conflict hole of the form $\conflictHole{e_1,\ldots,e_n}$. Whenever we
-encounter a vertex with multiple parents, we add its corresponding expression to
-the second component $MP$ and leave an indirect reference $\multiVertex{u}$, where $u$ is
-the unique identifier of the referenced vertex
-
-% here are some properties that show how to get one from the other, and to/from
-% graph
-
-algorithmic section: if we want to implement these conversions, here are the
-steps (without introducing new concepts):
-
-- linear scan
-- breaking out roots
-- ...
-
-Graph decomposition occurs in three steps.
-
-First, a linear scan is performed over every edge that has been created or
-deleted. The vertices at both ends are partitioned into three sets:
-multi-parented, single-parented, or orphaned. Maps for O($\log n$) parent and
-child edge set lookups are also created.
-
-Second, the subgraphs rooted at vertices with more or less than one parent are
-traversed and equivalent tree structures are generated over components that are
-connected by single-parented vertices. Cycles are broken with UUID vertex
-references. Single-parented vertices reachable from the root vertex are also
-traversed.
-
-Finally, once we've already accounted for things with more or less than one
-parent, everything else must be single parented. We call these things unicycular graphs. A
-unicycular graph is a cycle of single-parented vertices that each may have single-parented
-descendants.
-
 lemma: a unicycular graph is a cycle with trees hanging off of it
 
 lemma: unicycular graph traversal always produces a valid tree
@@ -2432,6 +2389,8 @@ OR:
 use edge IDs instead of edges and build a mapping from vertices to
 sorts---change the $\e$s to $u$s)
 
+% TODO: maybe add a forward reference here to Implementation section
+
 % TODO: clean up this figure
 % TODO: move to implementation section
 
@@ -2446,133 +2405,6 @@ sorts---change the $\e$s to $u$s)
   \caption{Syntax of graph decomposition trees as a grammar.}
   \label{fig:Syntax of graph decomposition trees}
 \end{figure}
-
-% To render the graph as disjoint fragments of program code, we decompose the
-% graph into an equivalent representation using trees. The result is a 4-tuple,
-% where the first component is a tree, the second and third components are sets of
-% trees, and the fourth component is a set of cycles.
-
-% 1. ($O(n \log n)$ for maps, $O(n)$ for hash table) linear scan to partition vertices according to # of parents: multiple parents, single parents, no parents.
-
-% 2. ($n \log n$?) scan to discover edges leading to single-parented vertices reachable from root (and remove from single-parented set)
-
-% 3. ($n \log n$?) scan to discover edges leading to single-parented vertices reachable from multi-parented vertices (and remove from single-parented set).
-
-% 4. ($n \log n$?) scan to discover edges leading to single-parented [deleted]
-
-% 5. simple cycles—reverse traversal, then forward traversal. Here's where we want to prove some things (e.g., dangling vertices are not deleted)
-
-% tree ::= Vertex (Constructor) | Ref (Vertex.Id) | Conflict (tree list)
-
-%
-% ... () of sets of
-% (poly)trees) wherein each multi-edge has been resolved into a simple edge with
-% one or more symbolic references to it.
-
-% Our decomposition algorithm first separates the graph into three disjoint sets of
-% vertices according to the number of parents and presence of simple cycles.
-% %
-% The first set is the single-parented vertices that have the root as an ancestor.
-% The second set is the vertices that have a multi-parented vertex as an ancestor.
-% The third 
-
-% We then derive equivalent tree representations of connected components by tracing
-% the ancestry, taken as the transitive closure of the childhood relation, of the
-% vertices in each set.
-
-
-% set contains the multi-parented vertices and
-% their non-multiparented descendants. The second set contains the vertices with
-% no parents and their non-multiparented descendants. We can determine both of
-% these sets with a single pass over all of the live vertices in the graph. The
-% third set contains the single-parented vertices that are descendants of the root
-% vertex.
-
-% The first set contains all of the
-% vertices that have the root as an ancestor. 
-
-% : vertices with multiple parents, vertices with no parents,
-% single-parented vertices reachable from the root, and everything else.
-
-
-% separate it into 
-% components that only touch  detect any vertices that either have multiple parents or no parents
-% at all.
-
-% partition its vertices into three disjoint sets: multi-parented, deleted,
-% and any remaining vertices participating in a live edge. We then partition the
-% graph into four non-overlapping sets of trees: multi-parented, single-parented
-% reachable from root, deleted, and simple cycles.
- 
-%  detect any multi-parented
-% vertices and use them to partition the remaining vertices of the graph into .
-
-% Our decomposition algorithm partitions the graph into trees of
-% connected components. Cycles are resolved by replacing all but one vertex of
-% each multi-edge with a by-id reference.
-
-% Translating a graph into expressions in the calculus allows us to model user
-% interaction as a stream of edits as described in \autoref{sub:User Actions}. 
-
-% \begin{algorithm}[t]
-%   \caption{Graph Decomposition}
-%   \label{fig:Graph Decomposition}
-
-%   \DontPrintSemicolon
-%   \SetAlgoNoLine
-%   \SetKwFunction{reachable}{reachable}
-%   \SetKwProg{Fn}{function}{}{end}
-
-%   \KwIn{Graph $G$}
-%   \KwOut{A partitioning of the edges of $G$}
-
-%   $live := \{\e : G(\e) = \Plus\}$\;
-%   $R := \{\reachable(\e) : \e = (u, v_0, p, v) \in live\}$\;
-%   $D := \{\reachable(\e) : \e \notin live\}$\;
-%   $muliparent := \{(u,v,p,v') \in live : \exists (u_1, v_1, p_1, v), (u_2, v_2, p_2, v) \in live, v_1 \ne v_2\}$\;
-%   $MP := \{\reachable(\e) : \e \in multiparent\}$\;
-%   $SC := \varnothing$\;
-%   $remaining := \{\e \notin \edges(R \cup D \cup MP)\}$\;
-%   \While{$remaining \ne \varnothing$}{
-%     $(root, cycle) := \reachable(\min(remaining))$\;
-%     $remaining := remaining \setminus \{root\} \setminus cycle$\;
-%     $SC := SC \cup \{(root, cycle)\}$\;
-%   }
-%   \Return{$(R, D, MP, SC)$}\;
-%   \;
-
-%   \Fn{$\reachable\ ((u, v, p, v'))$}{
-%     $children := \{(u', v', p', v'') \in live\}$\;
-%     $descendants := \bigcup_{\e \in children} \reachable(\e)$\;
-%     \Return{$((u, v, p, v'), descendants)$}
-%   }
-% \end{algorithm}
-
-% The result of decomposition is a 4-tuple $(e, MP, D, SC) \in Exp \times
-% \wp({Exp}) \times \wp({Exp}) \times \wp({Exp})$. Expression $e$ covers the
-% portion of the graph reachable from the root vertex $v_0$. $MP$ contains the
-% expressions that involve vertices with multiple parents. $D$ contains deleted
-% expressions, i.e., those not reachable from $v_0$, that do not contain cycles.
-% $SC$ contains the deleted expressions that do not involve multiple parents but
-% do contain cycles.
-
-% A simple cycle is a set of vertices connected by a closed path, consisting
-% of:
-
-% 1) two or more vertices, all descendants of each other, and
-% 2) the vertices of any non-multiparent subtrees reachable from the core, and
-% not reachable from the root vertex.
-
-% To determine the simple cycles of a graph, we:
-
-% 1) check if any vertex in the graph is a descendant of itself or some other
-% vertex that is (a descendant of itself),
-% 2) find the least vertex in the core of this new(ly discovered) cycle, and
-% 3) return a tree connecting every vertex reachable from the least (vertex).
-
-% The least vertex of a cycle is the one that was created first. To ensure consistent behavior, the search for reachable vertices begins at the least vertex in a cycle.
-
-% <Mathematical definition of above.>
 
 \subsection{User Actions}%
 \label{sub:User Actions}
@@ -2636,6 +2468,7 @@ non-empty holes
 
 User must supply edge selection for multi-parent
 
+
 \section{Implementation}%
 \label{sec:Implementation}
 
@@ -2648,6 +2481,44 @@ We implemented GRV as a core OCaml library in approximately 1,500 lines of code,
 Compared to the core language, our implementation lacks support for lists and case expressions.
 
 Optimizations: least fixed point
+
+
+We determine $e$ by starting at the root of the graph and including every connected
+vertex that has a single parent. In positions where there are no children, we
+leave an empty hole $\hole$. In positions where there are multiple children, we
+leave a conflict hole of the form $\conflictHole{e_1,\ldots,e_n}$. Whenever we
+encounter a vertex with multiple parents, we add its corresponding expression to
+the second component $MP$ and leave an indirect reference $\multiVertex{u}$, where $u$ is
+the unique identifier of the referenced vertex
+
+% here are some properties that show how to get one from the other, and to/from
+% graph
+
+algorithmic section: if we want to implement these conversions, here are the
+steps (without introducing new concepts):
+
+- linear scan
+- breaking out roots
+- ...
+
+Graph decomposition occurs in three steps.
+
+First, a linear scan is performed over every edge that has been created or
+deleted. The vertices at both ends are partitioned into three sets:
+multi-parented, single-parented, or orphaned. Maps for O($\log n$) parent and
+child edge set lookups are also created.
+
+Second, the subgraphs rooted at vertices with more or less than one parent are
+traversed and equivalent tree structures are generated over components that are
+connected by single-parented vertices. Cycles are broken with UUID vertex
+references. Single-parented vertices reachable from the root vertex are also
+traversed.
+
+Finally, once we've already accounted for things with more or less than one
+parent, everything else must be single parented. We call these things unicycular graphs. A
+unicycular graph is a cycle of single-parented vertices that each may have single-parented
+descendants.
+
 
 \section{Related Work}%
 \label{sec:Related Work}
