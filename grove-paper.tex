@@ -2250,7 +2250,7 @@ where
   e_r &= \expr(v_0) \\
   MP &= \{\expr(v) : |\parents(v)| > 1\} \\
   NP &= \{\expr(v) : |\parents(v)| = 0 \land v \ne v_0\} \\
-  W  &= \{\expr(v) : |\parents(v)| = 1 \wedge v = \min(\ancestors(v))\}
+  U  &= \{\expr(v) : |\parents(v)| = 1 \wedge v = \min(\ancestors(v))\}
 \end{align*}
 For example, the grove corresponding to the graph in \autoref{fig:Decomposition example graph} is
 given in \autoref{fig:Decomposition example grove}.
@@ -2263,7 +2263,7 @@ For example, the expression derived from ${+}_{\id{38}} = (38, \ExpPlus)$ is $\e
 In each child position, $\expr'(v, p)$ determines the sub-expression derived from the children of $v$ at position $p$.
 An empty hole $\hole$ appears if there are no children at the given position.
 A conflict hole $\conflictHole{e_1,\ldots,e_n}$ appears if there are multiple children.
-If there is one child, the expression is determined recursively unless that child appears in $MP$ or $W$, discussed below, in which case we leave a reference, $\multiVertex{u}$ or $\cycleVertex{u}$ respectively.
+If there is one child, the expression is determined recursively unless that child appears in $MP$ or $U$, discussed below, in which case we leave a reference, $\multiVertex{u}$ or $\cycleVertex{u}$ respectively.
 For the $\ExpLam$ case, we define $\patt(q)$ and $\type(\tau)$ similarly.
 
 The second component $MP$ is the set of expressions derived from a vertex with multiple parents.
@@ -2273,12 +2273,12 @@ In the example, $x_{\id{42}}$ is referenced twice in $e_r$.
 The third component $NP$ is the set of expressions rooted at a vertex with no parents, other than the root vertex.
 In the example, $z^{\id{58}}$ has no parents (because it was deleted), so it appears only in $NP$.
 
-The fourth component $W$ is the set of expressions derived from the remaining vertices, which form cyclic structures we call wreaths, where each vertex has exactly one parent.
-Every wreath consists of a single cycle where each vertex in the cycle may have additional children that are not part of the cycle.
-We need to break the cycle to be able to turn a wreath into a tree.
+The fourth component $U$ is the set of expressions derived from the remaining vertices, which form unicycular graphs where each vertex has exactly one parent.
+Every unicycular graph consists of a single cycle where each vertex in the cycle may have additional children that are not part of the cycle.
+Breaking the cycle turns a unicyclic graph into a tree.
 To break the cycle, we arbitrarily choose the vertex on the cycle with the smallest id according to the total ordering on $\U$.
 Formally, we choose the vertex $v$ such that $v = \min(\ancestors(v))$ because
-every vertex on the cycle is its own ancestor.
+only a vertex on the cycle can be its own ancestor.
 
 \begin{figure}
   \begin{displaymath}
@@ -2348,8 +2348,6 @@ every vertex on the cycle is its own ancestor.
 
 % TODO: add conflict hole to no-parent vertex
 
-% TODO: add text around these definitions -- turn them into paragraphs.
-
 We determine $e$ by starting at the root of the graph and including every connected
 vertex that has a single parent. In positions where there are no children, we
 leave an empty hole $\hole$. In positions where there are multiple children, we
@@ -2382,20 +2380,20 @@ references. Single-parented vertices reachable from the root vertex are also
 traversed.
 
 Finally, once we've already accounted for things with more or less than one
-parent, everything else must be single parented. We call these things wreaths. A
-wreath is a cycle of single-parented vertices that each may have single-parented
+parent, everything else must be single parented. We call these things unicycular graphs. A
+unicycular graph is a cycle of single-parented vertices that each may have single-parented
 descendants.
 
-lemma: a wreath is a cycle with trees hanging off of it
+lemma: a unicycular graph is a cycle with trees hanging off of it
 
-lemma: wreath traversal always produces a valid tree
+lemma: unicycular graph traversal always produces a valid tree
 
-Wreath traversal occurs in two directions. A vertex is chosen as an arbitrary
+Unicycular graph traversal occurs in two directions. A vertex is chosen as an arbitrary
 starting point and its parents are traversed and marked as seen. Any vertex that
 has been seen twice must be on the cycle. We take the first one as the root of
-the wreath and traverse its children to produce a tree that covers the wreath.
-Any remaining single-parented vertices must be parts of other wreaths and are
-wreath-traversed until there are no more single-parented vertices left.
+the unicycular graph and traverse its children to produce a tree that covers the unicycular graph.
+Any remaining single-parented vertices must be parts of other unicycular graphs and are
+traversed until there are no more single-parented vertices left.
 
 % XXX
 
