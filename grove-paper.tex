@@ -209,6 +209,8 @@
 \def\AA{\textbf{A}}
 \def\EE{\textbf{E}}
 
+\newcommand{\abs}[1]{\left\lvert#1\right\rvert}
+
 % constructors
 \def\ExpVar{\mathsf{Exp\_var}}
 \def\ExpLam{\mathsf{Exp\_lam}}
@@ -2114,8 +2116,8 @@ Each edge $\e = (u, v, p, v^\prime)$ has a unique name, $u \in \U$, and connects
 the child position $p$ of originating vertex $v$ to destination vertex
 $v^\prime$. The state of each edge, $\e$, is determined by the corresponding
 edge state, $G(\e) \in \Sigma = \{ \bot, \Plus, \Minus \}$. When $G(\e) = \bot$,
-$\e$ has not been created yet. When $G(\e)$ is $\Plus$, the edge has been
-created. When $G(\e)$ is $\Minus$, the edge has been destroyed. The total
+$\e$ has not been created or deleted. When $G(\e)$ is $\Plus$, the edge has been
+created. When $G(\e)$ is $\Minus$, the edge has been deleted. The total
 ordering $\bot \sqsubset \Plus \sqsubset \Minus$ forms a lattice over $\Sigma$.
 
 A vertex $v = (u, k)$ identifies a distinct instance of some constructor $k \in
@@ -2463,11 +2465,48 @@ User must supply edge selection for multi-parent
 
 % TODO: talk about performance: O(decomp) given "size of the graph" (probably linear in # edges)
 
-GRV -- how it is implemented, how it connects to the formalism, describe the graph,
+% GRV -- how it is implemented, how it connects to the formalism, describe the graph,
 
-We implemented GRV as a core OCaml library in approximately 1,500 lines of code, and a basic Web interface in approximately 600 lines of OCaml code and 250 lines of HTML+CSS+Javascript.
+We implemented the core Grove calculus of \autoref{sec:Formalism} as an OCaml library.
+Our code is parameterized by a syntax specification for expressions that we generate automatically, which makes the implemented language of expressions easier to modify or replace.
+We also built a Web browser-based Grove editor as a proof of concept.
 
-Compared to the core language, our implementation lacks support for lists and case expressions.
+Since we cannot implement an infinite mapping directly, the graph is a data structure, \texttt{Graph.t}, that maps from edges to the edge states $\left\{\Plus, \Minus\right\}$.
+We do not represent edges that map to $\bot$.
+
+% TODO: rename Decomposition.ml to Grove.ml
+
+There's a function \verb!decompose! of type \verb!Graph.t) : t * Edge.Set.t Vertex.Map.t! that 
+
+From this graph, we compute the set of all edges and the set of live edges with a linear scan.
+
+% TODO: make this into a listing
+
+\begin{verbatim}
+  Graph.edges : Graph.t -> Edge.Set.t
+  Graph.live_edges : Graph.t -> Edge.Set.t
+\end{verbatim}
+
+% TODO: keep connecting the code to the formalism like this
+
+These vertices are partitioned into three sets: multi-parented, single-parented, or orphaned.
+A vertex $v$ is considered a parent of another vertex $v'$ if there is a live edge from $v$ to $v'$.
+
+For each vertex, we take the parent and child edge sets.
+
+% TODO: fix the formalism for parents (to work with edges instead of vertices) and then check that it matches the implementation. Try renaming parents to vparents and adding parents for edges.
+
+% TODO: Talk about how the graph is implemented (not as an actual function, but as a map from edges to edge states) so that we can denote the set of created + deleted edges clearly, as well as all of the vertices that have ever been created.
+
+For a graph $G : \E \to \Sigma$ where $\E = \U \times \V \times \P \times \V$, our graph decomposition algorithm runs in $O(\abs{\V} \log \abs{\V} + \abs{\E} \log \abs{\V})$.
+It begins with a scan of all edges that have been created or deleted $O(\abs{\E})$.
+Their vertices at both ends are partitioned into three sets: multi-parented, single-parented, or orphaned.
+Their relationships are recorded in maps for $O(\log \abs{\V})$ lookups of parent and child edge sets.
+After the vertices have been partitioned, we traverse the various single-parented components and produce equivalent expressions $O(\abs{\V})$.
+For unicycles, we traverse backwards until a vertex is seen twice $O(\abs{\V})$, then proceed forward to find the least vertex on the cycle $O(\abs{\V})$.
+
+% TODO: is this still a thing?
+% Compared to the core language, our implementation lacks support for lists and case expressions.
 
 Optimizations: least fixed point
 
@@ -2492,21 +2531,7 @@ steps (without introducing new concepts):
 
 Graph decomposition occurs in three steps.
 
-First, a linear scan is performed over every edge that has been created or
-deleted. The vertices at both ends are partitioned into three sets:
-multi-parented, single-parented, or orphaned. Maps for O($\log n$) parent and
-child edge set lookups are also created.
 
-Second, the subgraphs rooted at vertices with more or less than one parent are
-traversed and equivalent tree structures are generated over components that are
-connected by single-parented vertices. Cycles are broken with UUID vertex
-references. Single-parented vertices reachable from the root vertex are also
-traversed.
-
-Finally, once we've already accounted for things with more or less than one
-parent, everything else must be single parented. We call these things unicycular graphs. A
-unicycular graph is a cycle of single-parented vertices that each may have single-parented
-descendants.
 
 % TODO: use code generation instead: have Lang.ml generate expr / expr' / ... for us; then we don't need this figure.
 % TODO: maybe show this figure and say that it's possible to handle generically without code generation
