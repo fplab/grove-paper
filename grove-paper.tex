@@ -256,6 +256,7 @@
 \DeclareMathOperator{\CC}{\text{C}}
 \DeclareMathOperator{\D}{\text{D}}
 
+\DeclareMathOperator{\sort}{\text{sort}}
 \DeclareMathOperator{\arity}{\text{arity}}
 \DeclareMathOperator{\childVertexes}{\text{childVertexes}}
 \DeclareMathOperator{\cursorChildren}{\text{cursorChildren}}
@@ -2083,7 +2084,7 @@ Additionally, all non-hole forms have a superscripted identifier $u \in \U$.
     \begin{array}{ll}
       \arity : \K \hfil \rightarrow & \wp(\P \times \{Exp, Pat, Typ\}) \\
       \hline
-      \arity(\Root)={} & \left\{ \Root \right\} \\
+      \arity(\Root)={} & \left\{ (\Root, Exp) \right\} \\
       \arity(\PatVar(x))={} & \left\{ \right\} \\
       \arity(\ExpVar(x))={} & \left\{ \right\} \\
       \arity(\ExpLam)={} & \left\{ (\LamParam, Pat), (\mathtt{Type}, Typ), (\mathtt{Body}, Exp) \right\} \\
@@ -2130,7 +2131,37 @@ constructors to potential edge positions with their corresponding sorts. Every
 graph contains a distinguished root vertex, root constructor, and root position,
 respectively named $v_0$, $k_0$, and $p_0$.
 
+\vspace*{\baselineskip}
+
+% TODO: add a lead-in sentence here
+
+A graph $G$ is well sorted if
+for all $G((u, (u_1, k_1), p, (u_2, k_2))) \neq \bot$,
+we have $(p, \sort(k_2)) \in \arity(k_1)$.
+
+% In decomp section:
+% - If a graph is well sorted, then there exists a grove. (i.e., exhaustiveness check for expr)
+%   - want to show that expr is a total function on Exp's
+% - If decomp(G) = Grove, then vertices(Grove) = vertices(edges(G))
+%   - every vertex should be part of the decomposition
+% - correctness of grove components:
+%   - e_r: rootVertex(e_r) = v_r
+%   - MP: for every expression in MP, |parents(the root vertex)| > 1
+%   - NP: for every expression in NP, |parents(the root vertex)| = 0
+%   - U: for every expression in U, |parents(the root vertex)| = 1 and the root vertex = min(ancestors(the root vertex))
+%     - every other vertex notin U has exactly 1 parent and is not its own min-ancestor
+%   - we've accounted for every edge:
+%     - want to say edges(Grove) = edges(G), but we don't have a clean way to say that
+%     - there is a choice from (an infinite family of graphs) recomposition(Grove) (which are all structurally equivalent to G, modulo edge ids)
+
+% correctness covers:
+% - invertibility (w/ some identity assignment)
+% - parentage (things are multiparented correctly)
+
+\vspace*{\baselineskip}
+
 % TODO: should graph "recomposition" have an algorithm, too?
+% TODO: update this to match our current understanding
 A graph can be derived from an expression in the calculus by starting with an
 empty graph, selecting unique ids $u, u_k$ and constructor $k$ for the outermost
 expression, and creating edge $\e = (u, v_0, p_0, (u_k, k))$. Then, for each
@@ -2241,7 +2272,7 @@ A graph can be decomposed into a collection of expressions governed by the gramm
 
 A grove is a 4-tuple of the following form:
 \[
-  (e_r, MP, NP, W)
+  (e_r, MP, NP, U)
 \]
 where
 \begin{align*}
@@ -2255,13 +2286,13 @@ given in \autoref{fig:Decomposition example grove}.
 
 Let us now examine each of the four components in more detail.
 The first component $e_r$ is the expression derived from the root vertex $v_0$.
-\autoref{fig:Decomposition expr} defines $\expr(v)$ wich determines the expression derived from $v$.
-There is one rule for each constructor form.
+\autoref{fig:Decomposition expr} defines $\expr(v)$ which determines the expression derived from $v$.
+There is one rule for each term constructor.
 For example, the expression derived from ${+}_{\id{38}} = (38, \ExpPlus)$ is $\expr'({+}_{\id{38}}, \PlusLeft) \text{+}^{\id{38}} \expr'({+}_{\id{38}}, \PlusRight)$.
-In each child position, $\expr'(v, p)$ determines the sub-expression derived from the children of $v$ at position $p$.
+In each child position, $\expr'(v, p)$ determines the subterm for the children of $v$ at position $p$.
 An empty hole $\hole$ appears if there are no children at the given position.
 A conflict hole $\conflictHole{e_1,\ldots,e_n}$ appears if there are multiple children.
-If there is one child, the expression is determined recursively unless that child appears in $MP$ or $U$, discussed below, in which case we leave a reference, $\multiVertex{u}$ or $\cycleVertex{u}$ respectively.
+If there is one child, the expression is determined recursively unless that child appears in $MP$ or $U$, discussed below, in which case we leave a reference, $\multiVertex{u}$ or $\cycleVertex{u}$, respectively.
 For the $\ExpLam$ case, we define $\patt(q)$ and $\type(\tau)$ similarly.
 
 The second component $MP$ is the set of expressions derived from a vertex with multiple parents.
@@ -2366,6 +2397,7 @@ Theorem: well-sorted graphs produce decompositions of well-sorted trees
 then we can define a total mapping from well-sorted trees to expressions
 (because the tree structure is very generic, so this ties them back to the
 earlier grammar.)
+
 
 forest = 4-tuple
 
