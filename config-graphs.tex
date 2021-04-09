@@ -1,0 +1,31 @@
+% Calling \newvertex{Foo}{bar} defines
+%   \vidFoo to be a new id number, and
+%   \vFoo to be \texttt{bar}\ensuremath{_{\vidFoo}}
+\newcounter{NodeVertexCounter}
+\newcommand{\newvertex}[2]{%
+\ifodd\theNodeVertexCounter
+  \addtocounter{NodeVertexCounter}{1}%
+\else
+  \addtocounter{NodeVertexCounter}{2}%
+\fi
+\expandafter\newcommand\csname vid#1\endcsname{}% This is just to check if this is a redefinition
+\expandafter\global\expandafter\edef\csname vid#1\endcsname{\theNodeVertexCounter}%
+\expandafter\newcommand\csname v#1\endcsname{}% This is just to check if this is a redefinition
+\expandafter\gdef\csname v#1\endcsname{\texttt{#2}\ensuremath{_{\id{\csname vid#1\endcsname}}}}%
+}
+\newcommand{\newedge}[2]{%
+\ifodd\theNodeVertexCounter
+  \addtocounter{NodeVertexCounter}{2}%
+\else
+  \addtocounter{NodeVertexCounter}{1}%
+\fi
+\expandafter\newcommand\csname eid#1\endcsname{}% This is just to check if this is a redefinition
+\expandafter\global\expandafter\edef\csname eid#1\endcsname{\theNodeVertexCounter}%
+\expandafter\newcommand\csname e#1\endcsname{}% This is just to check if this is a redefinition
+\expandafter\gdef\csname e#1\endcsname{\texttt{#2}\ensuremath{_{\id{\csname eid#1\endcsname}}}}%
+}
+\setcounter{NodeVertexCounter}{-1}
+\newvertex{Root}{Root}
+
+% Support \includegraphics of .dot files
+\DeclareGraphicsRule{.dot}{pdf}{.pdf}{`dot -Tpdf #1 -o \noexpand\OutputFile}

@@ -1,0 +1,119 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \figureDisconnect
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newedge{DisconnectAlice}{R}
+\newedge{DisconnectBob}{L}
+\newcommand{\figureDisconnect}{
+\begin{figure*}
+%\hfill
+\hskip0.12\columnwidth
+%%%%%%%%
+\begin{subfigure}[t]{0.21\textwidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (-7.5em,0cm) node (node/Cycle/dx) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:Cycle:d}}}};
+%%%%
+\path (0cm,0cm) node (node/Disconnect/a) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/Cycle/dx) to[star] (-2em, 0cm |- node/Disconnect/a);
+\end{tikzpicture}
+}%
+\label{fig:Disconnect:a}
+\figureCode{\hole{} * \hole{} + \hole{} * \hole{}\otherVertexVskip\strut}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "\vWrapPlus" [> "\eWrapPlus"] -> {
+   "\vSimpleTimes" [> "\eNestedPartsBob"'],
+   "\vMultiCycleTimes" [> "\eMultiCycleAliceTimes"]
+  }
+ }
+};
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}[t]{0.21\textwidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,0cm) node (node/Disconnect/b) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/Disconnect/a) to[star] (-2em, 0cm |- node/Disconnect/b);
+\end{tikzpicture}
+}%
+\label{fig:Disconnect:b}
+\figureCode{\hole{} * \parens{\hole{} * \hole{}} + \hole{}\otherVertexVskip\strut}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "\vWrapPlus" [> "\eWrapPlus"] -> {
+   "\vSimpleTimes" [> "\eNestedPartsBob"'] -> {
+    {},
+    "\vMultiCycleTimes" [> "\eDisconnectAlice", >alice edge]
+   },
+   {}
+  }
+ }
+};
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}[t]{0.21\textwidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,0cm) node (node/Disconnect/c) [anchor=base] {\strut};
+\path [draw,->,bob step] (node/Disconnect/a) to[out=15,in=165,star] (-2em, 0cm |- node/Disconnect/c);
+\end{tikzpicture}
+}%
+\label{fig:Disconnect:c}
+\figureCode{\hole{} + \parens{\hole{} * \hole{}} * \hole{}\otherVertexVskip\strut}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "\vWrapPlus" [> "\eWrapPlus"] -> {
+   {},
+   "\vMultiCycleTimes" [> "\eMultiCycleAliceTimes"] -> {
+    "\vSimpleTimes" [> "\eDisconnectBob"', >bob edge],
+    {}
+   }
+  }
+ }
+};
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}[t]{0.21\textwidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,0cm) node (node/Disconnect/d) [anchor=base] {\strut};
+\path [draw,->,merge step] (node/Disconnect/b) to[out=15,in=165] (-2em, 0cm |- node/Disconnect/d);
+\path [draw,->,merge step] (node/Disconnect/c) to (-2em, 0cm |- node/Disconnect/d);
+\end{tikzpicture}
+}%
+\label{fig:Disconnect:d}
+\figureCode{\hole{} + \hole{}\otherVertexVskip\cycleVertex{2} = \hole{} * \parens{\cycleVertex{2} * \hole{}}}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "\vWrapPlus" [> "\eWrapPlus"]
+ }
+};
+\path (-0.5cm,-2cm) graph[graph style] { plus/"\vSimpleTimes" };
+\path ( 0.5cm,-2cm) graph[graph style] { times/"\vMultiCycleTimes" };
+\path[draw,->,merge edge] (times) to ["\eMultiCycleBobTimes"'anchor=north,out=-135,in=-45] (plus);
+\path[draw,->,merge edge] (plus) to ["\eMultiCycleBobPlus"anchor=south,out=45,in=135] (times);
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill{}
+\caption{Example of Disconnection.}%
+\label{fig:Disconnection}
+\end{figure*}
+}

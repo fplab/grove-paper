@@ -1,0 +1,103 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \figureMultiChild
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newedge{MultiChildAlice}{R}
+\newvertex{MultiChildAlice}{x}
+\newedge{MultiChildBob}{R}
+\newvertex{MultiChildBob}{y}
+\newcommand{\figureMultiChild}{
+\begin{figure}
+%\hfill
+\hskip0.12\columnwidth
+%%%%%%%%
+\begin{subfigure}[t]{0.21\linewidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (-7.5em,0cm) node (node/NestedParts/cx) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:NestedParts:c}}}};
+%%%%
+\path (0cm,0cm) node (node/MultiChild/a) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/NestedParts/cx) to (-2em, 0cm |- node/MultiChild/a);
+\end{tikzpicture}
+}%
+\label{fig:MultiChild:a}
+\figureCode{w * v + x}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "\vWrapPlus" [> "\eWrapPlus"] -> {
+   "\vSimpleTimes" [> "\eNestedPartsBob"'] -> {
+    "\vNestedPartsAlice" [> "\eNestedPartsAlice"'],
+    "\vDifferentPartsBob" [> "\eDifferentPartsBob"]
+   },
+   {
+    "\vMultiChildAlice" [> "\eMultiChildAlice", >alice edge, alice node]
+   }
+  }
+ }
+};
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}[t]{0.21\linewidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,0cm) node (node/MultiChild/b) [anchor=base] {\strut};
+\path [draw,->,bob step] (node/NestedParts/cx) to[out=15,in=165] (-2em, 0cm |- node/MultiChild/b);
+\end{tikzpicture}
+}%
+\label{fig:MultiChild:b}
+\figureCode{w * v + y}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "\vWrapPlus" [> "\eWrapPlus"] -> {
+   "\vSimpleTimes" [> "\eNestedPartsBob"'] -> {
+    "\vNestedPartsAlice" [> "\eNestedPartsAlice"'],
+    "\vDifferentPartsBob" [> "\eDifferentPartsBob"]
+   },
+   "\vMultiChildBob" [> "\eMultiChildBob", >bob edge, bob node]
+  }
+ }
+};
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}[t]{0.4\linewidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,0cm) node (node/MultiChild/c) [anchor=base] {\strut};
+\path [draw,->,merge step] (node/MultiChild/a) to[out=15,in=165] (-2em, 0cm |- node/MultiChild/c);
+\path [draw,->,merge step] (node/MultiChild/b) to (-2em, 0cm |- node/MultiChild/c);
+\end{tikzpicture}
+}%
+\label{fig:MultiChild:c}
+\figureCode{w * v + \conflictHole{x,y}}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "\vWrapPlus" [> "\eWrapPlus"] -> {
+   "\vSimpleTimes" [> "\eNestedPartsBob"'anchor=-15] -> {
+    "\vNestedPartsAlice" [> "\eNestedPartsAlice"'],
+    "\vDifferentPartsBob" [> "\eDifferentPartsBob"]
+   },
+   "\vMultiChildAlice" [> "\eMultiChildAlice"anchor=153, >merge edge, merge node],
+   {},
+   "\vMultiChildBob" [> "\eMultiChildBob"anchor=195, >merge edge, merge node]
+  }
+ }
+};
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+%\hfill{}
+\caption{Example of Multi-Child Conflicts.}%
+\label{fig:MultiChild}
+\end{figure}
+}

@@ -1,0 +1,53 @@
+
+\section{Introduction}%
+\label{sec:Introduction}
+
+TODO: fix the following warning which are reported by LaTeX but not Overleaf: Class acmart Warning: A possible image without description on input line 321.
+
+Motivation:
+
+- collaborative editing (both synchronous ala Google Docs and asynchronous version control)
+is good and important as computing grows
+
+- semantic structure editing is good because it solves the gap problem (semantic editor services
+are always available) -- cite Hazelnut papers (talk about holes)
+
+- previous approaches to collaborative editing have limitations
+
+- diff/merge based approaches (trying to solve the inverse problem based on final states --
+you lose the actual actions that were performed, and have to reconstruct them or an approx.
+of them i.e. add line/delete line actions -- would need to adapt this to structure editing,
+some papers have started to look at that, but fundamentally we don't want to throw away the
+knowledge we have about the edits!)
+
+- operational transforms (complexity, you have to patch previous actions based on new actions)
+
+- CRDT-based collaborative editing (that's all been on text, not PL semantics) -- this is good
+because it is relatively simple: you just send all the edits to all the replicas and they are
+convergent by design
+
+- we want to have the same convergence for a CRDT-based collaborative structure editor that maintains
+the sensibility invariant of Hazelnut, i.e. every editor state has meaning. mention that maintaining sensibility
+allows scaling of semantic editor services in the presence of large number of collaborators (in contrast,
+using VS Code or other collaborative text editors with large numbers of collaborators means that almost always
+the semantic editor services will be disabled because the program is going to be broken in multiple places
+transiently)
+
+this is tricky because:
+
+- some edits might be conflicting -- solve this with "conflict holes"
+
+- adding cut/paste or delete/restore allows for degenerate programs (cycles, multiple parents, etc.)
+
+- since we are commutative, we solve both synchronus and async collaborative editing
+
+- and this resolves issues around merges and conflicts
+
+- contribution of this paper is to solve these problems from type-theoretic first principles:
+
+- ...
+
+- Hazel
+
+\subsection{Contributions and Paper Organization}%
+\label{sec:Contributions and Paper Organization}

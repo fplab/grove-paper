@@ -1,0 +1,149 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \figureMultiParent
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newedge{MultiParentAlice}{R}
+\newedge{MultiParentBob}{R}
+\newcommand{\figureMultiParent}{
+\begin{figure*}
+%\hfill
+\hskip0.12\columnwidth
+%%%%%%%%
+\begin{subfigure}[t]{0.14\linewidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (-7.5em,0cm) node (node/MultiChild/cx) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:MultiChild:c}}}};
+%%%%
+\path (0cm,0cm) node (node/MultiParent/a) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/MultiChild/cx) to[star] (-2em, 0cm |- node/MultiParent/a);
+\end{tikzpicture}
+}%
+\label{fig:MultiParent:a}
+\figureCode{w * \hole{} + \hole{}\otherVertexVskip\phantom{\multiVertex{18} = w}}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "\vWrapPlus" [> "\eWrapPlus"] -> {
+   "\vSimpleTimes" [> "\eNestedPartsBob"'] -> {
+    "\vNestedPartsAlice" [> "\eNestedPartsAlice"'],
+    {}
+   },
+   {}
+  }
+ }
+};
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}[t]{0.14\linewidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,0cm) node (node/MultiParent/b) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/MultiParent/a) to[star] (-2em, 0cm |- node/MultiParent/b);
+\end{tikzpicture}
+}%
+\label{fig:MultiParent:b}
+\figureCode{\hole{} * w + \hole{}\otherVertexVskip\phantom{\multiVertex{18} = w}}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "\vWrapPlus" [> "\eWrapPlus"] -> {
+   "\vSimpleTimes" [> "\eNestedPartsBob"'] -> {
+    {},
+    "\vNestedPartsAlice" [> "\eMultiParentAlice"', >alice edge]
+   },
+   {}
+  }
+ }
+};
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}[t]{0.14\linewidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,0cm) node (node/MultiParent/c) [anchor=base] {\strut};
+\path [draw,->,bob step] (node/MultiParent/a) to[out=15,in=165,star] (-2em, 0cm |- node/MultiParent/c);
+\end{tikzpicture}
+}%
+\label{fig:MultiParent:c}
+\figureCode{\hole{} * \hole{} + w\otherVertexVskip\phantom{\multiVertex{18} = w}}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "\vWrapPlus" [> "\eWrapPlus"] -> {
+   "\vSimpleTimes" [> "\eNestedPartsBob"'],
+   "\vNestedPartsAlice" [> "\eMultiParentBob", >bob edge]
+  }
+ }
+};
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}[t]{0.14\linewidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,0cm) node (node/MultiParent/d) [anchor=base] {\strut};
+\path [draw,->,merge step] (node/MultiParent/b) to[out=15,in=165] (-2em, 0cm |- node/MultiParent/d);
+\path [draw,->,merge step] (node/MultiParent/c) to[out=15,in=165] (-2em, 0cm |- node/MultiParent/d);
+\end{tikzpicture}
+}%
+\label{fig:MultiParent:d}
+\figureCode{\hole{} * \multiVertex{18} + \multiVertex{18}\otherVertexVskip\multiVertex{18} = w}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  a/{\vWrapPlus} [> "\eWrapPlus"] -> {
+   "\vSimpleTimes" [> "\eNestedPartsBob"'] -> {
+    {},
+    b/"\vNestedPartsAlice" [> "\eMultiParentAlice"', >merge edge]
+   },
+   {}
+  }
+ },
+};
+\path [draw,->,merge edge] (a) to ["\eMultiParentBob",out=-60,in=60] (b);
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}[t]{0.14\linewidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,0cm) node (node/MultiParent/e) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/MultiParent/d) to (-2em, 0cm |- node/MultiParent/e);
+\end{tikzpicture}
+}%
+\label{fig:MultiParent:e}
+\figureCode{\hole{} * w + \hole{}\otherVertexVskip\phantom{\multiVertex{18} = w}}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  v8/"\vWrapPlus" [> "\eWrapPlus"] -> {
+   v2/"\vSimpleTimes" [> "\eNestedPartsBob"'] -> {
+    {},
+    "\vNestedPartsAlice" [> "\eMultiParentAlice"']
+   },
+   {}
+  }
+ }
+};
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill{}
+\caption{Example of Multi-Parent Conflicts.}%
+\label{fig:MultiParent}
+\end{figure*}
+}

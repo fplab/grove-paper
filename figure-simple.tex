@@ -1,0 +1,88 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \figureSimple
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newedge{SimpleTimes}{Root}%
+\newvertex{SimpleTimes}{*}%
+\newedge{SimpleX}{L}%
+\newvertex{SimpleX}{x}%
+\newedge{SimpleY}{R}%
+\newvertex{SimpleY}{y}%
+\newcommand{\figureSimple}{
+\begin{figure}
+\hfill
+%%%%%%%%
+\begin{subfigure}[t]{0.32\linewidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,0cm) node (node/Simple/a) [anchor=base] {\strut};
+\end{tikzpicture}
+}%
+\label{fig:Simple:a}
+\figureCode{x * \hole{}}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style, color=black] -> {
+  "\vSimpleTimes" [> "\eSimpleTimes", >color=black, color=black] -> {
+   "\vSimpleX" [> "\eSimpleX"', >color=black, color=black],
+   {}
+  }
+ }
+};
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\begin{subfigure}[t]{0.32\linewidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,0cm) node (node/Simple/b) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/Simple/a) to (-2em, 0cm |- node/Simple/b);
+\end{tikzpicture}
+}%
+\label{fig:Simple:b}
+\figureCode{x * y}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+  root[root style] -> {
+  "\vSimpleTimes" [> "\eSimpleTimes"] -> {
+    "\vSimpleX" [> "\eSimpleX"'],
+    "\vSimpleY" [> "\eSimpleY", >alice edge, alice node]
+  }
+  }
+};
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}[t]{0.32\linewidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,0cm) node (node/Simple/c) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/Simple/b) to (-2em, 0cm |- node/Simple/c);
+\end{tikzpicture}
+}%
+\label{fig:Simple:c}
+\figureCode{\hole{} * y}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+  root[root style] -> {
+  "\vSimpleTimes" [> "\eSimpleTimes"] -> {
+    {},
+    "\vSimpleY" [> "\eSimpleY"]
+  }
+  }
+};
+\path (-0.25cm,-1.7cm) graph[graph style] {
+  "\vSimpleX"
+};
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill{}
+\caption{Code that Includes a Hole and Some Simple Edits.}%
+\label{fig:Simple}
+\end{figure}
+}

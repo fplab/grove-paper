@@ -1,0 +1,182 @@
+
+\section{Recomposition}
+
+% \vskip\baselineskip
+% $\boxed{\eRecompPlus{e} = \{\e, \ldots, \e\}}$
+
+\begin{align*}
+  \recomp{\Grove} &= \SetOf{\e \mapsto + \SuchThat \e \in \recompPlus{\Grove}}
+  \\
+  \recompPlus{(MP, NP, U)} &= \bigcup_{e \in MP \cup NP \cup U} \eRecompPlus{e}
+\end{align*}
+
+\begin{align*}
+  \eRecompPlus{\varExp{x}{u}} &= \{\}
+  \\
+  \eRecompPlus{\numExp{n}{u}} &= \{\}
+  \\
+  \eRecompPlus{\appExp{e_\AppFun}{e_\AppArg}{u}}
+  &= \eRecompPlus{e_\AppFun} \\
+  &\cup \eRecompPlus{e_\AppArg} \\
+  &\cup \eRecompPrime{(u, \ExpApp)}{\AppFun}{e_\AppFun} \\
+  &\cup \eRecompPrime{(u, \ExpApp)}{\AppArg}{e_\AppArg}
+  \\
+  \eRecompPlus{\plusExp{e_\PlusLeft}{u}{e_\PlusRight}}
+  &= \eRecompPlus{e_\PlusLeft} \\
+  &\cup \eRecompPlus{e_\PlusRight} \\
+  &\cup \eRecompPrime{(u, \ExpPlus)}{\PlusLeft}{e_\PlusLeft} \\
+  &\cup \eRecompPrime{(u, \ExpPlus)}{\PlusRight}{e_\PlusRight}
+  \\
+  \eRecompPlus{\lamExp{u}{q_\LamParam}{\tau_\LamType}{e_\LamBody}}
+  &= \qRecompPlus{q_\LamParam} \\
+  &\cup \tRecompPlus{\tau_\LamType} \\
+  &\cup \eRecompPlus{e_\LamBody} \\
+  &\cup \qRecompPrime{(u, \ExpLam)}{\LamParam}{q_\LamParam} \\
+  &\cup \tRecompPrime{(u, \ExpLam)}{\LamType}{\tau_\LamType} \\
+  &\cup \eRecompPrime{(u, \ExpLam)}{\LamBody}{e_\LamBody}
+  \\
+  \eRecompPlus{\hole} &= \{\}
+  \\
+  \eRecompPlus{\conflictHole{e_1 | \cdots | e_n}}
+  &= \bigcup_{k=1}^n \eRecompPlus{e_k}
+  \\
+  \eRecompPlus{\multiVertex{u}} &= \{\}
+  \\
+  \eRecompPlus{\cycleVertex{u}} &= \{\}
+\end{align*}
+
+% % \vskip\baselineskip
+% % $\boxed{\eRecompPrime{v, p, e} = \{\e, \ldots, \e\}}$
+
+\begin{align*}
+  \eRecompPrime{v}{p}{\varExp{x}{u}}
+  &= \{(v, p, (u, \ExpVar(x)))\}
+  \\
+  \eRecompPrime{v}{p}{\numExp{n}{u}}
+  &= \{(v, p, (u, \ExpNum(n)))\}
+  \\
+  \eRecompPrime{v}{p}{\appExp{e_\AppFun}{e_\AppArg}{u}}
+  &= \{(v, p, (u, \ExpApp))\}
+  \\
+  \eRecompPrime{v}{p}{\plusExp{e_\PlusLeft}{u} {e_\PlusRight}}
+  &= \{(v, p, (u, \ExpPlus))\}
+  \\
+  \eRecompPrime{v}{p}{\lamExp{u}{q_\LamParam}{\tau_\LamType}{e_\LamBody}}
+  &= \{(v, p, (u, \ExpLam))\}
+  \\
+  \eRecompPrime{v}{p}{\hole} &= \{\}
+  \\
+  \eRecompPrime{v}{p}{\conflictHole{e_1 | \cdots | e_n}}
+  &= \bigcup_{k=1}^n \eRecompPrime{v}{p}{e_k}
+  \\
+  \eRecompPrime{v}{p}{\multiVertex{v'}}
+  &= \{(v, p, v')\}
+  \\
+  \eRecompPrime{v}{p}{\cycleVertex{v'}}
+  &= \{(v, p, v')\}
+\end{align*}
+
+% % \vskip\baselineskip
+% % $\boxed{\qRecompPlus{q} = \{\e, \ldots, \e\}}$
+
+\begin{align*}
+  \qRecompPlus{\varPat{x}{u}} &= \{\}
+  \\
+  \qRecompPlus{\hole} &= \{\}
+  \\
+  \qRecompPlus{\conflictHole{q_1 | \cdots | q_n}}
+  &= \bigcup_{k=1}^n \qRecompPlus{q_k}
+  \\
+  \qRecompPlus{\multiVertex{u}} &= \{\}
+  \\
+  \qRecompPlus{\cycleVertex{u}} &= \{\}
+\end{align*}
+
+\begin{align*}
+  \qRecompPrime{v}{p}{\varPat{x}{u}}
+  &= \{(v, p, (u, \PatVar(x)))\}
+  \\
+  \qRecompPrime{v}{p}{\hole} &= \{\}
+  \\
+  \qRecompPrime{v}{p}{\conflictHole{e_1 | \cdots | e_n}}
+  &= \bigcup_{k=1}^n \qRecompPrime{v}{p}{e_k}
+  \\
+  \qRecompPrime{v}{p}{\multiVertex{v'}}
+  &= \{(v, p, v')\}
+  \\
+  \qRecompPrime{v}{p}{\cycleVertex{v'}}
+  &= \{(v, p, v')\}
+\end{align*}
+
+% % \vskip\baselineskip
+% % $\boxed{\tRecompPlus{\tau} = \{\e, \ldots, \e\}}$
+
+\begin{align*}
+  \tRecompPlus{\arrowTyp{\tau_\ArrowArg}{u}{\tau_\ArrowResult}}
+  &= \tRecompPlus{\tau_\ArrowArg} \\
+  &\cup \tRecompPlus{\tau_\ArrowResult} \\
+  &\cup \tRecompPrime{(u, \TypArrow)}{\ArrowArg}{\tau_\ArrowArg} \\
+  &\cup \tRecompPrime{(u, \TypArrow)}{\ArrowResult}{\tau_\ArrowResult}
+  \\
+  \tRecompPlus{\numTyp{u}} &= \{\}
+  \\
+  \tRecompPlus{\hole} &= \{\}
+  \\
+  \tRecompPlus{\conflictHole{\tau_1 | \cdots | \tau_n}}
+  &= \bigcup_{k=1}^n \tRecompPlus{\tau_k}
+  \\
+  \tRecompPlus{\multiVertex{u}} &= \{\}
+  \\
+  \tRecompPlus{\cycleVertex{u}} &= \{\}
+\end{align*}
+
+\begin{align*}
+  \tRecompPrime{v}{p}{\arrowTyp{\tau_\ArrowArg}{u}{\tau_\ArrowResult}}
+  &= \{(v, p, (u, \TypArrow)))\}
+  \\
+  \tRecompPrime{v}{p}{\numTyp{u}}
+  &= \{(v, p, (u, \TypNum)))\}
+  \\
+  \tRecompPrime{v}{p}{\hole} &= \{\}
+  \\
+  \tRecompPrime{v}{p}{\conflictHole{\tau_1 | \cdots | \tau_n}}
+  &= \bigcup_{k=1}^n \tRecompPrime{v}{p}{\tau_k}
+  \\
+  \tRecompPrime{v}{p}{\multiVertex{v'}}
+  &= \{(v, p, v')\}
+  \\
+  \tRecompPrime{v}{p}{\cycleVertex{v'}}
+  &= \{(v, p, v')\}
+\end{align*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \section{Theorems}
+
+% \begin{definition}
+%   A graph $G$ is well sorted if
+%   $(p, \sort(k_2)) \in \arity(k_1)$
+%   for all $\e = (u, (u_1, k_1), p, (u_2, k_2))$ such that $G(\e) \neq \bot$.
+% \end{definition}
+
+% \begin{theorem}[exhaustiveness check]
+%   If a graph $G$ is well-sorted,
+%   then there exists a grove $\Grove$
+%   such that $\decomp(G) = \Grove$.
+% \end{theorem}
+
+% \begin{theorem}[every vertex is part of decomposition]
+%   For any well-sorted graph $G$,
+%   if $\decomp(G) = \Grove$,
+%   then $\vertexes(G) = \vertexes(\Grove)$.
+% \end{theorem}
+
+% \begin{theorem}[relationship between decomp and recomp]
+%   For any well-sorted graph $G$,
+%   if $\decomp(G) = \Grove$,
+%   then $\recomp(\Grove) = G$.
+% \end{theorem}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \end{document}

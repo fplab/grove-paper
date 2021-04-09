@@ -1,0 +1,225 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \figureDifferentParts
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newedge{DifferentPartsAlice}{L}
+\newvertex{DifferentPartsAlice}{u}
+\newedge{DifferentPartsBob}{R}
+\newvertex{DifferentPartsBob}{v}
+% \newcommand{\figureDifferentParts}{
+\newcommand{\figureDifferentPartsNestedParts}{
+\begin{figure}
+\begin{minipage}[t]{0.45\linewidth}
+%\hfill
+\hskip0.12\columnwidth
+%%%%%%%%
+\begin{subfigure}[t]{0.28\linewidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (-7.5em,0cm) node (node/Move/bx) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:Move:b}}}};
+\path (0cm,0cm) node (node/DifferentParts/a) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/Move/bx) to (-2em, 0cm |- node/DifferentParts/a);
+\end{tikzpicture}
+}%
+\label{fig:DifferentParts:a}
+\figureCode{\hole{} + u * y}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "\vWrapPlus" [> "\eWrapPlus"] -> {
+  {},
+  "\vSimpleTimes" [> "\eMoveTimes"] -> {
+    "\vDifferentPartsAlice" [> "\eDifferentPartsAlice"', >alice edge, alice node],
+    "\vSimpleY" [> "\eSimpleY"]
+  }
+  }
+ }
+};
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}[t]{0.28\linewidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,0cm) node (node/DifferentParts/b) [anchor=base] {\strut};
+\path [draw,->,bob step] (node/Move/bx) to [out=15,in=165,star] (-2em, 0cm |- node/DifferentParts/b);
+\end{tikzpicture}
+}%
+\label{fig:DifferentParts:b}
+\figureCode{\hole{} + \hole{} * v}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "\vWrapPlus" [> "\eWrapPlus"] -> {
+  {},
+  "\vSimpleTimes" [> "\eMoveTimes"] -> {
+    {},
+    "\vDifferentPartsBob" [> "\eDifferentPartsBob", >bob edge, bob node]
+  }
+  }
+ }
+};
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}[t]{0.28\linewidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,0cm) node (node/DifferentParts/c) [anchor=base] {\strut};
+\path [draw,->,merge step] (node/DifferentParts/a) to [out=15,in=165] (-2em, 0cm |- node/DifferentParts/c);
+\path [draw,->,merge step] (node/DifferentParts/b) to (-2em, 0cm |- node/DifferentParts/c);
+\end{tikzpicture}
+}%
+\label{fig:DifferentParts:c}
+\figureCode{\hole{} + u * v}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "\vWrapPlus" [> "\eWrapPlus"] -> {
+  {},
+  "\vSimpleTimes" [> "\eMoveTimes"] -> {
+    "\vDifferentPartsAlice" [> "\eDifferentPartsAlice"', >merge edge, merge node],
+    "\vDifferentPartsBob" [> "\eDifferentPartsBob", >merge edge, merge node]
+  }
+  }
+ }
+};
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill{}
+\caption{Example of Users Editing Different Parts of the Code.}%
+\label{fig:DifferentParts}
+\end{minipage}
+% \end{figure}
+% }
+%
+\hfil
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \figureCommutativity
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \newcommand{\figureCommutativity}{
+% \begin{figure}
+% \centering
+% \begin{figure}
+% \centering
+% \begin{tikzpicture}
+% \path (-3cm, 0cm) node (a) [align=center]       {Original \\ Version};
+% \path ( 0cm, 1cm) node (b) [align=center,alice node] {Alice's  \\ Version};
+% \path ( 0cm,-1cm) node (c) [align=center,bob node]   {Bob's    \\ Version};
+% \path ( 3cm, 0cm) node (d) [align=center]       {Combined \\ Version};
+% \path [draw,->,alice step] (a) -- node [pos=0.7,auto] {Alice's Edits} (b);
+% \path [draw,->,bob step]   (a) -- node [pos=0.7,auto,swap]      {Bob's Edits}   (c);
+% \path [draw,->,merge step] (b) -- node [pos=0.3,auto] {Sync} (d);
+% \path [draw,->,merge step] (c) -- node [pos=0.3,auto,swap]      {Sync} (d);
+% \end{tikzpicture}
+% \caption{TODO:Commutativity}
+% \label{fig:Commutativity}
+% \end{figure}
+% }
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \figureNestedParts
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newedge{NestedPartsAlice}{L}
+\newvertex{NestedPartsAlice}{w}
+\newedge{NestedPartsBob}{L}
+% \newcommand{\figureNestedParts}{
+% \begin{figure}
+\begin{minipage}[t]{0.45\linewidth}
+\hfill
+%\hskip0.12\columnwidth
+%%%%%%%%
+\begin{subfigure}[t]{0.25\linewidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,0cm) node (node/NestedParts/a) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/DifferentParts/c) to[star] (-2em, 0cm |- node/NestedParts/a);
+\end{tikzpicture}
+}%
+\label{fig:NestedParts:a}
+\figureCode{\hole{} + w * v}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "\vWrapPlus" [> "\eWrapPlus"] -> {
+   {},
+   "\vSimpleTimes" [> "\eMoveTimes"] -> {
+    "\vNestedPartsAlice" [> "\eNestedPartsAlice"', >alice edge, alice node],
+    "\vDifferentPartsBob" [> "\eDifferentPartsBob"]
+   }
+  }
+ }
+};
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}[t]{0.25\linewidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,0cm) node (node/NestedParts/b) [anchor=base] {\strut};
+\path [draw,->,bob step] (node/DifferentParts/c) to [out=15,in=165,star] (-2em, 0cm |- node/NestedParts/b);
+\end{tikzpicture}
+}%
+\label{fig:NestedParts:b}
+\figureCode{u * v + \hole{}}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "\vWrapPlus" [> "\eWrapPlus"] -> {
+   "\vSimpleTimes" [> "\eNestedPartsBob"', >bob edge] -> {
+    "\vDifferentPartsAlice" [> "\eDifferentPartsAlice"'],
+    "\vDifferentPartsBob" [> "\eDifferentPartsBob"]
+   },
+   {}
+  }
+ }
+};
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}[t]{0.25\linewidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,0cm) node (node/NestedParts/c) [anchor=base] {\strut};
+\path [draw,->,merge step] (node/NestedParts/a) to [out=15,in=165] (-2em, 0cm |- node/NestedParts/c);
+\path [draw,->,merge step] (node/NestedParts/b) to [out=15,in=165] (-2em, 0cm |- node/NestedParts/c);
+\end{tikzpicture}
+}%
+\label{fig:NestedParts:c}
+\figureCode{w * v + \hole{}}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "\vWrapPlus" [> "\eWrapPlus"] -> {
+   "\vSimpleTimes" [> "\eNestedPartsBob"', >merge edge] -> {
+    "\vNestedPartsAlice" [> "\eNestedPartsAlice"', >merge edge, merge node],
+    "\vDifferentPartsBob" [> "\eDifferentPartsBob"]
+   },
+   {}
+  }
+ }
+};
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill{}
+\caption{Example of Users Editing Nested Parts of the Code.}%
+\label{fig:NestedParts}
+\end{minipage}
+\end{figure}
+}

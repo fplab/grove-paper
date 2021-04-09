@@ -1,0 +1,168 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \figureWrap
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newedge{WrapPlus}{Root}
+\newvertex{WrapPlus}{+}
+\newedge{WrapTimes}{L}
+\newcommand{\figureWrapMove}{
+\begin{figure}
+\centering
+\begin{minipage}[t]{.45\linewidth}
+\hskip0.12\columnwidth
+%%%%%%%%
+\begin{subfigure}[t]{0.28\linewidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (-7.5em,0cm) node (node/Simple/cx) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:Simple:c}}}};
+%%%%
+\path (0cm,0cm) node (node/Wrap/a) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/Simple/cx) to (-2em, 0cm |- node/Wrap/a);
+\end{tikzpicture}
+}%
+\label{fig:Wrap:a}
+\figureCode{\hole{}}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style]
+};
+\path (0cm,-1.7cm) graph[graph style] {
+ "\vSimpleTimes" -> {
+  {},
+  "\vSimpleY" [> "\eSimpleY"]
+ }
+};
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}[t]{0.28\linewidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,0cm) node (node/Wrap/b) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/Wrap/a) to (-2em, 0cm |- node/Wrap/b);
+\end{tikzpicture}
+}%
+\label{fig:Wrap:b}
+\figureCode{\hole{} + \hole{}}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "\vWrapPlus" [> "\eWrapPlus", >alice edge, alice node]
+ }
+};
+\path (0cm,-1.7cm) graph[graph style] {
+ "\vSimpleTimes" -> {
+  {},
+  "\vSimpleY" [> "\eSimpleY"]
+ }
+};
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}[t]{0.28\linewidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,0cm) node (node/Wrap/c) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/Wrap/b) to (-2em, 0cm |- node/Wrap/c);
+\end{tikzpicture}
+}%
+\label{fig:Wrap:c}
+\figureCode{\hole{} * y + \hole{}}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "\vWrapPlus" [> "\eWrapPlus"] -> {
+   "\vSimpleTimes" [> "\eWrapTimes"', >alice edge] -> {
+    {},
+    "\vSimpleY" [> "\eSimpleY"]
+   },
+   {}
+  }
+ }
+};
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill{}
+\caption{Example of Wrapping.  (Note that this figure omits the orphaned \vSimpleX{} since it is no longer relevant to the narrative of this paper.)}%
+\label{fig:Wrap}
+\end{minipage}
+% \end{figure}
+% }
+%
+\hfil
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \figureMove
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newedge{MoveTimes}{R}
+% \newcommand{\figureMove}{
+% \begin{figure}[H]
+\begin{minipage}[t]{.45\linewidth}
+\hfill
+%\hskip0.12\columnwidth
+%%%%%%%%
+\begin{subfigure}[t]{0.43\linewidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,0cm) node (node/Move/a) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/Wrap/c) to (-2em, 0cm |- node/Move/a);
+\end{tikzpicture}
+}%
+\label{fig:Move:a}
+\figureCode{\hole{} + \hole{}}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "\vWrapPlus" [> "\eWrapPlus"]
+ }
+};
+\path (0cm,-1.7cm) graph [graph style] {
+ "\vSimpleTimes" -> {
+  {},
+  "\vSimpleY" [> "\eSimpleY"]
+ }
+};
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}[t]{0.43\linewidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,0cm) node (node/Move/b) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/Move/a) to (-2em, 0cm |- node/Move/b);
+\end{tikzpicture}
+}%
+\label{fig:Move:b}
+\figureCode{\hole{} + \hole{} * y}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "\vWrapPlus" [> "\eWrapPlus"] -> {
+   {},
+   "\vSimpleTimes" [> "\eMoveTimes", >alice edge] -> {
+    {},
+    "\vSimpleY" [> "\eSimpleY"]
+   }
+  }
+ }
+};
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill{}
+\caption{Example of Repositioning Code.}%
+\label{fig:Move}
+\end{minipage}
+\end{figure}
+}

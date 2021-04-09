@@ -1,0 +1,153 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \figureCycle
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newedge{MultiCycleTimes}{L}
+\newvertex{MultiCycleTimes}{*}
+\newedge{MultiCyclePlus}{R}
+\newvertex{MultiCyclePlus}{+}
+\newedge{MultiCycleAliceTimes}{R}
+\newedge{MultiCycleAlicePlus}{L}
+\newedge{MultiCycleBobPlus}{R}
+\newedge{MultiCycleBobTimes}{L}
+\newcommand{\figureCycle}{
+\begin{figure*}
+%\hfill
+\hskip0.07\columnwidth
+%%%%%%%%
+\begin{subfigure}[t]{0.2\textwidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (-9em,0cm) node (node/MultiParent/ex) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:MultiParent:e}}}};
+%%%%
+\path (0cm,0cm) node (node/Cycle/a) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/MultiParent/ex) to[star] (-2em, 0cm |- node/Cycle/a);
+\end{tikzpicture}
+}%
+\label{fig:Cycle:a}
+\figureCode{\parens{\hole{} * \hole{}} * \parens{\hole{} + \hole{}} + \hole{}%
+  \otherVertexVskip\phantom{\multiVertex{30} = \multiVertex{32} * \hole{}}%
+  \\\phantom{\multiVertex{32} = \multiVertex{30} * \hole{}}}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "\vWrapPlus" [> "\eWrapPlus"] -> {
+   "\vSimpleTimes" [> "\eNestedPartsBob"'] -> {
+    "\vMultiCycleTimes" [> "\eMultiCycleTimes"', >alice edge, alice node],
+    "\vMultiCyclePlus" [> "\eMultiCyclePlus", >alice edge, alice node]
+   },
+   {}
+  }
+ }
+};
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}[t]{0.2\textwidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,0cm) node (node/Cycle/b) [anchor=base] {\strut};
+\path [draw,->,alice step] (node/Cycle/a) to[star] (-2em, 0cm |- node/Cycle/b);
+\end{tikzpicture}
+}%
+\label{fig:Cycle:b}
+\figureCode{\hole{} * \hole{} + \parens{\hole{} + \hole{}} * \hole{}%
+  \otherVertexVskip\phantom{\multiVertex{30} = \multiVertex{32} * \hole{}}%
+  \\\phantom{\multiVertex{32} = \multiVertex{30} * \hole{}}}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "\vWrapPlus" [> "\eWrapPlus"] -> {
+   "\vSimpleTimes" [> "\eNestedPartsBob"'] -> {
+   },
+   {
+    "\vMultiCycleTimes" [> "\eMultiCycleAliceTimes", >alice edge, alice node] -> {
+     "\vMultiCyclePlus" [> "\eMultiCycleAlicePlus"', >alice edge, alice node],
+     {}
+    }
+   }
+  }
+ }
+};
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}[t]{0.2\textwidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,0cm) node (node/Cycle/c) [anchor=base] {\strut};
+\path [draw,->,bob step] (node/Cycle/a) to[out=15,in=165,star] (-2em, 0cm |- node/Cycle/c);
+\end{tikzpicture}
+}%
+\label{fig:Cycle:c}
+\figureCode{\hole{} * \hole{} + \parens{\hole{} * \hole{} + \hole{}}%
+  \otherVertexVskip\phantom{\multiVertex{30} = \multiVertex{32} * \hole{}}%
+  \\\phantom{\multiVertex{32} = \multiVertex{30} * \hole{}}}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "\vWrapPlus" [> "\eWrapPlus"] -> {
+   "\vSimpleTimes" [> "\eNestedPartsBob"'] -> {
+   },
+   {
+    "\vMultiCyclePlus" [> "\eMultiCycleBobPlus", >bob edge, bob node] -> {
+     "\vMultiCycleTimes" [> "\eMultiCycleBobTimes"', >bob edge, bob node],
+     {}
+    }
+   }
+  }
+ }
+};
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+\hfill
+%%%%%%%%
+\begin{subfigure}[t]{0.2\textwidth}
+\centering
+\caption{
+\begin{tikzpicture}[remember picture, overlay]
+\path (0cm,0cm) node (node/Cycle/d) [anchor=base] {\strut};
+\path [draw,->,merge step] (node/Cycle/b) to[out=15,in=165] (-2em, 0cm |- node/Cycle/d);
+\path [draw,->,merge step] (node/Cycle/c) to (-2em, 0cm |- node/Cycle/d);
+\end{tikzpicture}
+}%
+\label{fig:Cycle:d}
+\figureCode{\parens{\hole{} * \hole{}} + \conflictHole{\multiVertex{30},\multiVertex{32}}%
+  \otherVertexVskip\multiVertex{30} = \multiVertex{32} * \hole{}%
+  \\\multiVertex{32} = \multiVertex{30} * \hole{}}%
+\begin{tikzpicture}
+\path (0cm,0cm) graph[graph style] {
+ root[root style] -> {
+  "\vWrapPlus" [> "\eWrapPlus"] -> {
+   "\vSimpleTimes" [> "\eNestedPartsBob"'anchor=-15] -> {
+   },
+   v1/"\vMultiCycleTimes" [> "\eMultiCycleAliceTimes"anchor=155, >merge edge, merge node],
+   {},
+   v2/"\vMultiCyclePlus" [> "\eMultiCycleBobPlus"anchor=-165, >merge edge, merge node]
+  }
+ }
+};
+\path[draw,-{>[bend]},merge edge] (v1) to ["\eMultiCycleAlicePlus"anchor=south,out=-60,in=-120] (v2);
+\path[draw,-{>[bend]},merge edge] (v2) to ["\eMultiCycleBobTimes"anchor=north,out=-90,in=-90] (v1);
+\end{tikzpicture}
+\end{subfigure}
+%%%%%%%%
+%\hfill{}
+\caption{Example of Cycles.}
+% TODO replace screenshots with text
+% TODO make ref code gray
+% TODO move whole figure left
+% TODO remove cursor from screenshots
+% TODO add multiparent box
+% TODO only show parens where needed - figure 10, 11 - by associativity
+% TODO repplace cycle screenshot with cycles box %
+\label{fig:Cycle}
+\end{figure*}
+}

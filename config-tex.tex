@@ -1,0 +1,51 @@
+%%%%%%%%
+
+\renewcommand{\topfraction}{1} % Allow floats to take up the page
+\renewcommand{\textfraction}{0}
+
+%%%%%%%%
+% \autoref from hyperref
+\renewcommand{\AMSautorefname}          {Equation}
+\renewcommand{\appendixautorefname}     {Appendix}
+\renewcommand{\chapterautorefname}      {Chapter}
+\renewcommand{\equationautorefname}     {Equation}
+\renewcommand{\FancyVerbLineautorefname}{Line}
+\renewcommand{\figureautorefname}       {Figure}
+\renewcommand{\footnoteautorefname}     {Footnote}
+\renewcommand{\Hfootnoteautorefname}    {Footnote}
+\renewcommand{\itemautorefname}         {Item}
+\renewcommand{\Itemautorefname}         {Item}
+\renewcommand{\pageautorefname}         {Page}
+\renewcommand{\paragraphautorefname}    {Section}
+\renewcommand{\partautorefname}         {Part}
+\renewcommand{\sectionautorefname}      {Section}
+\renewcommand{\subparagraphautorefname} {Section}
+\renewcommand{\subsectionautorefname}   {Section}
+\renewcommand{\subsubsectionautorefname}{Section}
+\renewcommand{\tableautorefname}        {Table}
+\renewcommand{\theoremautorefname}      {Theorem}
+
+%% Packages
+\usepackage{booktabs}
+\usepackage[rule=false]{subcaption}
+\usepackage{graphicx}
+% \usepackage{semantic}
+\let\colonapprox\undefined % Avoid redefinition error in `colonequals`
+\let\colonsim\undefined % Avoid redefinition error in `colonequals`
+\usepackage{colonequals}
+% \usepackage{mathpartir}
+\usepackage{stmaryrd}
+\usepackage{fontawesome}
+\usepackage{array}
+\usepackage{todonotes}
+% \usepackage[ruled]{algorithm2e}
+
+% Load MnSymbol without clobbering \ast
+% See https://tex.stackexchange.com/a/269691
+\usepackage{amsmath}% needed before mathabx
+\let\amsast=\ast
+\usepackage[matha]{mathabx}% needed to prevent \ast getting clobbered
+\let\abxast=\ast
+\usepackage{MnSymbol}
+\let\mnast=\ast
+\let\ast=\abxast

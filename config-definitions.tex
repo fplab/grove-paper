@@ -1,0 +1,153 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Language Components
+
+\usepackage{xstring}
+
+% \selectcolormodel{gray}
+
+% notation
+\def\_{\texttt{\textunderscore}}
+\newcommand{\id}[1]{\textcolor{gray}{\ensuremath{#1}}}
+\newcommand{\abs}[1]{\left\lvert#1\right\rvert}
+
+\newcommand{\figureCode}[1]{\textbf{\texttt{#1}}\vskip1em}
+
+\newcommand\SuchThat{\;|\;}
+\newcommand\SetOf[1]{\left\{#1\right\}}
+
+% sets
+\def\A{\mathcal{A}}
+\def\E{\mathcal{E}}
+\def\G{\mathcal{G}}
+\def\I{\mathcal{I}}
+\def\K{\mathcal{K}}
+\def\P{\mathcal{P}}
+\def\S{\mathcal{S}}
+\def\U{\mathcal{U}}
+\def\V{\mathcal{V}}
+\def\e{\varepsilon}
+\def\AA{\textbf{A}}
+\def\EE{\textbf{E}}
+
+% Sorts
+\newcommand\Exp{\mathsf{Exp}}
+\newcommand\Pat{\mathsf{Pat}}
+\newcommand\Typ{\mathsf{Typ}}
+
+% objects
+\def\e{\varepsilon}
+\def\Grove{\mathcal{G}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Graphs
+
+\newcommand{\Edge}[1]{Edge~#1}
+\newcommand{\Vertex}[1]{Vertex~#1}
+\newcommand{\multiVertex}[1]{\textcolor{red}{\ensuremath{\curlyveedownarrow_{#1}}}}
+\newcommand{\cycleVertex}[1]{\textcolor{red}{\ensuremath{\rcirclearrowleft_{#1}}}}
+\newcommand{\orphanVertex}[1]{\textcolor{red}{\ensuremath{\mathbf{\ndownarrow_{#1}}}}}
+\newcommand{\parens}[1]{\textcolor{gray}{(}#1\textcolor{gray}{)}}
+\newcommand{\otherVertexVskip}{\vskip0.5em}
+
+% Constructors
+\newcommand\ExpVar{\mathsf{Exp\_var}}
+\newcommand\ExpLam{\mathsf{Exp\_lam}}
+\newcommand\ExpApp{\mathsf{Exp\_app}}
+\newcommand\ExpNum{\mathsf{Exp\_num}}
+\newcommand\ExpPlus{\mathsf{Exp\_plus}}
+\newcommand\ExpTimes{\mathsf{Exp\_times}}
+\newcommand\PatVar{\mathsf{Pat\_var}}
+\newcommand\TypNum{\mathsf{Typ\_num}}
+\newcommand\TypArrow{\mathsf{Typ\_arrow}}
+
+% Positions
+\newcommand\Root{\mathsf{Root}}
+\newcommand\LamParam{\mathsf{Param}}
+\newcommand\LamType{\mathsf{Type}}
+\newcommand\LamBody{\mathsf{Body}}
+\newcommand\AppFun{\mathsf{Fun}}
+\newcommand\AppArg{\mathsf{Arg}}
+\newcommand\PlusLeft{\mathsf{Left}}
+\newcommand\PlusRight{\mathsf{Right}}
+\newcommand\TimesLeft{\mathsf{Left}}
+\newcommand\TimesRight{\mathsf{Right}}
+\newcommand\ArrowArg{\mathsf{Arg}}
+\newcommand\ArrowResult{\mathsf{Result}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Terms
+
+\newcommand{\varExp}[2]{#1^{#2}}
+\newcommand{\numExp}[2]{\underline{#1}^{#2}}
+\newcommand{\lamExp}[4]{\lambda^{#1} #2 : #3.#4}
+\newcommand{\appExp}[3]{\left(#1~#2\right)^{#3}}
+\newcommand{\plusExp}[3]{#1 +^{#2} #3}
+\newcommand{\varPat}[2]{#1^{#2}}
+\newcommand{\arrowTyp}[3]{#1 \to^{#2} #3}
+\newcommand{\numTyp}[1]{Num^{#1}}
+\newcommand{\hole}{\ensuremath{\square}} %\textcolor{violet}{\llparenthesis}}\textcolor{violet}{\rrparenthesis}}
+\newcommand{\conflictHole}[1]{%
+{\noexpandarg\StrSubstitute{#1}{,}{\textcolor{red}{\;\textbf{|}\;}}[\myargs]%
+{\textcolor{red}{\textbf{\{}}\myargs\textcolor{red}{\textbf{\}}}}}}%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Recomposition
+
+\DeclareMathOperator{\recompOp}{\texttt{recomp}}
+\newcommand{\recomp}[1]{\recompOp\mathopen{}\left(#1\right)\mathclose{}}
+
+\DeclareMathOperator{\recompPlusOp}{\texttt{recomp}^{+}}
+\newcommand{\recompPlus}[1]{\recompPlusOp\mathopen{}\left(#1\right)\mathclose{}}
+
+\DeclareMathOperator{\eRecompPlusOp}{\texttt{recomp}_\Exp^{+}}
+\DeclareMathOperator{\qRecompPlusOp}{\texttt{recomp}_\Pat^{+}}
+\DeclareMathOperator{\tRecompPlusOp}{\texttt{recomp}_\Typ^{+}}
+
+\newcommand{\eRecompPlus}[1]{\eRecompPlusOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\qRecompPlus}[1]{\qRecompPlusOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\tRecompPlus}[1]{\tRecompPlusOp\mathopen{}\left(#1\right)\mathclose{}}
+
+\DeclareMathOperator{\eRecompPrimeOp}{\texttt{recomp}_\Exp^\prime}
+\DeclareMathOperator{\qRecompPrimeOp}{\texttt{recomp}_\Pat^\prime}
+\DeclareMathOperator{\tRecompPrimeOp}{\texttt{recomp}_\Typ^\prime}
+
+\newcommand{\eRecompPrime}[3]{\eRecompPrimeOp\mathopen{}\left(#1, #2, #3\right)\mathclose{}}
+\newcommand{\qRecompPrime}[3]{\qRecompPrimeOp\mathopen{}\left(#1, #2, #3\right)\mathclose{}}
+\newcommand{\tRecompPrime}[3]{\tRecompPrimeOp\mathopen{}\left(#1, #2, #3\right)\mathclose{}}
+
+% % \newcommand{\eRecompPrime}[3]{\{(#1, #2, v')\;|\;v' \in \rootVertices{#3}\}}
+% % \newcommand{\qRecompPrime}[3]{\{(#1, #2, v')\;|\;v' \in \rootVertices{#3}\}}
+% % \newcommand{\tRecompPrime}[3]{\{(#1, #2, v')\;|\;v' \in \rootVertices{#3}\}}
+
+% \DeclareMathOperator{\rootVerticesOp}{\texttt{rootVertices}}
+% \newcommand{\rootVertices}[1]{\rootVerticesOp\mathopen{}\left(#1\right)\mathclose{}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% actions
+\def\Create{\text{Create}}
+\def\Destroy{\text{Destroy}}
+\def\Down{\text{Down}}
+\def\Enqueue{\text{Enqueue}}
+\def\Left{\text{Left}}
+\def\Move{\text{Move}}
+\def\Num{\text{Num}}
+\def\Restore{\text{Restore}}
+\def\Right{\text{Right}}
+\def\Select{\text{Select}}
+\def\Send{\text{Send}}
+\def\Up{\text{Up}}
+
+% relations
+\DeclareMathOperator{\sort}{\text{sort}}
+\DeclareMathOperator{\arity}{\text{arity}}
+
+% graph decomposition operators
+\DeclareMathOperator{\expr}{\text{expr}}
+\DeclareMathOperator{\patt}{\text{patt}}
+\DeclareMathOperator{\type}{\text{type}}
+\DeclareMathOperator{\parents}{\text{parents}}
+\DeclareMathOperator{\ancestors}{\text{ancestors}}
+\DeclareMathOperator{\vertices}{\text{vertices}}
+\DeclareMathOperator{\children}{\text{children}}
+\DeclareMathOperator{\lfp}{\text{lfp}}

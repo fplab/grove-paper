@@ -1,0 +1,36 @@
+% Define outline versions of + and -
+\def\outlinepad{0.4pt}
+\def\outlinestroke{0.4pt}
+\newcommand{\Plus}{\mathord{
+\begin{tikzpicture}[anchor=base, baseline]
+%\node at (0,0) {+};
+\path[draw, line width=\outlinestroke]
+   ( 0.333em+\outlinestroke/2+\outlinepad,  0.270em+\outlinestroke/2+\outlinepad)
+ --( 0.333em+\outlinestroke/2+\outlinepad,  0.229em-\outlinestroke/2-\outlinepad)
+ --( 0.021em+\outlinestroke/2+\outlinepad,  0.229em-\outlinestroke/2-\outlinepad)
+ --( 0.021em+\outlinestroke/2+\outlinepad, -0.084em-\outlinestroke/2-\outlinepad)
+ --(-0.020em-\outlinestroke/2-\outlinepad, -0.084em-\outlinestroke/2-\outlinepad)
+ --(-0.020em-\outlinestroke/2-\outlinepad,  0.229em-\outlinestroke/2-\outlinepad)
+ --(-0.333em-\outlinestroke/2-\outlinepad,  0.229em-\outlinestroke/2-\outlinepad)
+ --(-0.333em-\outlinestroke/2-\outlinepad,  0.270em+\outlinestroke/2+\outlinepad)
+ --(-0.020em-\outlinestroke/2-\outlinepad,  0.270em+\outlinestroke/2+\outlinepad)
+ --(-0.020em-\outlinestroke/2-\outlinepad,  0.583em+\outlinestroke/2+\outlinepad)
+ --( 0.021em+\outlinestroke/2+\outlinepad,  0.583em+\outlinestroke/2+\outlinepad)
+ --( 0.021em+\outlinestroke/2+\outlinepad,  0.270em+\outlinestroke/2+\outlinepad)
+ --cycle
+ ;
+\end{tikzpicture}
+}}
+
+\newcommand{\Minus}{\mathord{
+\begin{tikzpicture}[anchor=base, baseline]
+%\node at (0,0) {$-$};
+\path[draw, line width=\outlinestroke]
+   ( 0.306em+\outlinestroke/2+\outlinepad,  0.270em+\outlinestroke/2+\outlinepad)
+ --( 0.306em+\outlinestroke/2+\outlinepad,  0.229em-\outlinestroke/2-\outlinepad)
+ --(-0.306em-\outlinestroke/2-\outlinepad,  0.229em-\outlinestroke/2-\outlinepad)
+ --(-0.306em-\outlinestroke/2-\outlinepad,  0.270em+\outlinestroke/2+\outlinepad)
+ --cycle
+ ;
+\end{tikzpicture}
+}}

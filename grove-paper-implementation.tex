@@ -1,0 +1,109 @@
+
+\section{Implementation}%
+\label{sec:Implementation}
+
+% TODO: talk about code generation somewhere in here
+
+% TODO: talk about:
+% - decomp vertex set generation and unicycle traversal
+% - how to choose which branch of expr' to take
+% - lfp(ancestors') and min of it
+
+% TODO: can we save any of this in a README or code comments?
+
+% TODO: talk about performance: O(decomp) given "size of the graph" (probably linear in # edges)
+
+% GRV -- how it is implemented, how it connects to the formalism, describe the graph,
+
+We implemented the core Grove calculus of \autoref{sec:Formalism} as an OCaml library.
+Our code is parameterized by a syntax specification for expressions that we generate automatically, which makes the implemented language of expressions easier to modify or replace.
+We also built a Web browser-based Grove editor as a proof of concept.
+
+Since we cannot implement an infinite mapping directly, the graph is a data structure, \texttt{Graph.t}, that maps from edges to the edge states $\left\{\Plus, \Minus\right\}$.
+We do not represent edges that map to $\bot$.
+
+% TODO: rename Decomposition.ml to Grove.ml
+
+There's a function \verb!decompose! of type \verb!Graph.t) : t * Edge.Set.t Vertex.Map.t! that 
+
+From this graph, we compute the set of all edges and the set of live edges with a linear scan.
+
+% TODO: make this into a listing
+
+\begin{verbatim}
+  Graph.edges : Graph.t -> Edge.Set.t
+  Graph.live_edges : Graph.t -> Edge.Set.t
+\end{verbatim}
+
+% TODO: keep connecting the code to the formalism like this
+
+These vertices are partitioned into three sets: multi-parented, single-parented, or orphaned.
+A vertex $v$ is considered a parent of another vertex $v'$ if there is a live edge from $v$ to $v'$.
+
+For each vertex, we take the parent and child edge sets.
+
+% TODO: fix the formalism for parents (to work with edges instead of vertices) and then check that it matches the implementation. Try renaming parents to vparents and adding parents for edges.
+
+% TODO: Talk about how the graph is implemented (not as an actual function, but as a map from edges to edge states) so that we can denote the set of created + deleted edges clearly, as well as all of the vertices that have ever been created.
+
+For a graph $G : \E \to \Sigma$ where $\E = \U \times \V \times \P \times \V$, our graph decomposition algorithm runs in $O(\abs{\V} \log \abs{\V} + \abs{\E} \log \abs{\V})$.
+It begins with a scan of all edges that have been created or deleted $O(\abs{\E})$.
+Their vertices at both ends are partitioned into three sets: multi-parented, single-parented, or orphaned.
+Their relationships are recorded in maps for $O(\log \abs{\V})$ lookups of parent and child edge sets.
+After the vertices have been partitioned, we traverse the various single-parented components and produce equivalent expressions $O(\abs{\V})$.
+For unicycles, we traverse backwards until a vertex is seen twice $O(\abs{\V})$, then proceed forward to find the least vertex on the cycle $O(\abs{\V})$.
+
+% TODO: is this still a thing?
+% Compared to the core language, our implementation lacks support for lists and case expressions.
+
+Optimizations: least fixed point
+
+
+We determine $e$ by starting at the root of the graph and including every connected
+vertex that has a single parent. In positions where there are no children, we
+leave an empty hole $\hole$. In positions where there are multiple children, we
+leave a conflict hole of the form $\conflictHole{e_1,\ldots,e_n}$. Whenever we
+encounter a vertex with multiple parents, we add its corresponding expression to
+the second component $MP$ and leave an indirect reference $\multiVertex{u}$, where $u$ is
+the unique identifier of the referenced vertex
+
+% here are some properties that show how to get one from the other, and to/from
+% graph
+
+algorithmic section: if we want to implement these conversions, here are the
+steps (without introducing new concepts):
+
+- linear scan
+- breaking out roots
+- ...
+
+Graph decomposition occurs in three steps.
+
+
+
+% TODO: use code generation instead: have Lang.ml generate expr / expr' / ... for us; then we don't need this figure.
+% TODO: maybe show this figure and say that it's possible to handle generically without code generation
+
+% \begin{figure}
+%   \[
+%     \arraycolsep=0pt
+%     \begin{array}{lrlll}
+%       \textrm{Trees:\qquad}  & t & {}\in Tree & {}::={} & \textrm{Vertex}(v, m) \mid \textrm{Ref}(v) \\
+%       \textrm{Maps:}         & m & {}\in Map & {}::={} & \varnothing \mid p \mapsto [(\e, t), \ldots, (\e, t)]; m \\
+%     \end{array}
+%   \]
+%   \caption{Syntax of graph decomposition trees as a grammar.}
+%   \label{fig:Syntax of graph decomposition trees}
+% \end{figure}
+
+
+lemma: a unicycle is a cycle with trees hanging off of it
+
+lemma: unicycle traversal always produces a valid tree
+
+Unicycular graph traversal occurs in two directions. A vertex is chosen as an arbitrary
+starting point and its parents are traversed and marked as seen. Any vertex that
+has been seen twice must be on the cycle. We take the first one as the root of
+the unicycle and traverse its children to produce a tree that covers the unicycular graph.
+Any remaining single-parented vertices must be parts of other unicycular graphs and are
+unicycle-traversed until there are no more single-parented vertices left.

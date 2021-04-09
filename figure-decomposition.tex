@@ -1,0 +1,64 @@
+\newvertex{DecompPlusA}{+}
+\newedge{DecompTimesA}{L}
+\newvertex{DecompTimesA}{*}
+\newedge{DecompPlusAX}{R}
+\newvertex{DecompX}{x}
+\newedge{DecompTimesAX}{R}
+%
+\newedge{DecompPlusB}{L}
+\newvertex{DecompPlusB}{+}
+\newedge{DecompTimesB}{R}
+\newvertex{DecompTimesB}{*}
+\newedge{DecompY}{R}
+\newvertex{DecompY}{y}
+\newedge{DecompZ}{R}
+\newvertex{DecompZ}{z}
+%
+\newedge{DecompTimes}{L}
+%
+\newcommand{\figureDecompExample}{
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.5\textwidth}
+    \centering
+    \begin{tikzpicture}
+      \path (0cm,0cm) graph[graph style] {
+        root[root style] -> {
+        a/{\vDecompPlusA} [> "\eSimpleTimes"] -> {
+          "\vDecompTimesA" [> "\eDecompTimesA"'] -> {
+          {},
+          b/"\vDecompX" [> "\eDecompTimesAX"']
+          },
+          {}
+        }
+        },
+      };
+      \path [draw,->] (a) to ["\eDecompPlusAX",out=-60,in=60] (b);
+      %
+      \path (2cm,-0.85cm) graph[graph style] { plus/"\vDecompPlusB" };
+      \path (3cm,-0.85cm) graph[graph style] { times/"\vDecompTimesB" };
+      \path (3.25cm,-1.75cm) graph[graph style] { y/"\vDecompY" };
+      \path[draw,->] (times) to ["\eDecompPlusB"'anchor=north,out=-135,in=-45] (plus);
+      \path[draw,->] (plus) to ["\eDecompTimesB"anchor=south,out=45,in=135] (times);
+      \path[draw,->] (times) to ["\eDecompY"anchor=west] (y);
+      %
+      \path (1.55cm,-2.1cm) graph[graph style] { plus/"\vDecompZ" };
+    \end{tikzpicture}
+    \caption{subcaption 1 goes here}%
+    \label{fig:Decomposition example graph}
+  \end{subfigure}%
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \begin{align*}
+      e_r &= \hole~\texttt{*}^{\id{40}}~\multiVertex{42}~\texttt{+}^{\id{38}}~\multiVertex{42} \\
+      NP &= \{e_r, z^{\id{52}}\} \\
+      MP &= \{x^{\id{42}}\} \\
+      U &= \{\hole~\texttt{+}^{\id{46}}~\cycleVertex{46}~\texttt{*}^{\id{48}}~y^{\id{50}}\} \\
+    \end{align*}
+    \caption{subcaption 2 goes here}%
+    \label{fig:Decomposition example grove}
+  \end{subfigure}
+  \caption{Main caption goes here}%
+  \label{fig:Decomposition example}
+\end{figure}
+}
