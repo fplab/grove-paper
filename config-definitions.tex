@@ -12,8 +12,8 @@
 
 \newcommand{\figureCode}[1]{\textbf{\texttt{#1}}\vskip1em}
 
-\newcommand\SuchThat{\;|\;}
 \newcommand\SetOf[1]{\left\{#1\right\}}
+\newcommand\SuchThat[1]{\;\mathopen{}\left|\;#1\right.\mathclose{}}
 
 % sets
 \def\A{\mathcal{A}}
@@ -93,34 +93,23 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Recomposition
 
-\DeclareMathOperator{\recompOp}{\texttt{recomp}}
-\newcommand{\recomp}[1]{\recompOp\mathopen{}\left(#1\right)\mathclose{}}
-
 \DeclareMathOperator{\recompPlusOp}{\texttt{recomp}^{+}}
 \newcommand{\recompPlus}[1]{\recompPlusOp\mathopen{}\left(#1\right)\mathclose{}}
 
-\DeclareMathOperator{\eRecompPlusOp}{\texttt{recomp}_\Exp^{+}}
-\DeclareMathOperator{\qRecompPlusOp}{\texttt{recomp}_\Pat^{+}}
-\DeclareMathOperator{\tRecompPlusOp}{\texttt{recomp}_\Typ^{+}}
-
-\newcommand{\eRecompPlus}[1]{\eRecompPlusOp\mathopen{}\left(#1\right)\mathclose{}}
-\newcommand{\qRecompPlus}[1]{\qRecompPlusOp\mathopen{}\left(#1\right)\mathclose{}}
-\newcommand{\tRecompPlus}[1]{\tRecompPlusOp\mathopen{}\left(#1\right)\mathclose{}}
-
-\DeclareMathOperator{\eRecompPrimeOp}{\texttt{recomp}_\Exp^\prime}
-\DeclareMathOperator{\qRecompPrimeOp}{\texttt{recomp}_\Pat^\prime}
-\DeclareMathOperator{\tRecompPrimeOp}{\texttt{recomp}_\Typ^\prime}
-
-\newcommand{\eRecompPrime}[3]{\eRecompPrimeOp\mathopen{}\left(#1, #2, #3\right)\mathclose{}}
-\newcommand{\qRecompPrime}[3]{\qRecompPrimeOp\mathopen{}\left(#1, #2, #3\right)\mathclose{}}
-\newcommand{\tRecompPrime}[3]{\tRecompPrimeOp\mathopen{}\left(#1, #2, #3\right)\mathclose{}}
-
-% % \newcommand{\eRecompPrime}[3]{\{(#1, #2, v')\;|\;v' \in \rootVertices{#3}\}}
-% % \newcommand{\qRecompPrime}[3]{\{(#1, #2, v')\;|\;v' \in \rootVertices{#3}\}}
-% % \newcommand{\tRecompPrime}[3]{\{(#1, #2, v')\;|\;v' \in \rootVertices{#3}\}}
-
-% \DeclareMathOperator{\rootVerticesOp}{\texttt{rootVertices}}
-% \newcommand{\rootVertices}[1]{\rootVerticesOp\mathopen{}\left(#1\right)\mathclose{}}
+\DeclareMathOperator{\recompOp}{\texttt{recomp}}
+\DeclareMathOperator{\erecompOp}{\texttt{erecomp}}
+\DeclareMathOperator{\precompOp}{\texttt{precomp}}
+\DeclareMathOperator{\trecompOp}{\texttt{trecomp}}
+\DeclareMathOperator{\erecompPrimeOp}{\erecompOp^\prime}
+\DeclareMathOperator{\precompPrimeOp}{\precompOp^\prime}
+\DeclareMathOperator{\trecompPrimeOp}{\trecompOp^\prime}
+\newcommand{\recomp}[1]{\recompOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\erecomp}[1]{\erecompOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\precomp}[1]{\precompOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\trecomp}[1]{\trecompOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\erecompPrime}[3]{\erecompPrimeOp\mathopen{}\left(#1, #2, #3\right)\mathclose{}}
+\newcommand{\precompPrime}[3]{\precompPrimeOp\mathopen{}\left(#1, #2, #3\right)\mathclose{}}
+\newcommand{\trecompPrime}[3]{\trecompPrimeOp\mathopen{}\left(#1, #2, #3\right)\mathclose{}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

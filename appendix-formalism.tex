@@ -1,152 +1,161 @@
 
 \section{Recomposition}
 
+$\boxed{\recompPlus{\Grove} = G}$
+%
+\begin{align*}
+  \recompPlus{(MP, NP, U)} &= \SetOf{\e \mapsto \Plus \SuchThat{\e \in \bigcup_{e \in MP \cup NP \cup U} \erecomp{e}}}
+\end{align*}
+
+\noindent $\boxed{\erecomp{e} \subset \E}$
+%
+\begin{align*}
+  \erecomp{\varExp{x}{u}} &= \{\}
+  \\
+  \erecomp{\numExp{n}{u}} &= \{\}
+  \\
+  \erecomp{\appExp{e_\AppFun}{e_\AppArg}{u}}
+  &= \erecomp{e_\AppFun}
+  \cup \erecomp{e_\AppArg} \\
+  &\cup \erecompPrime{v}{\AppFun}{e_\AppFun}
+  \cup \erecompPrime{v}{\AppArg}{e_\AppArg} \\
+  &\quad\text{where } v = (u, \ExpApp)
+  \\
+  \erecomp{\plusExp{e_\PlusLeft}{u}{e_\PlusRight}}
+  &= \erecomp{e_\PlusLeft}
+  \cup \erecomp{e_\PlusRight} \\
+  &\cup \erecompPrime{v}{\PlusLeft}{e_\PlusLeft}
+  \cup \erecompPrime{v}{\PlusRight}{e_\PlusRight} \\
+  &\quad\text{where } v = (u, \ExpPlus)
+  \\
+  \erecomp{\lamExp{u}{q_\LamParam}{\tau_\LamType}{e_\LamBody}}
+  &= \precomp{q_\LamParam}
+  \cup \trecomp{\tau_\LamType}
+  \cup \erecomp{e_\LamBody} \\
+  &\cup \precompPrime{v}{\LamParam}{q_\LamParam}
+  \cup \trecompPrime{v}{\LamType}{\tau_\LamType} \\
+  &\cup \erecompPrime{v}{\LamBody}{e_\LamBody} \\
+  &\quad\text{where } v = (u, \ExpLam)
+  \\
+  \erecomp{\hole} &= \{\}
+  \\
+  \erecomp{\conflictHole{e_1, \cdots, e_n}}
+  &= \bigcup_{k=1}^n \erecomp{e_k}
+  \\
+  \erecomp{\multiVertex{v}} &= \{\}
+  \\
+  \erecomp{\cycleVertex{v}} &= \{\}
+\end{align*}
+%
 % \vskip\baselineskip
-% $\boxed{\eRecompPlus{e} = \{\e, \ldots, \e\}}$
-
+$\boxed{\erecompPrime{v}{p}{e} \subseteq \E}$
+%
 \begin{align*}
-  \recomp{\Grove} &= \SetOf{\e \mapsto + \SuchThat \e \in \recompPlus{\Grove}}
+  \erecompPrime{v}{p}{\varExp{x}{u}}
+  &= \{(u', v, p, (u, \ExpVar(x)))\}
   \\
-  \recompPlus{(MP, NP, U)} &= \bigcup_{e \in MP \cup NP \cup U} \eRecompPlus{e}
+  \erecompPrime{v}{p}{\numExp{n}{u}}
+  &= \{(u', v, p, (u, \ExpNum(n)))\}
+  \\
+  \erecompPrime{v}{p}{\appExp{e_\AppFun}{e_\AppArg}{u}}
+  &= \{(u', v, p, (u, \ExpApp))\}
+  \\
+  \erecompPrime{v}{p}{\plusExp{e_\PlusLeft}{u} {e_\PlusRight}}
+  &= \{(u', v, p, (u, \ExpPlus))\}
+  \\
+  \erecompPrime{v}{p}{\lamExp{u}{q_\LamParam}{\tau_\LamType}{e_\LamBody}}
+  &= \{(u', v, p, (u, \ExpLam))\}
+  \\
+  \erecompPrime{v}{p}{\hole} &= \{\}
+  \\
+  \erecompPrime{v}{p}{\conflictHole{e_1, \cdots, e_n}}
+  &= \bigcup_{i=1}^n \erecompPrime{v}{p}{e_i}
+  \\
+  \erecompPrime{v}{p}{\multiVertex{v'}}
+  &= \{(u', v, p, v')\}
+  \\
+  \erecompPrime{v}{p}{\cycleVertex{v'}}
+  &= \{(u', v, p, v')\}
 \end{align*}
-
+%
+% \vskip\baselineskip
+$\boxed{\precomp{q} \subset \E}$
+%
 \begin{align*}
-  \eRecompPlus{\varExp{x}{u}} &= \{\}
+  \precomp{\varPat{x}{u}} &= \{\}
   \\
-  \eRecompPlus{\numExp{n}{u}} &= \{\}
+  \precomp{\hole} &= \{\}
   \\
-  \eRecompPlus{\appExp{e_\AppFun}{e_\AppArg}{u}}
-  &= \eRecompPlus{e_\AppFun} \\
-  &\cup \eRecompPlus{e_\AppArg} \\
-  &\cup \eRecompPrime{(u, \ExpApp)}{\AppFun}{e_\AppFun} \\
-  &\cup \eRecompPrime{(u, \ExpApp)}{\AppArg}{e_\AppArg}
+  \precomp{\conflictHole{q_1, \cdots, q_n}}
+  &= \bigcup_{i=1}^n \precomp{q_i}
   \\
-  \eRecompPlus{\plusExp{e_\PlusLeft}{u}{e_\PlusRight}}
-  &= \eRecompPlus{e_\PlusLeft} \\
-  &\cup \eRecompPlus{e_\PlusRight} \\
-  &\cup \eRecompPrime{(u, \ExpPlus)}{\PlusLeft}{e_\PlusLeft} \\
-  &\cup \eRecompPrime{(u, \ExpPlus)}{\PlusRight}{e_\PlusRight}
+  \precomp{\multiVertex{v}} &= \{\}
   \\
-  \eRecompPlus{\lamExp{u}{q_\LamParam}{\tau_\LamType}{e_\LamBody}}
-  &= \qRecompPlus{q_\LamParam} \\
-  &\cup \tRecompPlus{\tau_\LamType} \\
-  &\cup \eRecompPlus{e_\LamBody} \\
-  &\cup \qRecompPrime{(u, \ExpLam)}{\LamParam}{q_\LamParam} \\
-  &\cup \tRecompPrime{(u, \ExpLam)}{\LamType}{\tau_\LamType} \\
-  &\cup \eRecompPrime{(u, \ExpLam)}{\LamBody}{e_\LamBody}
-  \\
-  \eRecompPlus{\hole} &= \{\}
-  \\
-  \eRecompPlus{\conflictHole{e_1 | \cdots | e_n}}
-  &= \bigcup_{k=1}^n \eRecompPlus{e_k}
-  \\
-  \eRecompPlus{\multiVertex{u}} &= \{\}
-  \\
-  \eRecompPlus{\cycleVertex{u}} &= \{\}
+  \precomp{\cycleVertex{v}} &= \{\}
 \end{align*}
-
-% % \vskip\baselineskip
-% % $\boxed{\eRecompPrime{v, p, e} = \{\e, \ldots, \e\}}$
-
+%
+% \vskip\baselineskip
+$\boxed{\precompPrime{v}{p}{q} \subset \E}$
+%
 \begin{align*}
-  \eRecompPrime{v}{p}{\varExp{x}{u}}
-  &= \{(v, p, (u, \ExpVar(x)))\}
+  \precompPrime{v}{p}{\varPat{x}{u}}
+  &= \{(u', v, p, (u, \PatVar(x)))\}
   \\
-  \eRecompPrime{v}{p}{\numExp{n}{u}}
-  &= \{(v, p, (u, \ExpNum(n)))\}
+  \precompPrime{v}{p}{\hole} &= \{\}
   \\
-  \eRecompPrime{v}{p}{\appExp{e_\AppFun}{e_\AppArg}{u}}
-  &= \{(v, p, (u, \ExpApp))\}
+  \precompPrime{v}{p}{\conflictHole{e_1, \cdots, e_n}}
+  &= \bigcup_{i=1}^n \precompPrime{v}{p}{e_i}
   \\
-  \eRecompPrime{v}{p}{\plusExp{e_\PlusLeft}{u} {e_\PlusRight}}
-  &= \{(v, p, (u, \ExpPlus))\}
+  \precompPrime{v}{p}{\multiVertex{v'}}
+  &= \{(u', v, p, v')\}
   \\
-  \eRecompPrime{v}{p}{\lamExp{u}{q_\LamParam}{\tau_\LamType}{e_\LamBody}}
-  &= \{(v, p, (u, \ExpLam))\}
-  \\
-  \eRecompPrime{v}{p}{\hole} &= \{\}
-  \\
-  \eRecompPrime{v}{p}{\conflictHole{e_1 | \cdots | e_n}}
-  &= \bigcup_{k=1}^n \eRecompPrime{v}{p}{e_k}
-  \\
-  \eRecompPrime{v}{p}{\multiVertex{v'}}
-  &= \{(v, p, v')\}
-  \\
-  \eRecompPrime{v}{p}{\cycleVertex{v'}}
-  &= \{(v, p, v')\}
+  \precompPrime{v}{p}{\cycleVertex{v'}}
+  &= \{(u', v, p, v')\}
 \end{align*}
-
-% % \vskip\baselineskip
-% % $\boxed{\qRecompPlus{q} = \{\e, \ldots, \e\}}$
-
+%
+% \vskip\baselineskip
+$\boxed{\trecomp{\tau} \subset \E}$
+%
 \begin{align*}
-  \qRecompPlus{\varPat{x}{u}} &= \{\}
+  \trecomp{\arrowTyp{\tau_\ArrowArg}{u}{\tau_\ArrowResult}}
+  &= \trecomp{\tau_\ArrowArg}
+  \cup \trecomp{\tau_\ArrowResult} \\
+  &\cup \trecompPrime{v}{\ArrowArg}{\tau_\ArrowArg}
+  \cup \trecompPrime{v}{\ArrowResult}{\tau_\ArrowResult} \\
+  &\quad\text{where } v = (u, \TypArrow)
   \\
-  \qRecompPlus{\hole} &= \{\}
+  \trecomp{\numTyp{u}} &= \{\}
   \\
-  \qRecompPlus{\conflictHole{q_1 | \cdots | q_n}}
-  &= \bigcup_{k=1}^n \qRecompPlus{q_k}
+  \trecomp{\hole} &= \{\}
   \\
-  \qRecompPlus{\multiVertex{u}} &= \{\}
+  \trecomp{\conflictHole{\tau_1, \cdots, \tau_n}}
+  &= \bigcup_{i=1}^n \trecomp{\tau_i}
   \\
-  \qRecompPlus{\cycleVertex{u}} &= \{\}
+  \trecomp{\multiVertex{u}} &= \{\}
+  \\
+  \trecomp{\cycleVertex{u}} &= \{\}
 \end{align*}
-
+%
+% \vskip\baselineskip
+$\boxed{\trecompPrime{v}{p}{\tau} \subset \E}$
+%
 \begin{align*}
-  \qRecompPrime{v}{p}{\varPat{x}{u}}
-  &= \{(v, p, (u, \PatVar(x)))\}
+  \trecompPrime{v}{p}{\arrowTyp{\tau_\ArrowArg}{u}{\tau_\ArrowResult}}
+  &= \{(u', v, p, (u, \TypArrow)))\}
   \\
-  \qRecompPrime{v}{p}{\hole} &= \{\}
+  \trecompPrime{v}{p}{\numTyp{u}}
+  &= \{(u', v, p, (u, \TypNum)))\}
   \\
-  \qRecompPrime{v}{p}{\conflictHole{e_1 | \cdots | e_n}}
-  &= \bigcup_{k=1}^n \qRecompPrime{v}{p}{e_k}
+  \trecompPrime{v}{p}{\hole} &= \{\}
   \\
-  \qRecompPrime{v}{p}{\multiVertex{v'}}
-  &= \{(v, p, v')\}
+  \trecompPrime{v}{p}{\conflictHole{\tau_1, \cdots, \tau_n}}
+  &= \bigcup_{i=1}^n \trecompPrime{v}{p}{\tau_i}
   \\
-  \qRecompPrime{v}{p}{\cycleVertex{v'}}
-  &= \{(v, p, v')\}
-\end{align*}
-
-% % \vskip\baselineskip
-% % $\boxed{\tRecompPlus{\tau} = \{\e, \ldots, \e\}}$
-
-\begin{align*}
-  \tRecompPlus{\arrowTyp{\tau_\ArrowArg}{u}{\tau_\ArrowResult}}
-  &= \tRecompPlus{\tau_\ArrowArg} \\
-  &\cup \tRecompPlus{\tau_\ArrowResult} \\
-  &\cup \tRecompPrime{(u, \TypArrow)}{\ArrowArg}{\tau_\ArrowArg} \\
-  &\cup \tRecompPrime{(u, \TypArrow)}{\ArrowResult}{\tau_\ArrowResult}
+  \trecompPrime{v}{p}{\multiVertex{v'}}
+  &= \{(u', v, p, v')\}
   \\
-  \tRecompPlus{\numTyp{u}} &= \{\}
-  \\
-  \tRecompPlus{\hole} &= \{\}
-  \\
-  \tRecompPlus{\conflictHole{\tau_1 | \cdots | \tau_n}}
-  &= \bigcup_{k=1}^n \tRecompPlus{\tau_k}
-  \\
-  \tRecompPlus{\multiVertex{u}} &= \{\}
-  \\
-  \tRecompPlus{\cycleVertex{u}} &= \{\}
-\end{align*}
-
-\begin{align*}
-  \tRecompPrime{v}{p}{\arrowTyp{\tau_\ArrowArg}{u}{\tau_\ArrowResult}}
-  &= \{(v, p, (u, \TypArrow)))\}
-  \\
-  \tRecompPrime{v}{p}{\numTyp{u}}
-  &= \{(v, p, (u, \TypNum)))\}
-  \\
-  \tRecompPrime{v}{p}{\hole} &= \{\}
-  \\
-  \tRecompPrime{v}{p}{\conflictHole{\tau_1 | \cdots | \tau_n}}
-  &= \bigcup_{k=1}^n \tRecompPrime{v}{p}{\tau_k}
-  \\
-  \tRecompPrime{v}{p}{\multiVertex{v'}}
-  &= \{(v, p, v')\}
-  \\
-  \tRecompPrime{v}{p}{\cycleVertex{v'}}
-  &= \{(v, p, v')\}
+  \trecompPrime{v}{p}{\cycleVertex{v'}}
+  &= \{(u', v, p, v')\}
 \end{align*}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
