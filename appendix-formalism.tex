@@ -11,15 +11,17 @@
   There exists a grove $\Grove$ such that $\decomp{G} = \Grove$.
 \end{theorem}
 
-\begin{theorem}
-  Let $G$ be a well sorted graph.
-  If $\decomp{G} = \Grove$ then $\vertexes{G} = \vertexes{\Grove}$.
-\end{theorem}
+Proof: provide a witness that demonstrates the conclusion.
 
-\begin{theorem}
-  Let $G$ be a well sorted graph.
-  If $\recomp{\Grove} = G$ then $\vertexes{\Grove} = \vertexes{G}$.
-\end{theorem}
+% \begin{theorem}
+%   Let $G$ be a well sorted graph.
+%   If $\decomp{G} = \Grove$ then $\vertexes{G} = \vertexes{\Grove}$.
+% \end{theorem}
+
+% \begin{theorem}
+%   Let $G$ be a well sorted graph.
+%   If $\recomp{\Grove} = G$ then $\vertexes{\Grove} = \vertexes{G}$.
+% \end{theorem}
 
 \begin{theorem}
   Let $G$ be a well sorted graph.
@@ -31,10 +33,8 @@
 \subsection{Decomposition}
 
 \begin{align*}
-  % \children(v, p) &= \{v' : \exists \e (u, v, p, v'), G(\e) = \Plus\} \\
-  \children(v, p) &= \SetOf{v' \SuchThat{G((u, v, p, v')) = \Plus}} \\
-  % \parents(v) &= \{v' : \exists \e = (u, v', p, v), G(\e) = \Plus\} \\
-  \parents(v) &= \SetOf{v' \SuchThat{G((u, v', p, v)) = \Plus}} \\
+  \children(v, p) &= \SetOf{v' \SuchThat{\exists \e = (u, v, p, v'), G(\e) = \Plus}} \\
+  \parents(v) &= \SetOf{v' \SuchThat{\exists \e = (u, v', p, v), G(\e) = \Plus}} \\
   \ancestors(v) &= \mathopen{}\left( \lfp(\ancestors') \right)\mathclose{}(v) \\
   \ancestors'(v) &= \parents(v) \cup \ancestors'(\parents(v)) \\
   \min\mathopen{}\left(\SetOf{(u_1, k_1), \ldots, (u_n, k_n)}\right)\mathclose{} &= (u_j, k_j) \text{ s.t. } 1 \leq j \leq n \land u_j \le u_i \forall i = 1, \ldots, n
@@ -118,19 +118,19 @@
 
 \subsection{Recomposition}
 
-\noindent $\boxed{\recomp{\Grove} = G}$
+\noindent $\boxed{\recomp{\Grove} \cong G}$
 %
 \begin{align*}
-  \recomp{(MP, NP, U, D)} &= \recompPlus{MP, NP, U} \cup \SetOf{\e \mapsto \Minus \SuchThat{\e \in D}}
+  \recomp{(MP, NP, U, D)} &\cong \recompPlus{MP, NP, U} \cup \SetOf{\e \mapsto \Minus \SuchThat{\e \in D}}
 \end{align*}
 
-\noindent $\boxed{\recompPlus{MP, NP, U} = G}$
+\noindent $\boxed{\recompPlus{MP, NP, U} \cong G}$
 %
 \begin{align*}
   \recompPlus{MP, NP, U} &= \SetOf{\e \mapsto \Plus \SuchThat{\e \in \bigcup_{e \in MP \cup NP \cup U} \erecomp{e}}}
 \end{align*}
 
-\noindent $\boxed{\erecomp{e} = \E}$
+\noindent $\boxed{\erecomp{e} \cong \E}$
 %
 \begin{align*}
   \erecomp{\varExp{x}{u}} &= \SetOf{}
@@ -171,7 +171,7 @@
 \end{align*}
 %
 % \vskip\baselineskip
-$\boxed{\erecompPrime{v}{p}{e} \subseteq \E}$
+$\boxed{\erecompPrime{v}{p}{e} \cong \E}$
 %
 \begin{align*}
   \erecompPrime{v}{p}{\varExp{x}{u}}
@@ -202,7 +202,7 @@ $\boxed{\erecompPrime{v}{p}{e} \subseteq \E}$
 \end{align*}
 %
 % \vskip\baselineskip
-$\boxed{\precomp{q} \subset \E}$
+$\boxed{\precomp{q} \cong \E}$
 %
 \begin{align*}
   \precomp{\varPat{x}{u}} &= \SetOf{}
@@ -218,7 +218,7 @@ $\boxed{\precomp{q} \subset \E}$
 \end{align*}
 %
 % \vskip\baselineskip
-$\boxed{\precompPrime{v}{p}{q} \subset \E}$
+$\boxed{\precompPrime{v}{p}{q} \cong \E}$
 %
 \begin{align*}
   \precompPrime{v}{p}{\varPat{x}{u}}
@@ -237,7 +237,7 @@ $\boxed{\precompPrime{v}{p}{q} \subset \E}$
 \end{align*}
 %
 % \vskip\baselineskip
-$\boxed{\trecomp{\tau} \subset \E}$
+$\boxed{\trecomp{\tau} \cong \E}$
 %
 \begin{align*}
   \trecomp{\arrowTyp{\tau_\ArrowArg}{u}{\tau_\ArrowResult}}
@@ -260,7 +260,7 @@ $\boxed{\trecomp{\tau} \subset \E}$
 \end{align*}
 %
 % \vskip\baselineskip
-$\boxed{\trecompPrime{v}{p}{\tau} \subset \E}$
+$\boxed{\trecompPrime{v}{p}{\tau} \cong \E}$
 %
 \begin{align*}
   \trecompPrime{v}{p}{\arrowTyp{\tau_\ArrowArg}{u}{\tau_\ArrowResult}}
@@ -288,7 +288,7 @@ $\boxed{\trecompPrime{v}{p}{\tau} \subset \E}$
 \[
   \arraycolsep=0pt
   \begin{array}{llll}
-    \alpha & {}::={} & \Create{k} \mid \Delete \mid \Restore{v, q} \\
+    \alpha & {}::={} & \Create{k} \mid \Delete \mid \Restore{v} \\
     %  \mid \Drop{\e}
   \end{array}
 \]
