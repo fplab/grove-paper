@@ -244,14 +244,15 @@ A graph can be decomposed into a collection of expressions governed by the gramm
 
 A grove is a 3-tuple of the following form:
 \[
-  (NP, MP, U)
+  (NP, MP, U, D)
 \]
 where
 \begin{align*}
   % e_r &= \expr(v_0) \\
   NP &= \{\expr(v) : |\parents(v)| = 0\} \\
   MP &= \{\expr(v) : |\parents(v)| > 1\} \\
-  U  &= \{\expr(v) : |\parents(v)| = 1 \wedge v = \min(\ancestors(v))\}
+  U  &= \{\expr(v) : |\parents(v)| = 1 \wedge v = \min(\ancestors(v))\} \\
+  D  &= \{\e : G(\e) = \Minus\}
 \end{align*}
 For example, the grove corresponding to the graph in \autoref{fig:Decomposition example graph} is
 given in \autoref{fig:Decomposition example grove}.
@@ -289,92 +290,6 @@ Formally, we choose the vertex $v$ such that $v = \min(\ancestors(v))$ because
 only a vertex on the cycle can be its own ancestor.
 When an edge to this vertex appears, we place a reference to it $\cycleVertex{u}$.
 In our example, ${+}_{\id{46}}$ is referenced by the $LEFT$ edge of ${*}_{\id{48}}$.
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% THEOREMS GO HERE
-
-% - [ ]  State the "exhaustiveness check" theorem formally
-
-% - [ ]  State the "every vertex is part of decomposition" theorem formally
-
-% i.e., {univ, multiv, av} is a partitioning of the vertices of G
-% where, e.g., multiv = vertices(MP)
-
-% - [ ]  Define "recomposition" formally
-
-% not defined yet
-
-% - [ ]  State the relationship between decomp(G) and recomp(grove)
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-\begin{figure}
-  \begin{displaymath}
-    \begin{array}{l}
-      \expr(v=(u, Root)) = expr'(v, Root) \\
-      \expr(v=(u, \ExpVar(x))) = x^{\id{u}} \\
-      \expr(v=(u, \ExpLam)) = \lambda^{\id{u}} \patt'(v, \LamParam) : \type'(v, \LamType) . \expr'(v, \LamBody) \\
-      \expr(v=(u, \ExpApp)) = (\expr'(v, \AppFun)~\expr'(v, \AppArg))^{\id{u}} \\
-      \expr(v=(u, \ExpNum(n))) = n^{\id{u}} \\
-      \expr(v=(u, \ExpPlus)) = \expr'(v, \PlusLeft)~\texttt{+}^{\id{u}}~\expr'(v, \PlusRight) \\
-      \expr(v=(u, \ExpTimes)) = \expr'(v, \TimesLeft)~\texttt{*}^{\id{u}}~\expr'(v, \TimesRight) \\
-      \patt(v=(u, \PatVar(x))) = x^{\id{u}} \\
-      \type(\tau=(u, \TypArrow)) = \type'(\tau, \ArrowArg) \rightarrow^{\id{u}} \type'(\tau, \ArrowResult) \\
-      \type(\tau=(u, \TypNum) = Num^{\id{u}} \\
-    \end{array}
-  \end{displaymath}
-
-% TODO: comment these out:
-%   % | Exp_nil
-%   % | Exp_cons
-%   % | Exp_case
-%   % | Typ_list
-
-  \begin{align*}
-    \expr'(v,p) = \begin{cases}
-      \hole & \children(v,p) = \varnothing \\
-      \conflictHole{\expr(v_1),\ldots,\expr(v_n)} & \children(v,p) = \{v_1, \ldots, v_n\} \\
-      \multiVertex{u} & \children(v,p) = \{v'\} \land |\parents(v')| > 1 \\
-      \cycleVertex{u} & \children(v,p) = \{v'=(u,k)\} \land |\parents(v')| = 1 \\
-          & \phantom{\children(v,p)} \land v' = \min(\ancestors(v')) \\
-      \expr(v') & \text{otherwise} \\
-    \end{cases}
-  \end{align*}
-
-  \begin{align*}
-    \patt'(v,p) = \begin{cases}
-      \hole & \children(v,p) = \varnothing \\
-      \conflictHole{\patt(v_1),\ldots,\patt(v_n)} & \children(v,p) = \{v_1, \ldots, v_n\} \\
-      \multiVertex{u} & \children(v,p) = \{v'\} \land |\parents(v')| > 1 \\
-      \cycleVertex{u} & \children(v,p) = \{v'=(u,k)\} \land |\parents(v')| = 1 \\
-          & \phantom{\children(v,p)} \land v' = \min(\ancestors(v')) \\
-      \patt(v') & \text{otherwise} \\
-    \end{cases}
-  \end{align*}
-
-  \begin{align*}
-    \type'(v,p) = \begin{cases}
-      \hole & \children(v,p) = \varnothing \\
-      \conflictHole{\type(v_1),\ldots,\type(v_n)} & \children(v,p) = \{v_1, \ldots, v_n\} \\
-      \multiVertex{u} & \children(v,p) = \{v'\} \land |\parents(v')| > 1 \\
-      \cycleVertex{u} & \children(v,p) = \{v'=(u,k)\} \land |\parents(v')| = 1 \\
-          & \phantom{\children(v,p)} \land v' = \min(\ancestors(v')) \\
-      \type(v') & \text{otherwise} \\
-    \end{cases}
-  \end{align*}
-
-  \begin{align*}
-    \parents(v) &= \{v' : \exists \e = (u, v', p, v), G(\e) = \Plus\} \\
-    \ancestors(v) &= \left( \lfp(\ancestors') \right)(v) \\
-    \ancestors'(v) &= \parents(v) \cup \ancestors'(\parents(v)) \\
-    \children(v, p) &= \{v' : \exists \e (u, v, p, v'), G(\e) = \Plus\} \\
-    \min(\{v_1 = (u_1, k_1), \ldots, v_n = (u_n, k_n)\}) &= (u_j, k_j) \text{ s.t. } j \in \{1, \ldots, n\} \land u_j \le u_i \forall i \in \{1, \ldots, n\}
-      \end{align*}
-  \caption{Caption2 goes here. Note that $\ancestors$ is defined as the least fixed point of $\ancestors'$.}
-  \label{fig:Decomposition expr}
-\end{figure}
 
 % XXX
 

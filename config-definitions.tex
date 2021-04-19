@@ -13,7 +13,7 @@
 \newcommand{\figureCode}[1]{\textbf{\texttt{#1}}\vskip1em}
 
 \newcommand\SetOf[1]{\left\{#1\right\}}
-\newcommand\SuchThat[1]{\;\mathopen{}\left|\;#1\right.\mathclose{}}
+\newcommand\SuchThat[1]{ : #1}
 
 % sets
 \def\A{\mathcal{A}}
@@ -91,6 +91,14 @@
 {\textcolor{red}{\textbf{\{}}\myargs\textcolor{red}{\textbf{\}}}}}}%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Decomposition
+
+\DeclareMathOperator{\decompOp}{\texttt{decomp}}
+\DeclareMathOperator{\vertexesOp}{\texttt{vertexes}}
+\newcommand{\decomp}[1]{\decompOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\vertexes}[1]{\vertexesOp\mathopen{}\left(#1\right)\mathclose{}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Recomposition
 
 \DeclareMathOperator{\recompPlusOp}{\texttt{recomp}^{+}}
@@ -114,18 +122,27 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % actions
-\def\Create{\text{Create}}
-\def\Destroy{\text{Destroy}}
+% \def\Create{\text{Create}}
+% \def\Destroy{\text{Destroy}}
 \def\Down{\text{Down}}
 \def\Enqueue{\text{Enqueue}}
 \def\Left{\text{Left}}
 \def\Move{\text{Move}}
 \def\Num{\text{Num}}
-\def\Restore{\text{Restore}}
+% \def\Restore{\text{Restore}}
 \def\Right{\text{Right}}
 \def\Select{\text{Select}}
 \def\Send{\text{Send}}
 \def\Up{\text{Up}}
+
+\newcommand\Delete{\mathrm{Delete}}
+\newcommand{\Create}[1]{\mathrm{Create}\mathopen{}\left(#1\right)\mathclose{}}
+% \newcommand{\Drop}[1]{\mathrm{Drop}\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\Restore}[1]{\mathrm{Restore}\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\Wrap}[1]{\mathrm{Wrap}\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\Reposition}[1]{\mathrm{Reposition}\mathopen{}\left(#1\right)\mathclose{}}
+
+% \Create{k} \mid \Delete \mid \Drop{\e} \mid \Restore{v}
 
 % relations
 \DeclareMathOperator{\sort}{\text{sort}}

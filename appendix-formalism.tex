@@ -1,18 +1,141 @@
+\section{Formalism}
 
-\section{Recomposition}
+\begin{definition}
+  Let $\e = (u, (u_1, k_1), p, (u_2, k_2))$.
+  A graph $G$ is well sorted if $(p, \sort(k_2)) \in \arity(k_1)$
+  for all $\e$ such that $G(\e) \in \{\Plus, \Minus\}$.
+\end{definition}
 
-$\boxed{\recompPlus{\Grove} = G}$
-%
+\begin{theorem}
+  Let $G$ be a well sorted graph.
+  There exists a grove $\Grove$ such that $\decomp{G} = \Grove$.
+\end{theorem}
+
+\begin{theorem}
+  Let $G$ be a well sorted graph.
+  If $\decomp{G} = \Grove$ then $\vertexes{G} = \vertexes{\Grove}$.
+\end{theorem}
+
+\begin{theorem}
+  Let $G$ be a well sorted graph.
+  If $\recomp{\Grove} = G$ then $\vertexes{\Grove} = \vertexes{G}$.
+\end{theorem}
+
+\begin{theorem}
+  Let $G$ be a well sorted graph.
+  if $\decomp{G} = \Grove$ then $\recomp{\Grove} \cong G$.
+\end{theorem}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Decomposition}
+
 \begin{align*}
-  \recompPlus{(MP, NP, U)} &= \SetOf{\e \mapsto \Plus \SuchThat{\e \in \bigcup_{e \in MP \cup NP \cup U} \erecomp{e}}}
+  % \children(v, p) &= \{v' : \exists \e (u, v, p, v'), G(\e) = \Plus\} \\
+  \children(v, p) &= \SetOf{v' \SuchThat{G((u, v, p, v')) = \Plus}} \\
+  % \parents(v) &= \{v' : \exists \e = (u, v', p, v), G(\e) = \Plus\} \\
+  \parents(v) &= \SetOf{v' \SuchThat{G((u, v', p, v)) = \Plus}} \\
+  \ancestors(v) &= \mathopen{}\left( \lfp(\ancestors') \right)\mathclose{}(v) \\
+  \ancestors'(v) &= \parents(v) \cup \ancestors'(\parents(v)) \\
+  \min\mathopen{}\left(\SetOf{(u_1, k_1), \ldots, (u_n, k_n)}\right)\mathclose{} &= (u_j, k_j) \text{ s.t. } 1 \leq j \leq n \land u_j \le u_i \forall i = 1, \ldots, n
 \end{align*}
 
-\noindent $\boxed{\erecomp{e} \subset \E}$
+\noindent $\boxed{\decomp{G} = \Grove}$
 %
 \begin{align*}
-  \erecomp{\varExp{x}{u}} &= \{\}
+  \decomp{G} &= (NP, MP, U, D) \\
+  NP &= \SetOf{\expr(v) \SuchThat{|\parents(v)| = 0}} \\
+  MP &= \SetOf{\expr(v) \SuchThat{|\parents(v)| > 1}} \\
+  U &= \SetOf{\expr(v) \SuchThat{|\parents(v)| = 1 \land v = \min(\ancestors(v))}} \\
+  D &= \SetOf{\e \SuchThat{G(\e) = \Minus}}
+\end{align*}
+
+\noindent $\boxed{\expr(v) = e}$
+%
+\begin{align*}
+  \expr(v=(u, Root)) &= expr'(v, Root) \\
+  \expr(v=(u, \ExpVar(x))) &= x^{\id{u}} \\
+  \expr(v=(u, \ExpLam)) &= \lambda^{\id{u}} \patt'(v, \LamParam) : \type'(v, \LamType) . \expr'(v, \LamBody) \\
+  \expr(v=(u, \ExpApp)) &= (\expr'(v, \AppFun)~\expr'(v, \AppArg))^{\id{u}} \\
+  \expr(v=(u, \ExpNum(n))) &= n^{\id{u}} \\
+  \expr(v=(u, \ExpPlus)) &= \expr'(v, \PlusLeft)~\texttt{+}^{\id{u}}~\expr'(v, \PlusRight) \\
+  \expr(v=(u, \ExpTimes)) &= \expr'(v, \TimesLeft)~\texttt{*}^{\id{u}}~\expr'(v, \TimesRight)
+\end{align*}
+
+\noindent $\boxed{\patt(v) = q}$
+%
+\begin{align*}
+  \patt(v=(u, \PatVar(x))) &= x^{\id{u}}
+\end{align*}
+
+\noindent $\boxed{\type(v) = \tau}$
+%
+\begin{align*}
+  \type(\tau=(u, \TypArrow)) &= \type'(\tau, \ArrowArg) \rightarrow^{\id{u}} \type'(\tau, \ArrowResult) \\
+  \type(\tau=(u, \TypNum) &= Num^{\id{u}}
+\end{align*}
+
+\noindent $\boxed{\expr'(v, p) = e}$
+%
+\begin{align*}
+  \expr'(v,p) = \begin{cases}
+    \hole & \children(v,p) = \varnothing \\
+    \conflictHole{\expr(v_1),\ldots,\expr(v_n)} & \children(v,p) = \SetOf{v_1, \ldots, v_n} \\
+    \multiVertex{u} & \children(v,p) = \SetOf{v'} \land |\parents(v')| > 1 \\
+    \cycleVertex{u} & \children(v,p) = \SetOf{v' = (u,k)} \land |\parents(v')| = 1 \\
+        & \phantom{\children(v,p)} \land v' = \min(\ancestors(v')) \\
+    \expr(v') & \text{otherwise} \\
+  \end{cases}
+\end{align*}
+
+\noindent $\boxed{\patt'(v, p) = q}$
+%
+\begin{align*}
+  \patt'(v,p) = \begin{cases}
+    \hole & \children(v,p) = \varnothing \\
+    \conflictHole{\patt(v_1),\ldots,\patt(v_n)} & \children(v,p) = \SetOf{v_1, \ldots, v_n} \\
+    \multiVertex{u} & \children(v,p) = \SetOf{v'} \land |\parents(v')| > 1 \\
+    \cycleVertex{u} & \children(v,p) = \SetOf{v'=(u,k)} \land |\parents(v')| = 1 \\
+        & \phantom{\children(v,p)} \land v' = \min(\ancestors(v')) \\
+    \patt(v') & \text{otherwise} \\
+  \end{cases}
+\end{align*}
+
+\noindent $\boxed{\type'(v, p) = \tau}$
+%
+\begin{align*}
+  \type'(v,p) = \begin{cases}
+    \hole & \children(v,p) = \varnothing \\
+    \conflictHole{\type(v_1),\ldots,\type(v_n)} & \children(v,p) = \SetOf{v_1, \ldots, v_n} \\
+    \multiVertex{u} & \children(v,p) = \SetOf{v'} \land |\parents(v')| > 1 \\
+    \cycleVertex{u} & \children(v,p) = \SetOf{v' = (u,k)} \land |\parents(v')| = 1 \\
+        & \phantom{\children(v,p)} \land v' = \min(\ancestors(v')) \\
+    \type(v') & \text{otherwise} \\
+  \end{cases}
+\end{align*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Recomposition}
+
+\noindent $\boxed{\recomp{\Grove} = G}$
+%
+\begin{align*}
+  \recomp{(MP, NP, U, D)} &= \recompPlus{MP, NP, U} \cup \SetOf{\e \mapsto \Minus \SuchThat{\e \in D}}
+\end{align*}
+
+\noindent $\boxed{\recompPlus{MP, NP, U} = G}$
+%
+\begin{align*}
+  \recompPlus{MP, NP, U} &= \SetOf{\e \mapsto \Plus \SuchThat{\e \in \bigcup_{e \in MP \cup NP \cup U} \erecomp{e}}}
+\end{align*}
+
+\noindent $\boxed{\erecomp{e} = \E}$
+%
+\begin{align*}
+  \erecomp{\varExp{x}{u}} &= \SetOf{}
   \\
-  \erecomp{\numExp{n}{u}} &= \{\}
+  \erecomp{\numExp{n}{u}} &= \SetOf{}
   \\
   \erecomp{\appExp{e_\AppFun}{e_\AppArg}{u}}
   &= \erecomp{e_\AppFun}
@@ -37,14 +160,14 @@ $\boxed{\recompPlus{\Grove} = G}$
   &\cup \erecompPrime{v}{\LamBody}{e_\LamBody} \\
   &\quad\text{where } v = (u, \ExpLam)
   \\
-  \erecomp{\hole} &= \{\}
+  \erecomp{\hole} &= \SetOf{}
   \\
   \erecomp{\conflictHole{e_1, \cdots, e_n}}
   &= \bigcup_{k=1}^n \erecomp{e_k}
   \\
-  \erecomp{\multiVertex{v}} &= \{\}
+  \erecomp{\multiVertex{v}} &= \SetOf{}
   \\
-  \erecomp{\cycleVertex{v}} &= \{\}
+  \erecomp{\cycleVertex{v}} &= \SetOf{}
 \end{align*}
 %
 % \vskip\baselineskip
@@ -52,46 +175,46 @@ $\boxed{\erecompPrime{v}{p}{e} \subseteq \E}$
 %
 \begin{align*}
   \erecompPrime{v}{p}{\varExp{x}{u}}
-  &= \{(u', v, p, (u, \ExpVar(x)))\}
+  &= \SetOf{(u', v, p, (u, \ExpVar(x)))}
   \\
   \erecompPrime{v}{p}{\numExp{n}{u}}
-  &= \{(u', v, p, (u, \ExpNum(n)))\}
+  &= \SetOf{(u', v, p, (u, \ExpNum(n)))}
   \\
   \erecompPrime{v}{p}{\appExp{e_\AppFun}{e_\AppArg}{u}}
-  &= \{(u', v, p, (u, \ExpApp))\}
+  &= \SetOf{(u', v, p, (u, \ExpApp))}
   \\
   \erecompPrime{v}{p}{\plusExp{e_\PlusLeft}{u} {e_\PlusRight}}
-  &= \{(u', v, p, (u, \ExpPlus))\}
+  &= \SetOf{(u', v, p, (u, \ExpPlus))}
   \\
   \erecompPrime{v}{p}{\lamExp{u}{q_\LamParam}{\tau_\LamType}{e_\LamBody}}
-  &= \{(u', v, p, (u, \ExpLam))\}
+  &= \SetOf{(u', v, p, (u, \ExpLam))}
   \\
-  \erecompPrime{v}{p}{\hole} &= \{\}
+  \erecompPrime{v}{p}{\hole} &= \SetOf{}
   \\
   \erecompPrime{v}{p}{\conflictHole{e_1, \cdots, e_n}}
   &= \bigcup_{i=1}^n \erecompPrime{v}{p}{e_i}
   \\
   \erecompPrime{v}{p}{\multiVertex{v'}}
-  &= \{(u', v, p, v')\}
+  &= \SetOf{(u', v, p, v')}
   \\
   \erecompPrime{v}{p}{\cycleVertex{v'}}
-  &= \{(u', v, p, v')\}
+  &= \SetOf{(u', v, p, v')}
 \end{align*}
 %
 % \vskip\baselineskip
 $\boxed{\precomp{q} \subset \E}$
 %
 \begin{align*}
-  \precomp{\varPat{x}{u}} &= \{\}
+  \precomp{\varPat{x}{u}} &= \SetOf{}
   \\
-  \precomp{\hole} &= \{\}
+  \precomp{\hole} &= \SetOf{}
   \\
   \precomp{\conflictHole{q_1, \cdots, q_n}}
   &= \bigcup_{i=1}^n \precomp{q_i}
   \\
-  \precomp{\multiVertex{v}} &= \{\}
+  \precomp{\multiVertex{v}} &= \SetOf{}
   \\
-  \precomp{\cycleVertex{v}} &= \{\}
+  \precomp{\cycleVertex{v}} &= \SetOf{}
 \end{align*}
 %
 % \vskip\baselineskip
@@ -99,18 +222,18 @@ $\boxed{\precompPrime{v}{p}{q} \subset \E}$
 %
 \begin{align*}
   \precompPrime{v}{p}{\varPat{x}{u}}
-  &= \{(u', v, p, (u, \PatVar(x)))\}
+  &= \SetOf{(u', v, p, (u, \PatVar(x)))}
   \\
-  \precompPrime{v}{p}{\hole} &= \{\}
+  \precompPrime{v}{p}{\hole} &= \SetOf{}
   \\
   \precompPrime{v}{p}{\conflictHole{e_1, \cdots, e_n}}
   &= \bigcup_{i=1}^n \precompPrime{v}{p}{e_i}
   \\
   \precompPrime{v}{p}{\multiVertex{v'}}
-  &= \{(u', v, p, v')\}
+  &= \SetOf{(u', v, p, v')}
   \\
   \precompPrime{v}{p}{\cycleVertex{v'}}
-  &= \{(u', v, p, v')\}
+  &= \SetOf{(u', v, p, v')}
 \end{align*}
 %
 % \vskip\baselineskip
@@ -124,16 +247,16 @@ $\boxed{\trecomp{\tau} \subset \E}$
   \cup \trecompPrime{v}{\ArrowResult}{\tau_\ArrowResult} \\
   &\quad\text{where } v = (u, \TypArrow)
   \\
-  \trecomp{\numTyp{u}} &= \{\}
+  \trecomp{\numTyp{u}} &= \SetOf{}
   \\
-  \trecomp{\hole} &= \{\}
+  \trecomp{\hole} &= \SetOf{}
   \\
   \trecomp{\conflictHole{\tau_1, \cdots, \tau_n}}
   &= \bigcup_{i=1}^n \trecomp{\tau_i}
   \\
-  \trecomp{\multiVertex{u}} &= \{\}
+  \trecomp{\multiVertex{u}} &= \SetOf{}
   \\
-  \trecomp{\cycleVertex{u}} &= \{\}
+  \trecomp{\cycleVertex{u}} &= \SetOf{}
 \end{align*}
 %
 % \vskip\baselineskip
@@ -141,51 +264,39 @@ $\boxed{\trecompPrime{v}{p}{\tau} \subset \E}$
 %
 \begin{align*}
   \trecompPrime{v}{p}{\arrowTyp{\tau_\ArrowArg}{u}{\tau_\ArrowResult}}
-  &= \{(u', v, p, (u, \TypArrow)))\}
+  &= \SetOf{(u', v, p, (u, \TypArrow)))}
   \\
   \trecompPrime{v}{p}{\numTyp{u}}
-  &= \{(u', v, p, (u, \TypNum)))\}
+  &= \SetOf{(u', v, p, (u, \TypNum)))}
   \\
-  \trecompPrime{v}{p}{\hole} &= \{\}
+  \trecompPrime{v}{p}{\hole} &= \SetOf{}
   \\
   \trecompPrime{v}{p}{\conflictHole{\tau_1, \cdots, \tau_n}}
   &= \bigcup_{i=1}^n \trecompPrime{v}{p}{\tau_i}
   \\
   \trecompPrime{v}{p}{\multiVertex{v'}}
-  &= \{(u', v, p, v')\}
+  &= \SetOf{(u', v, p, v')}
   \\
   \trecompPrime{v}{p}{\cycleVertex{v'}}
-  &= \{(u', v, p, v')\}
+  &= \SetOf{(u', v, p, v')}
 \end{align*}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% \section{Theorems}
+\subsection{User Actions}
 
-% \begin{definition}
-%   A graph $G$ is well sorted if
-%   $(p, \sort(k_2)) \in \arity(k_1)$
-%   for all $\e = (u, (u_1, k_1), p, (u_2, k_2))$ such that $G(\e) \neq \bot$.
-% \end{definition}
+\[
+  \arraycolsep=0pt
+  \begin{array}{llll}
+    \alpha & {}::={} & \Create{k} \mid \Delete \mid \Restore{v, q} \\
+    %  \mid \Drop{\e}
+  \end{array}
+\]
 
-% \begin{theorem}[exhaustiveness check]
-%   If a graph $G$ is well-sorted,
-%   then there exists a grove $\Grove$
-%   such that $\decomp(G) = \Grove$.
-% \end{theorem}
-
-% \begin{theorem}[every vertex is part of decomposition]
-%   For any well-sorted graph $G$,
-%   if $\decomp(G) = \Grove$,
-%   then $\vertexes(G) = \vertexes(\Grove)$.
-% \end{theorem}
-
-% \begin{theorem}[relationship between decomp and recomp]
-%   For any well-sorted graph $G$,
-%   if $\decomp(G) = \Grove$,
-%   then $\recomp(\Grove) = G$.
-% \end{theorem}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% \end{document}
+\begin{align*}
+  \Wrap{k, q} &= \Delete; v=\Create{k}; \Restore{v, q} \\
+  \Reposition{v, q} &= \Delete; \Restore{v, q} \\
+\end{align*}
+%
+where $v$ is the destination vertex implied by the cursor, when it exists.
+When no such vertex exists, $\Restore{v}$ is a no-op.
