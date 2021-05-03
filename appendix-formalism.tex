@@ -1,10 +1,91 @@
 \section{Formalism}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Terms}
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+
+\subsubsection{Syntax}
+
+\[
+  \arraycolsep=0pt
+  \begin{array}{lrlll}
+    q & {}\in Pat & {}::={} &
+      x^{\id{u}}
+      \mid \hole
+      \mid \conflictHole{q,\ldots,q}
+      \mid \multiVertex{u}
+      \mid \cycleVertex{u}
+      \\
+    \tau & {}\in Typ & {}::={} &
+      \tau \rightarrow^{\id{u}} \tau
+      \mid Num^{\id{u}}
+      \mid \hole
+      \mid \conflictHole{\tau,\ldots,\tau}
+      \mid \multiVertex{u}
+      \mid \cycleVertex{u}
+      \\
+    e & {}\in Exp & {}::={} &
+      x^{\id{u}}
+      \mid \lambda^{\id{u}} q \mathord{:}\tau.e
+      \mid (e~e)^{\id{u}}
+      \mid n^{\id{u}}
+      \mid e~\texttt{+}^{\id{u}}~e
+      \mid e~\texttt{*}^{\id{u}}~e
+      \mid \hole
+      \mid \conflictHole{e,\ldots,e}
+      \mid \multiVertex{u}
+      \mid \cycleVertex{u}
+      \\
+  \end{array}
+\]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Graphs}
+
+\begin{definition}
+  A \emph{graph} $G : \E \rightarrow \Sigma$ is a function from edges to edge states,
+  where $\E = \U \times \V \times \P \times \V$,
+  unique IDs are drawn from some suitable set $\U$ equipped with a total ordering $\leq$,
+  vertices are drawn from $\V$,
+  positions are drawn from $\P$,
+  and edge states are drawn from $\Sigma$.
+\end{definition}
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+
+\subsubsection{Well-sortedness}
+
+\[
+  \arraycolsep=0pt
+  \begin{array}{ll}
+    \arity : \K \hfil \rightarrow & \wp(\P \times \{Exp, Pat, Typ\}) \\
+    \hline
+    \arity(\Root)={} & \left\{ (\Root, Exp) \right\} \\
+    \arity(\PatVar(x))={} & \left\{ \right\} \\
+    \arity(\ExpVar(x))={} & \left\{ \right\} \\
+    \arity(\ExpLam)={} & \left\{ (\LamParam, Pat), (\mathtt{Type}, Typ), (\mathtt{Body}, Exp) \right\} \\
+    \arity(\ExpApp)={} & \left\{ (\mathtt{Fun}, Exp), (\mathtt{Arg}, Exp) \right\} \\
+    \arity(\ExpPlus)={} & \left\{ (\mathtt{L}, Exp), (\mathtt{R}, Exp) \right\} \\
+    \arity(\ExpTimes)={} & \left\{ (\mathtt{L}, Exp), (\mathtt{R}, Exp) \right\} \\
+    \arity(\ExpNum(n))={} & \left\{ \right\} \\
+    \arity(\TypArrow)={} & \left\{ (\mathtt{Arg}, Typ), (\mathtt{Result}, Typ) \right\} \\
+    \arity(\TypNum)={} & \left\{ \right\} \\
+  \end{array}
+\]
+
 \begin{definition}
   Let $\e = (u, (u_1, k_1), p, (u_2, k_2))$.
   A graph $G$ is well sorted if $(p, \sort(k_2)) \in \arity(k_1)$
   for all $\e$ such that $G(\e) \in \{\Plus, \Minus\}$.
 \end{definition}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Decomposition and Recomposition}
 
 \begin{theorem}
   Let $G$ be a well sorted graph.
@@ -25,12 +106,12 @@ Proof: provide a witness that demonstrates the conclusion.
 
 \begin{theorem}
   Let $G$ be a well sorted graph.
-  if $\decomp{G} = \Grove$ then $\recomp{\Grove} \cong G$.
+  if $\decomp{G} = \Grove$ then $\recomp{\Grove} = G$.
 \end{theorem}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
-\subsection{Decomposition}
+\subsubsection{Decomposition}
 
 \begin{align*}
   \children(v, p) &= \SetOf{v' \SuchThat{\exists \e = (u, v, p, v'), G(\e) = \Plus}} \\
@@ -114,23 +195,23 @@ Proof: provide a witness that demonstrates the conclusion.
   \end{cases}
 \end{align*}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
-\subsection{Recomposition}
+\subsubsection{Recomposition}
 
-\noindent $\boxed{\recomp{\Grove} \cong G}$
+\noindent $\boxed{\recomp{\Grove} = G}$
 %
 \begin{align*}
-  \recomp{(MP, NP, U, D)} &\cong \recompPlus{MP, NP, U} \cup \SetOf{\e \mapsto \Minus \SuchThat{\e \in D}}
+  \recomp{(MP, NP, U, D)} &= \recompPlus{MP, NP, U} \cup \SetOf{\e \mapsto \Minus \SuchThat{\e \in D}}
 \end{align*}
 
-\noindent $\boxed{\recompPlus{MP, NP, U} \cong G}$
+\noindent $\boxed{\recompPlus{MP, NP, U} = G}$
 %
 \begin{align*}
   \recompPlus{MP, NP, U} &= \SetOf{\e \mapsto \Plus \SuchThat{\e \in \bigcup_{e \in MP \cup NP \cup U} \erecomp{e}}}
 \end{align*}
 
-\noindent $\boxed{\erecomp{e} \cong \E}$
+\noindent $\boxed{\erecomp{e} = \E}$
 %
 \begin{align*}
   \erecomp{\varExp{x}{u}} &= \SetOf{}
@@ -171,7 +252,7 @@ Proof: provide a witness that demonstrates the conclusion.
 \end{align*}
 %
 % \vskip\baselineskip
-$\boxed{\erecompPrime{v}{p}{e} \cong \E}$
+$\boxed{\erecompPrime{v}{p}{e}  \E}$
 %
 \begin{align*}
   \erecompPrime{v}{p}{\varExp{x}{u}}
@@ -202,7 +283,7 @@ $\boxed{\erecompPrime{v}{p}{e} \cong \E}$
 \end{align*}
 %
 % \vskip\baselineskip
-$\boxed{\precomp{q} \cong \E}$
+$\boxed{\precomp{q} = \E}$
 %
 \begin{align*}
   \precomp{\varPat{x}{u}} &= \SetOf{}
@@ -218,7 +299,7 @@ $\boxed{\precomp{q} \cong \E}$
 \end{align*}
 %
 % \vskip\baselineskip
-$\boxed{\precompPrime{v}{p}{q} \cong \E}$
+$\boxed{\precompPrime{v}{p}{q} = \E}$
 %
 \begin{align*}
   \precompPrime{v}{p}{\varPat{x}{u}}
@@ -237,7 +318,7 @@ $\boxed{\precompPrime{v}{p}{q} \cong \E}$
 \end{align*}
 %
 % \vskip\baselineskip
-$\boxed{\trecomp{\tau} \cong \E}$
+$\boxed{\trecomp{\tau} = \E}$
 %
 \begin{align*}
   \trecomp{\arrowTyp{\tau_\ArrowArg}{u}{\tau_\ArrowResult}}
@@ -260,7 +341,7 @@ $\boxed{\trecomp{\tau} \cong \E}$
 \end{align*}
 %
 % \vskip\baselineskip
-$\boxed{\trecompPrime{v}{p}{\tau} \cong \E}$
+$\boxed{\trecompPrime{v}{p}{\tau} = \E}$
 %
 \begin{align*}
   \trecompPrime{v}{p}{\arrowTyp{\tau_\ArrowArg}{u}{\tau_\ArrowResult}}
