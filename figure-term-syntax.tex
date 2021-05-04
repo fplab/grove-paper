@@ -1,0 +1,42 @@
+\newcommand{\figureTermSyntaxContent}{%
+\[
+  \arraycolsep=0pt
+  \begin{array}{lrlll}
+    q & {}\in Pat & {}::={} &
+      x^{\id{u}}
+      \mid \hole
+      \mid \conflictHole{q,\ldots,q}
+      \mid \multiVertex{u}
+      \mid \cycleVertex{u}
+      \\
+    \tau & {}\in Typ & {}::={} &
+      \tau \rightarrow^{\id{u}} \tau
+      \mid Num^{\id{u}}
+      \mid \hole
+      \mid \conflictHole{\tau,\ldots,\tau}
+      \mid \multiVertex{u}
+      \mid \cycleVertex{u}
+      \\
+    e & {}\in Exp & {}::={} &
+      x^{\id{u}}
+      \mid \lambda^{\id{u}} q \mathord{:}\tau.e
+      \mid (e~e)^{\id{u}}
+      \mid n^{\id{u}}
+      \mid e~\texttt{+}^{\id{u}}~e
+      \mid e~\texttt{*}^{\id{u}}~e
+      \mid \hole
+      \mid \conflictHole{e,\ldots,e}
+      \mid \multiVertex{u}
+      \mid \cycleVertex{u}
+      \\
+  \end{array}
+\]%
+}
+
+\newcommand{\figureTermSyntax}{%
+\begin{figure}
+  \figureTermSyntaxContent
+  \caption{Base syntax, as a grammar, for the lambda calculus that we are considering.}
+  \label{fig:Base syntax}
+\end{figure}%
+}

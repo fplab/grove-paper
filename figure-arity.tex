@@ -1,0 +1,27 @@
+\newcommand{\figureArityContent}{%
+\[
+  \arraycolsep=0pt
+  \begin{array}{ll}
+    \multicolumn{2}{l}{\arity : \K \rightarrow \wp(\P \times \{Exp, Pat, Typ\})} \\
+    \hline
+    \arity(\Root)={} & \left\{ (\Root, Exp) \right\} \\
+    \arity(\PatVar(x))={} & \left\{ \right\} \\
+    \arity(\ExpVar(x))={} & \left\{ \right\} \\
+    \arity(\ExpLam)={} & \left\{ (\LamParam, Pat), (\mathtt{Type}, Typ), (\mathtt{Body}, Exp) \right\} \\
+    \arity(\ExpApp)={} & \left\{ (\mathtt{Fun}, Exp), (\mathtt{Arg}, Exp) \right\} \\
+    \arity(\ExpPlus)={} & \left\{ (\mathtt{L}, Exp), (\mathtt{R}, Exp) \right\} \\
+    \arity(\ExpTimes)={} & \left\{ (\mathtt{L}, Exp), (\mathtt{R}, Exp) \right\} \\
+    \arity(\ExpNum(n))={} & \left\{ \right\} \\
+    \arity(\TypArrow)={} & \left\{ (\mathtt{Arg}, Typ), (\mathtt{Result}, Typ) \right\} \\
+    \arity(\TypNum)={} & \left\{ \right\} \\
+  \end{array}
+\]%
+}
+
+\newcommand{\figureArity}{%
+\begin{figure}
+\figureArityContent
+\caption{Constructors, Indexes and Arity}
+\label{fig:Constructors, Indexes and Arity}
+\end{figure}%
+}
