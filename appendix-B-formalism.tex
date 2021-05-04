@@ -39,7 +39,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Decomposition and Recomposition}
-
+E
 \begin{theorem}
   Let $G$ be a well sorted graph.
   There exists a grove $\Grove$ such that $\decomp{G} = \Grove$.
@@ -78,73 +78,73 @@ Proof: provide a witness that demonstrates the conclusion.
 %
 \begin{align*}
   \decomp{G} &= (NP, MP, U, D) \\
-  NP &= \SetOf{\expr(v) \SuchThat{|\parents(v)| = 0}} \\
-  MP &= \SetOf{\expr(v) \SuchThat{|\parents(v)| > 1}} \\
-  U &= \SetOf{\expr(v) \SuchThat{|\parents(v)| = 1 \land v = \min(\ancestors(v))}} \\
+  NP &= \SetOf{\edecomp{v} \SuchThat{|\parents(v)| = 0}} \\
+  MP &= \SetOf{\edecomp{v} \SuchThat{|\parents(v)| > 1}} \\
+  U &= \SetOf{\edecomp{v} \SuchThat{|\parents(v)| = 1 \land v = \min(\ancestors(v))}} \\
   D &= \SetOf{\e \SuchThat{G(\e) = \Minus}}
 \end{align*}
 
-\noindent $\boxed{\expr(v) = e}$
+\noindent $\boxed{\edecomp{v} = e}$
 %
 \begin{align*}
-  \expr(v=(u, Root)) &= expr'(v, Root) \\
-  \expr(v=(u, \ExpVar(x))) &= x^{\id{u}} \\
-  \expr(v=(u, \ExpLam)) &= \lambda^{\id{u}} \patt'(v, \LamParam) : \type'(v, \LamType) . \expr'(v, \LamBody) \\
-  \expr(v=(u, \ExpApp)) &= (\expr'(v, \AppFun)~\expr'(v, \AppArg))^{\id{u}} \\
-  \expr(v=(u, \ExpNum(n))) &= n^{\id{u}} \\
-  \expr(v=(u, \ExpPlus)) &= \expr'(v, \PlusLeft)~\texttt{+}^{\id{u}}~\expr'(v, \PlusRight) \\
-  \expr(v=(u, \ExpTimes)) &= \expr'(v, \TimesLeft)~\texttt{*}^{\id{u}}~\expr'(v, \TimesRight)
+  \edecomp{v=(u, Root)} &= \edecompPrime{v}{Root} \\
+  \edecomp{v=(u, \ExpVar(x))} &= x^{\id{u}} \\
+  \edecomp{v=(u, \ExpLam)} &= \lambda^{\id{u}} \pdecompPrime{v}{\LamParam} : \tdecompPrime{v}{\LamType} . \edecompPrime{v}{\LamBody} \\
+  \edecomp{v=(u, \ExpApp)} &= (\edecompPrime{v}{\AppFun}~\edecompPrime{v}{\AppArg})^{\id{u}} \\
+  \edecomp{v=(u, \ExpNum(n))} &= n^{\id{u}} \\
+  \edecomp{v=(u, \ExpPlus)} &= \edecompPrime{v}{\PlusLeft}~\texttt{+}^{\id{u}}~\edecompPrime{v}{\PlusRight} \\
+  \edecomp{v=(u, \ExpTimes)} &= \edecompPrime{v}{\TimesLeft}~\texttt{*}^{\id{u}}~\edecompPrime{v}{\TimesRight}
 \end{align*}
 
-\noindent $\boxed{\patt(v) = q}$
+\noindent $\boxed{\pdecomp{v} = q}$
 %
 \begin{align*}
-  \patt(v=(u, \PatVar(x))) &= x^{\id{u}}
+  \pdecomp{v=(u, \PatVar(x))} &= x^{\id{u}}
 \end{align*}
 
-\noindent $\boxed{\type(v) = \tau}$
+\noindent $\boxed{\tdecomp{v} = \tau}$
 %
 \begin{align*}
-  \type(\tau=(u, \TypArrow)) &= \type'(\tau, \ArrowArg) \rightarrow^{\id{u}} \type'(\tau, \ArrowResult) \\
-  \type(\tau=(u, \TypNum) &= Num^{\id{u}}
+  \tdecomp{\tau=(u, \TypArrow)} &= \tdecompPrime{\tau}{\ArrowArg} \rightarrow^{\id{u}} \tdecompPrime{\tau}{\ArrowResult} \\
+  \tdecomp{\tau=(u, \TypNum)} &= Num^{\id{u}}
 \end{align*}
 
-\noindent $\boxed{\expr'(v, p) = e}$
+\noindent $\boxed{\edecompPrime{v}{p} = e}$
 %
 \begin{align*}
-  \expr'(v,p) = \begin{cases}
+  \edecompPrime{v}{p} = \begin{cases}
     \hole & \children(v,p) = \varnothing \\
-    \conflictHole{\expr(v_1),\ldots,\expr(v_n)} & \children(v,p) = \SetOf{v_1, \ldots, v_n} \\
+    \conflictHole{\edecomp{v_1}, \ldots, \edecomp{v_n}} & \children(v,p) = \SetOf{v_1, \ldots, v_n} \\
     \multiVertex{u} & \children(v,p) = \SetOf{v'} \land |\parents(v')| > 1 \\
     \cycleVertex{u} & \children(v,p) = \SetOf{v' = (u,k)} \land |\parents(v')| = 1 \\
         & \phantom{\children(v,p)} \land v' = \min(\ancestors(v')) \\
-    \expr(v') & \text{otherwise} \\
+    \edecomp{v'} & \text{otherwise} \\
   \end{cases}
 \end{align*}
 
-\noindent $\boxed{\patt'(v, p) = q}$
+\noindent $\boxed{\pdecomp{v}{p} = q}$
 %
 \begin{align*}
-  \patt'(v,p) = \begin{cases}
+  \pdecompPrime{v}{p} = \begin{cases}
     \hole & \children(v,p) = \varnothing \\
-    \conflictHole{\patt(v_1),\ldots,\patt(v_n)} & \children(v,p) = \SetOf{v_1, \ldots, v_n} \\
+    \conflictHole{\pdecomp{v_1},\ldots,\pdecomp{v_n}} & \children(v,p) = \SetOf{v_1, \ldots, v_n} \\
     \multiVertex{u} & \children(v,p) = \SetOf{v'} \land |\parents(v')| > 1 \\
     \cycleVertex{u} & \children(v,p) = \SetOf{v'=(u,k)} \land |\parents(v')| = 1 \\
         & \phantom{\children(v,p)} \land v' = \min(\ancestors(v')) \\
-    \patt(v') & \text{otherwise} \\
+    \pdecomp{v'} & \text{otherwise} \\
   \end{cases}
 \end{align*}
 
-\noindent $\boxed{\type'(v, p) = \tau}$
+\noindent $\boxed{\tdecompPrime{v}{p} = \tau}$
 %
 \begin{align*}
-  \type'(v,p) = \begin{cases}
+  \tdecompPrime{v}{p} = \begin{cases}
     \hole & \children(v,p) = \varnothing \\
-    \conflictHole{\type(v_1),\ldots,\type(v_n)} & \children(v,p) = \SetOf{v_1, \ldots, v_n} \\
+    \conflictHole{\tdecomp{v_1},\ldots,\tdecomp{v_n}} & \children(v,p) = \SetOf{v_1, \ldots, v_n} \\
     \multiVertex{u} & \children(v,p) = \SetOf{v'} \land |\parents(v')| > 1 \\
     \cycleVertex{u} & \children(v,p) = \SetOf{v' = (u,k)} \land |\parents(v')| = 1 \\
         & \phantom{\children(v,p)} \land v' = \min(\ancestors(v')) \\
-    \type(v') & \text{otherwise} \\
+    \tdecomp{v'} & \text{otherwise} \\
   \end{cases}
 \end{align*}
 

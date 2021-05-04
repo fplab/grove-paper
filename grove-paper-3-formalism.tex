@@ -217,9 +217,9 @@ A grove is a 3-tuple of the following form:
 where
 \begin{align*}
   % e_r &= \expr(v_0) \\
-  NP &= \{\expr(v) : |\parents(v)| = 0\} \\
-  MP &= \{\expr(v) : |\parents(v)| > 1\} \\
-  U  &= \{\expr(v) : |\parents(v)| = 1 \wedge v = \min(\ancestors(v))\} \\
+  NP &= \{\edecomp{v} : |\parents(v)| = 0\} \\
+  MP &= \{\edecomp{v} : |\parents(v)| > 1\} \\
+  U  &= \{\edecomp{v} : |\parents(v)| = 1 \wedge v = \min(\ancestors(v))\} \\
   D  &= \{\e : G(\e) = \Minus\}
 \end{align*}
 For example, the grove corresponding to the graph in \autoref{fig:Decomposition example graph} is

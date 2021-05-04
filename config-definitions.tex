@@ -98,6 +98,30 @@
 \newcommand{\decomp}[1]{\decompOp\mathopen{}\left(#1\right)\mathclose{}}
 \newcommand{\vertexes}[1]{\vertexesOp\mathopen{}\left(#1\right)\mathclose{}}
 
+\DeclareMathOperator{\edecompOp}{\texttt{edecomp}}
+\DeclareMathOperator{\pdecompOp}{\texttt{pdecomp}}
+\DeclareMathOperator{\tdecompOp}{\texttt{tdecomp}}
+\DeclareMathOperator{\edecompPrimeOp}{\edecompOp^\prime}
+\DeclareMathOperator{\pdecompPrimeOp}{\pdecompOp^\prime}
+\DeclareMathOperator{\tdecompPrimeOp}{\tdecompOp^\prime}
+\newcommand{\edecomp}[1]{\edecompOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\pdecomp}[1]{\pdecompOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\tdecomp}[1]{\tdecompOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\edecompPrime}[2]{\edecompPrimeOp\mathopen{}\left(#1, #2\right)\mathclose{}}
+\newcommand{\pdecompPrime}[2]{\pdecompPrimeOp\mathopen{}\left(#1, #2\right)\mathclose{}}
+\newcommand{\tdecompPrime}[2]{\tdecompPrimeOp\mathopen{}\left(#1, #2\right)\mathclose{}}
+
+% \DeclareMathOperator{\expr}{\text{expr}}
+% \DeclareMathOperator{\patt}{\text{patt}}
+% \DeclareMathOperator{\type}{\text{type}}
+
+% helpers
+\DeclareMathOperator{\parents}{\text{parents}}
+\DeclareMathOperator{\ancestors}{\text{ancestors}}
+\DeclareMathOperator{\vertices}{\text{vertices}}
+\DeclareMathOperator{\children}{\text{children}}
+\DeclareMathOperator{\lfp}{\text{lfp}}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Recomposition
 
@@ -147,13 +171,3 @@
 % relations
 \DeclareMathOperator{\sort}{\text{sort}}
 \DeclareMathOperator{\arity}{\text{arity}}
-
-% graph decomposition operators
-\DeclareMathOperator{\expr}{\text{expr}}
-\DeclareMathOperator{\patt}{\text{patt}}
-\DeclareMathOperator{\type}{\text{type}}
-\DeclareMathOperator{\parents}{\text{parents}}
-\DeclareMathOperator{\ancestors}{\text{ancestors}}
-\DeclareMathOperator{\vertices}{\text{vertices}}
-\DeclareMathOperator{\children}{\text{children}}
-\DeclareMathOperator{\lfp}{\text{lfp}}
