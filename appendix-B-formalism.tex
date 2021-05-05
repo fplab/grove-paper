@@ -39,10 +39,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Decomposition and Recomposition}
-E
+
 \begin{theorem}
-  Let $G$ be a well sorted graph.
-  There exists a grove $\Grove$ such that $\decomp{G} = \Grove$.
+  Let $G$ be a well sorted graph with deleted edges $D \subset \E$.
+  There exists a grove $\Grove$ such that $\decomp{G} = (\Grove, D)$.
 \end{theorem}
 
 Proof: provide a witness that demonstrates the conclusion.
@@ -57,11 +57,6 @@ Proof: provide a witness that demonstrates the conclusion.
 %   If $\recomp{\Grove} = G$ then $\vertexes{\Grove} = \vertexes{G}$.
 % \end{theorem}
 
-\begin{theorem}
-  Let $G$ be a well sorted graph.
-  if $\decomp{G} = \Grove$ then $\recomp{\Grove} = G$.
-\end{theorem}
-
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
 \subsubsection{Helpers}
@@ -70,9 +65,9 @@ Proof: provide a witness that demonstrates the conclusion.
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
-\subsubsection{Decomposition}
+\subsubsection{Decomposition}\hspace*{\fill} \\
 
-\noindent $\boxed{\decomp{G} = \Grove}$
+\noindent $\boxed{\decomp{G} = (\Grove, \E)}$
 %
 \figureDecompositionDefDecomp
 
@@ -92,7 +87,7 @@ Proof: provide a witness that demonstrates the conclusion.
 %
 \figureDecompositionDefEdecompPrime
 
-\noindent $\boxed{\pdecomp{v}{p} = q}$
+\noindent $\boxed{\pdecompPrime{v}{p} = q}$
 %
 \figureDecompositionDefPdecompPrime
 
@@ -102,18 +97,23 @@ Proof: provide a witness that demonstrates the conclusion.
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
-\subsubsection{Recomposition}
+\subsubsection{Recomposition}\hspace*{\fill} \\
 
-\noindent $\boxed{\recomp{\Grove} = G}$
+\begin{theorem}
+  Let $G$ be a well sorted graph with deleted edges $D \subset \E$
+  such that $\decomp{G} = (\Grove, D)$. Then $\recomp{\Grove}{D} = G$.
+\end{theorem}
+
+\noindent $\boxed{\recomp{\Grove}{\E} = G}$
 %
 \begin{align*}
-  \recomp{(MP, NP, U, D)} &= \recompPlus{MP, NP, U} \cup \SetOf{\e \mapsto \Minus \SuchThat{\e \in D}}
+  \recomp{(NP, MP, U)}{D} &= \recompPlus{NP, MP, U} \cup \SetOf{\e \mapsto \Minus \SuchThat{\e \in D}}
 \end{align*}
 
-\noindent $\boxed{\recompPlus{MP, NP, U} = G}$
+\noindent $\boxed{\recompPlus{NP, MP, U} = G}$
 %
 \begin{align*}
-  \recompPlus{MP, NP, U} &= \SetOf{\e \mapsto \Plus \SuchThat{\e \in \bigcup_{e \in MP \cup NP \cup U} \erecomp{e}}}
+  \recompPlus{NP, MP, U} &= \SetOf{\e \mapsto \Plus \SuchThat{\e \in \bigcup_{e \in NP \cup MP \cup U} \erecomp{e}}}
 \end{align*}
 
 \noindent $\boxed{\erecomp{e} = \E}$

@@ -13,16 +13,16 @@
 
 \newcommand{\figureDecompositionDefDecomp}{%
 \begin{align*}
-  \decomp{G} &= (NP, MP, U, D) \\
-  \figureDecompositionDefDecompComponents
+  \decomp{G} &= ((NP, MP, U), D) \\
+  \figureDecompositionDefDecompComponents \\
+  D &= \SetOf{\e \SuchThat{G(\e) = \Minus}}
 \end{align*}%
 }
 
 \newcommand{\figureDecompositionDefDecompComponents}{%
   NP &= \SetOf{\edecomp{v} \SuchThat{|\parents(v)| = 0}} \\
   MP &= \SetOf{\edecomp{v} \SuchThat{|\parents(v)| > 1}} \\
-  U &= \SetOf{\edecomp{v} \SuchThat{|\parents(v)| = 1 \land v = \min(\ancestors(v))}} \\
-  D &= \SetOf{\e \SuchThat{G(\e) = \Minus}}%
+  U &= \SetOf{\edecomp{v} \SuchThat{|\parents(v)| = 1 \land v = \min(\ancestors(v))}}%
 }
 
 \newcommand{\figureDecompositionDefEdecomp}{%
