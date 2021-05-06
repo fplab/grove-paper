@@ -5,7 +5,8 @@
   \parents(v) &= \SetOf{v' \SuchThat{\exists \e = (u, v', p, v), G(\e) = \Plus}} \\
   \ancestors(v) &= \mathopen{}\left( \lfp(\ancestors') \right)\mathclose{}(v) \\
   \ancestors'(v) &= \parents(v) \cup \ancestors'(\parents(v)) \\
-  \min\mathopen{}\left(\SetOf{(u_1, k_1), \ldots, (u_n, k_n)}\right)\mathclose{} &= (u_j, k_j) \text{ s.t. } 1 \leq j \leq n \land u_j \le u_i \forall i = 1, \ldots, n
+  % \min{(u_1, v_1, p_1, v_1'), \ldots, (u_n, v_n, p_n, v_n')} &= \min{v_1', \ldots, v_n'} \\
+  \min{(u_1, k_1), \ldots, (u_n, k_n)} &= (u_j, k_j) \text{ s.t. } 1 \leq j \leq n \land u_j \le u_i \forall i = 1, \ldots, n
 \end{align*}%
 }
 
@@ -22,7 +23,7 @@
 \newcommand{\figureDecompositionDefDecompComponents}{%
   NP &= \SetOf{\edecomp{v} \SuchThat{|\parents(v)| = 0}} \\
   MP &= \SetOf{\edecomp{v} \SuchThat{|\parents(v)| > 1}} \\
-  U &= \SetOf{\edecomp{v} \SuchThat{|\parents(v)| = 1 \land v = \min(\ancestors(v))}}%
+  U &= \SetOf{\edecomp{v} \SuchThat{|\parents(v)| = 1 \land v = \min{\ancestors(v)}}}%
 }
 
 \newcommand{\figureDecompositionDefEdecomp}{%
@@ -57,7 +58,7 @@
     \conflictHole{\edecomp{v_1}, \ldots, \edecomp{v_n}} & \children(v,p) = \SetOf{v_1, \ldots, v_n} \\
     \multiVertex{u} & \children(v,p) = \SetOf{v'} \land |\parents(v')| > 1 \\
     \cycleVertex{u} & \children(v,p) = \SetOf{v' = (u,k)} \land |\parents(v')| = 1 \\
-        & \phantom{\children(v,p)} \land v' = \min(\ancestors(v')) \\
+        & \phantom{\children(v,p)} \land v' = \min{\ancestors(v')} \\
     \edecomp{v'} & \text{otherwise} \\
   \end{cases}
 \end{align*}%
@@ -70,7 +71,7 @@
     \conflictHole{\pdecomp{v_1},\ldots,\pdecomp{v_n}} & \children(v,p) = \SetOf{v_1, \ldots, v_n} \\
     \multiVertex{u} & \children(v,p) = \SetOf{v'} \land |\parents(v')| > 1 \\
     \cycleVertex{u} & \children(v,p) = \SetOf{v'=(u,k)} \land |\parents(v')| = 1 \\
-        & \phantom{\children(v,p)} \land v' = \min(\ancestors(v')) \\
+        & \phantom{\children(v,p)} \land v' = \min{\ancestors(v')} \\
     \pdecomp{v'} & \text{otherwise} \\
   \end{cases}
 \end{align*}%
@@ -83,7 +84,7 @@
     \conflictHole{\tdecomp{v_1},\ldots,\tdecomp{v_n}} & \children(v,p) = \SetOf{v_1, \ldots, v_n} \\
     \multiVertex{u} & \children(v,p) = \SetOf{v'} \land |\parents(v')| > 1 \\
     \cycleVertex{u} & \children(v,p) = \SetOf{v' = (u,k)} \land |\parents(v')| = 1 \\
-        & \phantom{\children(v,p)} \land v' = \min(\ancestors(v')) \\
+        & \phantom{\children(v,p)} \land v' = \min{\ancestors(v')} \\
     \tdecomp{v'} & \text{otherwise} \\
   \end{cases}
 \end{align*}%
