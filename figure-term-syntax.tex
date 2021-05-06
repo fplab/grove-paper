@@ -1,3 +1,4 @@
+
 \newcommand{\figureTermSyntaxContent}{%
 \[
   \arraycolsep=0pt
@@ -5,27 +6,27 @@
     q & {}\in Pat & {}::={} &
       x^{\id{u}}
       \mid \hole
-      \mid \conflictHole{q,\ldots,q}
+      \mid \conflictHole{\preid{u}{q}, \ldots, \preid{u}{q}}
       \mid \multiVertex{u}
       \mid \cycleVertex{u}
       \\
     \tau & {}\in Typ & {}::={} &
-      \tau \rightarrow^{\id{u}} \tau
+      \tArrow{u}{\tau}{u}{u}{\tau}
       \mid Num^{\id{u}}
       \mid \hole
-      \mid \conflictHole{\tau,\ldots,\tau}
+      \mid \conflictHole{\preid{u}{\tau}, \ldots, \preid{u}{\tau}}
       \mid \multiVertex{u}
       \mid \cycleVertex{u}
       \\
     e & {}\in Exp & {}::={} &
       x^{\id{u}}
-      \mid \lambda^{\id{u}} q \mathord{:}\tau.e
-      \mid (e~e)^{\id{u}}
+      \mid \eFun{u}{u}{q}{u}{\tau}{u}{e}
+      \mid \eApp{u}{e}{u}{u}{e}
       \mid n^{\id{u}}
-      \mid e~\texttt{+}^{\id{u}}~e
-      \mid e~\texttt{*}^{\id{u}}~e
+      \mid \ePlus{u}{e}{u}{u}{e}
+      \mid \eTimes{u}{e}{u}{u}{e}
       \mid \hole
-      \mid \conflictHole{e,\ldots,e}
+      \mid \conflictHole{\preid{u}{e}, \ldots, \preid{u}{e}}
       \mid \multiVertex{u}
       \mid \cycleVertex{u}
       \\

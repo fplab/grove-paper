@@ -2,18 +2,18 @@
 % Language Components
 
 \usepackage{xstring}
+\usepackage{tensor}
 
 % \selectcolormodel{gray}
 
 % notation
 \def\_{\texttt{\textunderscore}}
 \newcommand{\id}[1]{\textcolor{gray}{\ensuremath{#1}}}
+\newcommand{\preid}[2]{\tensor*[_{\id{#1}}]{#2}{}}
 \newcommand{\abs}[1]{\left\lvert#1\right\rvert}
-
 \newcommand{\figureCode}[1]{\textbf{\texttt{#1}}\vskip1em}
-
-\newcommand\SetOf[1]{\left\{#1\right\}}
-\newcommand\SuchThat[1]{ : #1}
+\newcommand{\SetOf}[1]{\left\{#1\right\}}
+\newcommand{\SuchThat}[1]{ : #1}
 
 % sets
 \def\A{\mathcal{A}}
@@ -89,6 +89,12 @@
 \newcommand{\conflictHole}[1]{%
 {\noexpandarg\StrSubstitute{#1}{,}{\textcolor{red}{\;\textbf{|}\;}}[\myargs]%
 {\textcolor{red}{\textbf{\{}}\myargs\textcolor{red}{\textbf{\}}}}}}%
+
+\newcommand{\eFun}[7]{\lambda^{\id{#1}}\!\!\!\!\preid{#2}{#3}\mathord{:}\preid{#4}{#5}.\preid{#6}{#7}}
+\newcommand{\eApp}[5]{\preid{#1}{#2}^{\id{#3}}\!\!\!\!\preid{#4}{#5}}
+\newcommand{\ePlus}[5]{\preid{#1}{#2}~\texttt{+}^{\id{#3}}\!\!\!\!\preid{#4}{#5}}
+\newcommand{\eTimes}[5]{\preid{#1}{#2}~\texttt{*}^{\id{#3}}\!\!\!\!\preid{#4}{#5}}
+\newcommand{\tArrow}[5]{\preid{#1}{#2}\rightarrow^{\id{#3}}\!\!\!\!\!\preid{#4}{#5}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Decomposition
