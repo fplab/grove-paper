@@ -1,12 +1,12 @@
 
 \newcommand{\figureDecompositionDefHelpersContent}{%
 \begin{align*}
-  \children(v, p) &= \SetOf{\e = (u, v, p, v') \SuchThat{G(\e) = \Plus}} \\
-  \parents(v) &= \SetOf{\e = (u, v', p, v) \SuchThat{G(\e) = \Plus}} \\
+  \adjacent(v, p) &= \SetOf{\e = (u, v, p, v') \SuchThat{G(\e) = \Plus}} \\
+  \children(v) &= \SetOf{v' \SuchThat{\exists \e = (u, v, p, v') \land G(\e) = \Plus}} \\
+  \parents(v) &= \SetOf{v' \SuchThat{\exists \e = (u, v', p, v) \land G(\e) = \Plus}} \\
   \ancestors(v) &= \mathopen{}\left( \lfp(\ancestors') \right)\mathclose{}(v) \\
   \ancestors'(v) &= \parents(v) \cup \ancestors'(\parents(v)) \\
-  % \min{(u_1, v_1, p_1, v_1'), \ldots, (u_n, v_n, p_n, v_n')} &= \min{v_1', \ldots, v_n'} \\
-  \min{(u_1, k_1), \ldots, (u_n, k_n)} &= (u_j, k_j) \text{ s.t. } 1 \leq j \leq n \land u_j \le u_i \forall i = 1, \ldots, n
+  \min{(u_1, k_1), \ldots, (u_n, k_n)} &= (u_j, k_j) \text{ s.t. } 1 \leq j \leq n \land u_j \le u_i \forall i = 1, \ldots, n \\
 \end{align*}%
 }
 
@@ -21,15 +21,15 @@
 }
 
 \newcommand{\figureDecompositionDefDecompComponents}{%
-  NP &= \SetOf{\edecomp{\e} \SuchThat{|\parents(\e)| = 0}} \\
-  MP &= \SetOf{\edecomp{\e} \SuchThat{|\parents(\e)| > 1}} \\
-  U &= \SetOf{\edecomp{\e} \SuchThat{|\parents(\e)| = 1 \land \e \in \min{\ancestors(\e)}}}%
+  NP &= \SetOf{\edecomp{(u, v, p, v')} \SuchThat{|\parents(v')| = 0}} \\
+  MP &= \SetOf{\edecomp{(u, v, p, v')} \SuchThat{|\parents(v')| > 1}} \\
+  U &= \SetOf{\edecomp{(u, v, p, v')} \SuchThat{|\parents(v')| = 1 \land v' = \min{\ancestors(v')}}}%
 }
 
 \newcommand{\figureDecompositionDefEdecomp}{%
 \begin{align*}
   % \edecomp{v=(u, Root)} &= \edecompPrime{v}{Root} \\
-  \edecomp{\e=(u, v, p, (u', \ExpVar(x)))} &= \eVar{\parents(\e)}{u'}{x} \\
+  \edecomp{\e=(u, v, p, (u', \ExpVar(x)))} &= \eVar{\adjacent(v, p)}{u'}{x} \\
   \edecomp{\e=(u, v, p, (u', \ExpLam))} &= \eFun{\parents(\e)}{u'}{q}{\tau}{e} \\
   & q = \pdecompPrime{\e}{\LamParam} \\
   & \tau = \tdecompPrime{\e}{\LamType} \\

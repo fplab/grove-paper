@@ -4,27 +4,27 @@
   \arraycolsep=0pt
   \begin{array}{lrlll}
     q & {}\in Pat & {}::={} &
-      \pVar{\uset}{u}{x}
+      \pVar{\backrefs}{u}{x}
       \mid \conflictHole{q, \ldots, q}
       \mid \multiVertex{u}
       \mid \cycleVertex{u}
       \mid \hole
       \\
     \tau & {}\in Typ & {}::={} &
-      \tArrow{\uset}{u}{\tau}{\tau}
-      \mid \tNum{\uset}{u}
+      \tArrow{\backrefs}{u}{\tau}{\tau}
+      \mid \tNum{\backrefs}{u}
       \mid \conflictHole{u, \ldots, u}
       \mid \multiVertex{u}
       \mid \cycleVertex{u}
       \mid \hole
       \\
     e & {}\in Exp & {}::={} &
-      \eVar{\uset}{u}{x}
-      \mid \eFun{\uset}{u}{q}{\tau}{e}
-      \mid \eApp{\uset}{u}{e}{e}
-      \mid \eNum{\uset}{u}{n}
-      \mid \ePlus{\uset}{u}{e}{e}
-      \mid \eTimes{\uset}{u}{e}{e}
+      \eVar{\backrefs}{u}{x}
+      \mid \eFun{\backrefs}{u}{q}{\tau}{e}
+      \mid \eApp{\backrefs}{u}{e}{e}
+      \mid \eNum{\backrefs}{u}{n}
+      \mid \ePlus{\backrefs}{u}{e}{e}
+      \mid \eTimes{\backrefs}{u}{e}{e}
       \mid \conflictHole{e, \ldots, e}
       \mid \multiVertex{u}
       \mid \cycleVertex{u}

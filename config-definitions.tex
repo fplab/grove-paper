@@ -12,7 +12,7 @@
 \newcommand{\eid}[2]{\tensor*[_{#1}]{#2}{}}
 \newcommand{\vid}[2]{\tensor*{#1}{^{#2}}}
 \newcommand{\evid}[3]{\tensor*[_{\id{#1}}]{#3}{^{\id{#2}}}}
-\newcommand{\uset}{\overline{u}}
+\newcommand{\backrefs}{\overline{\e}}
 \newcommand{\abs}[1]{\left\lvert#1\right\rvert}
 \newcommand{\figureCode}[1]{\textbf{\texttt{#1}}\vskip1em}
 \newcommand{\SetOf}[1]{\left\{#1\right\}}
@@ -96,7 +96,7 @@
 \newcommand{\eVar}[3]{\evid{#1}{#2}{#3}}
 \newcommand{\eFun}[5]{\evid{#1}{#2}{\lambda} #3 : #4 . #5}
 \newcommand{\eApp}[4]{\evid{#1}{#2}{\left(#3~#4\right)}}
-\newcommand{\eNum}[3]{\evid{#1}{#2}{#3}}
+\newcommand{\eNum}[3]{\evid{#1}{#2}{\underline{#3}}}
 \newcommand{\ePlus}[4]{#3~\evid{#1}{#2}{\texttt{+}}~#4}
 \newcommand{\eTimes}[4]{#3~\evid{#1}{#2}{\texttt{*}}~#4}
 \newcommand{\pVar}[3]{\evid{#1}{#2}{#3}}
@@ -125,6 +125,7 @@
 \newcommand{\tdecompPrime}[2]{\tdecompPrimeOp\mathopen{}\left(#1, #2\right)\mathclose{}}
 
 % helpers
+\DeclareMathOperator{\adjacent}{\text{adjacent}}
 \DeclareMathOperator{\parents}{\text{parents}}
 \DeclareMathOperator{\ancestors}{\text{ancestors}}
 \DeclareMathOperator{\vertices}{\text{vertices}}

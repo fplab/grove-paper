@@ -119,16 +119,16 @@ Proof: provide a witness that demonstrates the conclusion.
 \noindent $\boxed{\erecomp{e} = \E}$
 %
 \begin{align*}
-  \erecomp{\varExp{x}{u}} &= \SetOf{}
+  \erecomp{\eVar{\backrefs}{u}{x}} &= \SetOf{(u', v', p', (u, \ExpVar(x))) \SuchThat{(u', v', p') \in \backrefs}}
   \\
-  \erecomp{\numExp{n}{u}} &= \SetOf{}
-  \\
-  \erecomp{\appExp{e_\AppFun}{e_\AppArg}{u}}
+  \erecomp{\eApp{\backrefs}{u}{e_\AppFun}{e_\AppArg}}
   &= \erecomp{e_\AppFun}
   \cup \erecomp{e_\AppArg} \\
   &\cup \erecompPrime{v}{\AppFun}{e_\AppFun}
   \cup \erecompPrime{v}{\AppArg}{e_\AppArg} \\
   &\quad\text{where } v = (u, \ExpApp)
+  \\
+  \erecomp{\eNum{\backrefs}{u}{n}} &= \backrefs
   \\
   \erecomp{\plusExp{e_\PlusLeft}{u}{e_\PlusRight}}
   &= \erecomp{e_\PlusLeft}
