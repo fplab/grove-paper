@@ -31,9 +31,36 @@
 \figureArityContent
 
 \begin{definition}
-  Let $\e = (u, (u_1, k_1), p, (u_2, k_2))$.
-  A graph $G$ is well sorted if $(p, \sort(k_2)) \in \arity(k_1)$
-  for all $\e$ such that $G(\e) \in \{\Plus, \Minus\}$.
+  A graph $G$ is well sorted if $\e$ is well sorted
+  for all edges $\e$ such that $G(\e) \in \{\Plus, \Minus\}$.
+\end{definition}
+
+\begin{definition}
+  An edge $\e = (u, (u_1, k_1), p, (u_2, k_2))$ is well sorted
+  if $(p, \sort(k_2)) \in \arity(k_1)$.
+\end{definition}
+
+\begin{definition}
+  A grove $\Grove = (NP, MP, U)$ is well sorted if all of the following hold:
+  \begin{enumerate}
+    \item $NP$, $MP$, and $U$ contain only well sorted terms.
+    \item The root vertex is in $NP$.
+    \item The terms in $NP$ have no parents.
+    \item The terms in $MP$ have multiple parents.
+    \item The terms in $U$ are unicycles.
+  \end{enumerate}
+\end{definition}
+
+\begin{definition}
+  A term is well sorted if
+  \begin{enumerate}
+    \item there's at least one edge in the incoming edge set
+    \item term constructor matches target vertex constructor
+    \item target vertex id is the same for all incoming edges
+    \item all incoming edges are well sorted
+    \item all multiparented references refer to a multiparent root (TODO: do we need this? be careful with wording)
+    \item all unicycle references refer to a unicycle root (TODO: do we need this? be careful with wording. Could try to reconstruct the path from root (referenced) to ref (referencer).)
+    \end{enumerate}
 \end{definition}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
