@@ -165,27 +165,21 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % actions
-% \def\Create{\text{Create}}
-% \def\Destroy{\text{Destroy}}
 \def\Down{\text{Down}}
 \def\Enqueue{\text{Enqueue}}
 \def\Left{\text{Left}}
 \def\Move{\text{Move}}
 \def\Num{\text{Num}}
-% \def\Restore{\text{Restore}}
 \def\Right{\text{Right}}
 \def\Select{\text{Select}}
 \def\Send{\text{Send}}
 \def\Up{\text{Up}}
 
-\newcommand\Delete{\mathrm{Delete}}
-\newcommand{\Create}[1]{\mathrm{Create}\mathopen{}\left(#1\right)\mathclose{}}
-% \newcommand{\Drop}[1]{\mathrm{Drop}\mathopen{}\left(#1\right)\mathclose{}}
-\newcommand{\Restore}[1]{\mathrm{Restore}\mathopen{}\left(#1\right)\mathclose{}}
-\newcommand{\Wrap}[1]{\mathrm{Wrap}\mathopen{}\left(#1\right)\mathclose{}}
-\newcommand{\Reposition}[1]{\mathrm{Reposition}\mathopen{}\left(#1\right)\mathclose{}}
-
-% \Create{k} \mid \Delete \mid \Drop{\e} \mid \Restore{v}
+\newcommand{\Construct}[1]{\text{Construct}\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\Delete}{\text{Delete}}
+\newcommand{\Reposition}[1]{\text{Reposition}\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\Wrap}[2]{\mathrm{Wrap}\mathopen{}\left(#1, #2\right)\mathclose{}}
+% \newcommand{\Reposition}[1]{\mathrm{Reposition}\mathopen{}\left(#1\right)\mathclose{}}
 
 % relations
 \DeclareMathOperator{\sort}{\text{sort}}

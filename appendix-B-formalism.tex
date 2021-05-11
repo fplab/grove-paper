@@ -299,15 +299,29 @@ Proof: provide a witness that demonstrates the conclusion.
 \[
   \arraycolsep=0pt
   \begin{array}{llll}
-    \alpha & {}::={} & \Create{k} \mid \Delete \mid \Restore{v} \\
-    %  \mid \Drop{\e}
+    \alpha & {}::={} &
+      \Construct{k}
+      \mid \Delete
+      \mid \Reposition{v, p}
+    \\
   \end{array}
 \]
 
-\begin{align*}
-  \Wrap{k, q} &= \Delete; v=\Create{k}; \Restore{v, q} \\
-  \Reposition{v, q} &= \Delete; \Restore{v, q} \\
-\end{align*}
-%
-where $v$ is the destination vertex implied by the cursor, when it exists.
-When no such vertex exists, $\Restore{v}$ is a no-op.
+% \noindent $\boxed{\hat{e} \aArrow{\alpha} \hat{e}}}$
+% %
+% \begin{align*}
+%   \
+% \end{align*}
+
+% Cases:
+% \begin{itemize}
+%   \item construct @ hole (create current edge)
+%   \item construct @ conflict (create new edge into conflict ??)
+%   \item construct @ non-hole (wrap current edge)
+%   \item delete @ hole (no-op)
+%   \item delete @ conflict (destroy all edges ??)
+%   \item delete @ non-hole (destroy current edge)
+%   \item reposition @ hole (no-op)
+%   \item reposition @ conflict (???)
+%   \item reposition @ non-hole (destroy current edge and create new edge with same destination vertex)
+% \end{itemize}
