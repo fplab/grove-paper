@@ -254,7 +254,7 @@ Breaking the cycle turns a unicyclic graph into a tree.
 % TODO: try clearing up "the root" as e.g., "the component root" or "the root of this components of the grove"
 % TODO: make sure we say "the graph root" when talking about the actual root, and "the component root" everywhere else.
 To break the cycle, we arbitrarily choose the vertex on the cycle with the smallest id, $u$, as the root of that tree.
-Formally, we choose the vertex $v$ such that $v = \min(\ancestors(v))$ because
+Formally, we choose the vertex $v$ such that $v = \min{\ancestors{v}}$ because
 only a vertex on the cycle can be its own ancestor.
 When an edge to this vertex appears, we place a reference to it $\cycleVertex{u}$.
 In our example, ${+}_{\id{46}}$ is referenced by the $LEFT$ edge of ${*}_{\id{48}}$.

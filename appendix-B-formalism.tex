@@ -68,8 +68,9 @@
 \subsection{Decomposition and Recomposition}
 
 \begin{theorem}
-  Let $G$ be a well sorted graph with deleted edges $D \subset \E$.
-  There exists a grove $\Grove$ such that $\decomp{G} = (\Grove, D)$.
+  For any well sorted graph $G$,
+  there exists a (well sorted) grove $\Grove$
+  such that $\decomp{G} = \Grove$.
 \end{theorem}
 
 Proof: provide a witness that demonstrates the conclusion.
@@ -94,7 +95,7 @@ Proof: provide a witness that demonstrates the conclusion.
 
 \subsubsection{Decomposition}\hspace*{\fill} \\
 
-\noindent $\boxed{\decomp{G} = (\Grove, \E)}$
+\noindent $\boxed{\decomp{G} = \Grove}$
 %
 \figureDecompositionDefDecomp
 
@@ -127,171 +128,74 @@ Proof: provide a witness that demonstrates the conclusion.
 \subsubsection{Recomposition}\hspace*{\fill} \\
 
 \begin{theorem}
-  Let $G$ be a well sorted graph with deleted edges $D \subset \E$
-  such that $\decomp{G} = (\Grove, D)$. Then $\recomp{\Grove}{D} = G$.
+  If $G$ is a well sorted graph such that $\decomp{G} = \Grove$,
+  then $\recomp{\Grove} = G$.
 \end{theorem}
 
-\noindent $\boxed{\recomp{\Grove}{\E} = G}$
+\noindent $\boxed{\recomp{\Grove} = G}$
 %
 \begin{align*}
-  \recomp{(NP, MP, U)}{D} &= \recompPlus{NP, MP, U} \cup \SetOf{\e \mapsto \Minus \SuchThat{\e \in D}}
-\end{align*}
-
-\noindent $\boxed{\recompPlus{NP, MP, U} = G}$
-%
-\begin{align*}
-  \recompPlus{NP, MP, U} &= \SetOf{\e \mapsto \Plus \SuchThat{\e \in \bigcup_{e \in NP \cup MP \cup U} \erecomp{e}}}
+  \recomp{(NP, MP, U)} &= \bigcup_{e \in NP \cup MP \cup U} \erecomp{e}
 \end{align*}
 
 \noindent $\boxed{\erecomp{e} = \E}$
 %
 \begin{align*}
-  \erecomp{\eVar{\backrefs}{u}{x}} &= \SetOf{(u', v', p', (u, \ExpVar(x))) \SuchThat{(u', v', p') \in \backrefs}}
+  \erecomp{\eVar{G}{x}} &= G
   \\
-  \erecomp{\eApp{\backrefs}{u}{e_\AppFun}{e_\AppArg}}
-  &= \erecomp{e_\AppFun}
-  \cup \erecomp{e_\AppArg} \\
-  &\cup \erecompPrime{v}{\AppFun}{e_\AppFun}
-  \cup \erecompPrime{v}{\AppArg}{e_\AppArg} \\
-  &\quad\text{where } v = (u, \ExpApp)
+  \erecomp{\eFun{G}{q}{\tau}{e}}
+    &= G \cup \precomp{q} \cup \trecomp{\tau} \cup \erecomp{e}
   \\
-  \erecomp{\eNum{\backrefs}{u}{n}} &= \backrefs
+  \erecomp{\eApp{G}{e_1}{e_2}}
+    &= G \cup \erecomp{e_1} \cup \erecomp{e_2}
   \\
-  \erecomp{\plusExp{e_\PlusLeft}{u}{e_\PlusRight}}
-  &= \erecomp{e_\PlusLeft}
-  \cup \erecomp{e_\PlusRight} \\
-  &\cup \erecompPrime{v}{\PlusLeft}{e_\PlusLeft}
-  \cup \erecompPrime{v}{\PlusRight}{e_\PlusRight} \\
-  &\quad\text{where } v = (u, \ExpPlus)
+  \erecomp{\eNum{G}{n}} &= G
   \\
-  \erecomp{\lamExp{u}{q_\LamParam}{\tau_\LamType}{e_\LamBody}}
-  &= \precomp{q_\LamParam}
-  \cup \trecomp{\tau_\LamType}
-  \cup \erecomp{e_\LamBody} \\
-  &\cup \precompPrime{v}{\LamParam}{q_\LamParam}
-  \cup \trecompPrime{v}{\LamType}{\tau_\LamType} \\
-  &\cup \erecompPrime{v}{\LamBody}{e_\LamBody} \\
-  &\quad\text{where } v = (u, \ExpLam)
+  \erecomp{\ePlus{G}{e_1}{e_2}}
+    &= G \cup \erecomp{e_1} \cup \erecomp{e_2}
   \\
-  \erecomp{\hole} &= \SetOf{}
+  \erecomp{\eTimes{G}{e_1}{e_2}}
+    &= G \cup \erecomp{e_1} \cup \erecomp{e_2}
   \\
   \erecomp{\conflictHole{e_1, \cdots, e_n}}
-  &= \bigcup_{k=1}^n \erecomp{e_k}
+  &= \bigcup_{i=1}^n \erecomp{e_i}
   \\
-  \erecomp{\multiVertex{v}} &= \SetOf{}
+  \erecomp{\multiVertex{\e}} &= \SetOf{\e \mapsto \Plus}
   \\
-  \erecomp{\cycleVertex{v}} &= \SetOf{}
+  \erecomp{\cycleVertex{\e}} &= \SetOf{\e \mapsto \Plus}
+  \\
+  \erecomp{\hole} &= \SetOf{}
 \end{align*}
-%
-% \vskip\baselineskip
-$\boxed{\erecompPrime{v}{p}{e} = \E}$
+
+\noindent $\boxed{\precomp{q} = \E}$
 %
 \begin{align*}
-  \erecompPrime{v}{p}{\varExp{x}{u}}
-  &= \SetOf{(u', v, p, (u, \ExpVar(x)))}
+  \precomp{\pVar{G}{x}} &= G
   \\
-  \erecompPrime{v}{p}{\numExp{n}{u}}
-  &= \SetOf{(u', v, p, (u, \ExpNum(n)))}
+  \precomp{\conflictHole{q_1, \cdots, q_n}} &= \bigcup_{i=1}^n \precomp{q_i}
   \\
-  \erecompPrime{v}{p}{\appExp{e_\AppFun}{e_\AppArg}{u}}
-  &= \SetOf{(u', v, p, (u, \ExpApp))}
+  \precomp{\multiVertex{\e}} &= \SetOf{\e \mapsto \Plus}
   \\
-  \erecompPrime{v}{p}{\plusExp{e_\PlusLeft}{u} {e_\PlusRight}}
-  &= \SetOf{(u', v, p, (u, \ExpPlus))}
-  \\
-  \erecompPrime{v}{p}{\lamExp{u}{q_\LamParam}{\tau_\LamType}{e_\LamBody}}
-  &= \SetOf{(u', v, p, (u, \ExpLam))}
-  \\
-  \erecompPrime{v}{p}{\hole} &= \SetOf{}
-  \\
-  \erecompPrime{v}{p}{\conflictHole{e_1, \cdots, e_n}}
-  &= \bigcup_{i=1}^n \erecompPrime{v}{p}{e_i}
-  \\
-  \erecompPrime{v}{p}{\multiVertex{v'}}
-  &= \SetOf{(u', v, p, v')}
-  \\
-  \erecompPrime{v}{p}{\cycleVertex{v'}}
-  &= \SetOf{(u', v, p, v')}
-\end{align*}
-%
-% \vskip\baselineskip
-$\boxed{\precomp{q} = \E}$
-%
-\begin{align*}
-  \precomp{\varPat{x}{u}} &= \SetOf{}
+  \precomp{\cycleVertex{\e}} &= \SetOf{\e \mapsto \Plus}
   \\
   \precomp{\hole} &= \SetOf{}
-  \\
-  \precomp{\conflictHole{q_1, \cdots, q_n}}
-  &= \bigcup_{i=1}^n \precomp{q_i}
-  \\
-  \precomp{\multiVertex{v}} &= \SetOf{}
-  \\
-  \precomp{\cycleVertex{v}} &= \SetOf{}
 \end{align*}
-%
-% \vskip\baselineskip
-$\boxed{\precompPrime{v}{p}{q} = \E}$
-%
-\begin{align*}
-  \precompPrime{v}{p}{\varPat{x}{u}}
-  &= \SetOf{(u', v, p, (u, \PatVar(x)))}
-  \\
-  \precompPrime{v}{p}{\hole} &= \SetOf{}
-  \\
-  \precompPrime{v}{p}{\conflictHole{e_1, \cdots, e_n}}
-  &= \bigcup_{i=1}^n \precompPrime{v}{p}{e_i}
-  \\
-  \precompPrime{v}{p}{\multiVertex{v'}}
-  &= \SetOf{(u', v, p, v')}
-  \\
-  \precompPrime{v}{p}{\cycleVertex{v'}}
-  &= \SetOf{(u', v, p, v')}
-\end{align*}
-%
-% \vskip\baselineskip
+
 $\boxed{\trecomp{\tau} = \E}$
 %
 \begin{align*}
-  \trecomp{\arrowTyp{\tau_\ArrowArg}{u}{\tau_\ArrowResult}}
-  &= \trecomp{\tau_\ArrowArg}
-  \cup \trecomp{\tau_\ArrowResult} \\
-  &\cup \trecompPrime{v}{\ArrowArg}{\tau_\ArrowArg}
-  \cup \trecompPrime{v}{\ArrowResult}{\tau_\ArrowResult} \\
-  &\quad\text{where } v = (u, \TypArrow)
+  \trecomp{\tArrow{G}{\tau_1}{\tau_2}}
+    &= G \cup \trecomp{\tau_1} \cup \trecomp{\tau_2}
   \\
-  \trecomp{\numTyp{u}} &= \SetOf{}
+  \trecomp{\tNum{G}} &= G
+  \\
+  \trecomp{\conflictHole{\tau_1, \cdots, \tau_n}} &= \bigcup_{i=1}^n \trecomp{\tau_i}
+  \\
+  \trecomp{\multiVertex{\e}} &= \SetOf{\e \mapsto \Plus}
+  \\
+  \trecomp{\cycleVertex{\e}} &= \SetOf{\e \mapsto \Plus}
   \\
   \trecomp{\hole} &= \SetOf{}
-  \\
-  \trecomp{\conflictHole{\tau_1, \cdots, \tau_n}}
-  &= \bigcup_{i=1}^n \trecomp{\tau_i}
-  \\
-  \trecomp{\multiVertex{u}} &= \SetOf{}
-  \\
-  \trecomp{\cycleVertex{u}} &= \SetOf{}
-\end{align*}
-%
-% \vskip\baselineskip
-$\boxed{\trecompPrime{v}{p}{\tau} = \E}$
-%
-\begin{align*}
-  \trecompPrime{v}{p}{\arrowTyp{\tau_\ArrowArg}{u}{\tau_\ArrowResult}}
-  &= \SetOf{(u', v, p, (u, \TypArrow)))}
-  \\
-  \trecompPrime{v}{p}{\numTyp{u}}
-  &= \SetOf{(u', v, p, (u, \TypNum)))}
-  \\
-  \trecompPrime{v}{p}{\hole} &= \SetOf{}
-  \\
-  \trecompPrime{v}{p}{\conflictHole{\tau_1, \cdots, \tau_n}}
-  &= \bigcup_{i=1}^n \trecompPrime{v}{p}{\tau_i}
-  \\
-  \trecompPrime{v}{p}{\multiVertex{v'}}
-  &= \SetOf{(u', v, p, v')}
-  \\
-  \trecompPrime{v}{p}{\cycleVertex{v'}}
-  &= \SetOf{(u', v, p, v')}
 \end{align*}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

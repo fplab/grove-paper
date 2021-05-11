@@ -3,35 +3,35 @@
 \[
   \arraycolsep=0pt
   \begin{array}{lrlll}
-    q & {}\in Pat & {}::={} &
-      \pVar{\backrefs}{u}{x}
-      \mid \conflictHole{q, \ldots, q}
-      \mid \multiVertex{u}
-      \mid \cycleVertex{u}
-      \mid \hole
-      \\
-    \tau & {}\in Typ & {}::={} &
-      \tArrow{\backrefs}{u}{\tau}{\tau}
-      \mid \tNum{\backrefs}{u}
-      \mid \conflictHole{u, \ldots, u}
-      \mid \multiVertex{u}
-      \mid \cycleVertex{u}
-      \mid \hole
-      \\
     e & {}\in Exp & {}::={} &
-      \eVar{\backrefs}{u}{x}
-      \mid \eFun{\backrefs}{u}{q}{\tau}{e}
-      \mid \eApp{\backrefs}{u}{e}{e}
-      \mid \eNum{\backrefs}{u}{n}
-      \mid \ePlus{\backrefs}{u}{e}{e}
-      \mid \eTimes{\backrefs}{u}{e}{e}
+      \eVar{G}{x}
+      \mid \eFun{G}{q}{\tau}{e}
+      \mid \eApp{G}{e}{e}
+      \mid \eNum{G}{n}
+      \mid \ePlus{G}{e}{e}
+      \mid \eTimes{G}{e}{e}
       \mid \conflictHole{e, \ldots, e}
-      \mid \multiVertex{u}
-      \mid \cycleVertex{u}
+      \mid \multiVertex{\e}
+      \mid \cycleVertex{\e}
       \mid \hole
-      \\
+    \\
+    \tau & {}\in Typ & {}::={} &
+      \tArrow{G}{\tau}{\tau}
+      \mid \tNum{G}
+      \mid \conflictHole{\tau, \ldots, \tau}
+      \mid \multiVertex{\e}
+      \mid \cycleVertex{\e}
+      \mid \hole
+    \\
+    q & {}\in Pat & {}::={} &
+      \pVar{G}{x}
+      \mid \conflictHole{q, \ldots, q}
+      \mid \multiVertex{\e}
+      \mid \cycleVertex{\e}
+      \mid \hole
+    \\
   \end{array}
-\]%
+\]
 }
 
 \newcommand{\figureTermSyntax}{%

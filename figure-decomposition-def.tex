@@ -1,11 +1,12 @@
 
 \newcommand{\figureDecompositionDefHelpersContent}{%
 \begin{align*}
-  \adjacent(v, p) &= \SetOf{\e = (u, v, p, v') \SuchThat{G(\e) = \Plus}} \\
-  \children(v) &= \SetOf{v' \SuchThat{\exists \e = (u, v, p, v') \land G(\e) = \Plus}} \\
-  \parents(v) &= \SetOf{v' \SuchThat{\exists \e = (u, v', p, v) \land G(\e) = \Plus}} \\
-  \ancestors(v) &= \mathopen{}\left( \lfp(\ancestors') \right)\mathclose{}(v) \\
-  \ancestors'(v) &= \parents(v) \cup \ancestors'(\parents(v)) \\
+  \ingraph{v} &= \SetOf{\e{=}(u, v', p, v) \mapsto G(\e) \SuchThat{G(\e) \in \SetOf{\Plus, \Minus}}} \\
+  \outedges{v}{p} &= \SetOf{\e{=}(u, v, p, v') \SuchThat{G(\e) = \Plus}} \\
+  % \children{v} &= \SetOf{v' \SuchThat{\exists \e{=}(u, v, p, v') \land G(\e) = \Plus}} \\
+  \parents{v} &= \SetOf{v' \SuchThat{\exists \e{=}(u, v', p, v) \land G(\e) = \Plus}} \\
+  \ancestors{v} &= \mathopen{}\left( \lfp{\ancestorsPrimeOp} \right)\mathclose{}(v) \\
+  \ancestorsPrime{v} &= \parents{v} \cup \ancestorsPrime{\parents{v}} \\
   \min{(u_1, k_1), \ldots, (u_n, k_n)} &= (u_j, k_j) \text{ s.t. } 1 \leq j \leq n \land u_j \le u_i \forall i = 1, \ldots, n \\
 \end{align*}%
 }
@@ -14,34 +15,32 @@
 
 \newcommand{\figureDecompositionDefDecomp}{%
 \begin{align*}
-  \decomp{G} &= ((NP, MP, U), D) \\
-  \figureDecompositionDefDecompComponents \\
-  D &= \SetOf{\e \SuchThat{G(\e) = \Minus}}
+  \decomp{G} &= (NP, MP, U) \\
+  \figureDecompositionDefDecompComponents
 \end{align*}%
 }
 
 \newcommand{\figureDecompositionDefDecompComponents}{%
-  NP &= \SetOf{\edecomp{(u, v, p, v')} \SuchThat{|\parents(v')| = 0}} \\
-  MP &= \SetOf{\edecomp{(u, v, p, v')} \SuchThat{|\parents(v')| > 1}} \\
-  U &= \SetOf{\edecomp{(u, v, p, v')} \SuchThat{|\parents(v')| = 1 \land v' = \min{\ancestors(v')}}}%
+  NP &= \SetOf{\edecomp{(u, v, p, v')} \SuchThat{|\parents{v'}| = 0}} \\
+  MP &= \SetOf{\edecomp{(u, v, p, v')} \SuchThat{|\parents{v'}| > 1}} \\
+  U &= \SetOf{\edecomp{(u, v, p, v')} \SuchThat{|\parents{v'}| = 1 \land v' = \min{\ancestors{v'}}}}%
 }
 
 \newcommand{\figureDecompositionDefEdecomp}{%
 \begin{align*}
-  % \edecomp{v=(u, Root)} &= \edecompPrime{v}{Root} \\
-  \edecomp{\e=(u, v, p, (u', \ExpVar(x)))} &= \eVar{\adjacent(v, p)}{u'}{x} \\
-  \edecomp{\e=(u, v, p, (u', \ExpLam))} &= \eFun{\parents(\e)}{u'}{q}{\tau}{e} \\
+  \edecomp{\e{=}(u, v, p, v'{=}(u', \ExpVar(x)))} &= \eVar{\ingraph{v'}}{x} \\
+  \edecomp{\e{=}(u, v, p, v'{=}(u', \ExpLam))} &= \eFun{\ingraph{v'}}{q}{\tau}{e} \\
   & q = \pdecompPrime{\e}{\LamParam} \\
   & \tau = \tdecompPrime{\e}{\LamType} \\
   & e = \edecompPrime{\e}{\LamBody} \\
-  \edecomp{\e=(u, v, p, (u', \ExpApp))} &= \eApp{\parents(\e)}{u'}{e_\AppFun}{e_\AppArg} \\
+  \edecomp{\e{=}(u, v, p, (u', \ExpApp))} &= \eApp{\ingraph{v'}}{e_\AppFun}{e_\AppArg} \\
   & e_\AppFun = \edecompPrime{\e}{\AppFun} \\
   & e_\AppArg = \edecompPrime{\e}{\AppArg} \\
-  \edecomp{\e=(u, v, p, (u', \ExpNum(n)))} &= \eNum{\parents(\e)}{u'}{n} \\
-  \edecomp{\e=(u, v, p, (u', \ExpPlus))} &= \ePlus{\parents(\e)}{u'}{e_\PlusLeft}{e_\PlusRight} \\
+  \edecomp{\e{=}(u, v, p, v'{=}(u', \ExpNum(n)))} &= \eNum{\ingraph{v'}}{n} \\
+  \edecomp{\e{=}(u, v, p, v'{=}(u', \ExpPlus))} &= \ePlus{\ingraph{v'}}{e_\PlusLeft}{e_\PlusRight} \\
   & e_\PlusLeft = \edecompPrime{\e}{\PlusLeft} \\
   & e_\PlusRight = \edecompPrime{\e}{\PlusRight} \\
-  \edecomp{\e=(u, v, p, (u', \ExpTimes))} &= \eTimes{\parents(\e)}{u'}{e_\TimesLeft}{e_\TimesRight} \\
+  \edecomp{\e{=}(u, v, p, v'{=}(u', \ExpTimes))} &= \eTimes{\ingraph{v'}}{e_\TimesLeft}{e_\TimesRight} \\
   & e_\TimesLeft = \edecompPrime{\e}{\TimesLeft} \\
   & e_\TimesRight = \edecompPrime{\e}{\TimesRight}
 \end{align*}%
@@ -49,32 +48,34 @@
 
 \newcommand{\figureDecompositionDefPdecomp}{%
 \begin{align*}
-  \pdecomp{\e=(u, v, p, (u', \PatVar(x)))} &= \pVar{\parents(\e)}{u}{x}
+  \pdecomp{\e{=}(u, v, p, v'{=}(u', \PatVar(x)))} &= \pVar{\ingraph{v'}}{x}
 \end{align*}%
 }
 
 \newcommand{\figureDecompositionDefTdecomp}{%
 \begin{align*}
-  \tdecomp{\e=(u, v, p, (u', \TypArrow))} &= \tArrow{\parents(\e)}{u'}{\tau_\ArrowArg}{\tau_\ArrowResult} \\
+  \tdecomp{\e{=}(u, v, p, v'{=}(u', \TypArrow))} &= \tArrow{\ingraph{v'}}{\tau_\ArrowArg}{\tau_\ArrowResult} \\
   & \tau_\ArrowArg = \tdecompPrime{\e}{\ArrowArg} \\
   & \tau_\ArrowResult = \tdecompPrime{\e}{\ArrowResult} \\
-  \tdecomp{\e=(u, v, p, (u', \TypNum))} &= \tNum{\parents(\e)}{u'}
+  \tdecomp{\e{=}(u, v, p, v'{=}(u', \TypNum))} &= \tNum{\ingraph{v'}}
 \end{align*}%
 }
 
 \newcommand{\figureDecompositionDefEdecompPrime}{%
 \[
   \begin{array}{l}
-    \edecompPrime{\e}{p} = \\
+    \edecompPrime{\e{=}(u, v, p, v')}{p'} = \\
     \left\{
-    \begin{array}{ll}
-      \conflictHole{\edecomp{\e_1}, \ldots, \edecomp{\e_n}} & \children(\e,p) = \SetOf{\e_1, \ldots, \e_n} \land |\children(\e')| > 1 \\
-      \multiVertex{u} & \children(\e,p) = \SetOf{\e'} \land |\parents(\e')| > 1 \\
-      \cycleVertex{u} & \children(\e,p) = \SetOf{\e'} \land |\parents(\e')| = 1 \\
-          & \phantom{\children(\e,p) = \SetOf{\e'}} \land \e' \in \min{\ancestors(\e')} \\
-      \hole & \children(\e,p) = \varnothing \\
-      \edecomp{\e} & \text{otherwise} \\
-    \end{array}
+      \begin{array}{ll}
+        \conflictHole{\edecomp{\e_1}, \ldots, \edecomp{\e_n}} & \outedges{v'}{p'} = \SetOf{\e_1, \ldots, \e_n} \land n > 1 \\
+        \multiVertex{\e'} & \outedges{v'}{p'} = \SetOf{\e'} \land \e' = (u_{\e'}, v_{\e'}, p_{\e'}, v_{\e'}') \\
+            & \phantom{\outedges{v'}{p'} = \SetOf{\e'}} \land |\parents{v_{\e'}'}| > 1 \\
+        \cycleVertex{\e'} & \outedges{v'}{p'} = \SetOf{\e'} \land \e' = (u_{\e'}, v_{\e'}, p_{\e'}, v_{\e'}') \\
+            & \phantom{\outedges{v'}{p'} = \SetOf{\e'}} \land |\parents{v_{\e'}'}| = 1 \\
+            & \phantom{\outedges{v'}{p'} = \SetOf{\e'}} \land v_{\e'}' = \min{\ancestors{v_{\e'}'}} \\
+        \hole & \outedges{v'}{p'} = \varnothing \\
+        \edecomp{\e} & \text{otherwise} \\
+      \end{array}
     \right.
   \end{array}
 \]%
@@ -85,14 +86,16 @@
   \begin{array}{l}
     \pdecompPrime{\e}{p} = \\
     \left\{
-    \begin{array}{ll}
-      \conflictHole{\pdecomp{\e_1}, \ldots, \pdecomp{\e_n}} & \children(\e,p) = \SetOf{\e_1, \ldots, \e_n} \land |\children(\e')| > 1 \\
-      \multiVertex{u} & \children(\e,p) = \SetOf{\e'} \land |\parents(\e')| > 1 \\
-      \cycleVertex{u} & \children(\e,p) = \SetOf{\e'} \land |\parents(\e')| = 1 \\
-          & \phantom{\children(\e,p) = \SetOf{\e'}} \land \e' \in \min{\ancestors(\e')} \\
-      \hole & \children(\e,p) = \varnothing \\
-      \pdecomp{\e} & \text{otherwise} \\
-    \end{array}
+      \begin{array}{ll}
+        \conflictHole{\pdecomp{\e_1}, \ldots, \pdecomp{\e_n}} & \outedges{v'}{p'} = \SetOf{\e_1, \ldots, \e_n} \land n > 1 \\
+        \multiVertex{\e'} & \outedges{v'}{p'} = \SetOf{\e'} \land \e' = (u_{\e'}, v_{\e'}, p_{\e'}, v_{\e'}') \\
+            & \phantom{\outedges{v'}{p'} = \SetOf{\e'}} \land |\parents{v_{\e'}'}| > 1 \\
+        \cycleVertex{\e'} & \outedges{v'}{p'} = \SetOf{\e'} \land \e' = (u_{\e'}, v_{\e'}, p_{\e'}, v_{\e'}') \\
+            & \phantom{\outedges{v'}{p'} = \SetOf{\e'}} \land |\parents{v_{\e'}'}| = 1 \\
+            & \phantom{\outedges{v'}{p'} = \SetOf{\e'}} \land v_{\e'}' = \min{\ancestors{v_{\e'}'}} \\
+        \hole & \outedges{v'}{p'} = \varnothing \\
+        \pdecomp{\e} & \text{otherwise} \\
+      \end{array}
     \right.
   \end{array}
 \]%
@@ -103,14 +106,16 @@
   \begin{array}{l}
     \tdecompPrime{\e}{p} = \\
     \left\{
-    \begin{array}{ll}
-      \conflictHole{\tdecomp{\e_1}, \ldots, \tdecomp{\e_n}} & \children(\e,p) = \SetOf{\e_1, \ldots, \e_n} \land |\children(\e')| > 1 \\
-      \multiVertex{u} & \children(\e,p) = \SetOf{\e'} \land |\parents(\e')| > 1 \\
-      \cycleVertex{u} & \children(\e,p) = \SetOf{\e'} \land |\parents(\e')| = 1 \\
-          & \phantom{\children(\e,p) = \SetOf{\e'}} \land \e' \in \min{\ancestors(\e')} \\
-      \hole & \children(\e,p) = \varnothing \\
-      \tdecomp{\e} & \text{otherwise} \\
-    \end{array}
+      \begin{array}{ll}
+        \conflictHole{\tdecomp{\e_1}, \ldots, \tdecomp{\e_n}} & \outedges{v'}{p'} = \SetOf{\e_1, \ldots, \e_n} \land n > 1 \\
+        \multiVertex{\e'} & \outedges{v'}{p'} = \SetOf{\e'} \land \e' = (u_{\e'}, v_{\e'}, p_{\e'}, v_{\e'}') \\
+            & \phantom{\outedges{v'}{p'} = \SetOf{\e'}} \land |\parents{v_{\e'}'}| > 1 \\
+        \cycleVertex{\e'} & \outedges{v'}{p'} = \SetOf{\e'} \land \e' = (u_{\e'}, v_{\e'}, p_{\e'}, v_{\e'}') \\
+            & \phantom{\outedges{v'}{p'} = \SetOf{\e'}} \land |\parents{v_{\e'}'}| = 1 \\
+            & \phantom{\outedges{v'}{p'} = \SetOf{\e'}} \land v_{\e'}' = \min{\ancestors{v_{\e'}'}} \\
+        \hole & \outedges{v'}{p'} = \varnothing \\
+        \tdecomp{\e} & \text{otherwise} \\
+      \end{array}
     \right.
   \end{array}
 \]%
