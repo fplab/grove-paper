@@ -195,11 +195,11 @@ Proof: provide a witness that demonstrates the conclusion.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Zippered Terms}
+\subsection{Cursors}
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
-\subsubsection{Syntax}
+\subsubsection{Zippered Terms}
 
 \[
   \arraycolsep=0pt
@@ -229,7 +229,39 @@ Proof: provide a witness that demonstrates the conclusion.
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
+\subsubsection{Zippered Groves}
+
+\begin{gather*}
+  \arraycolsep=0pt
+  \begin{array}{lll}
+    \hat{\gamma} & {}::={} &
+      (\hat{NP}, MP, U)
+      \mid (NP, \hat{MP}, U)
+      \mid (NP, MP, \hat{U})
+  \end{array} \\
+  \hat{NP}, \hat{MP}, \hat{U} = \SetOf{e_1, \ldots, e_{k-1}, \hat{e_k}, e_{k+1}, \ldots, e_n} \\
+  \qquad 1 \leq k \leq n
+\end{gather*}
+
+(Exactly one of $NP, MP, U$ may contain a single zippered term.)
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+
 \subsubsection{Cursor Erasure}\hspace*{\fill} \\
+
+\noindent $\boxed{\erase{\hat{\gamma}} = \gamma}$
+%
+\begin{align*}
+  \erase{(\hat{NP}, MP, U)} &= (\erase{\hat{NP}}, MP, U) \\
+  \erase{(NP, \hat{MP}, U)} &= (NP, \erase{\hat{MP}}, U) \\
+  \erase{(NP, MP, \hat{U})} &= (NP, MP, \erase{\hat{U}})
+\end{align*}
+
+\noindent $\boxed{\erase{\left(Exp \cup ZExp\right)} = Exp}$
+%
+\begin{align*}
+  \erase{\SetOf{e_1, \ldots, e_{k-1}, \hat{e_k}, e_{k+1}, \ldots, e_n}} &= \SetOf{e_1, \ldots, e_{k-1}, \erase{\hat{e_k}}, e_{k+1}, \ldots, e_n}
+\end{align*}
 
 \noindent $\boxed{\erase{\hat{e}} = e}$
 %
