@@ -1,13 +1,8 @@
 \section{Formalism}
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Terms}
-
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
-
-\subsubsection{Syntax}
 
 \figureTermSyntaxContent
 
@@ -181,7 +176,7 @@ Proof: provide a witness that demonstrates the conclusion.
   \precomp{\hole} &= \SetOf{}
 \end{align*}
 
-$\boxed{\trecomp{\tau} = \E}$
+\noindent $\boxed{\trecomp{\tau} = \E}$
 %
 \begin{align*}
   \trecomp{\tArrow{G}{\tau_1}{\tau_2}}
@@ -196,6 +191,73 @@ $\boxed{\trecomp{\tau} = \E}$
   \trecomp{\cycleVertex{\e}} &= \SetOf{\e \mapsto \Plus}
   \\
   \trecomp{\hole} &= \SetOf{}
+\end{align*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Zippered Terms}
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+
+\subsubsection{Syntax}
+
+\[
+  \arraycolsep=0pt
+  \begin{array}{lrlll}
+    \hat{e} & {}\in ZExp & {}::={} &
+      \cursor{e}
+      \mid \eFun{G}{\hat{q}}{\tau}{e}
+      \mid \eFun{G}{q}{\hat{\tau}}{e}
+      \mid \eFun{G}{q}{\tau}{\hat{e}}
+      \mid \eApp{G}{\hat{e}}{e}
+      \mid \eApp{G}{e}{\hat{e}}
+      \mid \ePlus{G}{\hat{e}}{e}
+      \mid \ePlus{G}{e}{\hat{e}}
+      \mid \eTimes{G}{\hat{e}}{e}
+      \mid \eTimes{G}{e}{\hat{e}}
+    \\
+    \hat{\tau} & {}\in ZTyp & {}::={} &
+      \cursor{\tau}
+      \mid \tArrow{G}{\hat{\tau}}{\tau}
+      \mid \tArrow{G}{\tau}{\hat{\tau}}
+    \\
+    \hat{q} & {}\in ZPat & {}::={} &
+      \cursor{q}
+    \\
+  \end{array}
+\]
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+
+\subsubsection{Cursor Erasure}\hspace*{\fill} \\
+
+\noindent $\boxed{\erase{\hat{e}} = e}$
+%
+\begin{align*}
+  \erase{\cursor{e}} &= e \\
+  \erase{\left(\eFun{G}{\hat{q}}{\tau}{e}\right)} &= \eFun{G}{\erase{\hat{q}}}{\tau}{e} \\
+  \erase{\left(\eFun{G}{q}{\hat{\tau}}{e}\right)} &= \eFun{G}{q}{\erase{\hat{\tau}}}{e} \\
+  \erase{\left(\eFun{G}{q}{\tau}{\hat{e}}\right)} &= \eFun{G}{q}{\tau}{\erase{\hat{e}}} \\
+  \erase{\eApp{G}{\hat{e_1}}{e_2}} &= \eApp{G}{\erase{\hat{e_1}}}{e_2} \\
+  \erase{\eApp{G}{e_1}{\hat{e_2}}} &= \eApp{G}{e_1}{\erase{\hat{e_2}}} \\
+  \erase{\ePlus{G}{\hat{e_1}}{e_2}} &= \ePlus{G}{\erase{\hat{e_1}}}{e_2} \\
+  \erase{\ePlus{G}{e_1}{\hat{e_2}}} &= \ePlus{G}{e_1}{\erase{\hat{e_2}}} \\
+  \erase{\eTimes{G}{\hat{e_1}}{e_2}} &= \eTimes{G}{\erase{\hat{e_1}}}{e_2} \\
+  \erase{\eTimes{G}{e_1}{\hat{e_2}}} &= \eTimes{G}{e_1}{\erase{\hat{e_2}}}
+\end{align*}
+
+\noindent $\boxed{\erase{\hat{\tau}} = \tau}$
+%
+\begin{align*}
+  \erase{\cursor{\tau}} &= \tau \\
+  \erase{\left(\tArrow{G}{\hat{\tau_1}}{\tau_2}\right)} &= \tArrow{G}{\erase{\hat{\tau_1}}}{\tau_2} \\
+  \erase{\left(\tArrow{G}{\tau_1}{\hat{\tau_2}}\right)} &= \tArrow{G}{\tau_1}{\erase{\hat{\tau_2}}}
+\end{align*}
+
+\noindent $\boxed{\erase{\hat{q}} = q}$
+%
+\begin{align*}
+  \erase{\cursor{q}} &= q
 \end{align*}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
