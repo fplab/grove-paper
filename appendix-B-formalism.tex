@@ -6,9 +6,43 @@
 
 \figureTermSyntaxContent
 
+\noindent $\boxed{\constructor{t} = k}$
+%
+\begin{align*}
+  \constructor{e} &= \econstructor{e} \\
+  \constructor{p} &= \pconstructor{p} \\
+  \constructor{\tau} &= \tconstructor{\tau}
+\end{align*}
+
+\noindent $\boxed{\econstructor{e} = k}$
+%
+\begin{align*}
+  \econstructor{\eVar{G}{x}} &= \ExpVar(x) \\
+  \econstructor{\eFun{G}{q}{\tau}{e}} &= \ExpLam \\
+  \econstructor{\eApp{G}{e_1}{e_2}} &= \ExpApp \\
+  \econstructor{\eNum{G}{n}} &= \ExpNum(n) \\
+  \econstructor{\ePlus{G}{e_1}{e_2}} &= \ExpPlus \\
+  \econstructor{\eTimes{G}{e_1}{e_2}} &= \ExpTimes
+\end{align*}
+
+\noindent $\boxed{\pconstructor{q} = k}$
+%
+\begin{align*}
+  \pconstructor{\pVar{G}{x}} &= \PatVar(x)
+\end{align*}
+
+\noindent $\boxed{\tconstructor{\tau} = k}$
+%
+\begin{align*}
+  \tconstructor{\tArrow{G}{\tau_1}{\tau_2}} &= \TypArrow \\
+  \tconstructor{\tNum{G}} &= \TypNum
+\end{align*}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Graphs}
+
+Let $t$ denote a term and $\Set$ a set of terms.
 
 \begin{definition}
   A \emph{graph} $G : \E \rightarrow \Sigma$ is a function from edges to edge states,
@@ -18,6 +52,10 @@
   positions are drawn from $\P$,
   and edge states are drawn from $\Sigma$.
 \end{definition}
+
+Let $G_t$, called the \emph{in-graph} of term $t$,
+denote the outermost graph produced by $\ingraphOp$ in the construction of term $t$,
+when such a graph exists.
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
@@ -36,26 +74,77 @@
 \end{definition}
 
 \begin{definition}
-  A grove $\Grove = (NP, MP, U)$ is well sorted if all of the following hold:
+  A grove $\Grove = (\Set[NP], \Set[MP], \Set[U])$ is well sorted if all of the following hold:
   \begin{enumerate}
-    \item $NP$, $MP$, and $U$ contain only well sorted terms.
-    \item The root vertex is in $NP$.
-    \item The terms in $NP$ have no parents.
-    \item The terms in $MP$ have multiple parents.
-    \item The terms in $U$ are unicycles.
+    \item
+      The terms of $\Set[NP], \Set[MP],$ and $\Set[U]$ are well sorted.
+      % ($\Set[NP]$, $\Set[MP]$, and $\Set[U]$ contain only well sorted terms.)
+    \item
+      Either $\Set[NP] = \varnothing$
+      or there exists an $e \in \Set[NP]$ such that
+      $\SizeOf{\SetOf{\e{=}(\rootVertex, \Root, v) \SuchThat{G_e(\e) = \Plus}}} = 1$ and
+      $\SizeOf{\SetOf{\e'{=}(\rootVertex, \Root, v) \neq e \SuchThat{G_{e'} = \Plus}}} = 0$.
+      % (Exactly one of the terms in $\Set[NP]$, if any,
+      % corresponds to an edge originating from $\rootVertex$.)
+    \item
+      For all $t \in \Set[NP]$,
+        $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) = \Plus}}} = 0$.
+      % (The terms in $\Set[NP]$ correspond to vertices with no parents.)
+    \item
+      For all $t \in \Set[MP]$,
+        $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) = \Plus}}} > 1$ and
+        $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) = \Minus}}} = 0$.
+      % (The terms in $\Set[MP]$ correspond to vertices with multiple parents.)
+    \item
+      For all $t \in \Set[U]$,
+      and all $\e{=}(v, p, v')$ such that $G_t(\e) \in \SetOf{\Plus, \Minus}$,
+        $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) = \Plus}}} = 1$ and
+        $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) = \Minus}}} = 0$ and
+        $v' = \min{\ancestors{v'}}$.
+      % (The terms in $\Set[U]$ correspond to vertices that are unicycle roots.)
   \end{enumerate}
 \end{definition}
 
 \begin{definition}
-  A term is well sorted if
+  A term $t$ is well sorted if one of the following holds:
   \begin{enumerate}
-    \item there's at least one edge in the incoming edge set
-    \item term constructor matches target vertex constructor
-    \item target vertex id is the same for all incoming edges
-    \item all incoming edges are well sorted
-    \item all multiparented references refer to a multiparent root (TODO: do we need this? be careful with wording)
-    \item all unicycle references refer to a unicycle root (TODO: do we need this? be careful with wording. Could try to reconstruct the path from root (referenced) to ref (referencer).)
+    \item $t = \hole$.
+    \item $t = \conflictHole{t_1, \ldots, t_n}$ and $t_1, \ldots, t_n$ are well sorted.
+    \item $t = \multiVertex{\e}$ and all of the following hold:
+      \begin{enumerate}
+        \item $\e$ is well sorted.
+        \item
+          $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) = \Plus}}} > 1$.
+          % all multiparent references refer to a multiparent root
+          % (TODO: do we need this? be careful with wording)
+      \end{enumerate}
+    \item $t = \cycleVertex{(v, p, v')}$ and all of the following hold:
+      \begin{enumerate}
+        \item $(v, p, v')$ is well sorted.
+        \item $v' = \min{\ancestors{v'}}$
+        \item
+          For all $\e{=}(v_{\e}, p_{\e}, v_{\e}')$
+          such that $v_{\e}' \in \ancestors{v'}$,
+          $\SizeOf{\parents{v_{\e}'}} = 1$.
+          % all unicycle references refer to a unicycle root
+          % (TODO: do we need this? be careful with wording.
+          % Could try to reconstruct the path from root (referenced) to ref (referencer).)
+      \end{enumerate}
+    \item Otherwise, $G_t$ exists and all of the following hold:
+    \begin{enumerate}
+      \item
+      $G_t$ is well sorted.
+      % all incoming edges are well sorted
+      \item
+      $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) \in \SetOf{\Plus, \Minus}}}} \geq 1$.
+      % The in-graph of t is not empty.
+    \item
+      For all $\e{=}(v, p, v')$ such that $G_t(\e) \in \SetOf{\Plus, \Minus}$,
+      $v' = (u, \constructor{t})$ fixed.
+      % All term constructors match their corresponding target vertex constructors.
+      % The ids of the target vertices of all incoming edges are the same.
     \end{enumerate}
+  \end{enumerate}
 \end{definition}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -79,10 +168,6 @@ Proof: provide a witness that demonstrates the conclusion.
 %   Let $G$ be a well sorted graph.
 %   If $\recomp{\Grove} = G$ then $\vertexes{\Grove} = \vertexes{G}$.
 % \end{theorem}
-
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
-
-\subsubsection{Helpers}
 
 \figureDecompositionDefHelpersContent
 
@@ -130,10 +215,10 @@ Proof: provide a witness that demonstrates the conclusion.
 \noindent $\boxed{\recomp{\Grove} = G}$
 %
 \begin{align*}
-  \recomp{(NP, MP, U)} &= \bigcup_{e \in NP \cup MP \cup U} \erecomp{e}
+  \recomp{(\Set[NP], \Set[MP], \Set[U])} &= \bigcup_{e \in \Set[NP] \cup \Set[MP] \cup \Set[U]} \erecomp{e}
 \end{align*}
 
-\noindent $\boxed{\erecomp{e} = \E}$
+\noindent $\boxed{\erecomp{e} = G}$
 %
 \begin{align*}
   \erecomp{\eVar{G}{x}} &= G
@@ -162,7 +247,7 @@ Proof: provide a witness that demonstrates the conclusion.
   \erecomp{\hole} &= \SetOf{}
 \end{align*}
 
-\noindent $\boxed{\precomp{q} = \E}$
+\noindent $\boxed{\precomp{q} = G}$
 %
 \begin{align*}
   \precomp{\pVar{G}{x}} &= G
@@ -176,7 +261,7 @@ Proof: provide a witness that demonstrates the conclusion.
   \precomp{\hole} &= \SetOf{}
 \end{align*}
 
-\noindent $\boxed{\trecomp{\tau} = \E}$
+\noindent $\boxed{\trecomp{\tau} = G}$
 %
 \begin{align*}
   \trecomp{\tArrow{G}{\tau_1}{\tau_2}}

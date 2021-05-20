@@ -15,8 +15,10 @@
 % \newcommand{G}{\beta}
 \newcommand{\abs}[1]{\left\lvert#1\right\rvert}
 \newcommand{\figureCode}[1]{\textbf{\texttt{#1}}\vskip1em}
+\newcommand{\Set}[1][]{\Theta_{#1}}
 \newcommand{\SetOf}[1]{\left\{#1\right\}}
 \newcommand{\SuchThat}[1]{ : #1}
+\newcommand{\SizeOf}[1]{\left\lvert#1\right\rvert}
 
 % sets
 \def\A{\mathcal{A}}
@@ -44,11 +46,24 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Graphs
 
+\DeclareMathOperator{\sort}{\text{sort}}
+\DeclareMathOperator{\arity}{\text{arity}}
+
+\DeclareMathOperator{\constructorOp}{\texttt{constructor}}
+\DeclareMathOperator{\econstructorOp}{\texttt{econstructor}}
+\DeclareMathOperator{\pconstructorOp}{\texttt{pconstructor}}
+\DeclareMathOperator{\tconstructorOp}{\texttt{tconstructor}}
+\newcommand{\constructor}[1]{\constructorOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\econstructor}[1]{\econstructorOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\pconstructor}[1]{\pconstructorOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\tconstructor}[1]{\tconstructorOp\mathopen{}\left(#1\right)\mathclose{}}
+
 \newcommand{\Edge}[1]{Edge~#1}
 \newcommand{\Vertex}[1]{Vertex~#1}
 \newcommand{\multiVertex}[1]{\textcolor{red}{\ensuremath{\curlyveedownarrow_{#1}}}}
 \newcommand{\cycleVertex}[1]{\textcolor{red}{\ensuremath{\rcirclearrowleft_{#1}}}}
 \newcommand{\orphanVertex}[1]{\textcolor{red}{\ensuremath{\mathbf{\ndownarrow_{#1}}}}}
+\newcommand{\rootVertex}{v_\text{root}}
 \newcommand{\parens}[1]{\textcolor{gray}{(}#1\textcolor{gray}{)}}
 \newcommand{\otherVertexVskip}{\vskip0.5em}
 
@@ -103,11 +118,45 @@
 \newcommand{\tArrow}[3]{#2 \eid{#1}{\rightarrow} #3}
 \newcommand{\tNum}[1]{\eid{#1}{Num}}
 
+% TODO: come up with a metavariable for zippered sets (i.e., Grove components)
+%  t = e | q | \tau
+%  t^ = e^ | ...
+%       \Theta_{NP}, ... are sets of terms
+%       \hat{\Theta} = (\hat{t}, \Theta) is a set of terms with a zippered term inside
+
+% TODO: add conflict terms to zippered syntax and cursor erasure
+
+% |> { e1 | ... | en } <|
+% { e1^ | ... | en }
+% { e1 | ... | en^ }
+
+% |> mpc <|
+% |> uc <|
+
+% TODO: sort out which one's "a" and which one's "\alpha" in the paper body (check Hazelnut paper)
+
+% Graph actions (a):
+%   - add edge
+%   - remove edge
+
+% User actions (\alpha) (indirect):
+%
+% \gamma^ --\alpha--> a*
+% 
+% (NP^, MP, U) -- Construct(k) --> 
+% (NP, MP^, U) -- Construct(k) --> 
+% (NP, MP, U^) -- Construct(k) --> 
+
+% ((|> e <|, NP), MP, U) -- Construct(k) --> 
+% v, p; ((|> ?? <|, NP), MP, U) -- Construct(k) -->  (v, p, (u_fresh, k)) \mapsto +
+
+% TODO: define well sorted grove
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Zippered Terms
 
 \newcommand{\cursor}[1]{{\vartriangleright}#1{\vartriangleleft}}
-\newcommand{\erase}[1]{#1\mathclose{}^{\diamond}}
+\newcommand{\erase}[1]{#1\mathclose{}^{\diamond}\mathclose{}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Decomposition
@@ -150,6 +199,9 @@
 \DeclareMathOperator{\minOp}{\text{min}}
 \renewcommand{\min}[1]{\minOp\mathopen{}\left(#1\right)\mathclose{}}
 
+\DeclareMathOperator{\rootsOp}{\text{roots}}
+\newcommand{\roots}[1]{\rootsOp\mathopen{}\left(#1\right)\mathclose{}}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Recomposition
 
@@ -180,7 +232,3 @@
 \newcommand{\Reposition}[1]{\text{Reposition}\mathopen{}\left(#1\right)\mathclose{}}
 \newcommand{\Wrap}[2]{\mathrm{Wrap}\mathopen{}\left(#1, #2\right)\mathclose{}}
 % \newcommand{\Reposition}[1]{\mathrm{Reposition}\mathopen{}\left(#1\right)\mathclose{}}
-
-% relations
-\DeclareMathOperator{\sort}{\text{sort}}
-\DeclareMathOperator{\arity}{\text{arity}}

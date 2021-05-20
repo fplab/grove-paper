@@ -15,15 +15,15 @@
 
 \newcommand{\figureDecompositionDefDecomp}{%
 \begin{align*}
-  \decomp{G} &= (NP, MP, U) \\
+  \decomp{G} &= (\Set[NP], \Set[MP], \Set[U]) \\
   \figureDecompositionDefDecompComponents
 \end{align*}%
 }
 
 \newcommand{\figureDecompositionDefDecompComponents}{%
-  NP &= \SetOf{\edecomp{(u, v, p, v')} \SuchThat{|\parents{v'}| = 0}} \\
-  MP &= \SetOf{\edecomp{(u, v, p, v')} \SuchThat{|\parents{v'}| > 1}} \\
-  U &= \SetOf{\edecomp{(u, v, p, v')} \SuchThat{|\parents{v'}| = 1 \land v' = \min{\ancestors{v'}}}}%
+  \Set[NP] &= \SetOf{\edecomp{(u, v, p, v')} \SuchThat{|\parents{v'}| = 0}} \\
+  \Set[MP] &= \SetOf{\edecomp{(u, v, p, v')} \SuchThat{|\parents{v'}| > 1}} \\
+  \Set[U] &= \SetOf{\edecomp{(u, v, p, v')} \SuchThat{|\parents{v'}| = 1 \land v' = \min{\ancestors{v'}}}}%
 }
 
 \newcommand{\figureDecompositionDefEdecomp}{%
