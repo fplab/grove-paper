@@ -6,6 +6,30 @@
 
 \figureTermSyntaxContent
 
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+
+\subsubsection{Term Constructors}
+
+\[
+  \arraycolsep=0pt
+  \begin{array}{ll}
+    \multicolumn{2}{l}{\sortOp : \K \to \SetOf{Exp, Pat, Typ}} \\
+    \hline
+    \sort{\Root}={} & Exp \\
+    \sort{\ExpVar(x)}={} & Exp \\
+    \sort{\ExpLam}={} & Exp \\
+    \sort{\ExpApp}={} & Exp \\
+    \sort{\ExpPlus}={} & Exp \\
+    \sort{\ExpTimes}={} & Exp \\
+    \sort{\ExpNum(n)}={} & Exp \\
+    \sort{\PatVar(x)}={} & Pat \\
+    \sort{\TypArrow}={} & Typ \\
+    \sort{\TypNum}={} & Typ \\
+  \end{array}
+\]
+%
+\figureArityContent
+
 \noindent $\boxed{\constructor{t} = k}$
 %
 \begin{align*}
@@ -61,90 +85,82 @@ when such a graph exists.
 
 \subsubsection{Well-sortedness}
 
-\figureArityContent
-
 \begin{definition}
-  A graph $G$ is well sorted if $\e$ is well sorted
-  for all edges $\e$ such that $G(\e) \in \{\Plus, \Minus\}$.
+  A graph $G$ is well sorted if all edges $\e$ such that $G(\e) \in \{\Plus, \Minus\}$ are well sorted.
 \end{definition}
 
 \begin{definition}
-  An edge $\e = (u, (u_1, k_1), p, (u_2, k_2))$ is well sorted
-  if $(p, \sort(k_2)) \in \arity(k_1)$.
+  An edge $(u, (u_1, k_1), p, (u_2, k_2))$ is well sorted if $(p, \sort{k_2}) \in \arity{k_1}$.
 \end{definition}
 
 \begin{definition}
-  A grove $\Grove = (\Set[NP], \Set[MP], \Set[U])$ is well sorted if all of the following hold:
+  A grove $(\Set[NP], \Set[MP], \Set[U])$ is well sorted if all of the following hold:
   \begin{enumerate}
-    \item
-      The terms of $\Set[NP], \Set[MP],$ and $\Set[U]$ are well sorted.
-      % ($\Set[NP]$, $\Set[MP]$, and $\Set[U]$ contain only well sorted terms.)
-    \item
-      Either $\Set[NP] = \varnothing$
-      or there exists an $e \in \Set[NP]$ such that
-      $\SizeOf{\SetOf{\e{=}(\rootVertex, \Root, v) \SuchThat{G_e(\e) = \Plus}}} = 1$ and
-      $\SizeOf{\SetOf{\e'{=}(\rootVertex, \Root, v) \neq e \SuchThat{G_{e'} = \Plus}}} = 0$.
-      % (Exactly one of the terms in $\Set[NP]$, if any,
-      % corresponds to an edge originating from $\rootVertex$.)
-    \item
-      For all $t \in \Set[NP]$,
-        $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) = \Plus}}} = 0$.
-      % (The terms in $\Set[NP]$ correspond to vertices with no parents.)
-    \item
-      For all $t \in \Set[MP]$,
-        $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) = \Plus}}} > 1$ and
-        $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) = \Minus}}} = 0$.
-      % (The terms in $\Set[MP]$ correspond to vertices with multiple parents.)
-    \item
-      For all $t \in \Set[U]$,
-      and all $\e{=}(v, p, v')$ such that $G_t(\e) \in \SetOf{\Plus, \Minus}$,
-        $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) = \Plus}}} = 1$ and
-        $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) = \Minus}}} = 0$ and
-        $v' = \min{\ancestors{v'}}$.
-      % (The terms in $\Set[U]$ correspond to vertices that are unicycle roots.)
+    \item The terms of $\Set[NP], \Set[MP],$ and $\Set[U]$ are well sorted.
+      % $\Set[NP]$, $\Set[MP]$, and $\Set[U]$ contain only well sorted terms.
+    \item For all $t \in \Set[NP]$,
+      $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) = \Plus}}} = 0$.
+      % The terms in $\Set[NP]$ correspond to edges with target vertices that have no parents.
+    \item For all $t \in \Set[MP]$,
+      $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) = \Plus}}} > 1$.
+      % The terms in $\Set[MP]$ correspond to edges with target vertices that have multiple parents.
+    \item For all $t \in \Set[U]$, all of the following hold:
+      \begin{enumerate}
+        \item $\SizeOf{\SetOf{\e{=}(u, v, p, v') \SuchThat{G_t(\e) = \Plus}}} = 1$.
+        \item $v' = \min{\ancestors{v'}}$.
+      \end{enumerate}
+      % The terms in $\Set[U]$ correspond to edges with target vertices that are unicycle roots.
+    \item For all $t \in \Set[MP] \cup \Set[U]$,
+      $\SizeOf{\SetOf{\e{=}(\rootVertex, \Root, v) \SuchThat{G_t(\e) \in \SetOf{\Plus, \Minus}}}} = 0$.
+      % Any terms corresponding to edges originating from $\rootVertex$ are in $\Set[NP]$.
   \end{enumerate}
 \end{definition}
 
 \begin{definition}
   A term $t$ is well sorted if one of the following holds:
-  \begin{enumerate}
+  \begin{itemize}
     \item $t = \hole$.
-    \item $t = \conflictHole{t_1, \ldots, t_n}$ and $t_1, \ldots, t_n$ are well sorted.
+      % An empty hole is trivially well sorted.
+    \item $t = \conflictHole{t_1, \ldots, t_n}$ and all of the following hold:
+      \begin{enumerate}
+        \item $t_1, \ldots, t_n$ are well sorted.
+          % The conflicting terms are well sorted ...
+        \item $\sort{t_1} = \cdots = \sort{t_n}$.
+          % ... and of the same sort.
+      \end{enumerate}
     \item $t = \multiVertex{\e}$ and all of the following hold:
       \begin{enumerate}
         \item $\e$ is well sorted.
-        \item
-          $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) = \Plus}}} > 1$.
-          % all multiparent references refer to a multiparent root
+          % The corresponding edge is well sorted ...
+        \item $\SizeOf{\SetOf{\e' \SuchThat{G_t(\e') = \Plus}}} > 1$.
+          % ... and its target vertex has multiple parents.
           % (TODO: do we need this? be careful with wording)
       \end{enumerate}
-    \item $t = \cycleVertex{(v, p, v')}$ and all of the following hold:
+    \item $t = \cycleVertex{(u, v, p, v')}$ and all of the following hold:
       \begin{enumerate}
-        \item $(v, p, v')$ is well sorted.
+        \item $(u, v, p, v')$ is well sorted.
+          % The corresponding edge is well sorted ...
         \item $v' = \min{\ancestors{v'}}$
-        \item
-          For all $\e{=}(v_{\e}, p_{\e}, v_{\e}')$
+          % ... and its target vertex is the root ...
+        \item For all $\e{=}(u_{\e}, v_{\e}, p_{\e}, v_{\e}')$
           such that $v_{\e}' \in \ancestors{v'}$,
           $\SizeOf{\parents{v_{\e}'}} = 1$.
-          % all unicycle references refer to a unicycle root
+          % ... of a unicycle.
           % (TODO: do we need this? be careful with wording.
           % Could try to reconstruct the path from root (referenced) to ref (referencer).)
       \end{enumerate}
     \item Otherwise, $G_t$ exists and all of the following hold:
-    \begin{enumerate}
-      \item
-      $G_t$ is well sorted.
-      % all incoming edges are well sorted
-      \item
-      $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) \in \SetOf{\Plus, \Minus}}}} \geq 1$.
-      % The in-graph of t is not empty.
-    \item
-      For all $\e{=}(v, p, v')$ such that $G_t(\e) \in \SetOf{\Plus, \Minus}$,
-      $v' = (u, \constructor{t})$ fixed.
-      % All term constructors match their corresponding target vertex constructors.
-      % The ids of the target vertices of all incoming edges are the same.
-    \end{enumerate}
-  \end{enumerate}
+      \begin{enumerate}
+        \item $G_t$ is well sorted.
+          % all incoming edges are well sorted
+        \item $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) \in \SetOf{\Plus, \Minus}}}} \geq 1$.
+          % The in-graph of t is not empty.
+        \item For all $\e{=}(v, p, v')$ such that $G_t(\e) \in \SetOf{\Plus, \Minus}$,
+          $v' = (u, \constructor{t})$ fixed.
+          % All term constructors match their corresponding target vertex constructors.
+          % The ids of the target vertices of all incoming edges are the same.
+      \end{enumerate}
+  \end{itemize}
 \end{definition}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -178,6 +194,10 @@ Proof: provide a witness that demonstrates the conclusion.
 \noindent $\boxed{\decomp{G} = \Grove}$
 %
 \figureDecompositionDefDecomp
+
+\noindent $\boxed{\decomp{\e} = t}$
+%
+\figureDecompositionDefDecompTerm
 
 \noindent $\boxed{\edecomp{\e} = e}$
 %
@@ -215,7 +235,15 @@ Proof: provide a witness that demonstrates the conclusion.
 \noindent $\boxed{\recomp{\Grove} = G}$
 %
 \begin{align*}
-  \recomp{(\Set[NP], \Set[MP], \Set[U])} &= \bigcup_{e \in \Set[NP] \cup \Set[MP] \cup \Set[U]} \erecomp{e}
+  \recomp{(\Set[NP], \Set[MP], \Set[U])} &= \bigcup_{t \in \Set[NP] \cup \Set[MP] \cup \Set[U]} \recomp{t}
+\end{align*}
+
+\noindent $\boxed{\recomp{t} = G}$
+%
+\begin{align*}
+  \recomp{e} &= \erecomp{e} \\
+  \recomp{q} &= \precomp{q} \\
+  \recomp{\tau} &= \trecomp{\tau}
 \end{align*}
 
 \noindent $\boxed{\erecomp{e} = G}$

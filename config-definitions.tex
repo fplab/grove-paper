@@ -46,8 +46,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Graphs
 
-\DeclareMathOperator{\sort}{\text{sort}}
-\DeclareMathOperator{\arity}{\text{arity}}
+\DeclareMathOperator{\sortOp}{\text{sort}}
+\DeclareMathOperator{\arityOp}{\text{arity}}
+\newcommand{\sort}[1]{\sortOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\arity}[1]{\arityOp\mathopen{}\left(#1\right)\mathclose{}}
 
 \DeclareMathOperator{\constructorOp}{\texttt{constructor}}
 \DeclareMathOperator{\econstructorOp}{\texttt{econstructor}}

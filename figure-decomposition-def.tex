@@ -21,9 +21,19 @@
 }
 
 \newcommand{\figureDecompositionDefDecompComponents}{%
-  \Set[NP] &= \SetOf{\edecomp{(u, v, p, v')} \SuchThat{|\parents{v'}| = 0}} \\
-  \Set[MP] &= \SetOf{\edecomp{(u, v, p, v')} \SuchThat{|\parents{v'}| > 1}} \\
-  \Set[U] &= \SetOf{\edecomp{(u, v, p, v')} \SuchThat{|\parents{v'}| = 1 \land v' = \min{\ancestors{v'}}}}%
+  \Set[NP] &= \SetOf{\decomp{(u, v, p, v')} \SuchThat{|\parents{v'}| = 0}} \\
+  \Set[MP] &= \SetOf{\decomp{(u, v, p, v')} \SuchThat{|\parents{v'}| > 1}} \\
+  \Set[U] &= \SetOf{\decomp{(u, v, p, v')} \SuchThat{|\parents{v'}| = 1 \land v' = \min{\ancestors{v'}}}}%
+}
+
+\newcommand{\figureDecompositionDefDecompTerm}{%
+\begin{align*}
+  \decomp{\e{=}(u, v, p, (u, k))} &= \begin{cases}
+    \edecomp{\e} & \text{if} \sort{k} = Exp \\
+    \pdecomp{\e} & \text{if} \sort{k} = Pat \\
+    \tdecomp{\e} & \text{if} \sort{k} = Typ \\
+  \end{cases}
+\end{align*}
 }
 
 \newcommand{\figureDecompositionDefEdecomp}{%
