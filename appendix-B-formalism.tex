@@ -317,28 +317,35 @@ Proof: provide a witness that demonstrates the conclusion.
 \[
   \arraycolsep=0pt
   \begin{array}{lrlll}
-    \hat{e} & {}\in ZExp & {}::={} &
+    \Z{e} & {}\in ZExp & {}::={} &
       \cursor{e}
-      \mid \eFun{G}{\hat{q}}{\tau}{e}
-      \mid \eFun{G}{q}{\hat{\tau}}{e}
-      \mid \eFun{G}{q}{\tau}{\hat{e}}
-      \mid \eApp{G}{\hat{e}}{e}
-      \mid \eApp{G}{e}{\hat{e}}
-      \mid \ePlus{G}{\hat{e}}{e}
-      \mid \ePlus{G}{e}{\hat{e}}
-      \mid \eTimes{G}{\hat{e}}{e}
-      \mid \eTimes{G}{e}{\hat{e}}
+      \mid \eFun{G}{\Z{q}}{\tau}{e}
+      \mid \eFun{G}{q}{\Z{\tau}}{e}
+      \mid \eFun{G}{q}{\tau}{\Z{e}}
+      \mid \eApp{G}{\Z{e}}{e}
+      \mid \eApp{G}{e}{\Z{e}}
+      \mid \ePlus{G}{\Z{e}}{e}
+      \mid \ePlus{G}{e}{\Z{e}}
+      \mid \eTimes{G}{\Z{e}}{e}
+      \mid \eTimes{G}{e}{\Z{e}} \\
+    &&&
+      \mid \conflictHole{\Z{e}, e, \ldots, e}
     \\
-    \hat{\tau} & {}\in ZTyp & {}::={} &
-      \cursor{\tau}
-      \mid \tArrow{G}{\hat{\tau}}{\tau}
-      \mid \tArrow{G}{\tau}{\hat{\tau}}
-    \\
-    \hat{q} & {}\in ZPat & {}::={} &
+    \Z{q} & {}\in ZPat & {}::={} &
       \cursor{q}
+      \mid \conflictHole{\Z{q}, q, \ldots, q}
+    \\
+    \Z{\tau} & {}\in ZTyp & {}::={} &
+      \cursor{\tau}
+      \mid \tArrow{G}{\Z{\tau}}{\tau}
+      \mid \tArrow{G}{\tau}{\Z{\tau}}
+      \mid \conflictHole{\Z{\tau}, \tau, \ldots, \tau}
     \\
   \end{array}
 \]
+
+Let $\Z{t}$ denote a zippered term
+and $\Z{\Set} = (\Z{t}, \Set)$ a set of terms paired with a zippered term.
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
@@ -347,62 +354,61 @@ Proof: provide a witness that demonstrates the conclusion.
 \begin{gather*}
   \arraycolsep=0pt
   \begin{array}{lll}
-    \hat{\gamma} & {}::={} &
-      (\hat{NP}, MP, U)
-      \mid (NP, \hat{MP}, U)
-      \mid (NP, MP, \hat{U})
-  \end{array} \\
-  \hat{NP}, \hat{MP}, \hat{U} = \SetOf{e_1, \ldots, e_{k-1}, \hat{e_k}, e_{k+1}, \ldots, e_n} \\
-  \qquad 1 \leq k \leq n
+    \Z{\gamma} & {}::={} &
+      (\Z{\Set}_{NP}, \Set[MP], \Set[U])
+      \mid (\Set[NP], \Z{\Set}_{MP}, \Set[U])
+      \mid (\Set[NP], \Set[MP], \Z{\Set}_U)
+  \end{array}
 \end{gather*}
-
-(Exactly one of $NP, MP, U$ may contain a single zippered term.)
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
 \subsubsection{Cursor Erasure}\hspace*{\fill} \\
 
-\noindent $\boxed{\erase{\hat{\gamma}} = \gamma}$
+\noindent $\boxed{\erase{\Z{\gamma}} = \gamma}$
 %
 \begin{align*}
-  \erase{(\hat{NP}, MP, U)} &= (\erase{\hat{NP}}, MP, U) \\
-  \erase{(NP, \hat{MP}, U)} &= (NP, \erase{\hat{MP}}, U) \\
-  \erase{(NP, MP, \hat{U})} &= (NP, MP, \erase{\hat{U}})
+  \erase{(\Z{\Set}_{NP}, \Set[MP], \Set[U])} &= (\erase{\Z{\Set}_{NP}}, \Set[MP], \Set[U]) \\
+  \erase{(\Set[NP], \Z{\Set}_{MP}, \Set[U])} &= (\Set[NP], \erase{\Z{\Set}_{MP}}, \Set[U]) \\
+  \erase{(\Set[NP], \Set[MP], \Z{\Set}_U)} &= (\Set[NP], \Set[MP], \erase{\Z{\Set}_U})
 \end{align*}
 
-\noindent $\boxed{\erase{\left(Exp \cup ZExp\right)} = Exp}$
+\noindent $\boxed{\erase{\Z{\Set}} = \Set}$
 %
 \begin{align*}
-  \erase{\SetOf{e_1, \ldots, e_{k-1}, \hat{e_k}, e_{k+1}, \ldots, e_n}} &= \SetOf{e_1, \ldots, e_{k-1}, \erase{\hat{e_k}}, e_{k+1}, \ldots, e_n}
+  \erase{(\Z{t}, \Set)} &= \Set \cup \SetOf{t}
 \end{align*}
 
-\noindent $\boxed{\erase{\hat{e}} = e}$
+\noindent $\boxed{\erase{\Z{e}} = e}$
 %
 \begin{align*}
   \erase{\cursor{e}} &= e \\
-  \erase{\left(\eFun{G}{\hat{q}}{\tau}{e}\right)} &= \eFun{G}{\erase{\hat{q}}}{\tau}{e} \\
-  \erase{\left(\eFun{G}{q}{\hat{\tau}}{e}\right)} &= \eFun{G}{q}{\erase{\hat{\tau}}}{e} \\
-  \erase{\left(\eFun{G}{q}{\tau}{\hat{e}}\right)} &= \eFun{G}{q}{\tau}{\erase{\hat{e}}} \\
-  \erase{\eApp{G}{\hat{e_1}}{e_2}} &= \eApp{G}{\erase{\hat{e_1}}}{e_2} \\
-  \erase{\eApp{G}{e_1}{\hat{e_2}}} &= \eApp{G}{e_1}{\erase{\hat{e_2}}} \\
-  \erase{\ePlus{G}{\hat{e_1}}{e_2}} &= \ePlus{G}{\erase{\hat{e_1}}}{e_2} \\
-  \erase{\ePlus{G}{e_1}{\hat{e_2}}} &= \ePlus{G}{e_1}{\erase{\hat{e_2}}} \\
-  \erase{\eTimes{G}{\hat{e_1}}{e_2}} &= \eTimes{G}{\erase{\hat{e_1}}}{e_2} \\
-  \erase{\eTimes{G}{e_1}{\hat{e_2}}} &= \eTimes{G}{e_1}{\erase{\hat{e_2}}}
+  \erase{\left(\eFun{G}{\Z{q}}{\tau}{e}\right)} &= \eFun{G}{\erase{\Z{q}}}{\tau}{e} \\
+  \erase{\left(\eFun{G}{q}{\Z{\tau}}{e}\right)} &= \eFun{G}{q}{\erase{\Z{\tau}}}{e} \\
+  \erase{\left(\eFun{G}{q}{\tau}{\Z{e}}\right)} &= \eFun{G}{q}{\tau}{\erase{\Z{e}}} \\
+  \erase{\eApp{G}{\Z{e_1}}{e_2}} &= \eApp{G}{\erase{\Z{e_1}}}{e_2} \\
+  \erase{\eApp{G}{e_1}{\Z{e_2}}} &= \eApp{G}{e_1}{\erase{\Z{e_2}}} \\
+  \erase{\ePlus{G}{\Z{e_1}}{e_2}} &= \ePlus{G}{\erase{\Z{e_1}}}{e_2} \\
+  \erase{\ePlus{G}{e_1}{\Z{e_2}}} &= \ePlus{G}{e_1}{\erase{\Z{e_2}}} \\
+  \erase{\eTimes{G}{\Z{e_1}}{e_2}} &= \eTimes{G}{\erase{\Z{e_1}}}{e_2} \\
+  \erase{\eTimes{G}{e_1}{\Z{e_2}}} &= \eTimes{G}{e_1}{\erase{\Z{e_2}}} \\
+  \erase{\conflictHole{\Z{e}, e_1, \ldots, e_n}} &= \conflictHole{e, e_1, \ldots, e_n}
 \end{align*}
 
-\noindent $\boxed{\erase{\hat{\tau}} = \tau}$
+\noindent $\boxed{\erase{\Z{q}} = q}$
+%
+\begin{align*}
+  \erase{\cursor{q}} &= q \\
+  \erase{\conflictHole{\Z{q}, q_1, \ldots, q_n}} &= \conflictHole{q, q_1, \ldots, q_n}
+\end{align*}
+
+\noindent $\boxed{\erase{\Z{\tau}} = \tau}$
 %
 \begin{align*}
   \erase{\cursor{\tau}} &= \tau \\
-  \erase{\left(\tArrow{G}{\hat{\tau_1}}{\tau_2}\right)} &= \tArrow{G}{\erase{\hat{\tau_1}}}{\tau_2} \\
-  \erase{\left(\tArrow{G}{\tau_1}{\hat{\tau_2}}\right)} &= \tArrow{G}{\tau_1}{\erase{\hat{\tau_2}}}
-\end{align*}
-
-\noindent $\boxed{\erase{\hat{q}} = q}$
-%
-\begin{align*}
-  \erase{\cursor{q}} &= q
+  \erase{\left(\tArrow{G}{\Z{\tau_1}}{\tau_2}\right)} &= \tArrow{G}{\erase{\Z{\tau_1}}}{\tau_2} \\
+  \erase{\left(\tArrow{G}{\tau_1}{\Z{\tau_2}}\right)} &= \tArrow{G}{\tau_1}{\erase{\Z{\tau_2}}} \\
+  \erase{\conflictHole{\Z{\tau}, \tau_1, \ldots, \tau_n}} &= \conflictHole{\tau, \tau_1, \ldots, \tau_n}
 \end{align*}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -420,7 +426,7 @@ Proof: provide a witness that demonstrates the conclusion.
   \end{array}
 \]
 
-% \noindent $\boxed{\hat{e} \aArrow{\alpha} \hat{e}}}$
+% \noindent $\boxed{\Z{e} \aArrow{\alpha} \Z{e}}}$
 % %
 % \begin{align*}
 %   \
