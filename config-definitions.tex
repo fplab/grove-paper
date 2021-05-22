@@ -9,10 +9,7 @@
 % notation
 \def\_{\texttt{\textunderscore}}
 \newcommand{\id}[1]{\textcolor{gray}{\ensuremath{#1}}}
-% \newcommand{\eid}[2]{\tensor*[_{\id{#1}}]{#2}{}}
 \newcommand{\eid}[2]{\tensor*{#2}{^{\id{#1}}}}
-% \newcommand{\evid}[3]{\tensor*[_{\id{#1}}]{#3}{^{\id{#2}}}}
-% \newcommand{G}{\beta}
 \newcommand{\abs}[1]{\left\lvert#1\right\rvert}
 \newcommand{\figureCode}[1]{\textbf{\texttt{#1}}\vskip1em}
 \newcommand{\Z}[1]{\hat{#1}}
@@ -20,6 +17,7 @@
 \newcommand{\SetOf}[1]{\left\{#1\right\}}
 \newcommand{\SuchThat}[1]{ : #1}
 \newcommand{\SizeOf}[1]{\left\lvert#1\right\rvert}
+\newcommand{\action}[1]{\xrightarrow{#1}}
 
 % sets
 \def\A{\mathcal{A}}
@@ -67,8 +65,15 @@
 \newcommand{\cycleVertex}[1]{\textcolor{red}{\ensuremath{\rcirclearrowleft_{#1}}}}
 \newcommand{\orphanVertex}[1]{\textcolor{red}{\ensuremath{\mathbf{\ndownarrow_{#1}}}}}
 \newcommand{\rootVertex}{v_\text{root}}
-\newcommand{\parens}[1]{\textcolor{gray}{(}#1\textcolor{gray}{)}}
 \newcommand{\otherVertexVskip}{\vskip0.5em}
+
+% \DeclareMathOperator{\outvertexOp}{\text{outvertex}}
+% \newcommand{\outvertex}[1]{\outvertexOp\mathopen{}\left(#1\right)\mathclose{}}
+
+\DeclareMathOperator{\defaultposOp}{\text{defaultpos}}
+\newcommand{\defaultpos}[1]{\defaultposOp\mathopen{}\left(#1\right)\mathclose{}}
+
+\newcommand{\parens}[1]{\textcolor{gray}{(}#1\textcolor{gray}{)}}
 
 % Constructors
 \newcommand\ExpVar{\mathsf{Exp\_var}}
@@ -158,7 +163,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Zippered Terms
 
-\newcommand{\cursor}[1]{{\vartriangleright}#1{\vartriangleleft}}
+\newcommand{\cursor}[3]{{\vartriangleright}#3{\vartriangleleft}^{\id{(#1, #2)}}}
 \newcommand{\erase}[1]{#1\mathclose{}^{\diamond}\mathclose{}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -232,6 +237,5 @@
 
 \newcommand{\Construct}[1]{\text{Construct}\mathopen{}\left(#1\right)\mathclose{}}
 \newcommand{\Delete}{\text{Delete}}
-\newcommand{\Reposition}[1]{\text{Reposition}\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\Reposition}[2]{\text{Reposition}\mathopen{}\left(#1, #2\right)\mathclose{}}
 \newcommand{\Wrap}[2]{\mathrm{Wrap}\mathopen{}\left(#1, #2\right)\mathclose{}}
-% \newcommand{\Reposition}[1]{\mathrm{Reposition}\mathopen{}\left(#1\right)\mathclose{}}

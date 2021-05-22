@@ -29,6 +29,19 @@
 \]
 %
 \figureArityContent
+%
+\[
+  \arraycolsep=0pt
+  \begin{array}{ll}
+    \multicolumn{2}{l}{\defaultposOp : \K \to \P} \\
+    \hline
+    \defaultpos{\Root}={} & \Root \\
+    \defaultpos{\ExpLam}={} & \LamBody \\
+    \defaultpos{\ExpPlus}={} & \PlusLeft \\
+    \defaultpos{\ExpTimes}={} & \TimesLeft \\
+    \defaultpos{\TypArrow}={} & \ArrowArg \\
+  \end{array}
+\]
 
 \noindent $\boxed{\constructor{t} = k}$
 %
@@ -80,6 +93,10 @@ Let $t$ denote a term and $\Set$ a set of terms.
 Let $G_t$, called the \emph{in-graph} of term $t$,
 denote the outermost graph produced by $\ingraphOp$ in the construction of term $t$,
 when such a graph exists.
+
+Let $v_t$, called the \emph{in-vertex} of term $t$,
+denote the destination vertex of the edges of $G_t$,
+when $G_t$ exists and all of its edges have the same destination.
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
@@ -318,7 +335,7 @@ Proof: provide a witness that demonstrates the conclusion.
   \arraycolsep=0pt
   \begin{array}{lrlll}
     \Z{e} & {}\in ZExp & {}::={} &
-      \cursor{e}
+      \cursor{v}{p}{e}
       \mid \eFun{G}{\Z{q}}{\tau}{e}
       \mid \eFun{G}{q}{\Z{\tau}}{e}
       \mid \eFun{G}{q}{\tau}{\Z{e}}
@@ -332,11 +349,11 @@ Proof: provide a witness that demonstrates the conclusion.
       \mid \conflictHole{\Z{e}, e, \ldots, e}
     \\
     \Z{q} & {}\in ZPat & {}::={} &
-      \cursor{q}
+      \cursor{v}{p}{q}
       \mid \conflictHole{\Z{q}, q, \ldots, q}
     \\
     \Z{\tau} & {}\in ZTyp & {}::={} &
-      \cursor{\tau}
+      \cursor{v}{p}{\tau}
       \mid \tArrow{G}{\Z{\tau}}{\tau}
       \mid \tArrow{G}{\tau}{\Z{\tau}}
       \mid \conflictHole{\Z{\tau}, \tau, \ldots, \tau}
@@ -345,7 +362,7 @@ Proof: provide a witness that demonstrates the conclusion.
 \]
 
 Let $\Z{t}$ denote a zippered term
-and $\Z{\Set} = (\Z{t}, \Set)$ a set of terms paired with a zippered term.
+and $\Z{\Set} = (\Set, \Z{t})$ a set of terms paired with a zippered term.
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
@@ -376,13 +393,13 @@ and $\Z{\Set} = (\Z{t}, \Set)$ a set of terms paired with a zippered term.
 \noindent $\boxed{\erase{\Z{\Set}} = \Set}$
 %
 \begin{align*}
-  \erase{(\Z{t}, \Set)} &= \Set \cup \SetOf{t}
+  \erase{(\Set, \Z{t})} &= \Set \cup \SetOf{t}
 \end{align*}
 
 \noindent $\boxed{\erase{\Z{e}} = e}$
 %
 \begin{align*}
-  \erase{\cursor{e}} &= e \\
+  \erase{\cursor{v}{p}{e}} &= e \\
   \erase{\left(\eFun{G}{\Z{q}}{\tau}{e}\right)} &= \eFun{G}{\erase{\Z{q}}}{\tau}{e} \\
   \erase{\left(\eFun{G}{q}{\Z{\tau}}{e}\right)} &= \eFun{G}{q}{\erase{\Z{\tau}}}{e} \\
   \erase{\left(\eFun{G}{q}{\tau}{\Z{e}}\right)} &= \eFun{G}{q}{\tau}{\erase{\Z{e}}} \\
@@ -398,14 +415,14 @@ and $\Z{\Set} = (\Z{t}, \Set)$ a set of terms paired with a zippered term.
 \noindent $\boxed{\erase{\Z{q}} = q}$
 %
 \begin{align*}
-  \erase{\cursor{q}} &= q \\
+  \erase{\cursor{v}{p}{q}} &= q \\
   \erase{\conflictHole{\Z{q}, q_1, \ldots, q_n}} &= \conflictHole{q, q_1, \ldots, q_n}
 \end{align*}
 
 \noindent $\boxed{\erase{\Z{\tau}} = \tau}$
 %
 \begin{align*}
-  \erase{\cursor{\tau}} &= \tau \\
+  \erase{\cursor{v}{p}{\tau}} &= \tau \\
   \erase{\left(\tArrow{G}{\Z{\tau_1}}{\tau_2}\right)} &= \tArrow{G}{\erase{\Z{\tau_1}}}{\tau_2} \\
   \erase{\left(\tArrow{G}{\tau_1}{\Z{\tau_2}}\right)} &= \tArrow{G}{\tau_1}{\erase{\Z{\tau_2}}} \\
   \erase{\conflictHole{\Z{\tau}, \tau_1, \ldots, \tau_n}} &= \conflictHole{\tau, \tau_1, \ldots, \tau_n}
@@ -421,15 +438,121 @@ and $\Z{\Set} = (\Z{t}, \Set)$ a set of terms paired with a zippered term.
     \alpha & {}::={} &
       \Construct{k}
       \mid \Delete
-      \mid \Reposition{v, p}
+      \mid \Reposition{v}{p}
     \\
   \end{array}
 \]
 
-% \noindent $\boxed{\Z{e} \aArrow{\alpha} \Z{e}}}$
+\noindent $\boxed{\Z{t} \action{\alpha} a^{*}}$
+%
+\begin{mathpar}
+  \inferrule{
+    G_t((u, v, p, v_t)) = \Plus \\
+    \defaultpos{k} \text{ undefined}
+  }{
+    \cursor{v}{p}{t}
+    \action{\Construct{k}}
+    \big(\Plus, (u', v, p, (u'', k))\big)
+  }
+
+  \inferrule{
+    G_t(\e{=}(u, v, p, v_t)) = \Plus \\
+    \defaultpos{k} = p_k
+  }{
+    \cursor{v}{p}{t}
+    \action{\Construct{k}}
+    \big(\Minus, \e\big);
+    \big(\Plus, (u', v, p, (u'', k))\big);
+    \big(\Plus, (u''', (u'', k), p_k, v_t)\big)
+  }
+
+  \inferrule{
+    \defaultpos{k} \text{ undefined}
+  }{
+    \cursor{v}{p}{\conflictHole{t_1, \ldots, t_n}}
+    \action{\Construct{k}}
+    \big(\Plus, (u, v, p, (u', k))\big)
+  }
+
+  \inferrule{
+    \defaultpos{k} = p_k
+  }{
+    \cursor{v}{p}{\conflictHole{t_1, \ldots, t_n}}
+    \action{\Construct{k}}
+    \big(\Minus, (u_1, v, p, v_1')\big);
+    \ldots;
+    \big(\Minus, (u_n, v, p, v_n')\big);
+    \big(\Plus, (u, v, p, (u', k))\big); \\
+    \big(\Plus, (u_1', (u', k), p_k, v_1')\big);
+    \ldots;
+    \big(\Plus, (u_n', (u', k), p_k, v_n')\big)
+  }
+
+  \inferrule{
+    \defaultpos{k} \text{ undefined}
+  }{
+    \cursor{v}{p}{\multiVertex{(u, v, p, v')}}
+    \action{\Construct{k}}
+    \big(\Plus, (u', v, p, (u'', k))\big)
+  }
+
+  \inferrule{
+    \defaultpos{k} = p_k
+  }{
+    \cursor{v}{p}{\multiVertex{\e{=}(u, v, p, v')}}
+    \action{\Construct{k}}
+    \big(\Minus, \e\big);
+    \big(\Plus, (u', v, p, (u'', k))\big);
+    \big(\Plus, (u''', (u'', k), p_k, v')\big)
+  }
+
+  \inferrule{
+    \defaultpos{k} \text{ undefined}
+  }{
+    \cursor{v}{p}{\cycleVertex{(u, v, p, v')}}
+    \action{\Construct{k}}
+    \big(\Plus, (u', v, p, (u'', k))\big)
+  }
+
+  \inferrule{
+    \defaultpos{k} = p_k
+  }{
+    \cursor{v}{p}{\cycleVertex{\e{=}(u, v, p, v')}}
+    \action{\Construct{k}}
+    \big(\Minus, \e\big);
+    \big(\Plus, (u', v, p, (u'', k))\big);
+    \big(\Plus, (u''', (u'', k), p_k, v')\big)
+  }
+
+  \inferrule{}{
+    \cursor{v}{p}{\hole}
+    \action{\Construct{k}}
+    \big(\Plus, (u, v, p, (u', k))\big)
+  }
+
+  \inferrule{
+    G_t(\e{=}(u, v, p, v_t)) = \Plus
+  }{
+    \cursor{v}{p}{t}
+    \action{Delete}
+    \big(\Minus, \e)\big)
+  }
+
+  \inferrule{
+    G_t(\e{=}(u, v, p, v_t)) = \Plus
+  }{
+    \cursor{v}{p}{t}
+    \action{\Reposition{v_\alpha}{p_\alpha}}
+    \big(\Minus, \e\big);
+    \big(\Plus, (u', v_\alpha, p_\alpha, v_t)\big)
+  }
+\end{mathpar}
+
+% \noindent $\boxed{\Z{e} \action{\alpha} \Z{e}}$
 % %
 % \begin{align*}
-%   \
+%   \cursor{v}{p}{\hole}   \action{\Construct{k}}   \cursor{v}{p}{\decomp{(u, v, p, (u', k)}} \\
+%   \cursor{v}{p}{}
 % \end{align*}
 
 % Cases:
