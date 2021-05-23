@@ -443,7 +443,137 @@ and $\Z{\Set} = (\Set, \Z{t})$ a set of terms paired with a zippered term.
   \end{array}
 \]
 
+\noindent $\boxed{\Z{\Grove} \action{\alpha} a^{*}}$
+%
+\begin{mathpar}
+  \inferrule{
+    \Z{\Set}_{NP} \action{\alpha} a^{*}
+  }{
+    (\Z{\Set}_{NP}, \Set[MP], \Set[U]) \action{\alpha} a^{*}
+  }
+
+  \inferrule{
+    \Z{\Set}_{MP} \action{\alpha} a^{*}
+  }{
+    (\Set[NP], \Z{\Set}_{MP}, \Set[U]) \action{\alpha} a^{*}
+  }
+
+  \inferrule{
+    \Z{\Set}_U \action{\alpha} a^{*}
+  }{
+    (\Set[NP], \Set[MP], \Z{\Set}_U) \action{\alpha} a^{*}
+  }
+\end{mathpar}
+
+\noindent $\boxed{\Z{\Set} \action{\alpha} a^{*}}$
+%
+\begin{mathpar}
+  \inferrule{
+    \Z{t} \action{\alpha} a^{*}
+  }{
+    (\Set, \Z{t}) \action{\alpha} a^{*}
+  }
+\end{mathpar}
+
 \noindent $\boxed{\Z{t} \action{\alpha} a^{*}}$
+%
+\begin{mathpar}
+  \inferrule{
+    \Z{q} \action{\alpha} a^{*}
+  }{
+    \eFun{G}{\Z{q}}{\tau}{e}
+    \action{\alpha}
+    a^{*}
+  }
+
+  \inferrule{
+    \Z{\tau} \action{\alpha} a^{*}
+  }{
+    \eFun{G}{q}{\Z{\tau}}{e}
+    \action{\alpha}
+    a^{*}
+  }
+
+  \inferrule{
+    \Z{e} \action{\alpha} a^{*}
+  }{
+    \eFun{G}{q}{\tau}{\Z{e}}
+    \action{\alpha}
+    a^{*}
+  }
+
+  \inferrule{
+    \Z{e_1} \action{\alpha} a^{*}
+  }{
+    \eApp{G}{\Z{e_1}}{e_2}
+    \action{\alpha}
+    a^{*}
+  }
+
+  \inferrule{
+    \Z{e_2} \action{\alpha} a^{*}
+  }{
+    \eApp{G}{e_1}{\Z{e_2}}
+    \action{\alpha}
+    a^{*}
+  }
+
+  \inferrule{
+    \Z{e_1} \action{\alpha} a^{*}
+  }{
+    \ePlus{G}{\Z{e_1}}{e_2}
+    \action{\alpha}
+    a^{*}
+  }
+
+  \inferrule{
+    \Z{e_2} \action{\alpha} a^{*}
+  }{
+    \ePlus{G}{e_1}{\Z{e_2}}
+    \action{\alpha}
+    a^{*}
+  }
+
+  \inferrule{
+    \Z{e_1} \action{\alpha} a^{*}
+  }{
+    \eTimes{G}{\Z{e_1}}{e_2}
+    \action{\alpha}
+    a^{*}
+  }
+
+  \inferrule{
+    \Z{e_2} \action{\alpha} a^{*}
+  }{
+    \eTimes{G}{e_1}{\Z{e_2}}
+    \action{\alpha}
+    a^{*}
+  }
+
+  \inferrule{
+    \Z{e_1} \action{\alpha} a^{*}
+  }{
+    \tArrow{G}{\Z{e_1}}{e_2}
+    \action{\alpha}
+    a^{*}
+  }
+
+  \inferrule{
+    \Z{e_2} \action{\alpha} a^{*}
+  }{
+    \tArrow{G}{e_1}{\Z{e_2}}
+    \action{\alpha}
+    a^{*}
+  }
+
+  \inferrule{
+    \Z{t_1} \action{\alpha} a^{*}
+  }{
+    \conflictHole{\Z{t_1}, t_2, \ldots, t_n}
+    \action{\alpha}
+    a^{*}
+  }
+\end{mathpar}
 %
 \begin{mathpar}
   \inferrule{
