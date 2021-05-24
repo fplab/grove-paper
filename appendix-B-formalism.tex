@@ -423,14 +423,14 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
   \erase{\ePlus{G}{e_1}{\Z{e_2}}} &= \ePlus{G}{e_1}{\erase{\Z{e_2}}} \\
   \erase{\eTimes{G}{\Z{e_1}}{e_2}} &= \eTimes{G}{\erase{\Z{e_1}}}{e_2} \\
   \erase{\eTimes{G}{e_1}{\Z{e_2}}} &= \eTimes{G}{e_1}{\erase{\Z{e_2}}} \\
-  \erase{\conflictHole{\Z{e}, e_1, \ldots, e_n}} &= \conflictHole{e, e_1, \ldots, e_n}
+  \erase{\conflictHole{\Z{e}, e_1, \ldots, e_n}} &= \conflictHole{\erase{\Z{e}}, e_1, \ldots, e_n}
 \end{align*}
 
 \noindent $\boxed{\erase{\Z{q}} = q}$
 %
 \begin{align*}
   \erase{\cursor{v}{p}{q}} &= q \\
-  \erase{\conflictHole{\Z{q}, q_1, \ldots, q_n}} &= \conflictHole{q, q_1, \ldots, q_n}
+  \erase{\conflictHole{\Z{q}, q_1, \ldots, q_n}} &= \conflictHole{\erase{\Z{q}}, q_1, \ldots, q_n}
 \end{align*}
 
 \noindent $\boxed{\erase{\Z{\tau}} = \tau}$
@@ -439,7 +439,7 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
   \erase{\cursor{v}{p}{\tau}} &= \tau \\
   \erase{\left(\tArrow{G}{\Z{\tau_1}}{\tau_2}\right)} &= \tArrow{G}{\erase{\Z{\tau_1}}}{\tau_2} \\
   \erase{\left(\tArrow{G}{\tau_1}{\Z{\tau_2}}\right)} &= \tArrow{G}{\tau_1}{\erase{\Z{\tau_2}}} \\
-  \erase{\conflictHole{\Z{\tau}, \tau_1, \ldots, \tau_n}} &= \conflictHole{\tau, \tau_1, \ldots, \tau_n}
+  \erase{\conflictHole{\Z{\tau}, \tau_1, \ldots, \tau_n}} &= \conflictHole{\erase{\Z{\tau}}, \tau_1, \ldots, \tau_n}
 \end{align*}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
