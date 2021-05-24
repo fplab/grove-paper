@@ -2,10 +2,13 @@
 \newcommand{\figureTermSyntaxContent}{%
 \[
   \arraycolsep=0pt
-  \begin{array}{lrlll}
-    t & {}\in Term & {}::={} & e \mid \tau \mid q
+  \begin{array}{lcllll}
+    t & {}\in{} & Term & {}::={} &
+      e
+      \mid \tau
+      \mid q
     \\
-    e & {}\in Exp & {}::={} &
+    e & {}\in{} & Exp & {}::={} &
       \eVar{G}{x}
       \mid \eFun{G}{q}{\tau}{e}
       \mid \eApp{G}{e}{e}
@@ -17,7 +20,7 @@
       \mid \cycleVertex{\e}
       \mid \hole
     \\
-    \tau & {}\in Typ & {}::={} &
+    \tau & {}\in{} & Typ & {}::={} &
       \tArrow{G}{\tau}{\tau}
       \mid \tNum{G}
       \mid \conflictHole{\tau, \ldots, \tau}
@@ -25,7 +28,7 @@
       \mid \cycleVertex{\e}
       \mid \hole
     \\
-    q & {}\in Pat & {}::={} &
+    q & {}\in{} & Pat{} & {}::={} &
       \pVar{G}{x}
       \mid \conflictHole{q, \ldots, q}
       \mid \multiVertex{\e}

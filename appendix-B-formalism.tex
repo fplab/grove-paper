@@ -333,8 +333,13 @@ Proof: provide a witness that demonstrates the conclusion.
 
 \[
   \arraycolsep=0pt
-  \begin{array}{lrlll}
-    \Z{e} & {}\in ZExp & {}::={} &
+  \begin{array}{lcllll}
+    \Z{t} & {}\in{} & ZTerm & {}::={} &
+      \Z{e}
+      \mid \Z{q}
+      \mid \Z{\tau}
+    \\
+    \Z{e} & {}\in{} & ZExp & {}::={} &
       \cursor{v}{p}{e}
       \mid \eFun{G}{\Z{q}}{\tau}{e}
       \mid \eFun{G}{q}{\Z{\tau}}{e}
@@ -344,15 +349,16 @@ Proof: provide a witness that demonstrates the conclusion.
       \mid \ePlus{G}{\Z{e}}{e}
       \mid \ePlus{G}{e}{\Z{e}}
       \mid \eTimes{G}{\Z{e}}{e}
-      \mid \eTimes{G}{e}{\Z{e}} \\
-    &&&
+      \\
+    &&&&
+    \mid \eTimes{G}{e}{\Z{e}}
       \mid \conflictHole{\Z{e}, e, \ldots, e}
     \\
-    \Z{q} & {}\in ZPat & {}::={} &
+    \Z{q} & {}\in{} & ZPat & {}::={} &
       \cursor{v}{p}{q}
       \mid \conflictHole{\Z{q}, q, \ldots, q}
     \\
-    \Z{\tau} & {}\in ZTyp & {}::={} &
+    \Z{\tau} & {}\in{} & ZTyp & {}::={} &
       \cursor{v}{p}{\tau}
       \mid \tArrow{G}{\Z{\tau}}{\tau}
       \mid \tArrow{G}{\tau}{\Z{\tau}}
@@ -360,9 +366,10 @@ Proof: provide a witness that demonstrates the conclusion.
     \\
   \end{array}
 \]
+%
+We identify conflict holes up to reordering.
 
-Let $\Z{t}$ denote a zippered term
-and $\Z{\Set} = (\Set, \Z{t})$ a set of terms paired with a zippered term.
+Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term.
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
