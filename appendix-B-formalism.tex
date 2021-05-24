@@ -91,12 +91,12 @@ Let $t$ denote a term and $\Set$ a set of terms.
 \end{definition}
 
 Let $G_t$, called the \emph{in-graph} of term $t$,
-denote the outermost graph produced by $\ingraphOp$ in the construction of term $t$,
-when such a graph exists.
+denote the graph associated with term $t$, when such a graph exists.
+For example, when $t$ is of the form $\eFun{G}{q}{\tau}{e}$, $G_t = G$.
 
 Let $v_t$, called the \emph{in-vertex} of term $t$,
 denote the destination vertex of the edges of $G_t$,
-when $G_t$ exists and all of its edges have the same destination.
+provided that $t$ is well sorted.
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
@@ -128,7 +128,7 @@ when $G_t$ exists and all of its edges have the same destination.
       \end{enumerate}
       % The terms in $\Set[U]$ correspond to edges with target vertices that are unicycle roots.
     \item For all $t \in \Set[MP] \cup \Set[U]$,
-      $\SizeOf{\SetOf{\e{=}(\rootVertex, \Root, v) \SuchThat{G_t(\e) \in \SetOf{\Plus, \Minus}}}} = 0$.
+      $\SizeOf{\SetOf{\e{=}(u, \rootVertex, \Root, v) \SuchThat{G_t(\e) \in \SetOf{\Plus, \Minus}}}} = 0$.
       % Any terms corresponding to edges originating from $\rootVertex$ are in $\Set[NP]$.
   \end{enumerate}
 \end{definition}
@@ -143,7 +143,13 @@ when $G_t$ exists and all of its edges have the same destination.
         \item $t_1, \ldots, t_n$ are well sorted.
           % The conflicting terms are well sorted ...
         \item $\sort{t_1} = \cdots = \sort{t_n}$.
-          % ... and of the same sort.
+          % ... and of the same sort ...
+        \item
+          There exist $v_0 \in \V, p_0 \in \P$ such that,
+          for all $\e{=}(u, v, p, v')$ such that $G_{t_i}(\e) = \Plus$,
+          $v = v_0$ and $p = p_0$ for all $i = 1, \ldots, n$.
+          % ... and all of their incoming edges have the same source vertex and position.
+          % NOTE: is it possible for them to all have the same-but-wrong source vertex and position?
       \end{enumerate}
     \item $t = \multiVertex{\e}$ and all of the following hold:
       \begin{enumerate}
@@ -151,7 +157,6 @@ when $G_t$ exists and all of its edges have the same destination.
           % The corresponding edge is well sorted ...
         \item $\SizeOf{\SetOf{\e' \SuchThat{G_t(\e') = \Plus}}} > 1$.
           % ... and its target vertex has multiple parents.
-          % (TODO: do we need this? be careful with wording)
       \end{enumerate}
     \item $t = \cycleVertex{(u, v, p, v')}$ and all of the following hold:
       \begin{enumerate}
@@ -163,19 +168,21 @@ when $G_t$ exists and all of its edges have the same destination.
           such that $v_{\e}' \in \ancestors{v'}$,
           $\SizeOf{\parents{v_{\e}'}} = 1$.
           % ... of a unicycle.
-          % (TODO: do we need this? be careful with wording.
-          % Could try to reconstruct the path from root (referenced) to ref (referencer).)
       \end{enumerate}
     \item Otherwise, $G_t$ exists and all of the following hold:
       \begin{enumerate}
         \item $G_t$ is well sorted.
-          % all incoming edges are well sorted
+          % All incoming edges are well sorted ...
+        \item For all $(u, v, p, v') \mapsto s \in G_t$, $v' = v_t$.
+          % ... all incoming edges have the same destination vertex (and we call it the in-vertex of t).
         \item $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) \in \SetOf{\Plus, \Minus}}}} \geq 1$.
           % The in-graph of t is not empty.
-        \item For all $\e{=}(v, p, v')$ such that $G_t(\e) \in \SetOf{\Plus, \Minus}$,
-          $v' = (u, \constructor{t})$ fixed.
-          % All term constructors match their corresponding target vertex constructors.
-          % The ids of the target vertices of all incoming edges are the same.
+        \item
+          There exists $u_0 \in \U$ such that,
+          for all $\e{=}(u, v, p, v')$ such that $G_t(\e) \in \SetOf{\Plus, \Minus}$,
+          $u = u_0$ and $v' = v_t = (u, \constructor{t})$.
+          % The destination vertices of all incoming edges have the same id and constructor.
+          % The constructor matches the term.
       \end{enumerate}
   \end{itemize}
 \end{definition}
