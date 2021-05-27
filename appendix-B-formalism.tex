@@ -116,10 +116,10 @@ provided that $t$ is well sorted.
     \item The terms of $\Set[NP], \Set[MP],$ and $\Set[U]$ are well sorted.
       % $\Set[NP]$, $\Set[MP]$, and $\Set[U]$ contain only well sorted terms.
     \item For all $t \in \Set[NP]$,
-      $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) = \Plus}}} = 0$.
+      we have $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) = \Plus}}} = 0$.
       % The terms in $\Set[NP]$ correspond to edges with target vertices that have no parents.
     \item For all $t \in \Set[MP]$,
-      $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) = \Plus}}} > 1$.
+      we have $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) = \Plus}}} > 1$.
       % The terms in $\Set[MP]$ correspond to edges with target vertices that have multiple parents.
     \item For all $t \in \Set[U]$, all of the following hold:
       \begin{enumerate}
@@ -128,7 +128,7 @@ provided that $t$ is well sorted.
       \end{enumerate}
       % The terms in $\Set[U]$ correspond to edges with target vertices that are unicycle roots.
     \item For all $t \in \Set[MP] \cup \Set[U]$,
-      $\SizeOf{\SetOf{\e{=}(u, \rootVertex, \Root, v) \SuchThat{G_t(\e) \in \SetOf{\Plus, \Minus}}}} = 0$.
+      we have $\SizeOf{\SetOf{\e{=}(u, \rootVertex, \Root, v) \SuchThat{G_t(\e) \in \SetOf{\Plus, \Minus}}}} = 0$.
       % Any terms corresponding to edges originating from $\rootVertex$ are in $\Set[NP]$.
   \end{enumerate}
 \end{definition}
@@ -138,18 +138,18 @@ provided that $t$ is well sorted.
   \begin{itemize}
     \item $t = \hole$.
       % An empty hole is trivially well sorted.
-    \item $t = \conflictHole{t_1, \ldots, t_n}$ and all of the following hold:
+    \item $t = \conflictHoleForm{t_i}{i \leq n}$ and all of the following hold:
       \begin{enumerate}
-        \item $t_1, \ldots, t_n$ are well sorted.
+        \item For all $i = 1, \ldots, n$, we have $t_i$ is well sorted.
           % The conflicting terms are well sorted ...
-        \item $\sort{t_1} = \cdots = \sort{t_n}$.
-          % ... and of the same sort ...
+        % \item $\sort{t_1} = \cdots = \sort{t_n}$.
+        %   % ... and of the same sort ...
         \item
           There exist $v_0 \in \V, p_0 \in \P$ such that,
-          for all $\e{=}(u, v, p, v')$ such that $G_{t_i}(\e) = \Plus$,
-          $v = v_0$ and $p = p_0$ for all $i = 1, \ldots, n$.
+          for all $i = 1, \ldots, n$,
+          and all $\e{=}(u, v, p, v')$ such that $G_{t_i}(\e) = \Plus$,
+          we have $v = v_0$ and $p = p_0$.
           % ... and all of their incoming edges have the same source vertex and position.
-          % NOTE: is it possible for them to all have the same-but-wrong source vertex and position?
       \end{enumerate}
     \item $t = \multiVertex{\e}$ and all of the following hold:
       \begin{enumerate}
@@ -166,21 +166,21 @@ provided that $t$ is well sorted.
           % ... and its target vertex is the root ...
         \item For all $\e{=}(u_{\e}, v_{\e}, p_{\e}, v_{\e}')$
           such that $v_{\e}' \in \ancestors{v'}$,
-          $\SizeOf{\parents{v_{\e}'}} = 1$.
+          we have $\SizeOf{\parents{v_{\e}'}} = 1$.
           % ... of a unicycle.
       \end{enumerate}
     \item Otherwise, $G_t$ exists and all of the following hold:
       \begin{enumerate}
         \item $G_t$ is well sorted.
           % All incoming edges are well sorted ...
-        \item For all $(u, v, p, v') \mapsto s \in G_t$, $v' = v_t$.
+        \item For all $\e{=}(u, v, p, v')$ such that $G_t(\e) \in \SetOf{\Plus, \Minus}$,
+          we have $v' = v_t$.
           % ... all incoming edges have the same destination vertex (and we call it the in-vertex of t).
         \item $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) \in \SetOf{\Plus, \Minus}}}} \geq 1$.
           % The in-graph of t is not empty.
-        \item
-          There exists $u_0 \in \U$ such that,
+        \item There exists $u_0 \in \U$ such that,
           for all $\e{=}(u, v, p, v')$ such that $G_t(\e) \in \SetOf{\Plus, \Minus}$,
-          $u = u_0$ and $v' = v_t = (u, \constructor{t})$.
+          we have $v' = v_t = (u_0, \constructor{t})$.
           % The destination vertices of all incoming edges have the same id and constructor.
           % The constructor matches the term.
       \end{enumerate}
