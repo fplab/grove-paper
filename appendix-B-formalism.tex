@@ -6,6 +6,9 @@
 
 \figureTermSyntaxContent
 
+For conflict hole forms $\conflictHoleForm{t_i}{i \leq n}$, it must be the case that $n \geq 2$.
+We identify conflict holes up to reordering.
+
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
 \subsubsection{Term Constructors}
@@ -187,6 +190,10 @@ provided that $t$ is well sorted.
   \end{itemize}
 \end{definition}
 
+% TODO: update confliceHole usage
+% TODO: rename multiVertex / cycleVertex
+% TODO: check for "we have" after "such that"
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Decomposition and Recomposition}
@@ -289,7 +296,7 @@ Proof: provide a witness that demonstrates the conclusion.
   \erecomp{\eTimes{G}{e_1}{e_2}}
     &= G \cup \erecomp{e_1} \cup \erecomp{e_2}
   \\
-  \erecomp{\conflictHole{e_1, \cdots, e_n}}
+  \erecomp{\conflictHoleForm{e_i}{i \leq n}}
   &= \bigcup_{i=1}^n \erecomp{e_i}
   \\
   \erecomp{\multiVertex{\e}} &= \SetOf{\e \mapsto \Plus}
@@ -304,7 +311,7 @@ Proof: provide a witness that demonstrates the conclusion.
 \begin{align*}
   \precomp{\pVar{G}{x}} &= G
   \\
-  \precomp{\conflictHole{q_1, \cdots, q_n}} &= \bigcup_{i=1}^n \precomp{q_i}
+  \precomp{\conflictHoleForm{q_i}{i \leq n}} &= \bigcup_{i=1}^n \precomp{q_i}
   \\
   \precomp{\multiVertex{\e}} &= \SetOf{\e \mapsto \Plus}
   \\
@@ -321,7 +328,7 @@ Proof: provide a witness that demonstrates the conclusion.
   \\
   \trecomp{\tNum{G}} &= G
   \\
-  \trecomp{\conflictHole{\tau_1, \cdots, \tau_n}} &= \bigcup_{i=1}^n \trecomp{\tau_i}
+  \trecomp{\conflictHole{\tau_i}{i \leq n}} &= \bigcup_{i=1}^n \trecomp{\tau_i}
   \\
   \trecomp{\multiVertex{\e}} &= \SetOf{\e \mapsto \Plus}
   \\
@@ -359,24 +366,23 @@ Proof: provide a witness that demonstrates the conclusion.
       \\
     &&&&
     \mid \eTimes{G}{e}{\Z{e}}
-      \mid \conflictHole{\Z{e}, e, \ldots, e}
+      \mid \conflictHoleForm{\Z{e}; e_i}{i \leq n}
     \\
     \Z{q} & {}\in{} & ZPat & {}::={} &
       \cursor{v}{p}{q}
-      \mid \conflictHole{\Z{q}, q, \ldots, q}
+      \mid \conflictHoleForm{\Z{q}; q_i}{i \leq n}
     \\
     \Z{\tau} & {}\in{} & ZTyp & {}::={} &
       \cursor{v}{p}{\tau}
       \mid \tArrow{G}{\Z{\tau}}{\tau}
       \mid \tArrow{G}{\tau}{\Z{\tau}}
-      \mid \conflictHole{\Z{\tau}, \tau, \ldots, \tau}
+      \mid \conflictHoleForm{\Z{\tau}; \tau_i}{i \leq n}
     \\
   \end{array}
 \]
-%
-We identify conflict holes up to reordering.
 
 Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term.
+Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with a zippered term.
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
@@ -423,14 +429,14 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
   \erase{\ePlus{G}{e_1}{\Z{e_2}}} &= \ePlus{G}{e_1}{\erase{\Z{e_2}}} \\
   \erase{\eTimes{G}{\Z{e_1}}{e_2}} &= \eTimes{G}{\erase{\Z{e_1}}}{e_2} \\
   \erase{\eTimes{G}{e_1}{\Z{e_2}}} &= \eTimes{G}{e_1}{\erase{\Z{e_2}}} \\
-  \erase{\conflictHole{\Z{e}, e_1, \ldots, e_n}} &= \conflictHole{\erase{\Z{e}}, e_1, \ldots, e_n}
+  \erase{\conflictHoleForm{\Z{e}; e_i}{i \leq n}} &= \conflictHole{\erase{\Z{e}}, e_1, \ldots, e_n}
 \end{align*}
 
 \noindent $\boxed{\erase{\Z{q}} = q}$
 %
 \begin{align*}
   \erase{\cursor{v}{p}{q}} &= q \\
-  \erase{\conflictHole{\Z{q}, q_1, \ldots, q_n}} &= \conflictHole{\erase{\Z{q}}, q_1, \ldots, q_n}
+  \erase{\conflictHoleForm{\Z{q}; q_i}{i \leq n}} &= \conflictHole{\erase{\Z{q}}, q_1, \ldots, q_n}
 \end{align*}
 
 \noindent $\boxed{\erase{\Z{\tau}} = \tau}$
@@ -439,12 +445,19 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
   \erase{\cursor{v}{p}{\tau}} &= \tau \\
   \erase{\left(\tArrow{G}{\Z{\tau_1}}{\tau_2}\right)} &= \tArrow{G}{\erase{\Z{\tau_1}}}{\tau_2} \\
   \erase{\left(\tArrow{G}{\tau_1}{\Z{\tau_2}}\right)} &= \tArrow{G}{\tau_1}{\erase{\Z{\tau_2}}} \\
-  \erase{\conflictHole{\Z{\tau}, \tau_1, \ldots, \tau_n}} &= \conflictHole{\erase{\Z{\tau}}, \tau_1, \ldots, \tau_n}
+  \erase{\conflictHoleForm{\Z{\tau}; \tau_i}{i \leq n}} &= \conflictHole{\erase{\Z{\tau}}, \tau_1, \ldots, \tau_n}
 \end{align*}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{User Actions}
+
+% TODO: We write defaultpos(k_) undefined to mean there does not exist a p such that defaultpos(k) = p
+% TODO: fix subscripts on v_...
+% TODO: move (v, p) from cursor syntax to judgment
+% TODO: fix position of hat over t's
+% TODO: consider the user action cases with multiple incoming edges
+% TODO: thm: user action semantics always produce well sorted graphs
 
 \[
   \arraycolsep=0pt
@@ -581,9 +594,9 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
   }
 
   \inferrule{
-    \Z{t_1} \action{\alpha} a^{*}
+    \Z{t} \action{\alpha} a^{*}
   }{
-    \conflictHole{\Z{t_1}, t_2, \ldots, t_n}
+    \conflictHoleForm{\Z{t}; t_i}{i \leq n}
     \action{\alpha}
     a^{*}
   }
@@ -613,7 +626,7 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
   \inferrule{
     \defaultpos{k} \text{ undefined}
   }{
-    \cursor{v}{p}{\conflictHole{t_1, \ldots, t_n}}
+    \cursor{v}{p}{\conflictHoleForm{t_i}{i \leq n}}
     \action{\Construct{k}}
     \big(\Plus, (u, v, p, (u', k))\big)
   }
@@ -621,15 +634,15 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
   \inferrule{
     \defaultpos{k} = p_k
   }{
-    \cursor{v}{p}{\conflictHole{t_1, \ldots, t_n}}
+    \cursor{v}{p}{\conflictHoleForm{t_i}{i \leq n}}
     \action{\Construct{k}}
-    \big(\Minus, (u_1, v, p, v_1')\big);
+    \big(\Minus, (u_1, v, p, v_{t_1}')\big);
     \ldots;
-    \big(\Minus, (u_n, v, p, v_n')\big);
+    \big(\Minus, (u_n, v, p, v_{t_n}')\big);
     \big(\Plus, (u, v, p, (u', k))\big); \\
-    \big(\Plus, (u_1', (u', k), p_k, v_1')\big);
+    \big(\Plus, (u_1', (u', k), p_k, v_{t_1}')\big);
     \ldots;
-    \big(\Plus, (u_n', (u', k), p_k, v_n')\big)
+    \big(\Plus, (u_n', (u', k), p_k, v_{t_n}')\big)
   }
 
   \inferrule{

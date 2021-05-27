@@ -15,7 +15,7 @@
       \mid \eNum{G}{n}
       \mid \ePlus{G}{e}{e}
       \mid \eTimes{G}{e}{e}
-      \mid \conflictHole{e, \ldots, e}
+      \mid \conflictHoleForm{e_i}{i \leq n}
       \mid \multiVertex{\e}
       \mid \cycleVertex{\e}
       \mid \hole
@@ -23,14 +23,14 @@
     \tau & {}\in{} & Typ & {}::={} &
       \tArrow{G}{\tau}{\tau}
       \mid \tNum{G}
-      \mid \conflictHole{\tau, \ldots, \tau}
+      \mid \conflictHoleForm{\tau_i}{i \leq n}
       \mid \multiVertex{\e}
       \mid \cycleVertex{\e}
       \mid \hole
     \\
     q & {}\in{} & Pat{} & {}::={} &
       \pVar{G}{x}
-      \mid \conflictHole{q, \ldots, q}
+      \mid \conflictHoleForm{q_i}{i \leq n}
       \mid \multiVertex{\e}
       \mid \cycleVertex{\e}
       \mid \hole

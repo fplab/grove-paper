@@ -43,7 +43,7 @@
   & q = \pdecompPrime{\e}{\LamParam} \\
   & \tau = \tdecompPrime{\e}{\LamType} \\
   & e = \edecompPrime{\e}{\LamBody} \\
-  \edecomp{\e{=}(u, v, p, (u', \ExpApp))} &= \eApp{\ingraph{v'}}{e_\AppFun}{e_\AppArg} \\
+  \edecomp{\e{=}(u, v, p, v'{=}(u', \ExpApp))} &= \eApp{\ingraph{v'}}{e_\AppFun}{e_\AppArg} \\
   & e_\AppFun = \edecompPrime{\e}{\AppFun} \\
   & e_\AppArg = \edecompPrime{\e}{\AppArg} \\
   \edecomp{\e{=}(u, v, p, v'{=}(u', \ExpNum(n)))} &= \eNum{\ingraph{v'}}{n} \\
@@ -77,12 +77,19 @@
     \edecompPrime{\e{=}(u, v, p, v')}{p'} = \\
     \left\{
       \begin{array}{ll}
-        \conflictHole{\edecomp{\e_1}, \ldots, \edecomp{\e_n}} & \outedges{v'}{p'} = \SetOf{\e_1, \ldots, \e_n} \land n > 1 \\
-        \multiVertex{\e'} & \outedges{v'}{p'} = \SetOf{\e'} \land \e' = (u_{\e'}, v_{\e'}, p_{\e'}, v_{\e'}') \\
-            & \phantom{\outedges{v'}{p'} = \SetOf{\e'}} \land |\parents{v_{\e'}'}| > 1 \\
-        \cycleVertex{\e'} & \outedges{v'}{p'} = \SetOf{\e'} \land \e' = (u_{\e'}, v_{\e'}, p_{\e'}, v_{\e'}') \\
-            & \phantom{\outedges{v'}{p'} = \SetOf{\e'}} \land |\parents{v_{\e'}'}| = 1 \\
-            & \phantom{\outedges{v'}{p'} = \SetOf{\e'}} \land v_{\e'}' = \min{\ancestors{v_{\e'}'}} \\
+        \conflictHoleForm{\edecomp{\e_i}}{i \leq n} &
+          \outedges{v'}{p'} = \SetOf{\e_1, \ldots, \e_n}
+        \\
+        \multiVertex{\e'} &
+          \outedges{v'}{p'} = \SetOf{(u_1, v_1, p_1, v_1')}
+          \land |\parents{v_1'}| > 1
+        \\
+        \cycleVertex{\e'} &
+          \outedges{v'}{p'} = \SetOf{(u_1, v_1, p_1, v_1')}
+          \land |\parents{v_1'}| = 1
+          \\ & \quad
+          \land v_1' = \min{\ancestors{v_1'}}
+        \\
         \hole & \outedges{v'}{p'} = \varnothing \\
         \edecomp{\e} & \text{otherwise} \\
       \end{array}
@@ -97,12 +104,19 @@
     \pdecompPrime{\e}{p} = \\
     \left\{
       \begin{array}{ll}
-        \conflictHole{\pdecomp{\e_1}, \ldots, \pdecomp{\e_n}} & \outedges{v'}{p'} = \SetOf{\e_1, \ldots, \e_n} \land n > 1 \\
-        \multiVertex{\e'} & \outedges{v'}{p'} = \SetOf{\e'} \land \e' = (u_{\e'}, v_{\e'}, p_{\e'}, v_{\e'}') \\
-            & \phantom{\outedges{v'}{p'} = \SetOf{\e'}} \land |\parents{v_{\e'}'}| > 1 \\
-        \cycleVertex{\e'} & \outedges{v'}{p'} = \SetOf{\e'} \land \e' = (u_{\e'}, v_{\e'}, p_{\e'}, v_{\e'}') \\
-            & \phantom{\outedges{v'}{p'} = \SetOf{\e'}} \land |\parents{v_{\e'}'}| = 1 \\
-            & \phantom{\outedges{v'}{p'} = \SetOf{\e'}} \land v_{\e'}' = \min{\ancestors{v_{\e'}'}} \\
+        \conflictHoleForm{\pdecomp{\e_i}}{i \leq n} &
+          \outedges{v'}{p'} = \SetOf{\e_1, \ldots, \e_n}
+        \\
+        \multiVertex{\e'} &
+          \outedges{v'}{p'} = \SetOf{(u_1, v_1, p_1, v_1')}
+          \land |\parents{v_1'}| > 1
+        \\
+        \cycleVertex{\e'} &
+          \outedges{v'}{p'} = \SetOf{(u_1, v_1, p_1, v_1')}
+          \land |\parents{v_1'}| = 1
+          \\ & \quad
+          \land v_1' = \min{\ancestors{v_1'}}
+        \\
         \hole & \outedges{v'}{p'} = \varnothing \\
         \pdecomp{\e} & \text{otherwise} \\
       \end{array}
@@ -117,12 +131,19 @@
     \tdecompPrime{\e}{p} = \\
     \left\{
       \begin{array}{ll}
-        \conflictHole{\tdecomp{\e_1}, \ldots, \tdecomp{\e_n}} & \outedges{v'}{p'} = \SetOf{\e_1, \ldots, \e_n} \land n > 1 \\
-        \multiVertex{\e'} & \outedges{v'}{p'} = \SetOf{\e'} \land \e' = (u_{\e'}, v_{\e'}, p_{\e'}, v_{\e'}') \\
-            & \phantom{\outedges{v'}{p'} = \SetOf{\e'}} \land |\parents{v_{\e'}'}| > 1 \\
-        \cycleVertex{\e'} & \outedges{v'}{p'} = \SetOf{\e'} \land \e' = (u_{\e'}, v_{\e'}, p_{\e'}, v_{\e'}') \\
-            & \phantom{\outedges{v'}{p'} = \SetOf{\e'}} \land |\parents{v_{\e'}'}| = 1 \\
-            & \phantom{\outedges{v'}{p'} = \SetOf{\e'}} \land v_{\e'}' = \min{\ancestors{v_{\e'}'}} \\
+        \conflictHoleForm{\tdecomp{\e_i}}{i \leq n} &
+          \outedges{v'}{p'} = \SetOf{\e_1, \ldots, \e_n}
+        \\
+        \multiVertex{\e'} &
+          \outedges{v'}{p'} = \SetOf{(u_1, v_1, p_1, v_1')}
+          \land |\parents{v_1'}| > 1
+        \\
+        \cycleVertex{\e'} &
+          \outedges{v'}{p'} = \SetOf{(u_1, v_1, p_1, v_1')}
+          \land |\parents{v_1'}| = 1
+          \\ & \quad
+          \land v_1' = \min{\ancestors{v_1'}}
+        \\
         \hole & \outedges{v'}{p'} = \varnothing \\
         \tdecomp{\e} & \text{otherwise} \\
       \end{array}
