@@ -354,7 +354,7 @@ Proof: provide a witness that demonstrates the conclusion.
       \mid \Z{\tau}
     \\
     \Z{e} & {}\in{} & ZExp & {}::={} &
-      \cursor{v}{p}{e}
+      \cursor{e}
       \mid \eFun{G}{\Z{q}}{\tau}{e}
       \mid \eFun{G}{q}{\Z{\tau}}{e}
       \mid \eFun{G}{q}{\tau}{\Z{e}}
@@ -369,11 +369,11 @@ Proof: provide a witness that demonstrates the conclusion.
       \mid \conflictHoleForm{\Z{e}; e_i}{i \leq n}
     \\
     \Z{q} & {}\in{} & ZPat & {}::={} &
-      \cursor{v}{p}{q}
+      \cursor{q}
       \mid \conflictHoleForm{\Z{q}; q_i}{i \leq n}
     \\
     \Z{\tau} & {}\in{} & ZTyp & {}::={} &
-      \cursor{v}{p}{\tau}
+      \cursor{\tau}
       \mid \tArrow{G}{\Z{\tau}}{\tau}
       \mid \tArrow{G}{\tau}{\Z{\tau}}
       \mid \conflictHoleForm{\Z{\tau}; \tau_i}{i \leq n}
@@ -419,7 +419,7 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
 \noindent $\boxed{\erase{\Z{e}} = e}$
 %
 \begin{align*}
-  \erase{\cursor{v}{p}{e}} &= e \\
+  \erase{\cursor{e}} &= e \\
   \erase{\left(\eFun{G}{\Z{q}}{\tau}{e}\right)} &= \eFun{G}{\erase{\Z{q}}}{\tau}{e} \\
   \erase{\left(\eFun{G}{q}{\Z{\tau}}{e}\right)} &= \eFun{G}{q}{\erase{\Z{\tau}}}{e} \\
   \erase{\left(\eFun{G}{q}{\tau}{\Z{e}}\right)} &= \eFun{G}{q}{\tau}{\erase{\Z{e}}} \\
@@ -435,14 +435,14 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
 \noindent $\boxed{\erase{\Z{q}} = q}$
 %
 \begin{align*}
-  \erase{\cursor{v}{p}{q}} &= q \\
+  \erase{\cursor{q}} &= q \\
   \erase{\conflictHoleForm{\Z{q}; q_i}{i \leq n}} &= \conflictHole{\erase{\Z{q}}, q_1, \ldots, q_n}
 \end{align*}
 
 \noindent $\boxed{\erase{\Z{\tau}} = \tau}$
 %
 \begin{align*}
-  \erase{\cursor{v}{p}{\tau}} &= \tau \\
+  \erase{\cursor{\tau}} &= \tau \\
   \erase{\left(\tArrow{G}{\Z{\tau_1}}{\tau_2}\right)} &= \tArrow{G}{\erase{\Z{\tau_1}}}{\tau_2} \\
   \erase{\left(\tArrow{G}{\tau_1}{\Z{\tau_2}}\right)} &= \tArrow{G}{\tau_1}{\erase{\Z{\tau_2}}} \\
   \erase{\conflictHoleForm{\Z{\tau}; \tau_i}{i \leq n}} &= \conflictHole{\erase{\Z{\tau}}, \tau_1, \ldots, \tau_n}
@@ -502,101 +502,101 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   }
 \end{mathpar}
 
-\noindent $\boxed{\Z{t} \action{\alpha} a^{*}}$
+\noindent $\boxed{v, t; \Z{t} \action{\alpha} a^{*}}$
 %
 \begin{mathpar}
   \inferrule{
-    \Z{q} \action{\alpha} a^{*}
+    v_{(\eFun{G}{\Z{q}}{\tau}{e})}, \LamParam; \Z{q} \action{\alpha} a^{*}
   }{
-    \eFun{G}{\Z{q}}{\tau}{e}
+    v, p; (\eFun{G}{\Z{q}}{\tau}{e})
     \action{\alpha}
     a^{*}
   }
 
   \inferrule{
-    \Z{\tau} \action{\alpha} a^{*}
+    v_{(\eFun{G}{q}{\Z{\tau}}{e})}, \LamType; \Z{\tau} \action{\alpha} a^{*}
   }{
-    \eFun{G}{q}{\Z{\tau}}{e}
+    v, p; (\eFun{G}{q}{\Z{\tau}}{e})
     \action{\alpha}
     a^{*}
   }
 
   \inferrule{
-    \Z{e} \action{\alpha} a^{*}
+    v_{(\eFun{G}{q}{\tau}{\Z{e}})}, \LamBody; \Z{e} \action{\alpha} a^{*}
   }{
-    \eFun{G}{q}{\tau}{\Z{e}}
+    v, p; (\eFun{G}{q}{\tau}{\Z{e}})
     \action{\alpha}
     a^{*}
   }
 
   \inferrule{
-    \Z{e_1} \action{\alpha} a^{*}
+    v_{\eApp{G}{\Z{e_1}}{e_2}}, \AppFun; \Z{e_1} \action{\alpha} a^{*}
   }{
-    \eApp{G}{\Z{e_1}}{e_2}
+    v, p; \eApp{G}{\Z{e_1}}{e_2}
     \action{\alpha}
     a^{*}
   }
 
   \inferrule{
-    \Z{e_2} \action{\alpha} a^{*}
+    v_{\eApp{G}{e_1}{\Z{e_2}}}, \AppArg; \Z{e_2} \action{\alpha} a^{*}
   }{
-    \eApp{G}{e_1}{\Z{e_2}}
+    v, p; \eApp{G}{e_1}{\Z{e_2}}
     \action{\alpha}
     a^{*}
   }
 
   \inferrule{
-    \Z{e_1} \action{\alpha} a^{*}
+    v_{(\ePlus{G}{\Z{e_1}}{e_2})}, \PlusLeft; \Z{e_1} \action{\alpha} a^{*}
   }{
-    \ePlus{G}{\Z{e_1}}{e_2}
+    v, p; (\ePlus{G}{\Z{e_1}}{e_2})
     \action{\alpha}
     a^{*}
   }
 
   \inferrule{
-    \Z{e_2} \action{\alpha} a^{*}
+    v_{(\ePlus{G}{e_1}{\Z{e_2}})}, \PlusRight; \Z{e_2} \action{\alpha} a^{*}
   }{
-    \ePlus{G}{e_1}{\Z{e_2}}
+    v, p; (\ePlus{G}{e_1}{\Z{e_2}})
     \action{\alpha}
     a^{*}
   }
 
   \inferrule{
-    \Z{e_1} \action{\alpha} a^{*}
+    v_{(\eTimes{G}{\Z{e_1}}{e_2})}, \TimesLeft; \Z{e_1} \action{\alpha} a^{*}
   }{
-    \eTimes{G}{\Z{e_1}}{e_2}
+    v, p; (\eTimes{G}{\Z{e_1}}{e_2})
     \action{\alpha}
     a^{*}
   }
 
   \inferrule{
-    \Z{e_2} \action{\alpha} a^{*}
+    v_{(\eTimes{G}{e_1}{\Z{e_2}})}, \TimesRight; \Z{e_2} \action{\alpha} a^{*}
   }{
-    \eTimes{G}{e_1}{\Z{e_2}}
+    v, p; (\eTimes{G}{e_1}{\Z{e_2}})
     \action{\alpha}
     a^{*}
   }
 
   \inferrule{
-    \Z{e_1} \action{\alpha} a^{*}
+    v_{(\tArrow{G}{\Z{\tau_1}}{\tau_2})}, \ArrowArg; \Z{\tau_1} \action{\alpha} a^{*}
   }{
-    \tArrow{G}{\Z{e_1}}{e_2}
+    v, p; (\tArrow{G}{\Z{\tau_1}}{\tau_2})
     \action{\alpha}
     a^{*}
   }
 
   \inferrule{
-    \Z{e_2} \action{\alpha} a^{*}
+    v_{(\tArrow{G}{\tau_1}{\Z{\tau_2}})}, \ArrowResult; \Z{\tau_2} \action{\alpha} a^{*}
   }{
-    \tArrow{G}{e_1}{\Z{e_2}}
+    v, p; (\tArrow{G}{\tau_1}{\Z{\tau_2}})
     \action{\alpha}
     a^{*}
   }
 
   \inferrule{
-    \Z{t} \action{\alpha} a^{*}
+    v, p; \Z{t} \action{\alpha} a^{*}
   }{
-    \conflictHoleForm{\Z{t}; t_i}{i \leq n}
+    v, p; \conflictHoleForm{\Z{t}; t_i}{i \leq n}
     \action{\alpha}
     a^{*}
   }
@@ -607,7 +607,7 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
     G_t((u, v, p, v_t)) = \Plus \\
     \defaultpos{k} \text{ undefined}
   }{
-    \cursor{v}{p}{t}
+    v, p; \cursor{t}
     \action{\Construct{k}}
     \big(\Plus, (u', v, p, (u'', k))\big)
   }
@@ -616,7 +616,7 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
     G_t(\e{=}(u, v, p, v_t)) = \Plus \\
     \defaultpos{k} = p_k
   }{
-    \cursor{v}{p}{t}
+    v, p; \cursor{t}
     \action{\Construct{k}}
     \big(\Minus, \e\big);
     \big(\Plus, (u', v, p, (u'', k))\big);
@@ -626,7 +626,7 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   \inferrule{
     \defaultpos{k} \text{ undefined}
   }{
-    \cursor{v}{p}{\conflictHoleForm{t_i}{i \leq n}}
+    v, p; \cursor{\conflictHoleForm{t_i}{i \leq n}}
     \action{\Construct{k}}
     \big(\Plus, (u, v, p, (u', k))\big)
   }
@@ -634,7 +634,7 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   \inferrule{
     \defaultpos{k} = p_k
   }{
-    \cursor{v}{p}{\conflictHoleForm{t_i}{i \leq n}}
+    v, p; \cursor{\conflictHoleForm{t_i}{i \leq n}}
     \action{\Construct{k}}
     \big(\Minus, (u_1, v, p, v_{t_1}')\big);
     \ldots;
@@ -648,7 +648,7 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   \inferrule{
     \defaultpos{k} \text{ undefined}
   }{
-    \cursor{v}{p}{\multiVertex{(u, v, p, v')}}
+    v, p; \cursor{\multiVertex{(u, v, p, v')}}
     \action{\Construct{k}}
     \big(\Plus, (u', v, p, (u'', k))\big)
   }
@@ -656,7 +656,7 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   \inferrule{
     \defaultpos{k} = p_k
   }{
-    \cursor{v}{p}{\multiVertex{\e{=}(u, v, p, v')}}
+    v, p; \cursor{\multiVertex{\e{=}(u, v, p, v')}}
     \action{\Construct{k}}
     \big(\Minus, \e\big);
     \big(\Plus, (u', v, p, (u'', k))\big);
@@ -666,7 +666,7 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   \inferrule{
     \defaultpos{k} \text{ undefined}
   }{
-    \cursor{v}{p}{\cycleVertex{(u, v, p, v')}}
+    v, p; \cursor{\cycleVertex{(u, v, p, v')}}
     \action{\Construct{k}}
     \big(\Plus, (u', v, p, (u'', k))\big)
   }
@@ -674,7 +674,7 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   \inferrule{
     \defaultpos{k} = p_k
   }{
-    \cursor{v}{p}{\cycleVertex{\e{=}(u, v, p, v')}}
+    v, p; \cursor{\cycleVertex{\e{=}(u, v, p, v')}}
     \action{\Construct{k}}
     \big(\Minus, \e\big);
     \big(\Plus, (u', v, p, (u'', k))\big);
@@ -682,7 +682,7 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   }
 
   \inferrule{}{
-    \cursor{v}{p}{\hole}
+    v, p; \cursor{\hole}
     \action{\Construct{k}}
     \big(\Plus, (u, v, p, (u', k))\big)
   }
@@ -690,7 +690,7 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   \inferrule{
     G_t(\e{=}(u, v, p, v_t)) = \Plus
   }{
-    \cursor{v}{p}{t}
+    v, p; \cursor{t}
     \action{Delete}
     \big(\Minus, \e)\big)
   }
@@ -698,7 +698,7 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   \inferrule{
     G_t(\e{=}(u, v, p, v_t)) = \Plus
   }{
-    \cursor{v}{p}{t}
+    v, p; \cursor{t}
     \action{\Reposition{v_\alpha}{p_\alpha}}
     \big(\Minus, \e\big);
     \big(\Plus, (u', v_\alpha, p_\alpha, v_t)\big)
