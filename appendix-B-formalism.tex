@@ -423,12 +423,12 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   \erase{\left(\eFun{G}{\Z{q}}{\tau}{e}\right)} &= \eFun{G}{\erase{\Z{q}}}{\tau}{e} \\
   \erase{\left(\eFun{G}{q}{\Z{\tau}}{e}\right)} &= \eFun{G}{q}{\erase{\Z{\tau}}}{e} \\
   \erase{\left(\eFun{G}{q}{\tau}{\Z{e}}\right)} &= \eFun{G}{q}{\tau}{\erase{\Z{e}}} \\
-  \erase{\eApp{G}{\Z{e_1}}{e_2}} &= \eApp{G}{\erase{\Z{e_1}}}{e_2} \\
-  \erase{\eApp{G}{e_1}{\Z{e_2}}} &= \eApp{G}{e_1}{\erase{\Z{e_2}}} \\
-  \erase{\ePlus{G}{\Z{e_1}}{e_2}} &= \ePlus{G}{\erase{\Z{e_1}}}{e_2} \\
-  \erase{\ePlus{G}{e_1}{\Z{e_2}}} &= \ePlus{G}{e_1}{\erase{\Z{e_2}}} \\
-  \erase{\eTimes{G}{\Z{e_1}}{e_2}} &= \eTimes{G}{\erase{\Z{e_1}}}{e_2} \\
-  \erase{\eTimes{G}{e_1}{\Z{e_2}}} &= \eTimes{G}{e_1}{\erase{\Z{e_2}}} \\
+  \erase{\eApp{G}{\Z{e}_1}{e_2}} &= \eApp{G}{\erase{\Z{e}_1}}{e_2} \\
+  \erase{\eApp{G}{e_1}{\Z{e}_2}} &= \eApp{G}{e_1}{\erase{\Z{e}_2}} \\
+  \erase{\ePlus{G}{\Z{e}_1}{e_2}} &= \ePlus{G}{\erase{\Z{e}_1}}{e_2} \\
+  \erase{\ePlus{G}{e_1}{\Z{e}_2}} &= \ePlus{G}{e_1}{\erase{\Z{e}_2}} \\
+  \erase{\eTimes{G}{\Z{e}_1}{e_2}} &= \eTimes{G}{\erase{\Z{e}_1}}{e_2} \\
+  \erase{\eTimes{G}{e_1}{\Z{e}_2}} &= \eTimes{G}{e_1}{\erase{\Z{e}_2}} \\
   \erase{\conflictHoleForm{\Z{e}; e_i}{i \leq n}} &= \conflictHole{\erase{\Z{e}}, e_1, \ldots, e_n}
 \end{align*}
 
@@ -443,8 +443,8 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
 %
 \begin{align*}
   \erase{\cursor{\tau}} &= \tau \\
-  \erase{\left(\tArrow{G}{\Z{\tau_1}}{\tau_2}\right)} &= \tArrow{G}{\erase{\Z{\tau_1}}}{\tau_2} \\
-  \erase{\left(\tArrow{G}{\tau_1}{\Z{\tau_2}}\right)} &= \tArrow{G}{\tau_1}{\erase{\Z{\tau_2}}} \\
+  \erase{\left(\tArrow{G}{\Z{\tau}_1}{\tau_2}\right)} &= \tArrow{G}{\erase{\Z{\tau}_1}}{\tau_2} \\
+  \erase{\left(\tArrow{G}{\tau_1}{\Z{\tau}_2}\right)} &= \tArrow{G}{\tau_1}{\erase{\Z{\tau}_2}} \\
   \erase{\conflictHoleForm{\Z{\tau}; \tau_i}{i \leq n}} &= \conflictHole{\erase{\Z{\tau}}, \tau_1, \ldots, \tau_n}
 \end{align*}
 
@@ -530,65 +530,65 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   }
 
   \inferrule{
-    v_{\eApp{G}{\Z{e_1}}{e_2}}, \AppFun; \Z{e_1} \action{\alpha} a^{*}
+    v_{\eApp{G}{\Z{e}_1}{e_2}}, \AppFun; \Z{e}_1 \action{\alpha} a^{*}
   }{
-    v, p; \eApp{G}{\Z{e_1}}{e_2}
+    v, p; \eApp{G}{\Z{e}_1}{e_2}
     \action{\alpha}
     a^{*}
   }
 
   \inferrule{
-    v_{\eApp{G}{e_1}{\Z{e_2}}}, \AppArg; \Z{e_2} \action{\alpha} a^{*}
+    v_{\eApp{G}{e_1}{\Z{e}_2}}, \AppArg; \Z{e}_2 \action{\alpha} a^{*}
   }{
-    v, p; \eApp{G}{e_1}{\Z{e_2}}
+    v, p; \eApp{G}{e_1}{\Z{e}_2}
     \action{\alpha}
     a^{*}
   }
 
   \inferrule{
-    v_{(\ePlus{G}{\Z{e_1}}{e_2})}, \PlusLeft; \Z{e_1} \action{\alpha} a^{*}
+    v_{(\ePlus{G}{\Z{e}_1}{e_2})}, \PlusLeft; \Z{e}_1 \action{\alpha} a^{*}
   }{
-    v, p; (\ePlus{G}{\Z{e_1}}{e_2})
+    v, p; (\ePlus{G}{\Z{e}_1}{e_2})
     \action{\alpha}
     a^{*}
   }
 
   \inferrule{
-    v_{(\ePlus{G}{e_1}{\Z{e_2}})}, \PlusRight; \Z{e_2} \action{\alpha} a^{*}
+    v_{(\ePlus{G}{e_1}{\Z{e}_2})}, \PlusRight; \Z{e}_2 \action{\alpha} a^{*}
   }{
-    v, p; (\ePlus{G}{e_1}{\Z{e_2}})
+    v, p; (\ePlus{G}{e_1}{\Z{e}_2})
     \action{\alpha}
     a^{*}
   }
 
   \inferrule{
-    v_{(\eTimes{G}{\Z{e_1}}{e_2})}, \TimesLeft; \Z{e_1} \action{\alpha} a^{*}
+    v_{(\eTimes{G}{\Z{e}_1}{e_2})}, \TimesLeft; \Z{e}_1 \action{\alpha} a^{*}
   }{
-    v, p; (\eTimes{G}{\Z{e_1}}{e_2})
+    v, p; (\eTimes{G}{\Z{e}_1}{e_2})
     \action{\alpha}
     a^{*}
   }
 
   \inferrule{
-    v_{(\eTimes{G}{e_1}{\Z{e_2}})}, \TimesRight; \Z{e_2} \action{\alpha} a^{*}
+    v_{(\eTimes{G}{e_1}{\Z{e}_2})}, \TimesRight; \Z{e}_2 \action{\alpha} a^{*}
   }{
-    v, p; (\eTimes{G}{e_1}{\Z{e_2}})
+    v, p; (\eTimes{G}{e_1}{\Z{e}_2})
     \action{\alpha}
     a^{*}
   }
 
   \inferrule{
-    v_{(\tArrow{G}{\Z{\tau_1}}{\tau_2})}, \ArrowArg; \Z{\tau_1} \action{\alpha} a^{*}
+    v_{(\tArrow{G}{\Z{\tau}_1}{\tau_2})}, \ArrowArg; \Z{\tau}_1 \action{\alpha} a^{*}
   }{
-    v, p; (\tArrow{G}{\Z{\tau_1}}{\tau_2})
+    v, p; (\tArrow{G}{\Z{\tau}_1}{\tau_2})
     \action{\alpha}
     a^{*}
   }
 
   \inferrule{
-    v_{(\tArrow{G}{\tau_1}{\Z{\tau_2}})}, \ArrowResult; \Z{\tau_2} \action{\alpha} a^{*}
+    v_{(\tArrow{G}{\tau_1}{\Z{\tau}_2})}, \ArrowResult; \Z{\tau}_2 \action{\alpha} a^{*}
   }{
-    v, p; (\tArrow{G}{\tau_1}{\Z{\tau_2}})
+    v, p; (\tArrow{G}{\tau_1}{\Z{\tau}_2})
     \action{\alpha}
     a^{*}
   }
