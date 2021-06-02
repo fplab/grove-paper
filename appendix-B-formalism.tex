@@ -194,7 +194,6 @@ provided that $t$ is well sorted.
 
 % TODO: update confliceHole usage
 % TODO: rename multiVertex / cycleVertex
-% TODO: check for "we have" after "such that"
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -468,135 +467,255 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   \end{array}
 \]
 
-\noindent $\boxed{\Z{\Grove} \action{\alpha} a^{*}}$
+\noindent $\boxed{\Z{\Grove} \userAction{\alpha} a^{*}}$
 %
 \begin{mathpar}
   \inferrule{
-    \Z{\Set}_{NP} \action{\alpha} a^{*}
+    \Z{\Set}_{NP} \userAction{\alpha} a^{*}
   }{
-    (\Z{\Set}_{NP}, \Set[MP], \Set[U]) \action{\alpha} a^{*}
+    (\Z{\Set}_{NP}, \Set[MP], \Set[U]) \userAction{\alpha} a^{*}
   }
 
   \inferrule{
-    \Z{\Set}_{MP} \action{\alpha} a^{*}
+    \Z{\Set}_{MP} \userAction{\alpha} a^{*}
   }{
-    (\Set[NP], \Z{\Set}_{MP}, \Set[U]) \action{\alpha} a^{*}
+    (\Set[NP], \Z{\Set}_{MP}, \Set[U]) \userAction{\alpha} a^{*}
   }
 
   \inferrule{
-    \Z{\Set}_U \action{\alpha} a^{*}
+    \Z{\Set}_U \userAction{\alpha} a^{*}
   }{
-    (\Set[NP], \Set[MP], \Z{\Set}_U) \action{\alpha} a^{*}
+    (\Set[NP], \Set[MP], \Z{\Set}_U) \userAction{\alpha} a^{*}
   }
 \end{mathpar}
 
-\noindent $\boxed{\Z{\Set} \action{\alpha} a^{*}}$
+\noindent $\boxed{\Z{\Set} \userAction{\alpha} a^{*}}$
 %
 \begin{mathpar}
   \inferrule{
-    \Z{t} \action{\alpha} a^{*}
+    \Z{t} \userAction{\alpha} a^{*}
   }{
-    (\Set, \Z{t}) \action{\alpha} a^{*}
+    (\Set, \Z{t}) \userAction{\alpha} a^{*}
   }
 \end{mathpar}
 
-\noindent $\boxed{v, t; \Z{t} \action{\alpha} a^{*}}$
+\noindent $\boxed{\act{v}{t}{\Z{t}}{\alpha}{a^{*}}}$
 %
 \begin{mathpar}
   \inferrule{
-    v_{(\eFun{G}{\Z{q}}{\tau}{e})}, \LamParam; \Z{q} \action{\alpha} a^{*}
+    \act{v_{(\eFun{G}{\Z{q}}{\tau}{e})}}{\LamParam}{
+      \Z{q}
+    }{
+      \alpha
+    }{
+      a^{*}
+    }
   }{
-    v, p; (\eFun{G}{\Z{q}}{\tau}{e})
-    \action{\alpha}
-    a^{*}
+    \act{v}{p}{
+      (\eFun{G}{\Z{q}}{\tau}{e})
+    }{
+      \alpha
+    }{
+      a^{*}
+    }
   }
 
   \inferrule{
-    v_{(\eFun{G}{q}{\Z{\tau}}{e})}, \LamType; \Z{\tau} \action{\alpha} a^{*}
+    \act{v_{(\eFun{G}{q}{\Z{\tau}}{e})}}{\LamType}{
+      \Z{\tau}
+    }{
+      \alpha
+    }{
+      a^{*}
+    }
   }{
-    v, p; (\eFun{G}{q}{\Z{\tau}}{e})
-    \action{\alpha}
-    a^{*}
+    \act{v}{p}{
+      (\eFun{G}{q}{\Z{\tau}}{e})
+    }{
+      \alpha
+    }{
+      a^{*}
+    }
   }
 
   \inferrule{
-    v_{(\eFun{G}{q}{\tau}{\Z{e}})}, \LamBody; \Z{e} \action{\alpha} a^{*}
+    \act{v_{(\eFun{G}{q}{\tau}{\Z{e}})}}{\LamBody}{
+      \Z{e}
+    }{
+      \alpha
+    }{
+      a^{*}
+    }
   }{
-    v, p; (\eFun{G}{q}{\tau}{\Z{e}})
-    \action{\alpha}
-    a^{*}
+    \act{v}{p}{
+      (\eFun{G}{q}{\tau}{\Z{e}})
+    }{
+      \alpha
+    }{
+      a^{*}
+    }
   }
 
   \inferrule{
-    v_{\eApp{G}{\Z{e}_1}{e_2}}, \AppFun; \Z{e}_1 \action{\alpha} a^{*}
+    \act{v_{\eApp{G}{\Z{e}_1}{e_2}}}{\AppFun}{
+      \Z{e}_1
+    }{
+      \alpha
+    }{
+      a^{*}
+    }
   }{
-    v, p; \eApp{G}{\Z{e}_1}{e_2}
-    \action{\alpha}
-    a^{*}
+    \act{v}{p}{
+      \eApp{G}{\Z{e}_1}{e_2}
+    }{
+      \alpha
+    }{
+      a^{*}
+    }
   }
 
   \inferrule{
-    v_{\eApp{G}{e_1}{\Z{e}_2}}, \AppArg; \Z{e}_2 \action{\alpha} a^{*}
+    \act{v_{\eApp{G}{e_1}{\Z{e}_2}}}{\AppArg}{
+      \Z{e}_2
+    }{
+      \alpha
+    }{
+      a^{*}
+    }
   }{
-    v, p; \eApp{G}{e_1}{\Z{e}_2}
-    \action{\alpha}
-    a^{*}
+    \act{v}{p}{
+      \eApp{G}{e_1}{\Z{e}_2}
+    }{
+      \alpha
+    }{
+      a^{*}
+    }
   }
 
   \inferrule{
-    v_{(\ePlus{G}{\Z{e}_1}{e_2})}, \PlusLeft; \Z{e}_1 \action{\alpha} a^{*}
+    \act{v_{(\ePlus{G}{\Z{e}_1}{e_2})}}{\PlusLeft}{
+      \Z{e}_1
+    }{
+      \alpha
+    }{
+      a^{*}
+    }
   }{
-    v, p; (\ePlus{G}{\Z{e}_1}{e_2})
-    \action{\alpha}
-    a^{*}
+    \act{v}{p}{
+      (\ePlus{G}{\Z{e}_1}{e_2})
+    }{
+      \alpha
+    }{
+      a^{*}
+    }
   }
 
   \inferrule{
-    v_{(\ePlus{G}{e_1}{\Z{e}_2})}, \PlusRight; \Z{e}_2 \action{\alpha} a^{*}
+    \act{v_{(\ePlus{G}{e_1}{\Z{e}_2})}}{\PlusRight}{
+      \Z{e}_2
+    }{
+      \alpha
+    }{
+      a^{*}
+    }
   }{
-    v, p; (\ePlus{G}{e_1}{\Z{e}_2})
-    \action{\alpha}
-    a^{*}
+    \act{v}{p}{
+      (\ePlus{G}{e_1}{\Z{e}_2})
+    }{
+      \alpha
+    }{
+      a^{*}
+    }
   }
 
   \inferrule{
-    v_{(\eTimes{G}{\Z{e}_1}{e_2})}, \TimesLeft; \Z{e}_1 \action{\alpha} a^{*}
+    \act{v_{(\eTimes{G}{\Z{e}_1}{e_2})}}{\TimesLeft}{
+      \Z{e}_1
+    }{
+      \alpha
+    }{
+      a^{*}
+    }
   }{
-    v, p; (\eTimes{G}{\Z{e}_1}{e_2})
-    \action{\alpha}
-    a^{*}
+    \act{v}{p}{
+      (\eTimes{G}{\Z{e}_1}{e_2})
+    }{
+      \alpha
+    }{
+      a^{*}
+    }
   }
 
   \inferrule{
-    v_{(\eTimes{G}{e_1}{\Z{e}_2})}, \TimesRight; \Z{e}_2 \action{\alpha} a^{*}
+    \act{v_{(\eTimes{G}{e_1}{\Z{e}_2})}}{\TimesRight}{
+      \Z{e}_2
+    }{
+      \alpha
+    }{
+      a^{*}
+    }
   }{
-    v, p; (\eTimes{G}{e_1}{\Z{e}_2})
-    \action{\alpha}
-    a^{*}
+    \act{v}{p}{
+      (\eTimes{G}{e_1}{\Z{e}_2})
+    }{
+      \alpha
+    }{
+      a^{*}
+    }
   }
 
   \inferrule{
-    v_{(\tArrow{G}{\Z{\tau}_1}{\tau_2})}, \ArrowArg; \Z{\tau}_1 \action{\alpha} a^{*}
+    \act{v_{(\tArrow{G}{\Z{\tau}_1}{\tau_2})}}{\ArrowArg}{
+      \Z{\tau}_1
+    }{
+      \alpha
+    }{
+      a^{*}
+    }
   }{
-    v, p; (\tArrow{G}{\Z{\tau}_1}{\tau_2})
-    \action{\alpha}
-    a^{*}
+    \act{v}{p}{
+      (\tArrow{G}{\Z{\tau}_1}{\tau_2})
+    }{
+      \alpha
+    }{
+      a^{*}
+    }
   }
 
   \inferrule{
-    v_{(\tArrow{G}{\tau_1}{\Z{\tau}_2})}, \ArrowResult; \Z{\tau}_2 \action{\alpha} a^{*}
+    \act{v_{(\tArrow{G}{\tau_1}{\Z{\tau}_2})}}{\ArrowResult}{
+      \Z{\tau}_2
+    }{
+      \alpha
+    }{
+      a^{*}
+    }
   }{
-    v, p; (\tArrow{G}{\tau_1}{\Z{\tau}_2})
-    \action{\alpha}
-    a^{*}
+    \act{v}{p}{
+      (\tArrow{G}{\tau_1}{\Z{\tau}_2})
+    }{
+      \alpha
+    }{
+      a^{*}
+    }
   }
 
   \inferrule{
-    v, p; \Z{t} \action{\alpha} a^{*}
+    \act{v}{p}{
+      \Z{t}
+    }{
+      \alpha
+    }{
+      a^{*}
+    }
   }{
-    v, p; \conflictHoleForm{\Z{t}; t_i}{i \leq n}
-    \action{\alpha}
-    a^{*}
+    \act{v}{p}{
+      \conflictHoleForm{\Z{t}; t_i}{i \leq n}
+    }{
+     \alpha
+    }{
+      a^{*}
+    }
   }
 \end{mathpar}
 %
@@ -605,108 +724,230 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
     G_t((u, v, p, v_t)) = \Plus \\
     \defaultpos{k} \text{ undefined}
   }{
-    v, p; \cursor{t}
-    \action{\Construct{k}}
-    \big(\Plus, (u', v, p, (u'', k))\big)
+    \act{v}{p}{
+      \cursor{t}
+    }{
+      \Construct{k}
+    }{
+      \graphAction{\Plus}{(u', v, p, (u'', k))}
+    }
   }
 
   \inferrule{
     G_t(\e{=}(u, v, p, v_t)) = \Plus \\
     \defaultpos{k} = p_k
   }{
-    v, p; \cursor{t}
-    \action{\Construct{k}}
-    \big(\Minus, \e\big);
-    \big(\Plus, (u', v, p, (u'', k))\big);
-    \big(\Plus, (u''', (u'', k), p_k, v_t)\big)
+    \act{v}{p}{
+      \cursor{t}
+    }{
+      \Construct{k}
+    }{
+      \big(\Minus, \e\big);
+      \graphAction{\Plus}{(u', v, p, (u'', k))};
+      \graphAction{\Plus}{(u''', (u'', k), p_k, v_t)}
+    }
   }
 
   \inferrule{
     \defaultpos{k} \text{ undefined}
   }{
-    v, p; \cursor{\conflictHoleForm{t_i}{i \leq n}}
-    \action{\Construct{k}}
-    \big(\Plus, (u, v, p, (u', k))\big)
+    \act{v}{p}{
+      \cursor{\conflictHoleForm{t_i}{i \leq n}}
+    }{
+      \Construct{k}
+    }{
+      \graphAction{\Plus}{(u, v, p, (u', k))}
+    }
   }
 
   \inferrule{
     \defaultpos{k} = p_k
   }{
-    v, p; \cursor{\conflictHoleForm{t_i}{i \leq n}}
-    \action{\Construct{k}}
-    \big(\Minus, (u_1, v, p, v_{t_1}')\big);
+    \act{v}{p}{
+      \cursor{\conflictHoleForm{t_i}{i \leq n}}
+    }{
+      \Construct{k}
+    }{
+      \graphAction{\Minus}{(u_1, v, p, v_{t_1})};
+      \ldots;
+      \graphAction{\Minus}{(u_n, v, p, v_{t_n})};
+      \graphAction{\Plus}{(u, v, p, (u', k))};
+    } \\
+    \graphAction{\Plus}{(u_1', (u', k), p_k, v_{t_1})};
     \ldots;
-    \big(\Minus, (u_n, v, p, v_{t_n}')\big);
-    \big(\Plus, (u, v, p, (u', k))\big); \\
-    \big(\Plus, (u_1', (u', k), p_k, v_{t_1}')\big);
-    \ldots;
-    \big(\Plus, (u_n', (u', k), p_k, v_{t_n}')\big)
+    \graphAction{\Plus}{(u_n', (u', k), p_k, v_{t_n})}
   }
 
   \inferrule{
     \defaultpos{k} \text{ undefined}
   }{
-    v, p; \cursor{\multiVertex{(u, v, p, v')}}
-    \action{\Construct{k}}
-    \big(\Plus, (u', v, p, (u'', k))\big)
+    \act{v}{p}{
+      \cursor{\multiVertex{(u, v, p, v')}}
+    }{
+      \Construct{k}
+    }{
+      \graphAction{\Plus}{(u', v, p, (u'', k))}
+    }
   }
 
   \inferrule{
     \defaultpos{k} = p_k
   }{
-    v, p; \cursor{\multiVertex{\e{=}(u, v, p, v')}}
-    \action{\Construct{k}}
-    \big(\Minus, \e\big);
-    \big(\Plus, (u', v, p, (u'', k))\big);
-    \big(\Plus, (u''', (u'', k), p_k, v')\big)
+    \act{v}{p}{
+      \cursor{\multiVertex{\e{=}(u, v, p, v')}}
+    }{
+      \Construct{k}
+    }{
+      \big(\Minus, \e\big);
+      \graphAction{\Plus}{(u', v, p, (u'', k))};
+      \graphAction{\Plus}{(u''', (u'', k), p_k, v')}
+    }
   }
 
   \inferrule{
     \defaultpos{k} \text{ undefined}
   }{
-    v, p; \cursor{\cycleVertex{(u, v, p, v')}}
-    \action{\Construct{k}}
-    \big(\Plus, (u', v, p, (u'', k))\big)
+    \act{v}{p}{
+      \cursor{\cycleVertex{(u, v, p, v')}}
+    }{
+      \Construct{k}
+    }{
+      \graphAction{\Plus}{(u', v, p, (u'', k))}
+    }
   }
 
   \inferrule{
     \defaultpos{k} = p_k
   }{
-    v, p; \cursor{\cycleVertex{\e{=}(u, v, p, v')}}
-    \action{\Construct{k}}
-    \big(\Minus, \e\big);
-    \big(\Plus, (u', v, p, (u'', k))\big);
-    \big(\Plus, (u''', (u'', k), p_k, v')\big)
+    \act{v}{p}{
+      \cursor{\cycleVertex{\e{=}(u, v, p, v')}}
+    }{
+      \Construct{k}
+    }{
+      \big(\Minus, \e\big);
+      \graphAction{\Plus}{(u', v, p, (u'', k))};
+      \graphAction{\Plus}{(u''', (u'', k), p_k, v')}
+    }
   }
 
-  \inferrule{}{
-    v, p; \cursor{\hole}
-    \action{\Construct{k}}
-    \big(\Plus, (u, v, p, (u', k))\big)
+  \inferrule{
+  }{
+    \act{v}{p}{
+      \cursor{\hole}
+    }{
+      \Construct{k}
+    }{
+      \graphAction{\Plus}{(u, v, p, (u', k))}
+    }
   }
 
   \inferrule{
     G_t(\e{=}(u, v, p, v_t)) = \Plus
   }{
-    v, p; \cursor{t}
-    \action{Delete}
-    \big(\Minus, \e)\big)
+    \act{v}{p}{
+      \cursor{t}
+    }{
+      \Delete
+    }{
+      \big(\Minus, \e)\big)
+    }
+  }
+
+  \inferrule{
+    v, p; t_i \userAction{\Delete} a_i^{*}
+  }{
+    \act{v}{p}{
+      \cursor{\conflictHole{t_i}_{i \leq n}}
+    }{
+      \Delete
+    }{
+      \SequenceOf{a_i^{*}}_{i \leq n}
+    }
+  }
+
+  \inferrule{
+  }{
+    \act{v}{p}{
+      \cursor{\multiVertex{\e}}
+    }{
+      \Delete
+    }{
+      \big(-, \e\big)
+    }
+  }
+
+  \inferrule{
+  }{
+    \act{v}{p}{
+      \cursor{\cycleVertex{\e}}
+    }{
+      \Delete
+    }
+    {
+      \big(-, \e\big)
+    }
   }
 
   \inferrule{
     G_t(\e{=}(u, v, p, v_t)) = \Plus
   }{
-    v, p; \cursor{t}
-    \action{\Reposition{v_\alpha}{p_\alpha}}
-    \big(\Minus, \e\big);
-    \big(\Plus, (u', v_\alpha, p_\alpha, v_t)\big)
+    \act{v}{p}{
+      \cursor{t}
+    }{
+      \Reposition{v_\alpha}{p_\alpha}
+    }{
+      \big(\Minus, \e\big);
+      \big(\Plus, (u', v_\alpha, p_\alpha, v_t)\big)
+    }
+  }
+
+  \inferrule{
+    \act{v}{p}{t_i}{\Reposition{v_\alpha}{p_\alpha}}{a_i^{*}}
+  }{
+    \act{v}{p}{
+      \cursor{\conflictHole{t_i}_{i \leq n}}
+    }{
+      \Reposition{v_\alpha}{p_\alpha}
+    }{
+      \SequenceOf{a_i^{*}}_{i \leq n}
+    }
+  }
+
+  \inferrule{
+  }{
+    \act{v}{p}{
+      \multiVertex{\e{=}(u, v, p, v')}
+    }{
+      \Reposition{v_\alpha}{p_\alpha}
+    }{
+      \big(\Minus, \e\big);
+      \big(\Plus, (u_1, v_\alpha, p_\alpha, v')\big)
+    }
+  }
+
+  \inferrule{
+  }{
+    \act{v}{p}{
+      \cycleVertex{\e{=}(u, v, p, v')}
+    }{
+      \Reposition{v_\alpha}{p_\alpha}
+    }{
+      \big(\Minus, \e\big);
+      \big(\Plus, (u_1, v_\alpha, p_\alpha, v')\big)
+    }
   }
 \end{mathpar}
 
-% \noindent $\boxed{\Z{e} \action{\alpha} \Z{e}}$
+% TODO: conflict holes { t^ | { t_i }_i<n }
+% TODO: use above subscript syntax everywhere
+% TODO: try descriptive (or numeric) subscripts for fresh u's
+% TODO: change ...'s to subscript notation in action semantics
+% TODO: turn premise-less rule into axiom (add line of inference)
+
+% \noindent $\boxed{\Z{e} \userAction{\alpha} \Z{e}}$
 % %
 % \begin{align*}
-%   \cursor{v}{p}{\hole}   \action{\Construct{k}}   \cursor{v}{p}{\decomp{(u, v, p, (u', k)}} \\
+%   \cursor{v}{p}{\hole}   \userAction{\Construct{k}}   \cursor{v}{p}{\decomp{(u, v, p, (u', k)}} \\
 %   \cursor{v}{p}{}
 % \end{align*}
 
