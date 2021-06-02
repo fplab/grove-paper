@@ -95,11 +95,18 @@ Let $t$ denote a term and $\Set$ a set of terms.
   and edge states are drawn from $\Sigma$.
 \end{definition}
 
-Let $G_t$, called the \emph{in-graph} of term $t$,
-denote the graph associated with term $t$, when such a graph exists.
-For example, when $t$ is of the form $\eFun{G}{q}{\tau}{e}$, $G_t = G$.
+Let $G_t$, called the \emph{in-graph} of term $t$, denote one of the following:
+\begin{itemize}
+  \item
+    The graph associated with term $t$, when such a graph exists.
+    For example, when $t$ is of the form $\eFun{G}{q}{\tau}{e}$, we have $G_t = G$.
+  \item
+    Otherwise,
+    if $t \in \SetOf{\multiVertex{\e}, \cycleVertex{\e}}$,
+    then $G_t = \SetOf{\e \mapsto \Plus}$.
+\end{itemize}
 
-Let $v_t$, called the \emph{in-vertex} of term $t$,
+Let $v_{G_t}$, called the \emph{in-vertex} of term $t$,
 denote the destination vertex of the edges of $G_t$,
 provided that $t$ is well sorted.
 
@@ -179,13 +186,13 @@ provided that $t$ is well sorted.
         \item $G_t$ is well sorted.
           % All incoming edges are well sorted ...
         \item For all $\e{=}(u, v, p, v')$ such that $G_t(\e) \in \SetOf{\Plus, \Minus}$,
-          we have $v' = v_t$.
+          we have $v' = v_{G_t}$.
           % ... all incoming edges have the same destination vertex (and we call it the in-vertex of t).
         \item $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) \in \SetOf{\Plus, \Minus}}}} \geq 1$.
           % The in-graph of t is not empty.
         \item There exists $u_0 \in \U$ such that,
           for all $\e{=}(u, v, p, v')$ such that $G_t(\e) \in \SetOf{\Plus, \Minus}$,
-          we have $v' = v_t = (u_0, \constructor{t})$.
+          we have $v' = v_{G_t} = (u_0, \constructor{t})$.
           % The destination vertices of all incoming edges have the same id and constructor.
           % The constructor matches the term.
       \end{enumerate}
@@ -503,7 +510,7 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
 %
 \begin{mathpar}
   \inferrule{
-    \act{v_{(\eFun{G}{\Z{q}}{\tau}{e})}}{\LamParam}{
+    \act{v_G}{\LamParam}{
       \Z{q}
     }{
       \alpha
@@ -521,7 +528,7 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   }
 
   \inferrule{
-    \act{v_{(\eFun{G}{q}{\Z{\tau}}{e})}}{\LamType}{
+    \act{v_G}{\LamType}{
       \Z{\tau}
     }{
       \alpha
@@ -539,7 +546,7 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   }
 
   \inferrule{
-    \act{v_{(\eFun{G}{q}{\tau}{\Z{e}})}}{\LamBody}{
+    \act{v_G}{\LamBody}{
       \Z{e}
     }{
       \alpha
@@ -557,7 +564,7 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   }
 
   \inferrule{
-    \act{v_{\eApp{G}{\Z{e}_1}{e_2}}}{\AppFun}{
+    \act{v_G}{\AppFun}{
       \Z{e}_1
     }{
       \alpha
@@ -575,7 +582,7 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   }
 
   \inferrule{
-    \act{v_{\eApp{G}{e_1}{\Z{e}_2}}}{\AppArg}{
+    \act{v_G}{\AppArg}{
       \Z{e}_2
     }{
       \alpha
@@ -593,7 +600,7 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   }
 
   \inferrule{
-    \act{v_{(\ePlus{G}{\Z{e}_1}{e_2})}}{\PlusLeft}{
+    \act{v_G}{\PlusLeft}{
       \Z{e}_1
     }{
       \alpha
@@ -611,7 +618,7 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   }
 
   \inferrule{
-    \act{v_{(\ePlus{G}{e_1}{\Z{e}_2})}}{\PlusRight}{
+    \act{v_G}{\PlusRight}{
       \Z{e}_2
     }{
       \alpha
@@ -629,7 +636,7 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   }
 
   \inferrule{
-    \act{v_{(\eTimes{G}{\Z{e}_1}{e_2})}}{\TimesLeft}{
+    \act{v_G}{\TimesLeft}{
       \Z{e}_1
     }{
       \alpha
@@ -647,7 +654,7 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   }
 
   \inferrule{
-    \act{v_{(\eTimes{G}{e_1}{\Z{e}_2})}}{\TimesRight}{
+    \act{v_G}{\TimesRight}{
       \Z{e}_2
     }{
       \alpha
@@ -665,7 +672,7 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   }
 
   \inferrule{
-    \act{v_{(\tArrow{G}{\Z{\tau}_1}{\tau_2})}}{\ArrowArg}{
+    \act{v_G}{\ArrowArg}{
       \Z{\tau}_1
     }{
       \alpha
@@ -683,7 +690,7 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   }
 
   \inferrule{
-    \act{v_{(\tArrow{G}{\tau_1}{\Z{\tau}_2})}}{\ArrowResult}{
+    \act{v_G}{\ArrowResult}{
       \Z{\tau}_2
     }{
       \alpha
@@ -721,7 +728,7 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
 %
 \begin{mathpar}
   \inferrule{
-    G_t((u, v, p, v_t)) = \Plus \\
+    G_t((u, v, p, v_{G_t})) = \Plus \\
     \defaultpos{k} \text{ undefined}
   }{
     \act{v}{p}{
@@ -734,7 +741,7 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   }
 
   \inferrule{
-    G_t(\e{=}(u, v, p, v_t)) = \Plus \\
+    G_t(\e{=}(u, v, p, v_{G_t})) = \Plus \\
     \defaultpos{k} = p_k
   }{
     \act{v}{p}{
@@ -742,9 +749,9 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
     }{
       \Construct{k}
     }{
-      \big(\Minus, \e\big);
+      \graphAction{\Minus}{\e};
       \graphAction{\Plus}{(u', v, p, (u'', k))};
-      \graphAction{\Plus}{(u''', (u'', k), p_k, v_t)}
+      \graphAction{\Plus}{(u''', (u'', k), p_k, v_{G_t})}
     }
   }
 
@@ -768,66 +775,14 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
     }{
       \Construct{k}
     }{
-      \graphAction{\Minus}{(u_1, v, p, v_{t_1})};
+      \graphAction{\Minus}{(u_1, v, p, v_{G_{t_1}})};
       \ldots;
-      \graphAction{\Minus}{(u_n, v, p, v_{t_n})};
+      \graphAction{\Minus}{(u_n, v, p, v_{G_{t_n}})};
       \graphAction{\Plus}{(u, v, p, (u', k))};
     } \\
-    \graphAction{\Plus}{(u_1', (u', k), p_k, v_{t_1})};
+    \graphAction{\Plus}{(u_1', (u', k), p_k, v_{G_{t_1}})};
     \ldots;
-    \graphAction{\Plus}{(u_n', (u', k), p_k, v_{t_n})}
-  }
-
-  \inferrule{
-    \defaultpos{k} \text{ undefined}
-  }{
-    \act{v}{p}{
-      \cursor{\multiVertex{(u, v, p, v')}}
-    }{
-      \Construct{k}
-    }{
-      \graphAction{\Plus}{(u', v, p, (u'', k))}
-    }
-  }
-
-  \inferrule{
-    \defaultpos{k} = p_k
-  }{
-    \act{v}{p}{
-      \cursor{\multiVertex{\e{=}(u, v, p, v')}}
-    }{
-      \Construct{k}
-    }{
-      \big(\Minus, \e\big);
-      \graphAction{\Plus}{(u', v, p, (u'', k))};
-      \graphAction{\Plus}{(u''', (u'', k), p_k, v')}
-    }
-  }
-
-  \inferrule{
-    \defaultpos{k} \text{ undefined}
-  }{
-    \act{v}{p}{
-      \cursor{\cycleVertex{(u, v, p, v')}}
-    }{
-      \Construct{k}
-    }{
-      \graphAction{\Plus}{(u', v, p, (u'', k))}
-    }
-  }
-
-  \inferrule{
-    \defaultpos{k} = p_k
-  }{
-    \act{v}{p}{
-      \cursor{\cycleVertex{\e{=}(u, v, p, v')}}
-    }{
-      \Construct{k}
-    }{
-      \big(\Minus, \e\big);
-      \graphAction{\Plus}{(u', v, p, (u'', k))};
-      \graphAction{\Plus}{(u''', (u'', k), p_k, v')}
-    }
+    \graphAction{\Plus}{(u_n', (u', k), p_k, v_{G_{t_n}})}
   }
 
   \inferrule{
@@ -842,14 +797,14 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   }
 
   \inferrule{
-    G_t(\e{=}(u, v, p, v_t)) = \Plus
+    G_t(\e{=}(u, v, p, v_{G_t})) = \Plus
   }{
     \act{v}{p}{
       \cursor{t}
     }{
       \Delete
     }{
-      \big(\Minus, \e)\big)
+      \graphAction{\Minus}{\e}
     }
   }
 
@@ -866,38 +821,15 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   }
 
   \inferrule{
-  }{
-    \act{v}{p}{
-      \cursor{\multiVertex{\e}}
-    }{
-      \Delete
-    }{
-      \big(-, \e\big)
-    }
-  }
-
-  \inferrule{
-  }{
-    \act{v}{p}{
-      \cursor{\cycleVertex{\e}}
-    }{
-      \Delete
-    }
-    {
-      \big(-, \e\big)
-    }
-  }
-
-  \inferrule{
-    G_t(\e{=}(u, v, p, v_t)) = \Plus
+    G_t(\e{=}(u, v, p, v_{G_t})) = \Plus
   }{
     \act{v}{p}{
       \cursor{t}
     }{
       \Reposition{v_\alpha}{p_\alpha}
     }{
-      \big(\Minus, \e\big);
-      \big(\Plus, (u', v_\alpha, p_\alpha, v_t)\big)
+      \graphAction{\Minus}{\e};
+      \graphAction{\Plus}{(u', v_\alpha, p_\alpha, v_{G_t})}
     }
   }
 
@@ -912,37 +844,12 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
       \SequenceOf{a_i^{*}}_{i \leq n}
     }
   }
-
-  \inferrule{
-  }{
-    \act{v}{p}{
-      \multiVertex{\e{=}(u, v, p, v')}
-    }{
-      \Reposition{v_\alpha}{p_\alpha}
-    }{
-      \big(\Minus, \e\big);
-      \big(\Plus, (u_1, v_\alpha, p_\alpha, v')\big)
-    }
-  }
-
-  \inferrule{
-  }{
-    \act{v}{p}{
-      \cycleVertex{\e{=}(u, v, p, v')}
-    }{
-      \Reposition{v_\alpha}{p_\alpha}
-    }{
-      \big(\Minus, \e\big);
-      \big(\Plus, (u_1, v_\alpha, p_\alpha, v')\big)
-    }
-  }
 \end{mathpar}
 
 % TODO: conflict holes { t^ | { t_i }_i<n }
 % TODO: use above subscript syntax everywhere
 % TODO: try descriptive (or numeric) subscripts for fresh u's
 % TODO: change ...'s to subscript notation in action semantics
-% TODO: turn premise-less rule into axiom (add line of inference)
 
 % \noindent $\boxed{\Z{e} \userAction{\alpha} \Z{e}}$
 % %
