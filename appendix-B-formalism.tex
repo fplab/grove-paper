@@ -461,8 +461,14 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
 
 \subsection{User Actions}
 
-% TODO: consider the user action cases with multiple incoming edges
-% TODO: thm: user action semantics always produce well sorted graphs
+\begin{theorem}
+  Let $G$ be a well sorted graph,
+  $\alpha^{*}$ a sequence of well sorted user actions,
+  $t$ a term such that $\recomp{t} \subseteq G$,
+  and $(v, p)$ a cursor vertex and position corresponding to $t$.
+  If $\act{v}{p}{\Z{t}}{\alpha^{*}}{a^{*}}$,
+  then $G \action{a^{*}} G'$ is well sorted.
+\end{theorem}
 
 \[
   \arraycolsep=0pt
@@ -475,35 +481,35 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
   \end{array}
 \]
 
-\noindent $\boxed{\Z{\Grove} \userAction{\alpha} a^{*}}$
+\noindent $\boxed{\Z{\Grove} \action{\alpha} a^{*}}$
 %
 \begin{mathpar}
   \inferrule{
-    \Z{\Set}_{NP} \userAction{\alpha} a^{*}
+    \Z{\Set}_{NP} \action{\alpha} a^{*}
   }{
-    (\Z{\Set}_{NP}, \Set[MP], \Set[U]) \userAction{\alpha} a^{*}
+    (\Z{\Set}_{NP}, \Set[MP], \Set[U]) \action{\alpha} a^{*}
   }
 
   \inferrule{
-    \Z{\Set}_{MP} \userAction{\alpha} a^{*}
+    \Z{\Set}_{MP} \action{\alpha} a^{*}
   }{
-    (\Set[NP], \Z{\Set}_{MP}, \Set[U]) \userAction{\alpha} a^{*}
+    (\Set[NP], \Z{\Set}_{MP}, \Set[U]) \action{\alpha} a^{*}
   }
 
   \inferrule{
-    \Z{\Set}_U \userAction{\alpha} a^{*}
+    \Z{\Set}_U \action{\alpha} a^{*}
   }{
-    (\Set[NP], \Set[MP], \Z{\Set}_U) \userAction{\alpha} a^{*}
+    (\Set[NP], \Set[MP], \Z{\Set}_U) \action{\alpha} a^{*}
   }
 \end{mathpar}
 
-\noindent $\boxed{\Z{\Set} \userAction{\alpha} a^{*}}$
+\noindent $\boxed{\Z{\Set} \action{\alpha} a^{*}}$
 %
 \begin{mathpar}
   \inferrule{
-    \Z{t} \userAction{\alpha} a^{*}
+    \Z{t} \action{\alpha} a^{*}
   }{
-    (\Set, \Z{t}) \userAction{\alpha} a^{*}
+    (\Set, \Z{t}) \action{\alpha} a^{*}
   }
 \end{mathpar}
 
@@ -806,7 +812,7 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
   }
 
   \inferrule{
-    v, p; t_i \userAction{\Delete} a_i^{*}
+    v, p; t_i \action{\Delete} a_i^{*}
   }{
     \act{v}{p}{
       \cursor{\conflictHole{t_i}_{i \leq n}}
