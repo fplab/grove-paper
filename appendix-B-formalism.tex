@@ -375,24 +375,23 @@ Proof: provide a witness that demonstrates the conclusion.
       \mid \eTimes{G}{\Z{e}}{e}
       \\
     &&&&
-    \mid \eTimes{G}{e}{\Z{e}}
-      \mid \conflictHoleForm{\Z{e}; e_i}{i \leq n}
+      \mid \eTimes{G}{e}{\Z{e}}
+      \mid \conflictHole{\Z{e}, \SetOf{e_i}_{i \leq n}}
     \\
     \Z{q} & {}\in{} & ZPat & {}::={} &
       \cursor{q}
-      \mid \conflictHoleForm{\Z{q}; q_i}{i \leq n}
+      \mid \conflictHole{\Z{q}, \SetOf{q_i}_{i \leq n}}
     \\
     \Z{\tau} & {}\in{} & ZTyp & {}::={} &
       \cursor{\tau}
       \mid \tArrow{G}{\Z{\tau}}{\tau}
       \mid \tArrow{G}{\tau}{\Z{\tau}}
-      \mid \conflictHoleForm{\Z{\tau}; \tau_i}{i \leq n}
+      \mid \conflictHole{\Z{\tau}, \SetOf{\tau_i}_{i \leq n}}
     \\
   \end{array}
 \]
 
 Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term.
-Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with a zippered term.
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
@@ -439,14 +438,14 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   \erase{\ePlus{G}{e_1}{\Z{e}_2}} &= \ePlus{G}{e_1}{\erase{\Z{e}_2}} \\
   \erase{\eTimes{G}{\Z{e}_1}{e_2}} &= \eTimes{G}{\erase{\Z{e}_1}}{e_2} \\
   \erase{\eTimes{G}{e_1}{\Z{e}_2}} &= \eTimes{G}{e_1}{\erase{\Z{e}_2}} \\
-  \erase{\conflictHoleForm{\Z{e}; e_i}{i \leq n}} &= \conflictHole{\erase{\Z{e}}, e_1, \ldots, e_n}
+  \erase{\conflictHole{\Z{e}, \SetOf{e_i}_{i \leq n}}} &= \conflictHole{\erase{\Z{e}}, \SetOf{e_i}_{i \leq n}}
 \end{align*}
 
 \noindent $\boxed{\erase{\Z{q}} = q}$
 %
 \begin{align*}
   \erase{\cursor{q}} &= q \\
-  \erase{\conflictHoleForm{\Z{q}; q_i}{i \leq n}} &= \conflictHole{\erase{\Z{q}}, q_1, \ldots, q_n}
+  \erase{\conflictHole{\Z{q}, \SetOf{q_i}_{i \leq n}}} &= \conflictHole{\erase{\Z{q}}, \SetOf{q_i}_{i \leq n}}
 \end{align*}
 
 \noindent $\boxed{\erase{\Z{\tau}} = \tau}$
@@ -455,7 +454,7 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   \erase{\cursor{\tau}} &= \tau \\
   \erase{\left(\tArrow{G}{\Z{\tau}_1}{\tau_2}\right)} &= \tArrow{G}{\erase{\Z{\tau}_1}}{\tau_2} \\
   \erase{\left(\tArrow{G}{\tau_1}{\Z{\tau}_2}\right)} &= \tArrow{G}{\tau_1}{\erase{\Z{\tau}_2}} \\
-  \erase{\conflictHoleForm{\Z{\tau}; \tau_i}{i \leq n}} &= \conflictHole{\erase{\Z{\tau}}, \tau_1, \ldots, \tau_n}
+  \erase{\conflictHole{\Z{\tau}, \SetOf{\tau_i}_{i \leq n}}} &= \conflictHole{\erase{\Z{\tau}}, \SetOf{\tau_i}_{i \leq n}}
 \end{align*}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -719,7 +718,7 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
     }
   }{
     \act{v}{p}{
-      \conflictHoleForm{\Z{t}; t_i}{i \leq n}
+      \conflictHole{\Z{t}, \SetOf{t_i}_{i \leq n}}
     }{
      \alpha
     }{
@@ -770,23 +769,18 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
   }
 
   \inferrule{
-    G_{t_i}(\e_i{=}(u_i, v, p, v_{G_{t_i}})) = \Plus \\
+    G_{t_i}(\e_i)) = \Plus \\
     \defaultpos{k} = p_k
   }{
     \act{v}{p}{
       \cursor{\conflictHoleForm{t_i}{i \leq n}}
     }{
       \Construct{k}
-    }{
-      \graphAction{\Minus}{\e_1};
-      \ldots;
-      \graphAction{\Minus}{\e_n};
-    } \\
-    \graphAction{\Plus}{(\fresh{u}_1, (\fresh{u}_2, k), p_k, v_{G_{t_1}})};
-    \ldots;
-    \graphAction{\Plus}{(\fresh{u}_{2n-1}, (\fresh{u}_{2n}, k), p_k, v_{G_{t_n}})};
+    }{} \\
+    \SequenceOf{\graphAction{\Minus}{\e_i}}_{i \leq n};
+    \SequenceOf{\graphAction{\Plus}{(\fresh{u}_{2i-1}, (\fresh{u}_{2i}, k), p_k, v_{G_{t_i}})}}_{i \leq n};
     \graphAction{\Plus}{(\fresh{u}_{2n+1}, v, p, (\fresh{u}_{2n+2}, k))}
-    }
+  }
 
   \inferrule{
   }{
@@ -848,28 +842,3 @@ Let $\conflictHoleForm{\Z{t}; t_i}{i \leq n}$ denote a conflict hole paired with
     }
   }
 \end{mathpar}
-
-% TODO: conflict holes { t^ | { t_i }_i<n }
-% TODO: use above subscript syntax everywhere
-% TODO: try descriptive (or numeric) subscripts for fresh u's
-% TODO: change ...'s to subscript notation in action semantics
-
-% \noindent $\boxed{\Z{e} \userAction{\alpha} \Z{e}}$
-% %
-% \begin{align*}
-%   \cursor{v}{p}{\hole}   \userAction{\Construct{k}}   \cursor{v}{p}{\decomp{(u, v, p, (u', k)}} \\
-%   \cursor{v}{p}{}
-% \end{align*}
-
-% Cases:
-% \begin{itemize}
-%   \item construct @ hole (create current edge)
-%   \item construct @ conflict (create new edge into conflict ??)
-%   \item construct @ non-hole (wrap current edge)
-%   \item delete @ hole (no-op)
-%   \item delete @ conflict (destroy all edges ??)
-%   \item delete @ non-hole (destroy current edge)
-%   \item reposition @ hole (no-op)
-%   \item reposition @ conflict (???)
-%   \item reposition @ non-hole (destroy current edge and create new edge with same destination vertex)
-% \end{itemize}
