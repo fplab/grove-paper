@@ -200,7 +200,7 @@ Let $\fresh{u}$ denote a fresh id.
       \end{enumerate}
   \end{itemize}
 \end{definition}
-
+x
 % TODO: update confliceHole usage
 % TODO: rename multiVertex / cycleVertex
 
@@ -461,12 +461,15 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
 
 \subsection{User Actions}
 
-\begin{theorem}
-  Let $G$ be a well sorted graph,
-  $\alpha^{*}$ a sequence of well sorted user actions,
-  $t$ a term such that $\recomp{t} \subseteq G$,
-  and $(v, p)$ a cursor vertex and position corresponding to $t$.
-  If $\act{v}{p}{\Z{t}}{\alpha^{*}}{a^{*}}$,
+\begin{theorem}[Sensibility]
+  For any well sorted, zippered grove $\Z{\Grove}$
+  such that $\recomp{\erase{\Z{\Grove}}} = G$
+    and $\resolve{\rootVertex}{\Root}{\Z{\Grove}} = (v, p, t)$,
+  and any well sorted user action sequence $\alpha^{*}$,
+  if
+  \[
+    \act{v}{p}{\cursor{t}}{\alpha^{*}}{a^{*}},
+  \]
   then $G \action{a^{*}} G'$ is well sorted.
 \end{theorem}
 
