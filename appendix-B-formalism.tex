@@ -457,6 +457,45 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
   \erase{\conflictHole{\Z{\tau}, \SetOf{\tau_i}_{i \leq n}}} &= \conflictHole{\erase{\Z{\tau}}, \SetOf{\tau_i}_{i \leq n}}
 \end{align*}
 
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+
+\subsubsection{Cursor Resolution}\hspace*{\fill} \\
+
+\noindent
+$\boxed{\resolve{v}{p}{\Z{\Grove}} = (v, p, t)}$
+%
+\begin{align*}
+  \resolve{v}{p}{(\Z{\Set}_{NP}, \Set[MP], \Set[U])} &= \resolve{v}{p}{\Z{\Set}_{NP}} \\
+  \resolve{v}{p}{(\Set[NP], \Z{\Set}_{MP}, \Set[U])} &= \resolve{v}{p}{\Z{\Set}_{MP}} \\
+  \resolve{v}{p}{(\Set[NP], \Set[MP], \Z{\Set}_{U})} &= \resolve{v}{p}{\Z{\Set}_U}
+\end{align*}
+
+\noindent
+$\boxed{\resolve{v}{p}{\Z{\Set}} = (v, p, t)}$
+%
+\begin{align*}
+  \resolve{v}{p}{(\Set, \Z{t})} &= \resolve{v}{p}{\Z{t}}
+\end{align*}
+
+\noindent
+$\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
+%
+\begin{align*}
+  \resolve{v}{p}{\cursor{t}} &= (v, p, t) \\
+  \resolve{v}{p}{\eFun{G}{\Z{q}}{\tau}{e}} &= \resolve{v_G}{\LamParam}{\Z{q}} \\
+  \resolve{v}{p}{\eFun{G}{q}{\Z{\tau}}{e}} &= \resolve{v_G}{\LamType}{\Z{\tau}} \\
+  \resolve{v}{p}{\eFun{G}{q}{\tau}{\Z{e}}} &= \resolve{v_G}{\LamBody}{\Z{e}} \\
+  \resolve{v}{p}{\eApp{G}{\Z{e_1}}{e_2}} &= \resolve{v_G}{\AppFun}{\Z{e_1}} \\
+  \resolve{v}{p}{\eApp{G}{e_1}{\Z{e_2}}} &= \resolve{v_G}{\AppArg}{\Z{e_2}} \\
+  \resolve{v}{p}{\ePlus{G}{\Z{e_1}}{e_2}} &= \resolve{v_G}{\PlusLeft}{\Z{e_1}} \\
+  \resolve{v}{p}{\ePlus{G}{e_1}{\Z{e_2}}} &= \resolve{v_G}{\PlusRight}{\Z{e_2}} \\
+  \resolve{v}{p}{\eTimes{G}{\Z{e_1}}{e_2}} &= \resolve{v_G}{\TimesLeft}{\Z{e_1}} \\
+  \resolve{v}{p}{\eTimes{G}{e_1}{\Z{e_2}}} &= \resolve{v_G}{\TimesRight}{\Z{e_2}} \\
+  \resolve{v}{p}{\tArrow{G}{\Z{e_1}}{e_2}} &= \resolve{v_G}{\ArrowArg}{\Z{e_1}} \\
+  \resolve{v}{p}{\tArrow{G}{e_1}{\Z{e_2}}} &= \resolve{v_G}{\ArrowResult}{\Z{e_2}} \\
+  \resolve{v}{p}{\conflictHole{\Z{t}, \SetOf{t_i}_{i \leq n}}} &= \resolve{v_{G_t}}{p}{\Z{t}} \\
+\end{align*}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{User Actions}
