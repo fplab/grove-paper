@@ -501,15 +501,16 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
 \subsection{User Actions}
 
 \begin{theorem}[Sensibility]
-  For any well sorted, zippered grove $\Z{\Grove}$
-  such that $\recomp{\erase{\Z{\Grove}}} = G$
-    and $\resolve{\rootVertex}{\Root}{\Z{\Grove}} = (v, p, t)$,
-  and any well sorted user action sequence $\alpha^{*}$,
+  For any zippered grove $\Z{\Grove}$
+  such that $\erase{\Z{\Grove}}$ is well sorted
+    and $\recomp{\erase{\Z{\Grove}}} = G$,
+    % and $\resolve{\rootVertex}{\Root}{\Z{\Grove}} = (v, p, t)$,
+  and any well sorted user action $\alpha$,
   if
   \[
-    \act{v}{p}{\cursor{t}}{\alpha^{*}}{a^{*}},
+    \act{v}{p}{\cursor{t}}{\alpha}{a^{*}},
   \]
-  then $G \action{a^{*}} G'$ is well sorted.
+  then $G \action{a^{*}} G'$ and $G'$ is well sorted.
 \end{theorem}
 
 \[
@@ -555,7 +556,7 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
   }
 \end{mathpar}
 
-\noindent $\boxed{\act{v}{t}{\Z{t}}{\alpha}{a^{*}}}$
+\noindent $\boxed{\act{v}{p}{\Z{t}}{\alpha}{a^{*}}}$
 %
 \begin{mathpar}
   \inferrule{
@@ -817,7 +818,7 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
   }
 
   \inferrule{
-    G_{t_i}(\e_i)) = \Plus \\
+    G_{t_i}(\e_i) = \Plus \\
     \defaultpos{k} = p_k
   }{
     \act{v}{p}{
