@@ -39,7 +39,8 @@ We identify conflict holes up to reordering.
     \multicolumn{2}{l}{\defaultposOp : \K \to \P} \\
     \hline
     \defaultpos{\Root}={} & \Root \\
-    \defaultpos{\ExpLam}={} & \LamBody \\
+    \defaultpos{\ExpLam}={} & \LamParam \\
+    \defaultpos{\ExpApp}={} & \AppFun \\
     \defaultpos{\ExpPlus}={} & \PlusLeft \\
     \defaultpos{\ExpTimes}={} & \TimesLeft \\
     \defaultpos{\TypArrow}={} & \ArrowArg \\
@@ -87,28 +88,73 @@ We write $\defaultpos{k}$ undefined when there does not exist a $p$ such that $\
 Let $t$ denote a term and $\Set$ a set of terms.
 
 \begin{definition}
-  A \emph{graph} $G : \E \rightarrow \Sigma$ is a function from edges to edge states,
-  where $\E = \U \times \V \times \P \times \V$,
-  unique IDs are drawn from some suitable set $\U$ equipped with a total ordering $\leq$,
-  vertices are drawn from $\V$,
-  positions are drawn from $\P$,
-  and edge states are drawn from $\Sigma$.
+  A \emph{constructor} $k$ names the form of a term that is not a hole.
 \end{definition}
 
-Let $G_t$, called the \emph{in-graph} of term $t$, denote one of the following:
-\begin{itemize}
-  \item
-    The graph associated with term $t$, when such a graph exists.
-    For example, when $t$ is of the form $\eFun{G}{q}{\tau}{e}$, we have $G_t = G$.
-  \item
-    Otherwise,
-    if $t \in \SetOf{\multiVertex{\e}, \cycleVertex{\e}}$,
-    then $G_t = \SetOf{\e \mapsto \Plus}$.
-\end{itemize}
+\begin{definition}
+  A \emph{unique identifier} $u \in \U$ is an object that can be distiinguished from other unique identifiers by inspection.
+\end{definition}
 
-Let $v_{G_t}$, called the \emph{in-vertex} of term $t$,
-denote the destination vertex of the edge(s) of $G_t$,
-provided that $t$ is well sorted.
+\begin{definition}
+  A \emph{vertex} $v{=}(u, k)$ is an instance of constructor $k \in \K$ with unique identifier $u$.
+\end{definition}
+
+\begin{definition}
+  A \emph{position} $p$ names an origin of directed edges.
+\end{definition}
+
+\begin{definition}
+  An \emph{edge} $\e{=}(u, v, p, v^\prime)$ is a directed connection from vertex $v$ to vertex $v'$, originating from position $p$, and identified by $u$.
+  We call $v$ the \emph{source} vertex and $v'$ the \emph{target} vertex.
+\end{definition}
+
+\begin{definition}
+  An \emph{edge state} $s \in \Sigma{=}\SetOf{\Plus, \Minus}$ indicates whether an edge is live $\left(\Plus\right)$ or deleted $\left(\Minus\right)$.
+\end{definition}
+
+\begin{definition}
+  A \emph{graph} $G : \E \rightarrow \Sigma$ is a partial function from edges to edge states.
+  We write $G(\e) = \bot$ to mean that $G(\e)$ is undefined.
+\end{definition}
+
+\begin{definition}
+  The \emph{in-graph} of a vertex $v$ is the subgraph containing all mappings from edges targeting $v$ to $\Plus$ or $\Minus$.
+\end{definition}
+
+\begin{definition}
+  The \emph{out-edges} of a vertex $v$ and position $p$ is the set of all live edges with source $v$ originating from $p$.
+\end{definition}
+
+\begin{definition}
+  The \emph{parents} of a vertex $v$ is the set of all live edges targeting $v$.
+\end{definition}
+
+\begin{definition}
+  The \emph{ancestors} of a vertex $v$ is defined recursively as the parents of $v$ and their ancestors.
+\end{definition}
+
+% \begin{definition}
+%   The \emph{in-graph} of a term $t$ is the subgraph associated with $t$, when it exists, which maps every edge targeting the root vertex of $t$.
+%   For example, when $t$ is of the form $\eFun{G}{q}{\tau}{e}$, its in-graph is $G$.
+%   If $t$ is of the form $\multiVertex{\e}$ or $\cycleVertex{\e}$, its in-graph maps the associated edge to $\Plus$ and all other edges to $\bot$.
+%   If $t$ is not a reference and does not have an associated graph, then it is a conflict hole and therefore does not have an in-graph.
+%   We write $G_t$ to denote the in-graph of $t$.
+% \end{definition}
+
+% Let $G_t$, called the \emph{in-graph} of term $t$, denote one of the following:
+% \begin{itemize}
+%   \item
+%     The graph associated with term $t$, when such a graph exists.
+%     For example, when $t$ is of the form $\eFun{G}{q}{\tau}{e}$, we have $G_t = G$.
+%   \item
+%     Otherwise,
+%     if $t \in \SetOf{\multiVertex{\e}, \cycleVertex{\e}}$,
+%     then $G_t = \SetOf{\e \mapsto \Plus}$.
+% \end{itemize}
+
+% Let $v_{G_t}$, called the \emph{in-vertex} of term $t$,
+% denote the destination vertex of the edge(s) of $G_t$,
+% provided that $t$ is well sorted.
 
 Let $\fresh{u}$ denote a fresh id.
 
