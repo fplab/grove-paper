@@ -25,3 +25,4 @@
 *.fls
 *.pdf
 __*_temp.tex
+*.code-workspace
