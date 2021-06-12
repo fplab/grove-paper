@@ -3,7 +3,6 @@
 \begin{align*}
   \ingraph{v} &= \SetOf{\e{=}(u, v', p, v) \mapsto G(\e) \SuchThat{G(\e) \in \SetOf{\Plus, \Minus}}} \\
   \outedges{v}{p} &= \SetOf{\e{=}(u, v, p, v') \SuchThat{G(\e) = \Plus}} \\
-  % \children{v} &= \SetOf{v' \SuchThat{\exists \e{=}(u, v, p, v') \land G(\e) = \Plus}} \\
   \parents{v} &= \SetOf{v' \SuchThat{\exists \e{=}(u, v', p, v) \land G(\e) = \Plus}} \\
   \ancestors{v} &= \mathopen{}\left( \lfp{\ancestorsPrimeOp} \right)\mathclose{}(v) \\
   \ancestorsPrime{v} &= \parents{v} \cup \ancestorsPrime{\parents{v}} \\
@@ -90,8 +89,13 @@
           \\ & \quad
           \land v_1' = \min{\ancestors{v_1'}}
         \\
+        \edecomp{(u_1, v_1, p_1, v_1')} &
+          \outedges{v'}{p'} = \SetOf{(u_1, v_1, p_1, v_1')}
+          \land |\parents{v_1'}| = 1
+          \\ & \quad
+          \land v_1' \neq \min{\ancestors{v_1'}}
+        \\
         \hole & \outedges{v'}{p'} = \varnothing \\
-        \edecomp{\e} & \text{otherwise} \\
       \end{array}
     \right.
   \end{array}
@@ -117,8 +121,13 @@
           \\ & \quad
           \land v_1' = \min{\ancestors{v_1'}}
         \\
+        \pdecomp{(u_1, v_1, p_1, v_1')} &
+          \outedges{v'}{p'} = \SetOf{(u_1, v_1, p_1, v_1')}
+          \land |\parents{v_1'}| = 1
+          \\ & \quad
+          \land v_1' \neq \min{\ancestors{v_1'}}
+        \\
         \hole & \outedges{v'}{p'} = \varnothing \\
-        \pdecomp{\e} & \text{otherwise} \\
       \end{array}
     \right.
   \end{array}
@@ -144,8 +153,13 @@
           \\ & \quad
           \land v_1' = \min{\ancestors{v_1'}}
         \\
+        \tdecomp{(u_1, v_1, p_1, v_1')} &
+          \outedges{v'}{p'} = \SetOf{(u_1, v_1, p_1, v_1')}
+          \land |\parents{v_1'}| = 1
+          \\ & \quad
+          \land v_1' \neq \min{\ancestors{v_1'}}
+        \\
         \hole & \outedges{v'}{p'} = \varnothing \\
-        \tdecomp{\e} & \text{otherwise} \\
       \end{array}
     \right.
   \end{array}
