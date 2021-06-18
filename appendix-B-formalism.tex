@@ -163,7 +163,7 @@ Let $\fresh{u}$ denote a fresh id.
 \subsubsection{Well-sortedness}
 
 \begin{definition}
-  A graph $G$ is well sorted if all edges $\e$ such that $G(\e) \in \{\Plus, \Minus\}$ are well sorted.
+  A graph $G$ is well sorted if $\edges{G}$ are well sorted.
 \end{definition}
 
 \begin{definition}
@@ -188,7 +188,7 @@ Let $\fresh{u}$ denote a fresh id.
       \end{enumerate}
       % The terms in $\Set[U]$ correspond to edges with target vertices that are unicycle roots.
     \item For all $t \in \Set[MP] \cup \Set[U]$,
-      we have $\SizeOf{\SetOf{\e{=}(u, \rootVertex, \Root, v) \SuchThat{G_t(\e) \in \SetOf{\Plus, \Minus}}}} = 0$.
+      we have $\SizeOf{\SetOf{\e{=}(u, \rootVertex, \Root, v) \SuchThat{\e \in \edges{G_t} \land u \in \U \land v \in \V}}} = 0$.
       % Any terms corresponding to edges originating from $\rootVertex$ are in $\Set[NP]$.
   \end{enumerate}
 \end{definition}
@@ -233,20 +233,20 @@ Let $\fresh{u}$ denote a fresh id.
       \begin{enumerate}
         \item $G_t$ is well sorted.
           % All incoming edges are well sorted ...
-        \item For all $\e{=}(u, v, p, v')$ such that $G_t(\e) \in \SetOf{\Plus, \Minus}$,
+        \item For all $\e{=}(u, v, p, v') \in \edges{G_t}$,
           we have $v' = v_{G_t}$.
           % ... all incoming edges have the same destination vertex (and we call it the in-vertex of t).
-        \item $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) \in \SetOf{\Plus, \Minus}}}} \geq 1$.
+        \item $\SizeOf{\edges{G_t}} \geq 1$.
           % The in-graph of t is not empty.
         \item There exists $u_0 \in \U$ such that,
-          for all $\e{=}(u, v, p, v')$ such that $G_t(\e) \in \SetOf{\Plus, \Minus}$,
+          for all $\e{=}(u, v, p, v') \in \edges{G_t}$,
           we have $v' = v_{G_t} = (u_0, \constructor{t})$.
           % The destination vertices of all incoming edges have the same id and constructor.
           % The constructor matches the term.
       \end{enumerate}
   \end{itemize}
 \end{definition}
-x
+
 % TODO: update confliceHole usage
 % TODO: rename multiVertex / cycleVertex
 
@@ -554,7 +554,7 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
   and any well sorted user action $\alpha$,
   if
   \[
-    \act{v}{p}{\cursor{t}}{\alpha}{a^{*}},
+    \applyAction{\cursor{t}}{\alpha}{a^{*}},
   \]
   then $G \action{a^{*}} G'$ and $G'$ is well sorted.
 \end{theorem}
@@ -602,11 +602,50 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
   }
 \end{mathpar}
 
-\noindent $\boxed{\act{v}{p}{\Z{t}}{\alpha}{a^{*}}}$
+\noindent $\boxed{\applyAction{\Z{t}}{\alpha}{a^{*}}}$
 %
 \begin{mathpar}
   \inferrule{
-    \act{v_G}{\LamParam}{
+    \sources{G_t} = \SetOf{(v_{s_i}, p_{s_i})}_{i \leq n} \\
+    \defaultpos{k} = p_k \\
+    \sort{k} = \sort{k_{G_t}} \\
+    (p_k, \sort{k_{G_t}}) \in \arity{k}
+  }{
+    \applyAction{
+      \cursor{t}
+    }{\Construct{k}}{
+      \SequenceOf{\graphAction{\Minus}{\e}}_{\e \in \edges{G_t}};
+      \SequenceOf{\graphAction{\Plus}{(\fresh{u}_{s_i}, v_{s_i}, p_{s_i}, v_k{=}(\fresh{u}_k, k))}}_{i \leq n};
+      \graphAction{\Plus}{(\fresh{u}, v_k, p_k, v_{G_t})}
+    }
+  }
+
+  \inferrule{
+    \sources{G_t} = \SetOf{(v_{s_i}, p_{s_i})}_{i \leq n} \\
+    \defaultpos{k} \text{ undefined} \\
+    \sort{k} = \sort{k_{G_t}}
+  }{
+    \applyAction{
+      \cursor{t}
+    }{\Construct{k}}{
+      \SequenceOf{\graphAction{\Plus}{(\fresh{u}_{s_i}, v_{s_i}, p_{s_i}, (\fresh{u}_k, k))}}_{i \leq n}
+    }
+  }
+
+  \inferrule{
+    \applyAction{\cursor{t_i}}{\alpha}{a_i^{*}}
+  }{
+    \applyAction{
+      \cursor{\conflictHole{t_i}_{i \leq n}}
+    }{\alpha}{
+      \SequenceOf{a_i^{*}}_{i \leq n}
+    }
+  }
+\end{mathpar}
+%
+\begin{mathpar}
+  \inferrule{
+    \applyAction{
       \Z{q}
     }{
       \alpha
@@ -614,7 +653,7 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
       a^{*}
     }
   }{
-    \act{v}{p}{
+    \applyAction{
       (\eFun{G}{\Z{q}}{\tau}{e})
     }{
       \alpha
@@ -624,7 +663,7 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
   }
 
   \inferrule{
-    \act{v_G}{\LamType}{
+    \applyAction{
       \Z{\tau}
     }{
       \alpha
@@ -632,7 +671,7 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
       a^{*}
     }
   }{
-    \act{v}{p}{
+    \applyAction{
       (\eFun{G}{q}{\Z{\tau}}{e})
     }{
       \alpha
@@ -642,7 +681,7 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
   }
 
   \inferrule{
-    \act{v_G}{\LamBody}{
+    \applyAction{
       \Z{e}
     }{
       \alpha
@@ -650,7 +689,7 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
       a^{*}
     }
   }{
-    \act{v}{p}{
+    \applyAction{
       (\eFun{G}{q}{\tau}{\Z{e}})
     }{
       \alpha
@@ -660,7 +699,7 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
   }
 
   \inferrule{
-    \act{v_G}{\AppFun}{
+    \applyAction{
       \Z{e}_1
     }{
       \alpha
@@ -668,7 +707,7 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
       a^{*}
     }
   }{
-    \act{v}{p}{
+    \applyAction{
       \eApp{G}{\Z{e}_1}{e_2}
     }{
       \alpha
@@ -678,7 +717,7 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
   }
 
   \inferrule{
-    \act{v_G}{\AppArg}{
+    \applyAction{
       \Z{e}_2
     }{
       \alpha
@@ -686,7 +725,7 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
       a^{*}
     }
   }{
-    \act{v}{p}{
+    \applyAction{
       \eApp{G}{e_1}{\Z{e}_2}
     }{
       \alpha
@@ -696,7 +735,7 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
   }
 
   \inferrule{
-    \act{v_G}{\PlusLeft}{
+    \applyAction{
       \Z{e}_1
     }{
       \alpha
@@ -704,7 +743,7 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
       a^{*}
     }
   }{
-    \act{v}{p}{
+    \applyAction{
       (\ePlus{G}{\Z{e}_1}{e_2})
     }{
       \alpha
@@ -714,7 +753,7 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
   }
 
   \inferrule{
-    \act{v_G}{\PlusRight}{
+    \applyAction{
       \Z{e}_2
     }{
       \alpha
@@ -722,7 +761,7 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
       a^{*}
     }
   }{
-    \act{v}{p}{
+    \applyAction{
       (\ePlus{G}{e_1}{\Z{e}_2})
     }{
       \alpha
@@ -732,7 +771,7 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
   }
 
   \inferrule{
-    \act{v_G}{\TimesLeft}{
+    \applyAction{
       \Z{e}_1
     }{
       \alpha
@@ -740,7 +779,7 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
       a^{*}
     }
   }{
-    \act{v}{p}{
+    \applyAction{
       (\eTimes{G}{\Z{e}_1}{e_2})
     }{
       \alpha
@@ -750,7 +789,7 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
   }
 
   \inferrule{
-    \act{v_G}{\TimesRight}{
+    \applyAction{
       \Z{e}_2
     }{
       \alpha
@@ -758,7 +797,7 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
       a^{*}
     }
   }{
-    \act{v}{p}{
+    \applyAction{
       (\eTimes{G}{e_1}{\Z{e}_2})
     }{
       \alpha
@@ -768,7 +807,7 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
   }
 
   \inferrule{
-    \act{v_G}{\ArrowArg}{
+    \applyAction{
       \Z{\tau}_1
     }{
       \alpha
@@ -776,7 +815,7 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
       a^{*}
     }
   }{
-    \act{v}{p}{
+    \applyAction{
       (\tArrow{G}{\Z{\tau}_1}{\tau_2})
     }{
       \alpha
@@ -786,7 +825,7 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
   }
 
   \inferrule{
-    \act{v_G}{\ArrowResult}{
+    \applyAction{
       \Z{\tau}_2
     }{
       \alpha
@@ -794,7 +833,7 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
       a^{*}
     }
   }{
-    \act{v}{p}{
+    \applyAction{
       (\tArrow{G}{\tau_1}{\Z{\tau}_2})
     }{
       \alpha
@@ -804,7 +843,7 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
   }
 
   \inferrule{
-    \act{v}{p}{
+    \applyAction{
       \Z{t}
     }{
       \alpha
@@ -812,128 +851,12 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
       a^{*}
     }
   }{
-    \act{v}{p}{
+    \applyAction{
       \conflictHole{\Z{t}, \SetOf{t_i}_{i \leq n}}
     }{
      \alpha
     }{
       a^{*}
-    }
-  }
-\end{mathpar}
-%
-\begin{mathpar}
-  \inferrule{
-    G_t((u, v, p, v_{G_t})) = \Plus \\
-    \defaultpos{k} \text{ undefined}
-  }{
-    \act{v}{p}{
-      \cursor{t}
-    }{
-      \Construct{k}
-    }{
-      \graphAction{\Plus}{(\fresh{u}_1, v, p, (\fresh{u}_2, k))}
-    }
-  }
-
-  \inferrule{
-    G_t(\e{=}(u, v, p, v_{G_t})) = \Plus \\
-    \defaultpos{k} = p_k
-  }{
-    \act{v}{p}{
-      \cursor{t}
-    }{
-      \Construct{k}
-    }{
-      \graphAction{\Minus}{\e};
-      \graphAction{\Plus}{(\fresh{u}_1, v, p, (\fresh{u}_2, k))};
-      \graphAction{\Plus}{(\fresh{u}_3, (\fresh{u}_2, k), p_k, v_{G_t})}
-    }
-  }
-
-  \inferrule{
-    \defaultpos{k} \text{ undefined}
-  }{
-    \act{v}{p}{
-      \cursor{\conflictHoleForm{t_i}{i \leq n}}
-    }{
-      \Construct{k}
-    }{
-      \graphAction{\Plus}{(\fresh{u}_1, v, p, (\fresh{u}_2, k))}
-    }
-  }
-
-  \inferrule{
-    G_{t_i}(\e_i) = \Plus \\
-    \defaultpos{k} = p_k
-  }{
-    \act{v}{p}{
-      \cursor{\conflictHoleForm{t_i}{i \leq n}}
-    }{
-      \Construct{k}
-    }{} \\
-    \SequenceOf{\graphAction{\Minus}{\e_i}}_{i \leq n};
-    \SequenceOf{\graphAction{\Plus}{(\fresh{u}_{2i-1}, (\fresh{u}_{2i}, k), p_k, v_{G_{t_i}})}}_{i \leq n};
-    \graphAction{\Plus}{(\fresh{u}_{2n+1}, v, p, (\fresh{u}_{2n+2}, k))}
-  }
-
-  \inferrule{
-  }{
-    \act{v}{p}{
-      \cursor{\hole}
-    }{
-      \Construct{k}
-    }{
-      \graphAction{\Plus}{(\fresh{u}_1, v, p, (\fresh{u}_2, k))}
-    }
-  }
-
-  \inferrule{
-    G_t(\e{=}(u, v, p, v_{G_t})) = \Plus
-  }{
-    \act{v}{p}{
-      \cursor{t}
-    }{
-      \Delete
-    }{
-      \graphAction{\Minus}{\e}
-    }
-  }
-
-  \inferrule{
-    v, p; t_i \action{\Delete} a_i^{*}
-  }{
-    \act{v}{p}{
-      \cursor{\conflictHole{t_i}_{i \leq n}}
-    }{
-      \Delete
-    }{
-      \SequenceOf{a_i^{*}}_{i \leq n}
-    }
-  }
-
-  \inferrule{
-    G_t(\e{=}(u, v, p, v_{G_t})) = \Plus
-  }{
-    \act{v}{p}{
-      \cursor{t}
-    }{
-      \Reposition{v_\alpha}{p_\alpha}
-    }{
-      \graphAction{\Minus}{\e};
-      \graphAction{\Plus}{(\fresh{u}_1, v_\alpha, p_\alpha, v_{G_t})}
-    }
-  }
-
-  \inferrule{
-    \act{v}{p}{t_i}{\Reposition{v_\alpha}{p_\alpha}}{a_i^{*}}
-  }{
-    \act{v}{p}{
-      \cursor{\conflictHole{t_i}_{i \leq n}}
-    }{
-      \Reposition{v_\alpha}{p_\alpha}
-    }{
-      \SequenceOf{a_i^{*}}_{i \leq n}
     }
   }
 \end{mathpar}

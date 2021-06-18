@@ -47,6 +47,7 @@
 
 % judgments
 \newcommand{\act}[5]{#1, #2; #3 \action{#4} #5}
+\newcommand{\applyAction}[3]{#1 \action{#2} #3}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Graphs
@@ -134,40 +135,6 @@
 \newcommand{\tArrow}[3]{#2 \eid{#1}{\rightarrow} #3}
 \newcommand{\tNum}[1]{\eid{#1}{Num}}
 
-% TODO: come up with a metavariable for zippered sets (i.e., Grove components)
-%  t = e | q | \tau
-%  t^ = e^ | ...
-%       \Theta_{NP}, ... are sets of terms
-%       \Z{\Theta} = (\Z{t}, \Theta) is a set of terms with a zippered term inside
-
-% TODO: add conflict terms to zippered syntax and cursor erasure
-
-% |> { e1 | ... | en } <|
-% { e1^ | ... | en }
-% { e1 | ... | en^ }
-
-% |> mpc <|
-% |> uc <|
-
-% TODO: sort out which one's "a" and which one's "\alpha" in the paper body (check Hazelnut paper)
-
-% Graph actions (a):
-%   - add edge
-%   - remove edge
-
-% User actions (\alpha) (indirect):
-%
-% \gamma^ --\alpha--> a*
-% 
-% (NP^, MP, U) -- Construct(k) --> 
-% (NP, MP^, U) -- Construct(k) --> 
-% (NP, MP, U^) -- Construct(k) --> 
-
-% ((|> e <|, NP), MP, U) -- Construct(k) --> 
-% v, p; ((|> ?? <|, NP), MP, U) -- Construct(k) -->  (v, p, (u_fresh, k)) \mapsto +
-
-% TODO: define well sorted grove
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Zippered Terms
 
@@ -196,6 +163,9 @@
 \newcommand{\tdecompPrime}[2]{\tdecompPrimeOp\mathopen{}\left(#1, #2\right)\mathclose{}}
 
 % helpers
+\newcommand{\edges}[1]{\text{edges}\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\sources}[1]{\text{sources}\mathopen{}\left(#1\right)\mathclose{}}
+
 \DeclareMathOperator{\outedgesOp}{\text{outedges}}
 \DeclareMathOperator{\ingraphOp}{\text{ingraph}}
 \DeclareMathOperator{\parentsOp}{\text{parents}}

@@ -1,12 +1,14 @@
 
 \newcommand{\figureDecompositionDefHelpersContent}{%
 \begin{align*}
-  \ingraph{v} &= \SetOf{\e{=}(u, v', p, v) \mapsto G(\e) \SuchThat{G(\e) \in \SetOf{\Plus, \Minus}}} \\
+  \ingraph{v} &= \SetOf{\e{=}(u, v', p, v) \mapsto G(\e) \SuchThat{\e \in \edges{G}}} \\
   \outedges{v}{p} &= \SetOf{\e{=}(u, v, p, v') \SuchThat{G(\e) = \Plus}} \\
   \parents{v} &= \SetOf{v' \SuchThat{\exists \e{=}(u, v', p, v) \land G(\e) = \Plus}} \\
   \ancestors{v} &= \mathopen{}\left( \lfp{\ancestorsPrimeOp} \right)\mathclose{}(v) \\
   \ancestorsPrime{v} &= \parents{v} \cup \ancestorsPrime{\parents{v}} \\
   \min{(u_1, k_1), \ldots, (u_n, k_n)} &= (u_j, k_j) \text{ s.t. } 1 \leq j \leq n \land u_j \le u_i \forall i = 1, \ldots, n \\
+  \edges{G} &= \SetOf{\e \SuchThat{G(\e) \in \SetOf{\Plus, \Minus}}} \\
+  \sources{G_t} &= \SetOf{(v, p) \SuchThat{(u, v, p, v_{G_t}) \in \edges{G_t} \land u \in \U}}
 \end{align*}%
 }
 
