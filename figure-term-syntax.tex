@@ -17,23 +17,23 @@
       \mid \eTimes{G}{e}{e}
       \mid \multiVertex{\e}
       \mid \cycleVertex{\e}
-      \mid \conflictHoleForm{e_i}{i \leq n}
-      \mid \hole
+      \mid \conflictHole{e_i}_{i \leq n}
+      \mid \emptyHole{v}{p}
     \\
     \tau & {}\in{} & Typ & {}::={} &
       \tArrow{G}{\tau}{\tau}
       \mid \tNum{G}
       \mid \multiVertex{\e}
       \mid \cycleVertex{\e}
-      \mid \conflictHoleForm{\tau_i}{i \leq n}
-      \mid \hole
+      \mid \conflictHole{\tau_i}_{i \leq n}
+      \mid \emptyHole{v}{p}
     \\
     q & {}\in{} & Pat{} & {}::={} &
       \pVar{G}{x}
       \mid \multiVertex{\e}
       \mid \cycleVertex{\e}
-      \mid \conflictHoleForm{q_i}{i \leq n}
-      \mid \hole
+      \mid \conflictHole{q_i}_{i \leq n}
+      \mid \emptyHole{v}{p}
     \\
   \end{array}
 \]

@@ -6,7 +6,7 @@
 
 \figureTermSyntaxContent
 
-For conflict hole forms $\conflictHoleForm{t_i}{i \leq n}$, it must be the case that $n \geq 2$.
+For conflict hole forms $\conflictHole{t_i}_{i \leq n}$, it must be the case that $n \geq 2$.
 We identify conflict holes up to reordering.
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
@@ -198,7 +198,7 @@ Let $\fresh{u}$ denote a fresh id.
   \begin{itemize}
     \item $t = \hole$.
       % An empty hole is trivially well sorted.
-    \item $t = \conflictHoleForm{t_i}{i \leq n}$ and all of the following hold:
+    \item $t = \conflictHole{t_i}_{i \leq n}$ and all of the following hold:
       \begin{enumerate}
         \item For all $i = 1, \ldots, n$, we have $t_i$ is well sorted.
           % The conflicting terms are well sorted ...
@@ -359,7 +359,7 @@ Proof: provide a witness that demonstrates the conclusion.
   \\
   \erecomp{\cycleVertex{\e}} &= \SetOf{\e \mapsto \Plus}
   \\
-  \erecomp{\hole} &= \SetOf{}
+  \erecomp{\emptyHole{v}{p}} &= \SetOf{}
 \end{align*}
 
 \noindent $\boxed{\precomp{q} = G}$
@@ -373,7 +373,7 @@ Proof: provide a witness that demonstrates the conclusion.
   \\
   \precomp{\cycleVertex{\e}} &= \SetOf{\e \mapsto \Plus}
   \\
-  \precomp{\hole} &= \SetOf{}
+  \precomp{\emptyHole{v}{p}} &= \SetOf{}
 \end{align*}
 
 \noindent $\boxed{\trecomp{\tau} = G}$
@@ -390,7 +390,7 @@ Proof: provide a witness that demonstrates the conclusion.
   \\
   \trecomp{\cycleVertex{\e}} &= \SetOf{\e \mapsto \Plus}
   \\
-  \trecomp{\hole} &= \SetOf{}
+  \trecomp{\emptyHole{v}{p}} &= \SetOf{}
 \end{align*}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -503,45 +503,6 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
   \erase{\conflictHole{\Z{\tau}, \SetOf{\tau_i}_{i \leq n}}} &= \conflictHole{\erase{\Z{\tau}}, \SetOf{\tau_i}_{i \leq n}}
 \end{align*}
 
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
-
-\subsubsection{Cursor Resolution}\hspace*{\fill} \\
-
-\noindent
-$\boxed{\resolve{v}{p}{\Z{\Grove}} = (v, p, t)}$
-%
-\begin{align*}
-  \resolve{v}{p}{(\Z{\Set}_{NP}, \Set[MP], \Set[U])} &= \resolve{v}{p}{\Z{\Set}_{NP}} \\
-  \resolve{v}{p}{(\Set[NP], \Z{\Set}_{MP}, \Set[U])} &= \resolve{v}{p}{\Z{\Set}_{MP}} \\
-  \resolve{v}{p}{(\Set[NP], \Set[MP], \Z{\Set}_{U})} &= \resolve{v}{p}{\Z{\Set}_U}
-\end{align*}
-
-\noindent
-$\boxed{\resolve{v}{p}{\Z{\Set}} = (v, p, t)}$
-%
-\begin{align*}
-  \resolve{v}{p}{(\Set, \Z{t})} &= \resolve{v}{p}{\Z{t}}
-\end{align*}
-
-\noindent
-$\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
-%
-\begin{align*}
-  \resolve{v}{p}{\cursor{t}} &= (v, p, t) \\
-  \resolve{v}{p}{\eFun{G}{\Z{q}}{\tau}{e}} &= \resolve{v_G}{\LamParam}{\Z{q}} \\
-  \resolve{v}{p}{\eFun{G}{q}{\Z{\tau}}{e}} &= \resolve{v_G}{\LamType}{\Z{\tau}} \\
-  \resolve{v}{p}{\eFun{G}{q}{\tau}{\Z{e}}} &= \resolve{v_G}{\LamBody}{\Z{e}} \\
-  \resolve{v}{p}{\eApp{G}{\Z{e_1}}{e_2}} &= \resolve{v_G}{\AppFun}{\Z{e_1}} \\
-  \resolve{v}{p}{\eApp{G}{e_1}{\Z{e_2}}} &= \resolve{v_G}{\AppArg}{\Z{e_2}} \\
-  \resolve{v}{p}{\ePlus{G}{\Z{e_1}}{e_2}} &= \resolve{v_G}{\PlusLeft}{\Z{e_1}} \\
-  \resolve{v}{p}{\ePlus{G}{e_1}{\Z{e_2}}} &= \resolve{v_G}{\PlusRight}{\Z{e_2}} \\
-  \resolve{v}{p}{\eTimes{G}{\Z{e_1}}{e_2}} &= \resolve{v_G}{\TimesLeft}{\Z{e_1}} \\
-  \resolve{v}{p}{\eTimes{G}{e_1}{\Z{e_2}}} &= \resolve{v_G}{\TimesRight}{\Z{e_2}} \\
-  \resolve{v}{p}{\tArrow{G}{\Z{e_1}}{e_2}} &= \resolve{v_G}{\ArrowArg}{\Z{e_1}} \\
-  \resolve{v}{p}{\tArrow{G}{e_1}{\Z{e_2}}} &= \resolve{v_G}{\ArrowResult}{\Z{e_2}} \\
-  \resolve{v}{p}{\conflictHole{\Z{t}, \SetOf{t_i}_{i \leq n}}} &= \resolve{v_{G_t}}{p}{\Z{t}} \\
-\end{align*}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{User Actions}
@@ -550,11 +511,10 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
   For any zippered grove $\Z{\Grove}$
   such that $\erase{\Z{\Grove}}$ is well sorted
     and $\recomp{\erase{\Z{\Grove}}} = G$,
-    % and $\resolve{\rootVertex}{\Root}{\Z{\Grove}} = (v, p, t)$,
-  and any well sorted user action $\alpha$,
+  and any user action $\alpha$,
   if
   \[
-    \applyAction{\cursor{t}}{\alpha}{a^{*}},
+    \applyAction{\Z{\Grove}}{\alpha}{a^{*}},
   \]
   then $G \action{a^{*}} G'$ and $G'$ is well sorted.
 \end{theorem}
@@ -629,6 +589,38 @@ $\boxed{\resolve{v}{p}{\Z{t}} = (v, p, t)}$
       \cursor{t}
     }{\Construct{k}}{
       \SequenceOf{\graphAction{\Plus}{(\fresh{u}_{s_i}, v_{s_i}, p_{s_i}, (\fresh{u}_k, k))}}_{i \leq n}
+    }
+  }
+
+  \inferrule{
+    (p_s, \sort{k}) \in \arity{k_s}
+  }{
+    \applyAction{
+      \cursor{\emptyHole{v_s{=}(u_s, k_s)}{p_s}}
+    }{\Construct{k}}{
+      \graphAction{\Plus}{(\fresh{u}, v_s, p_s, (\fresh{u}_k, k))}
+    }
+  }
+
+  \inferrule{
+    \edges{G_t} = \SetOf{\e_i}_{i \leq n}
+  }{
+    \applyAction{
+      \cursor{t}
+    }{\Delete}{
+      \SequenceOf{\graphAction{\Minus}{\e_i}}_{i \leq n}
+    }
+  }
+
+  \inferrule{
+    \edges{G_t} = \SetOf{\e_i}_{i \leq n} \\
+    (p, \sort{k_{G_t}}) \in \arity{k}
+  }{
+    \applyAction{
+      \cursor{t}
+    }{\Reposition{v{=}(u, k)}{p}}{
+      \SequenceOf{\graphAction{\Minus}{\e_i}}_{i \leq n};
+      \graphAction{\Plus}{(\fresh{u}, v, p, v_{G_t})}
     }
   }
 

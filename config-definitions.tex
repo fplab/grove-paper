@@ -119,11 +119,10 @@
 \newcommand{\arrowTyp}[3]{#1 \to^{#2} #3}
 \newcommand{\numTyp}[1]{Num^{#1}}
 \newcommand{\hole}{\ensuremath{\square}} %\textcolor{violet}{\llparenthesis}}\textcolor{violet}{\rrparenthesis}}
-% TODO: finish this macro
-\newcommand{\conflictHoleForm}[2]{\textcolor{red}{\textbf{\{}}#1\textcolor{red}{\textbf{\}}}_{#2}}
 \newcommand{\conflictHole}[1]{%
 {\noexpandarg\StrSubstitute{#1}{,}{\textcolor{red}{\,\textbf{|}\,}}[\myargs]%
 {\textcolor{red}{\textbf{\{}}\myargs\textcolor{red}{\textbf{\}}}}}}%
+\newcommand{\emptyHole}[2]{\square_{\id{(#1, #2)}}}
 
 \newcommand{\eVar}[2]{\eid{#1}{#2}}
 \newcommand{\eFun}[4]{\eid{#1}{\lambda} #2 : #3 . #4}
