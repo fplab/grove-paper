@@ -196,14 +196,17 @@ Let $\fresh{u}$ denote a fresh id.
 \begin{definition}
   A term $t$ is well sorted if one of the following holds:
   \begin{itemize}
-    \item $t = \hole$.
-      % An empty hole is trivially well sorted.
+
+    \item $t = \emptyHole{v{=}(u, k)}{p}$
+      and there exists $s \in \SetOf{Exp, Pat, Typ}$
+      such that $(p, s) \in \arity{k}$.
+      % An empty hole is well sorted if the associated source vertex can have
+      % children at the associated position.
+
     \item $t = \conflictHole{t_i}_{i \leq n}$ and all of the following hold:
       \begin{enumerate}
         \item For all $i = 1, \ldots, n$, we have $t_i$ is well sorted.
           % The conflicting terms are well sorted ...
-        % \item $\sort{t_1} = \cdots = \sort{t_n}$.
-        %   % ... and of the same sort ...
         \item
           There exist $v_0 \in \V, p_0 \in \P$ such that,
           for all $i = 1, \ldots, n$,
@@ -211,6 +214,7 @@ Let $\fresh{u}$ denote a fresh id.
           we have $v = v_0$ and $p = p_0$.
           % ... and all of their incoming edges have the same source vertex and position.
       \end{enumerate}
+
     \item $t = \multiVertex{\e}$ and all of the following hold:
       \begin{enumerate}
         \item $\e$ is well sorted.
@@ -218,6 +222,7 @@ Let $\fresh{u}$ denote a fresh id.
         \item $\SizeOf{\SetOf{\e' \SuchThat{G_t(\e') = \Plus}}} > 1$.
           % ... and its target vertex has multiple parents.
       \end{enumerate}
+
     \item $t = \cycleVertex{(u, v, p, v')}$ and all of the following hold:
       \begin{enumerate}
         \item $(u, v, p, v')$ is well sorted.
@@ -229,6 +234,7 @@ Let $\fresh{u}$ denote a fresh id.
           we have $\SizeOf{\parents{v_{\e}'}} = 1$.
           % ... of a unicycle.
       \end{enumerate}
+
     \item Otherwise, $G_t$ exists and all of the following hold:
       \begin{enumerate}
         \item $G_t$ is well sorted.
