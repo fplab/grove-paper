@@ -565,7 +565,7 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
 \noindent $\boxed{\applyAction{\Z{t}}{\alpha}{a^{*}}}$
 %
 \begin{mathpar}
-  \inferrule{
+  \inferrule[ConstructWrap]{
     \sources{G_t} = \SetOf{(v_{s_i}, p_{s_i})}_{i \leq n} \\
     \defaultpos{k} = p_k \\
     \sort{k} = \sort{k_{G_t}} \\
@@ -580,7 +580,7 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
     }
   }
 
-  \inferrule{
+  \inferrule[ConstructConflict]{
     \sources{G_t} = \SetOf{(v_{s_i}, p_{s_i})}_{i \leq n} \\
     \defaultpos{k} \text{ undefined} \\
     \sort{k} = \sort{k_{G_t}}
@@ -592,7 +592,7 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
     }
   }
 
-  \inferrule{
+  \inferrule[Construct]{
     (p_s, \sort{k}) \in \arity{k_s}
   }{
     \applyAction{
@@ -602,7 +602,7 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
     }
   }
 
-  \inferrule{
+  \inferrule[Delete]{
     \edges{G_t} = \SetOf{\e_i}_{i \leq n}
   }{
     \applyAction{
@@ -612,7 +612,7 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
     }
   }
 
-  \inferrule{
+  \inferrule[Reposition]{
     \edges{G_t} = \SetOf{\e_i}_{i \leq n} \\
     (p, \sort{k_{G_t}}) \in \arity{k}
   }{
@@ -624,8 +624,8 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
     }
   }
 
-  \inferrule{
-    \applyAction{\cursor{t_i}}{\alpha}{a_i^{*}}
+  \inferrule[Conflict]{
+    \SetOf{\applyAction{\cursor{t_i}}{\alpha}{a_i^{*}}}_{i \leq n}
   }{
     \applyAction{
       \cursor{\conflictHole{t_i}_{i \leq n}}
