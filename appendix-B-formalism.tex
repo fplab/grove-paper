@@ -260,29 +260,19 @@ Let $\fresh{u}$ denote a fresh id.
 
 \subsection{Decomposition and Recomposition}
 
-\begin{theorem}
-  For any well sorted graph $G$,
-  there exists a (well sorted) grove $\Grove$
-  such that $\decomp{G} = \Grove$.
-\end{theorem}
-
-Proof: provide a witness that demonstrates the conclusion.
-
-% \begin{theorem}
-%   Let $G$ be a well sorted graph.
-%   If $\decomp{G} = \Grove$ then $\vertexes{G} = \vertexes{\Grove}$.
-% \end{theorem}
-
-% \begin{theorem}
-%   Let $G$ be a well sorted graph.
-%   If $\recomp{\Grove} = G$ then $\vertexes{\Grove} = \vertexes{G}$.
-% \end{theorem}
-
 \figureDecompositionDefHelpersContent
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
-\subsubsection{Decomposition}\hspace*{\fill} \\
+\subsubsection{Decomposition}
+
+\begin{theorem}
+  For any well sorted graph $G$
+  there exists a well sorted grove $\Grove$
+  such that \[\decomp{G} = \Grove.\]
+\end{theorem}
+
+% Proof: provide a witness that demonstrates the conclusion.
 
 \noindent $\boxed{\decomp{G} = \Grove}$
 %
@@ -321,8 +311,8 @@ Proof: provide a witness that demonstrates the conclusion.
 \subsubsection{Recomposition}\hspace*{\fill} \\
 
 \begin{theorem}
-  If $G$ is a well sorted graph such that $\decomp{G} = \Grove$,
-  then $\recomp{\Grove} = G$.
+  For any well sorted graph $G$,
+  if $\decomp{G} = \Grove$ then $\recomp{\Grove} = G$.
 \end{theorem}
 
 \noindent $\boxed{\recomp{\Grove} = G}$
@@ -416,7 +406,7 @@ Proof: provide a witness that demonstrates the conclusion.
       \mid \Z{\tau}
     \\
     \Z{e} & {}\in{} & ZExp & {}::={} &
-      \cursor{e}
+      \cursor[\Z{\e}]{e}
       \mid \eFun{G}{\Z{q}}{\tau}{e}
       \mid \eFun{G}{q}{\Z{\tau}}{e}
       \mid \eFun{G}{q}{\tau}{\Z{e}}
@@ -431,14 +421,18 @@ Proof: provide a witness that demonstrates the conclusion.
       \mid \conflictHole{\Z{e}, \SetOf{e_i}_{i \leq n}}
     \\
     \Z{q} & {}\in{} & ZPat & {}::={} &
-      \cursor{q}
+      \cursor[\Z{\e}]{q}
       \mid \conflictHole{\Z{q}, \SetOf{q_i}_{i \leq n}}
     \\
     \Z{\tau} & {}\in{} & ZTyp & {}::={} &
-      \cursor{\tau}
+      \cursor[\Z{\e}]{\tau}
       \mid \tArrow{G}{\Z{\tau}}{\tau}
       \mid \tArrow{G}{\tau}{\Z{\tau}}
       \mid \conflictHole{\Z{\tau}, \SetOf{\tau_i}_{i \leq n}}
+    \\
+    \Z{\e} & {}\in{} & ZEdge & {}::={} &
+      \e
+      \mid \cdot
     \\
   \end{array}
 \]
@@ -480,7 +474,7 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
 \noindent $\boxed{\erase{\Z{e}} = e}$
 %
 \begin{align*}
-  \erase{\cursor{e}} &= e \\
+  \erase{\cursor[\Z{\e}]{e}} &= e \\
   \erase{\left(\eFun{G}{\Z{q}}{\tau}{e}\right)} &= \eFun{G}{\erase{\Z{q}}}{\tau}{e} \\
   \erase{\left(\eFun{G}{q}{\Z{\tau}}{e}\right)} &= \eFun{G}{q}{\erase{\Z{\tau}}}{e} \\
   \erase{\left(\eFun{G}{q}{\tau}{\Z{e}}\right)} &= \eFun{G}{q}{\tau}{\erase{\Z{e}}} \\
@@ -496,14 +490,14 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
 \noindent $\boxed{\erase{\Z{q}} = q}$
 %
 \begin{align*}
-  \erase{\cursor{q}} &= q \\
+  \erase{\cursor[\Z{\e}]{q}} &= q \\
   \erase{\conflictHole{\Z{q}, \SetOf{q_i}_{i \leq n}}} &= \conflictHole{\erase{\Z{q}}, \SetOf{q_i}_{i \leq n}}
 \end{align*}
 
 \noindent $\boxed{\erase{\Z{\tau}} = \tau}$
 %
 \begin{align*}
-  \erase{\cursor{\tau}} &= \tau \\
+  \erase{\cursor[\Z{\e}]{\tau}} &= \tau \\
   \erase{\left(\tArrow{G}{\Z{\tau}_1}{\tau_2}\right)} &= \tArrow{G}{\erase{\Z{\tau}_1}}{\tau_2} \\
   \erase{\left(\tArrow{G}{\tau_1}{\Z{\tau}_2}\right)} &= \tArrow{G}{\tau_1}{\erase{\Z{\tau}_2}} \\
   \erase{\conflictHole{\Z{\tau}, \SetOf{\tau_i}_{i \leq n}}} &= \conflictHole{\erase{\Z{\tau}}, \SetOf{\tau_i}_{i \leq n}}
@@ -571,7 +565,7 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
 \noindent $\boxed{\applyAction{\Z{t}}{\alpha}{a^{*}}}$
 %
 \begin{mathpar}
-  \inferrule[ConstructWrap]{
+  \inferrule[ConstructWrapMany]{
     \sources{G_t} = \SetOf{(v_{s_i}, p_{s_i})}_{i \leq n} \\
     \defaultpos{k} = p_k \\
     \sort{k} = \sort{k_{G_t}} \\
@@ -586,7 +580,7 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
     }
   }
 
-  \inferrule[ConstructConflict]{
+  \inferrule[ConstructConflictMany]{
     \sources{G_t} = \SetOf{(v_{s_i}, p_{s_i})}_{i \leq n} \\
     \defaultpos{k} \text{ undefined} \\
     \sort{k} = \sort{k_{G_t}}
@@ -608,7 +602,7 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
     }
   }
 
-  \inferrule[Delete]{
+  \inferrule[DeleteMany]{
     \edges{G_t} = \SetOf{\e_i}_{i \leq n}
   }{
     \applyAction{
@@ -618,7 +612,7 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
     }
   }
 
-  \inferrule[Reposition]{
+  \inferrule[RepositionMany]{
     \edges{G_t} = \SetOf{\e_i}_{i \leq n} \\
     (p, \sort{k_{G_t}}) \in \arity{k}
   }{
@@ -629,12 +623,61 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
       \graphAction{\Plus}{(\fresh{u}, v, p, v_{G_t})}
     }
   }
-
-  \inferrule[Conflict]{
-    \SetOf{\applyAction{\cursor{t_i}}{\alpha}{a_i^{*}}}_{i \leq n}
+\end{mathpar}
+%
+\begin{mathpar}
+  \inferrule[ConstructWrap]{
+l    \defaultpos{k} = p_k \\
+    \sort{k} = \sort{k_{G_t}} \\
+    (p_k, \sort{k_{G_t}}) \in \arity{k}
   }{
     \applyAction{
-      \cursor{\conflictHole{t_i}_{i \leq n}}
+      \cursor[\e{=}(u_s, v_s, p_s, v_{G_t})]{t}
+    }{\Construct{k}}{
+      \graphAction{\Minus}{\e};
+      \graphAction{\Plus}{(\fresh{u}_s, v_s, p_s, v_k{=}(\fresh{u}_k, k))};
+      \graphAction{\Plus}{(\fresh{u}, v_k, p_k, v_{G_t})}
+    }
+  }
+
+
+  \inferrule[ConstructConflict]{
+    \defaultpos{k} \text{ undefined} \\
+    \sort{k} = \sort{k_{G_t}}
+  }{
+    \applyAction{
+      \cursor[(u_s, v_s, p_s, v_{G_t})]{t}
+    }{\Construct{k}}{
+      \graphAction{\Plus}{(\fresh{u}_s, v_s, p_s, (\fresh{u}_k, k))}
+    }
+  }
+
+  \inferrule[Delete]{
+  }{
+    \applyAction{
+      \cursor[\e]{t}
+    }{\Delete}{
+      \graphAction{\Minus}{\e}
+    }
+  }
+
+  \inferrule[Reposition]{
+    \edges{G_t} = \SetOf{\e_i}_{i \leq n} \\
+    (p, \sort{k_{G_t}}) \in \arity{k}
+  }{
+    \applyAction{
+      \cursor[\e]{t}
+    }{\Reposition{v{=}(u, k)}{p}}{
+      \graphAction{\Minus}{\e};
+      \graphAction{\Plus}{(\fresh{u}, v, p, v_{G_t})}
+    }
+  }
+
+  \inferrule[Conflict]{
+    \SetOf{\applyAction{\cursor[\Z{\e}]{t_i}}{\alpha}{a_i^{*}}}_{i \leq n}
+  }{
+    \applyAction{
+      \cursor[\Z{\e}]{\conflictHole{t_i}_{i \leq n}}
     }{\alpha}{
       \SequenceOf{a_i^{*}}_{i \leq n}
     }
