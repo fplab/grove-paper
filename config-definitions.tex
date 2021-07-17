@@ -13,12 +13,14 @@
 \newcommand{\abs}[1]{\left\lvert#1\right\rvert}
 \newcommand{\figureCode}[1]{\textbf{\texttt{#1}}\vskip1em}
 \newcommand{\Z}[1]{\hat{#1}}
+\newcommand{\Q}[1]{\bar{#1}}
 \newcommand{\Set}[1][]{\Theta_{#1}}
 \newcommand{\SetOf}[1]{\left\{#1\right\}}
 \newcommand{\SuchThat}[1]{ : #1}
-\newcommand{\SequenceOf}[1]{\left(#1\right)}
+\newcommand{\SequenceOf}[1]{\left.#1\right|}
 \newcommand{\SizeOf}[1]{\left\lvert#1\right\rvert}
 \newcommand{\action}[1]{\xrightarrow{#1}}
+% TODO: rename \graphAction to \graphEdit
 \newcommand{\graphAction}[2]{\big(#1, #2\big)}
 \newcommand{\fresh}[1]{{#1}^{+}}
 
@@ -48,6 +50,7 @@
 % judgments
 \newcommand{\act}[5]{#1, #2; #3 \action{#4} #5}
 \newcommand{\applyAction}[3]{#1 \action{#2} #3}
+\newcommand{\applyActionX}[5]{#1; #2 \action{#3} #4; #5}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Graphs
@@ -66,8 +69,8 @@
 \newcommand{\pconstructor}[1]{\pconstructorOp\mathopen{}\left(#1\right)\mathclose{}}
 \newcommand{\tconstructor}[1]{\tconstructorOp\mathopen{}\left(#1\right)\mathclose{}}
 
-\newcommand{\Edge}[1]{Edge~#1}
-\newcommand{\Vertex}[1]{Vertex~#1}
+% \newcommand{\Edge}[1]{Edge~#1}
+% \newcommand{\Vertex}[1]{Vertex~#1}
 \newcommand{\multiVertex}[1]{\textcolor{red}{\ensuremath{\curlyveedownarrow_{#1}}}}
 \newcommand{\cycleVertex}[1]{\textcolor{red}{\ensuremath{\rcirclearrowleft_{#1}}}}
 \newcommand{\orphanVertex}[1]{\textcolor{red}{\ensuremath{\mathbf{\ndownarrow_{#1}}}}}
@@ -83,29 +86,29 @@
 \newcommand{\parens}[1]{\textcolor{gray}{(}#1\textcolor{gray}{)}}
 
 % Constructors
-\newcommand\ExpVar{\mathsf{Exp\_var}}
-\newcommand\ExpLam{\mathsf{Exp\_lam}}
-\newcommand\ExpApp{\mathsf{Exp\_app}}
-\newcommand\ExpNum{\mathsf{Exp\_num}}
-\newcommand\ExpPlus{\mathsf{Exp\_plus}}
-\newcommand\ExpTimes{\mathsf{Exp\_times}}
-\newcommand\PatVar{\mathsf{Pat\_var}}
-\newcommand\TypNum{\mathsf{Typ\_num}}
-\newcommand\TypArrow{\mathsf{Typ\_arrow}}
+\newcommand{\ExpVar}{\mathsf{Exp\_var}}
+\newcommand{\ExpLam}{\mathsf{Exp\_lam}}
+\newcommand{\ExpApp}{\mathsf{Exp\_app}}
+\newcommand{\ExpNum}{\mathsf{Exp\_num}}
+\newcommand{\ExpPlus}{\mathsf{Exp\_plus}}
+\newcommand{\ExpTimes}{\mathsf{Exp\_times}}
+\newcommand{\PatVar}{\mathsf{Pat\_var}}
+\newcommand{\TypNum}{\mathsf{Typ\_num}}
+\newcommand{\TypArrow}{\mathsf{Typ\_arrow}}
 
 % Positions
-\newcommand\Root{\mathsf{Root}}
-\newcommand\LamParam{\mathsf{Param}}
-\newcommand\LamType{\mathsf{Type}}
-\newcommand\LamBody{\mathsf{Body}}
-\newcommand\AppFun{\mathsf{Fun}}
-\newcommand\AppArg{\mathsf{Arg}}
-\newcommand\PlusLeft{\mathsf{Left}}
-\newcommand\PlusRight{\mathsf{Right}}
-\newcommand\TimesLeft{\mathsf{Left}}
-\newcommand\TimesRight{\mathsf{Right}}
-\newcommand\ArrowArg{\mathsf{Arg}}
-\newcommand\ArrowResult{\mathsf{Result}}
+\newcommand{\Root}{\mathsf{Root}}
+\newcommand{\LamParam}{\mathsf{Param}}
+\newcommand{\LamType}{\mathsf{Type}}
+\newcommand{\LamBody}{\mathsf{Body}}
+\newcommand{\AppFun}{\mathsf{Fun}}
+\newcommand{\AppArg}{\mathsf{Arg}}
+\newcommand{\PlusLeft}{\mathsf{Left}}
+\newcommand{\PlusRight}{\mathsf{Right}}
+\newcommand{\TimesLeft}{\mathsf{Left}}
+\newcommand{\TimesRight}{\mathsf{Right}}
+\newcommand{\ArrowArg}{\mathsf{Arg}}
+\newcommand{\ArrowResult}{\mathsf{Result}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Terms
@@ -219,3 +222,10 @@
 \newcommand{\Delete}{\text{Delete}}
 \newcommand{\Reposition}[2]{\text{Reposition}\mathopen{}\left(#1, #2\right)\mathclose{}}
 \newcommand{\Wrap}[2]{\mathrm{Wrap}\mathopen{}\left(#1, #2\right)\mathclose{}}
+
+% cursors
+\newcommand{\CVertex}[1]{\text{Vertex}\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\CEdge}[1]{\text{Edge}\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\CSource}[2]{\text{Source}\mathopen{}\left(#1, #2\right)\mathclose{}}
+\newcommand{\CSourceVertex}[3]{\text{SourceVertex}\mathopen{}\left(#1, #2, #3\right)\mathclose{}}
+\newcommand{\CSourceEdge}[3]{\text{SourceEdge}\mathopen{}\left(#1, #2, #3\right)\mathclose{}}

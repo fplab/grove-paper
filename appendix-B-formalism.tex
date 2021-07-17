@@ -523,258 +523,121 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
       \mid \Delete
       \mid \Reposition{v}{p}
     \\
+    c & {}::={} &
+      \CVertex{v}
+      \mid \CEdge{\e}
+      \mid \CSource{v}{p}
+      \mid \CSourceVertex{v}{p}{v}
+      \mid \CSourceEdge{v}{p}{\e}
+    \\
   \end{array}
 \]
 
-\noindent $\boxed{\Z{\Grove} \action{\alpha} a^{*}}$
+\noindent $\boxed{\applyActionX{ \Z{\Grove} }{ c }{ \alpha }{ \Q{a} }{ c' }}$
 %
 \begin{mathpar}
   \inferrule{
-    \Z{\Set}_{NP} \action{\alpha} a^{*}
+    \applyActionX{ \Z{\Set}_{NP} }{ c }{ \alpha }{ \Q{a} }{ c' }
   }{
-    (\Z{\Set}_{NP}, \Set[MP], \Set[U]) \action{\alpha} a^{*}
+    \applyActionX{ (\Z{\Set}_{NP}, \Set[MP], \Set[U]) }{ c }{ \alpha }{ \Q{a} }{ c' }
   }
 
   \inferrule{
-    \Z{\Set}_{MP} \action{\alpha} a^{*}
+    \applyActionX{ \Z{\Set}_{MP} }{ c }{ \alpha }{ \Q{a} }{ c' }
   }{
-    (\Set[NP], \Z{\Set}_{MP}, \Set[U]) \action{\alpha} a^{*}
+    \applyActionX{ (\Set[NP], \Z{\Set}_{MP}, \Set[U]) }{ c }{ \alpha }{ \Q{a} }{ c' }
   }
 
   \inferrule{
-    \Z{\Set}_U \action{\alpha} a^{*}
+    \applyActionX{ \Z{\Set}_U }{ c }{ \alpha }{ \Q{a} }{ c' }
   }{
-    (\Set[NP], \Set[MP], \Z{\Set}_U) \action{\alpha} a^{*}
+    \applyActionX{ (\Set[NP], \Set[MP], \Z{\Set}_U) }{ c }{ \alpha }{ \Q{a} }{ c' }
   }
 \end{mathpar}
 
-\noindent $\boxed{\Z{\Set} \action{\alpha} a^{*}}$
+\noindent $\boxed{\applyActionX{ \Z{\Set} }{ c }{ \alpha }{ \Q{a} }{ c' }}$
 %
 \begin{mathpar}
   \inferrule{
-    \Z{t} \action{\alpha} a^{*}
+    \applyActionX{ \Z{t} }{ c }{ \alpha }{ \Q{a} }{ c' }
   }{
-    (\Set, \Z{t}) \action{\alpha} a^{*}
+    \applyActionX{ (\Set, \Z{t}) }{ c }{ \alpha }{ \Q{a} }{ c' }
   }
 \end{mathpar}
 
-\noindent $\boxed{\applyAction{\Z{t}}{\alpha}{a^{*}}}$
+\noindent $\boxed{\applyActionX{ \Z{t} }{ c }{ \alpha }{ \Q{a} }{ c' }}$
 %
 \begin{mathpar}
   \inferrule{
-    \applyAction{
-      \Z{q}
-    }{
-      \alpha
-    }{
-      a^{*}
-    }
+    \applyActionX{ \Z{q} }{ c }{ \alpha }{ \Q{a} }{ c' }
   }{
-    \applyAction{
-      (\eFun{G}{\Z{q}}{\tau}{e})
-    }{
-      \alpha
-    }{
-      a^{*}
-    }
+    \applyActionX{ (\eFun{G}{\Z{q}}{\tau}{e}) }{ c }{ \alpha }{ \Q{a} }{ c' }
   }
 
   \inferrule{
-    \applyAction{
-      \Z{\tau}
-    }{
-      \alpha
-    }{
-      a^{*}
-    }
+    \applyActionX{ \Z{\tau} }{ c }{ \alpha }{ \Q{a} }{ c' }
   }{
-    \applyAction{
-      (\eFun{G}{q}{\Z{\tau}}{e})
-    }{
-      \alpha
-    }{
-      a^{*}
-    }
+    \applyActionX{ (\eFun{G}{q}{\Z{\tau}}{e}) }{ c }{ \alpha }{ \Q{a} }{ c' }
   }
 
   \inferrule{
-    \applyAction{
-      \Z{e}
-    }{
-      \alpha
-    }{
-      a^{*}
-    }
+    \applyActionX{ \Z{e} }{ c }{ \alpha }{ \Q{a} }{ c' }
   }{
-    \applyAction{
-      (\eFun{G}{q}{\tau}{\Z{e}})
-    }{
-      \alpha
-    }{
-      a^{*}
-    }
+    \applyActionX{ (\eFun{G}{q}{\tau}{\Z{e}}) }{ c }{ \alpha }{ \Q{a} }{ c' }
   }
 
   \inferrule{
-    \applyAction{
-      \Z{e}_1
-    }{
-      \alpha
-    }{
-      a^{*}
-    }
+    \applyActionX{ \Z{e}_1 }{ c }{ \alpha }{ \Q{a} }{ c' }
   }{
-    \applyAction{
-      \eApp{G}{\Z{e}_1}{e_2}
-    }{
-      \alpha
-    }{
-      a^{*}
-    }
+    \applyActionX{ \eApp{G}{\Z{e}_1}{e_2} }{ c }{ \alpha }{ \Q{a} }{ c' }
   }
 
   \inferrule{
-    \applyAction{
-      \Z{e}_2
-    }{
-      \alpha
-    }{
-      a^{*}
-    }
+    \applyActionX{ \Z{e}_2 }{ c }{ \alpha }{ \Q{a} }{ c' }
   }{
-    \applyAction{
-      \eApp{G}{e_1}{\Z{e}_2}
-    }{
-      \alpha
-    }{
-      a^{*}
-    }
+    \applyActionX{ \eApp{G}{e_1}{\Z{e}_2} }{ c }{ \alpha }{ \Q{a} }{ c' }
   }
 
   \inferrule{
-    \applyAction{
-      \Z{e}_1
-    }{
-      \alpha
-    }{
-      a^{*}
-    }
+    \applyActionX{ \Z{e}_1 }{ c }{ \alpha }{ \Q{a} }{ c' }
   }{
-    \applyAction{
-      (\ePlus{G}{\Z{e}_1}{e_2})
-    }{
-      \alpha
-    }{
-      a^{*}
-    }
+    \applyActionX{ (\ePlus{G}{\Z{e}_1}{e_2}) }{ c }{ \alpha }{ \Q{a} }{ c' }
   }
 
   \inferrule{
-    \applyAction{
-      \Z{e}_2
-    }{
-      \alpha
-    }{
-      a^{*}
-    }
+    \applyActionX{ \Z{e}_2 }{ c }{ \alpha }{ \Q{a} }{ c' }
   }{
-    \applyAction{
-      (\ePlus{G}{e_1}{\Z{e}_2})
-    }{
-      \alpha
-    }{
-      a^{*}
-    }
+    \applyActionX{ (\ePlus{G}{e_1}{\Z{e}_2}) }{ c }{ \alpha }{ \Q{a} }{ c' }
   }
 
   \inferrule{
-    \applyAction{
-      \Z{e}_1
-    }{
-      \alpha
-    }{
-      a^{*}
-    }
+    \applyActionX{ \Z{e}_1 }{ c }{ \alpha }{ \Q{a} }{ c' }
   }{
-    \applyAction{
-      (\eTimes{G}{\Z{e}_1}{e_2})
-    }{
-      \alpha
-    }{
-      a^{*}
-    }
+    \applyActionX{ (\eTimes{G}{\Z{e}_1}{e_2}) }{ c }{ \alpha }{ \Q{a} }{ c' }
   }
 
   \inferrule{
-    \applyAction{
-      \Z{e}_2
-    }{
-      \alpha
-    }{
-      a^{*}
-    }
+    \applyActionX{ \Z{e}_2 }{ c }{ \alpha }{ \Q{a} }{ c' }
   }{
-    \applyAction{
-      (\eTimes{G}{e_1}{\Z{e}_2})
-    }{
-      \alpha
-    }{
-      a^{*}
-    }
+    \applyActionX{ (\eTimes{G}{e_1}{\Z{e}_2}) }{ c }{ \alpha }{ \Q{a} }{ c' }
   }
 
   \inferrule{
-    \applyAction{
-      \Z{\tau}_1
-    }{
-      \alpha
-    }{
-      a^{*}
-    }
+    \applyActionX{ \Z{\tau}_1 }{ c }{ \alpha }{ \Q{a} }{ c' }
   }{
-    \applyAction{
-      (\tArrow{G}{\Z{\tau}_1}{\tau_2})
-    }{
-      \alpha
-    }{
-      a^{*}
-    }
+    \applyActionX{ (\tArrow{G}{\Z{\tau}_1}{\tau_2}) }{ c }{ \alpha }{ \Q{a} }{ c' }
   }
 
   \inferrule{
-    \applyAction{
-      \Z{\tau}_2
-    }{
-      \alpha
-    }{
-      a^{*}
-    }
+    \applyActionX{ \Z{\tau}_2 }{ c }{ \alpha }{ \Q{a} }{ c' }
   }{
-    \applyAction{
-      (\tArrow{G}{\tau_1}{\Z{\tau}_2})
-    }{
-      \alpha
-    }{
-      a^{*}
-    }
+    \applyActionX{ (\tArrow{G}{\tau_1}{\Z{\tau}_2}) }{ c }{ \alpha }{ \Q{a} }{ c' }
   }
 
   \inferrule{
-    \applyAction{
-      \Z{t}
-    }{
-      \alpha
-    }{
-      a^{*}
-    }
+    \applyActionX{ \Z{t} }{ c }{ \alpha }{ \Q{a} }{ c' }
   }{
-    \applyAction{
-      \conflictHole{\Z{t}, \SetOf{t_i}_{i \leq n}}
-    }{
-     \alpha
-    }{
-      a^{*}
-    }
+    \applyActionX{ \conflictHole{\Z{t}, \SetOf{t_i}_{i \leq n}} }{ c }{ \alpha }{ \Q{a} }{ c' }
   }
 \end{mathpar}
 %
@@ -783,17 +646,18 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
     \sources{G_t} = \SetOf{(v_{s_i}, p_{s_i})}_{i \leq n} \\
     \defaultpos{k} = p_k \\
     \sort{k} = \sort{k_{G_t}} \\
-    (p_k, \sort{k_{G_t}}) \in \arity{k}
+    (p_k, \sort{k}) \in \arity{k} \\
+    v_k = (\fresh{u}_k, k) \\
+    \SetOf{\e_i}_{i \leq n} = \SetOf{(\fresh{u}_i, v_{s_i}, p_{s_i}, v_k)}_{i \leq n} \\
+    \e' = (\fresh{u}, v_k, p_k, v_{G_t})
   }{
-    \applyAction{
-      \cursor{t}
-    }{\Construct{k}}{
-      \SequenceOf{\graphAction{\Minus}{\e}}_{\e \in \edges{G_t}};
-      \SequenceOf{\graphAction{\Plus}{(\fresh{u}_{s_i}, v_{s_i}, p_{s_i}, v_k{=}(\fresh{u}_k, k))}}_{i \leq n};
-      \graphAction{\Plus}{(\fresh{u}, v_k, p_k, v_{G_t})}
-    }
+    \applyActionX{ \cursor{t} }{ c }{ \Construct{k} }{
+      \SetOf{\graphAction{\Minus}{\e}}_{\e \in \edges{G_t}} \cup
+      \SetOf{\graphAction{\Plus}{\e_i}}_{i \leq n} \cup
+      \SetOf{\graphAction{\Plus}{\e'}}
+    }{ c }
   }
-
+  
   \inferrule[ConstructConflict]{
     \sources{G_t} = \SetOf{(v_{s_i}, p_{s_i})}_{i \leq n} \\
     \defaultpos{k} \text{ undefined} \\
