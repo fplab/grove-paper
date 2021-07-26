@@ -49,8 +49,7 @@
 
 % judgments
 \newcommand{\act}[5]{#1, #2; #3 \action{#4} #5}
-\newcommand{\applyAction}[3]{#1 \action{#2} #3}
-\newcommand{\applyActionX}[5]{#1; #2 \action{#3} #4; #5}
+\newcommand{\applyAction}[7]{#1; (#2, #3) \action{#4} #5; (#6, #7)}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Graphs
@@ -110,6 +109,9 @@
 \newcommand{\ArrowArg}{\mathsf{Arg}}
 \newcommand{\ArrowResult}{\mathsf{Result}}
 
+\newcommand{\pWrap}{p_\textsf{wrap}}
+\newcommand{\pPost}{p_\textsf{post}}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Terms
 
@@ -165,20 +167,18 @@
 \newcommand{\tdecompPrime}[2]{\tdecompPrimeOp\mathopen{}\left(#1, #2\right)\mathclose{}}
 
 % helpers
-\newcommand{\edges}[1]{\text{edges}\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\inedges}[1]{\text{inedges}\mathopen{}\left(#1\right)\mathclose{}}
 \newcommand{\sources}[1]{\text{sources}\mathopen{}\left(#1\right)\mathclose{}}
 
-\DeclareMathOperator{\outedgesOp}{\text{outedges}}
 \DeclareMathOperator{\ingraphOp}{\text{ingraph}}
+\DeclareMathOperator{\childrenOp}{\text{children}}
 \DeclareMathOperator{\parentsOp}{\text{parents}}
 \DeclareMathOperator{\ancestorsOp}{\text{ancestors}}
 \DeclareMathOperator{\verticesOp}{\text{vertices}}
-% \DeclareMathOperator{\childrenOp}{\text{children}}
 \DeclareMathOperator{\lfpOp}{\text{lfp}}
 \DeclareMathOperator{\ancestorsPrimeOp}{\ancestorsOp^\prime}
-\newcommand{\outedges}[2]{\outedgesOp\mathopen{}\left(#1, #2\right)\mathclose{}}
 \newcommand{\ingraph}[1]{\ingraphOp\mathopen{}\left(#1\right)\mathclose{}}
-% \newcommand{\children}[1]{\childrenOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\children}[2]{\childrenOp\mathopen{}\left(#1, #2\right)\mathclose{}}
 \newcommand{\parents}[1]{\parentsOp\mathopen{}\left(#1\right)\mathclose{}}
 \newcommand{\ancestors}[1]{\ancestorsOp\mathopen{}\left(#1\right)\mathclose{}}
 \newcommand{\ancestorsPrime}[1]{\ancestorsPrimeOp\mathopen{}\left(#1\right)\mathclose{}}
@@ -227,5 +227,3 @@
 \newcommand{\CVertex}[1]{\text{Vertex}\mathopen{}\left(#1\right)\mathclose{}}
 \newcommand{\CEdge}[1]{\text{Edge}\mathopen{}\left(#1\right)\mathclose{}}
 \newcommand{\CSource}[2]{\text{Source}\mathopen{}\left(#1, #2\right)\mathclose{}}
-\newcommand{\CSourceVertex}[3]{\text{SourceVertex}\mathopen{}\left(#1, #2, #3\right)\mathclose{}}
-\newcommand{\CSourceEdge}[3]{\text{SourceEdge}\mathopen{}\left(#1, #2, #3\right)\mathclose{}}

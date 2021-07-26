@@ -39,14 +39,14 @@ We identify conflict holes up to reordering.
     \multicolumn{2}{l}{\defaultposOp : \K \to \P} \\
     \hline
     \defaultpos{\Root}={} & \Root \\
-    \defaultpos{\ExpLam}={} & \LamParam \\
+    \defaultpos{\ExpLam}={} & \LamBody \\
     \defaultpos{\ExpApp}={} & \AppFun \\
     \defaultpos{\ExpPlus}={} & \PlusLeft \\
     \defaultpos{\ExpTimes}={} & \TimesLeft \\
     \defaultpos{\TypArrow}={} & \ArrowArg \\
   \end{array}
 \]
-
+%
 We write $\defaultpos{k}$ undefined when there does not exist a $p$ such that $\defaultpos{k} = p$.
 
 \noindent $\boxed{\constructor{t} = k}$
@@ -163,7 +163,7 @@ Let $\fresh{u}$ denote a fresh id.
 \subsubsection{Well-sortedness}
 
 \begin{definition}
-  A graph $G$ is well sorted if $\edges{G}$ are well sorted.
+  A graph $G$ is well sorted if $\inedges{G}$ are well sorted.
 \end{definition}
 
 \begin{definition}
@@ -188,7 +188,7 @@ Let $\fresh{u}$ denote a fresh id.
       \end{enumerate}
       % The terms in $\Set[U]$ correspond to edges with target vertices that are unicycle roots.
     \item For all $t \in \Set[MP] \cup \Set[U]$,
-      we have $\SizeOf{\SetOf{\e{=}(u, \rootVertex, \Root, v) \SuchThat{\e \in \edges{G_t} \land u \in \U \land v \in \V}}} = 0$.
+      we have $\SizeOf{\SetOf{\e{=}(u, \rootVertex, \Root, v) \SuchThat{\e \in \inedges{G_t} \land u \in \U \land v \in \V}}} = 0$.
       % Any terms corresponding to edges originating from $\rootVertex$ are in $\Set[NP]$.
   \end{enumerate}
 \end{definition}
@@ -239,13 +239,13 @@ Let $\fresh{u}$ denote a fresh id.
       \begin{enumerate}
         \item $G_t$ is well sorted.
           % All incoming edges are well sorted ...
-        \item For all $\e{=}(u, v, p, v') \in \edges{G_t}$,
+        \item For all $\e{=}(u, v, p, v') \in \inedges{G_t}$,
           we have $v' = v_{G_t}$.
           % ... all incoming edges have the same destination vertex (and we call it the in-vertex of t).
-        \item $\SizeOf{\edges{G_t}} \geq 1$.
+        \item $\SizeOf{\inedges{G_t}} \geq 1$.
           % The in-graph of t is not empty.
         \item There exists $u_0 \in \U$ such that,
-          for all $\e{=}(u, v, p, v') \in \edges{G_t}$,
+          for all $\e{=}(u, v, p, v') \in \inedges{G_t}$,
           we have $v' = v_{G_t} = (u_0, \constructor{t})$.
           % The destination vertices of all incoming edges have the same id and constructor.
           % The constructor matches the term.
@@ -262,7 +262,7 @@ Let $\fresh{u}$ denote a fresh id.
 
 \figureDecompositionDefHelpersContent
 
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+0% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
 \subsubsection{Decomposition}
 
@@ -510,9 +510,9 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
   and any user action $\alpha$,
   if
   \[
-    \applyAction{\Z{\Grove}}{\alpha}{a^{*}},
+    \applyAction{\Z{\Grove}}{v}{p}{\alpha}{\Q{a}}{v'}{p'},
   \]
-  then $G \action{a^{*}} G'$ and $G'$ is well sorted.
+  then $G \action{\Q{a}} G'$ and $G'$ is well sorted.
 \end{theorem}
 
 \[
@@ -527,188 +527,282 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
       \CVertex{v}
       \mid \CEdge{\e}
       \mid \CSource{v}{p}
-      \mid \CSourceVertex{v}{p}{v}
-      \mid \CSourceEdge{v}{p}{\e}
     \\
   \end{array}
 \]
 
-\noindent $\boxed{\applyActionX{ \Z{\Grove} }{ c }{ \alpha }{ \Q{a} }{ c' }}$
+\noindent $\boxed{\applyAction{ \Z{\Grove} }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }}$
 %
 \begin{mathpar}
   \inferrule{
-    \applyActionX{ \Z{\Set}_{NP} }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ \Z{\Set}_{NP} }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }{
-    \applyActionX{ (\Z{\Set}_{NP}, \Set[MP], \Set[U]) }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ (\Z{\Set}_{NP}, \Set[MP], \Set[U]) }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }
 
   \inferrule{
-    \applyActionX{ \Z{\Set}_{MP} }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ \Z{\Set}_{MP} }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }{
-    \applyActionX{ (\Set[NP], \Z{\Set}_{MP}, \Set[U]) }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ (\Set[NP], \Z{\Set}_{MP}, \Set[U]) }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }
 
   \inferrule{
-    \applyActionX{ \Z{\Set}_U }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ \Z{\Set}_U }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }{
-    \applyActionX{ (\Set[NP], \Set[MP], \Z{\Set}_U) }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ (\Set[NP], \Set[MP], \Z{\Set}_U) }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }
 \end{mathpar}
 
-\noindent $\boxed{\applyActionX{ \Z{\Set} }{ c }{ \alpha }{ \Q{a} }{ c' }}$
+\noindent $\boxed{\applyAction{ \Z{\Set} }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }}$
 %
 \begin{mathpar}
   \inferrule{
-    \applyActionX{ \Z{t} }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ \Z{t} }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }{
-    \applyActionX{ (\Set, \Z{t}) }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ (\Set, \Z{t}) }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }
 \end{mathpar}
 
-\noindent $\boxed{\applyActionX{ \Z{t} }{ c }{ \alpha }{ \Q{a} }{ c' }}$
+\noindent $\boxed{\applyAction{ \Z{t} }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }}$
 %
 \begin{mathpar}
   \inferrule{
-    \applyActionX{ \Z{q} }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ \Z{q} }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }{
-    \applyActionX{ (\eFun{G}{\Z{q}}{\tau}{e}) }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ (\eFun{G}{\Z{q}}{\tau}{e}) }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }
 
   \inferrule{
-    \applyActionX{ \Z{\tau} }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ \Z{\tau} }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }{
-    \applyActionX{ (\eFun{G}{q}{\Z{\tau}}{e}) }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ (\eFun{G}{q}{\Z{\tau}}{e}) }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }
 
   \inferrule{
-    \applyActionX{ \Z{e} }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ \Z{e} }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }{
-    \applyActionX{ (\eFun{G}{q}{\tau}{\Z{e}}) }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ (\eFun{G}{q}{\tau}{\Z{e}}) }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }
 
   \inferrule{
-    \applyActionX{ \Z{e}_1 }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ \Z{e}_1 }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }{
-    \applyActionX{ \eApp{G}{\Z{e}_1}{e_2} }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ \eApp{G}{\Z{e}_1}{e_2} }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }
 
   \inferrule{
-    \applyActionX{ \Z{e}_2 }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ \Z{e}_2 }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }{
-    \applyActionX{ \eApp{G}{e_1}{\Z{e}_2} }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ \eApp{G}{e_1}{\Z{e}_2} }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }
 
   \inferrule{
-    \applyActionX{ \Z{e}_1 }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ \Z{e}_1 }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }{
-    \applyActionX{ (\ePlus{G}{\Z{e}_1}{e_2}) }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ (\ePlus{G}{\Z{e}_1}{e_2}) }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }
 
   \inferrule{
-    \applyActionX{ \Z{e}_2 }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ \Z{e}_2 }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }{
-    \applyActionX{ (\ePlus{G}{e_1}{\Z{e}_2}) }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ (\ePlus{G}{e_1}{\Z{e}_2}) }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }
 
   \inferrule{
-    \applyActionX{ \Z{e}_1 }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ \Z{e}_1 }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }{
-    \applyActionX{ (\eTimes{G}{\Z{e}_1}{e_2}) }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ (\eTimes{G}{\Z{e}_1}{e_2}) }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }
 
   \inferrule{
-    \applyActionX{ \Z{e}_2 }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ \Z{e}_2 }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }{
-    \applyActionX{ (\eTimes{G}{e_1}{\Z{e}_2}) }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ (\eTimes{G}{e_1}{\Z{e}_2}) }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }
 
   \inferrule{
-    \applyActionX{ \Z{\tau}_1 }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ \Z{\tau}_1 }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }{
-    \applyActionX{ (\tArrow{G}{\Z{\tau}_1}{\tau_2}) }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ (\tArrow{G}{\Z{\tau}_1}{\tau_2}) }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }
 
   \inferrule{
-    \applyActionX{ \Z{\tau}_2 }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ \Z{\tau}_2 }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }{
-    \applyActionX{ (\tArrow{G}{\tau_1}{\Z{\tau}_2}) }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ (\tArrow{G}{\tau_1}{\Z{\tau}_2}) }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }
 
   \inferrule{
-    \applyActionX{ \Z{t} }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ \Z{t} }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }{
-    \applyActionX{ \conflictHole{\Z{t}, \SetOf{t_i}_{i \leq n}} }{ c }{ \alpha }{ \Q{a} }{ c' }
+    \applyAction{ \conflictHole{\Z{t}, \SetOf{t_i}_{i \leq n}} }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }
 \end{mathpar}
 %
 \begin{mathpar}
-  \inferrule[ConstructWrap]{
-    \sources{G_t} = \SetOf{(v_{s_i}, p_{s_i})}_{i \leq n} \\
-    \defaultpos{k} = p_k \\
-    \sort{k} = \sort{k_{G_t}} \\
-    (p_k, \sort{k}) \in \arity{k} \\
-    v_k = (\fresh{u}_k, k) \\
-    \SetOf{\e_i}_{i \leq n} = \SetOf{(\fresh{u}_i, v_{s_i}, p_{s_i}, v_k)}_{i \leq n} \\
-    \e' = (\fresh{u}, v_k, p_k, v_{G_t})
-  }{
-    \applyActionX{ \cursor{t} }{ c }{ \Construct{k} }{
-      \SetOf{\graphAction{\Minus}{\e}}_{\e \in \edges{G_t}} \cup
-      \SetOf{\graphAction{\Plus}{\e_i}}_{i \leq n} \cup
-      \SetOf{\graphAction{\Plus}{\e'}}
-    }{ c }
-  }
-  
-  \inferrule[ConstructConflict]{
-    \sources{G_t} = \SetOf{(v_{s_i}, p_{s_i})}_{i \leq n} \\
-    \defaultpos{k} \text{ undefined} \\
-    \sort{k} = \sort{k_{G_t}}
-  }{
-    \applyAction{
-      \cursor{t}
-    }{\Construct{k}}{
-      \SequenceOf{\graphAction{\Plus}{(\fresh{u}_{s_i}, v_{s_i}, p_{s_i}, (\fresh{u}_k, k))}}_{i \leq n}
-    }
-  }
-
   \inferrule[Construct]{
-    (p_s, \sort{k}) \in \arity{k_s}
+    % If:
+    % 
+    % 1. The source position (p_s) and new constructor (k) sort are valid w.r.t. the parent constructor (k_s)
+    (p_s, \sort{k}) \in \arity{k_s} \\
+    % 
+    % 2. The term under the cursor is a hole
+    % 
+    % And we let:
+    % 
+    % v_k = a new vertex with the new constructor
+    v_k = (\fresh{u}_k, k)
   }{
-    \applyAction{
-      \cursor{\emptyHole{v_s{=}(u_s, k_s)}{p_s}}
-    }{\Construct{k}}{
-      \graphAction{\Plus}{(\fresh{u}, v_s, p_s, (\fresh{u}_k, k))}
-    }
+    % Then the user action Construct(k) produces the following set of graph actions:
+    \applyAction{ \cursor{\emptyHole{v_s{=}(u_s, k_s)}{p_s}} }{ v_s }{ p_s }{ \Construct{k} }{
+      % 
+      % attach the new vertex to the cursor source
+      \SetOf{\graphAction{\Plus}{(\fresh{u}, v_s, p_s, v_k)}}
+    }{ v_s }{ p_s }
+  }
+
+  \inferrule[ConstructWrap]{
+    % If:
+    % 
+    % 1. The term under the cursor (t) has an ingraph (Gt)
+    %   (==> t is a basic term or reference, or, equivalently, t is not a conflict or a hole)
+    \sources{G_t} = \SetOf{(v_{s_i}, p_{s_i})}_{i \leq n} \\
+    % 
+    % 2. The new constructor (k) has default positions (p_wrap, p_post)
+    \defaultpos{k} = (\pWrap, \pPost) \\
+    % 
+    % 3. The new constructor and the inconstructor of t (k_Gt) have the same sort
+    \sort{k} = \sort{k_{G_t}} \\
+    % 
+    % 4. The new (default) position and old sort are in the arity of the new constructor
+    (\pWrap, \sort{k_{G_t}}) \in \arity{k} \\\\
+    % 
+    % And we let:
+    % 
+    % v_k = a new vertex with the new constructor
+    v_k = (\fresh{u}_k, k) \\
+    % 
+    % e_i = a new edge from source i to the new vertex
+    \SetOf{\e_i}_{i \leq n} = \SetOf{(\fresh{u}_i, v_{s_i}, p_{s_i}, v_k)}_{i \leq n} \\
+    % 
+    % e' = a new edge from the new vertex and default position to the old invertex
+    \e' = (\fresh{u}, v_k, \pWrap, v_{G_t})
+  }{
+    % Then the user action Construct(k) produces the following set of graph actions:
+    \applyAction{ \cursor{t} }{ v_s }{ p_s }{ \Construct{k} }{
+      % 
+      % delete the old ingraph
+      \SetOf{\graphAction{\Minus}{\e}}_{\e \in \inedges{G_t}} \cup
+      % 
+      % construct an equivalent ingraph on the new vertex
+      \SetOf{\graphAction{\Plus}{\e_i}}_{i \leq n} \cup
+      % 
+      % reattach the old invertex to the default position of the new vertex
+      \SetOf{\graphAction{\Plus}{\e'}}
+    }{ v_k }{ \pPost }
   }
 
   \inferrule[Delete]{
-    \edges{G_t} = \SetOf{\e_i}_{i \leq n}
+    % If:
+    % 
+    % 1. The term under the cursor (t) has an ingraph (Gt)
+    \inedges{G_t} = \SetOf{\e_i{=}(u_i, v_{s_i}, p_{s_i}, v_{G_t})}_{i \leq n} \\
   }{
-    \applyAction{
-      \cursor{t}
-    }{\Delete}{
-      \SequenceOf{\graphAction{\Minus}{\e_i}}_{i \leq n}
-    }
+    % Then the user action Delete produces the following set of graph actions:
+    \applyAction{ \cursor{t} }{ v_s }{ p_s }{ \Delete }{
+      % 
+      % delete the ingraph
+      \SetOf{\graphAction{\Minus}{\e_i}}_{i \leq n}
+    }{ v_s }{ p_s }
   }
 
   \inferrule[Reposition]{
-    \edges{G_t} = \SetOf{\e_i}_{i \leq n} \\
+    % If:
+    % 
+    % 1. The term under the cursor (t) has an ingraph (Gt)
+    \inedges{G_t} = \SetOf{\e_i}_{i \leq n} \\
+    % 
+    % 2. The new source vertex (v) has no children at position (p)
+    \children{v}{p} = \varnothing \\
+    % 
+    % 3. The inconstructor (k_Gt) and new source position are in the arity of the new source constructor (k)
     (p, \sort{k_{G_t}}) \in \arity{k}
   }{
-    \applyAction{
-      \cursor{t}
-    }{\Reposition{v{=}(u, k)}{p}}{
-      \SequenceOf{\graphAction{\Minus}{\e_i}}_{i \leq n};
-      \graphAction{\Plus}{(\fresh{u}, v, p, v_{G_t})}
-    }
+    % Then the user action Reposition(v=(u,k), p) produces the following set of graph actions:
+    \applyAction{ \cursor{t} }{ v_s }{ p_s }{ \Reposition{v{=}(u, k)}{p} }{
+      % 
+      % delete the old ingraph
+      \SetOf{\graphAction{\Minus}{\e_i}}_{i \leq n} \cup
+      % 
+      % attach the old invertex to the new parent
+      \SetOf{\graphAction{\Plus}{(\fresh{u}, v_s, p_s, v_{G_t})}}
+    }{ v }{ p }
+  }
+
+  \inferrule[RepositionWrap]{
+    % If:
+    % 
+    % 1. The term under the cursor (t) has an ingraph (Gt)
+    \inedges{G_t} = \SetOf{\e_i}_{i \leq n} \\
+    % 
+    % 2. The new parent vertex (v) has at least one child
+    \children{v}{p} = \SetOf{\e_j{=}(u_j, v, p, v_j)}_{j \leq m} \\
+    % 
+    % 3. The new source constructor (k) has a default position (p_k)
+    \defaultpos{k} = (\pWrap, \pPost) \\
+    % 
+    % 4. The new source constructor and the old inconstructor (k_Gt) have the same sort
+    \sort{k} = \sort{k_{G_t}} \\
+    % 
+    % 5. The (default) position and old sort are in the arity of the new source constructor
+    (p_k, \sort{k_{G_t}}) \in \arity{k} \\\\
+    % 
+    % And we let:
+    % 
+    %  e_j' = a new edge from the old invertex and default position to the children of the new parent
+    \SetOf{\e_j'}_{j \leq m} = \SetOf{(\fresh{u'}_j, v_{G_t}, p_k, v_j)}_{j \leq m} \\
+    % 
+    % e' = a new edge from the new parent vertex and position to the old invertex (v_Gt)
+    \e' = (\fresh{u}, v, p, v_{G_t})
+  }{
+    % Then the user action Reposition(v=(u,k), p) produces the following set of graph actions:
+    \applyAction{ \cursor{t} }{ v_s }{ p_s }{ \Reposition{v{=}(u, k)}{p} }{
+      % 
+      % delete the ingraph of the term under the cursor
+      \SetOf{\graphAction{\Minus}{\e_i}}_{i \leq n} \cup
+      % 
+      % delete the children of the new parent verrtex
+      \SetOf{\graphAction{\Minus}{\e_j}}_{j \leq m} \cup
+      % 
+      % reattach the children to the default position of the old invertex
+      \SetOf{\graphAction{\Plus}{\e_j'}}_{j \leq m} \cup
+      % 
+      % attach the old invertex to the new parent
+      \SetOf{\graphAction{\Plus}{\e'}}
+    }{ v_{G_t} }{ \pPost }
   }
 
   \inferrule[Conflict]{
-    \SetOf{\applyAction{\cursor{t_i}}{\alpha}{a_i^{*}}}_{i \leq n}
+    \SetOf{\applyAction{ \cursor{t_i} }{ v }{ p }{ \alpha }{ \Q{a}_i }{ v' }{ p' }}_{i \leq n}
   }{
-    \applyAction{
-      \cursor{\conflictHole{t_i}_{i \leq n}}
-    }{\alpha}{
-      \SequenceOf{a_i^{*}}_{i \leq n}
-    }
+    \applyAction{ \cursor{\conflictHole{t_i}_{i \leq n}} }{ v }{ p }{\alpha}{
+      \bigcup_{i \leq n} \Q{a}_i
+    }{ v' }{ p' }
   }
 \end{mathpar}
+
+% TODO: how to handle deleting a multiparent root?
+% In general:
+% - if you have a unique source, go to it.
+% - otherwise, stay where you are.
+
+% TODO: modify the rules to merge Conflict behaviors
+% - ConstructWrap
+% - 
+
+% TODO: rename edges to inedges
+% TODO: redo the rules to map between graph cursors instead of source pairs
+
+% TODO: how to work with valid vs almost valid cursors?
+
+% new judgment form: gamma^ --> a-; c

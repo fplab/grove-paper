@@ -1,14 +1,14 @@
 
 \newcommand{\figureDecompositionDefHelpersContent}{%
 \begin{align*}
-  \ingraph{v} &= \SetOf{\e{=}(u, v', p, v) \mapsto G(\e) \SuchThat{\e \in \edges{G}}} \\
-  \outedges{v}{p} &= \SetOf{\e{=}(u, v, p, v') \SuchThat{G(\e) = \Plus}} \\
+  \ingraph{v} &= \SetOf{\e{=}(u, v', p, v) \mapsto G(\e) \SuchThat{\e \in \inedges{G}}} \\
+  \children{v}{p} &= \SetOf{\e{=}(u, v, p, v') \SuchThat{G(\e) = \Plus}} \\
   \parents{v} &= \SetOf{v' \SuchThat{\exists \e{=}(u, v', p, v) \land G(\e) = \Plus}} \\
   \ancestors{v} &= \mathopen{}\left( \lfp{\ancestorsPrimeOp} \right)\mathclose{}(v) \\
   \ancestorsPrime{v} &= \parents{v} \cup \ancestorsPrime{\parents{v}} \\
   \min{(u_1, k_1), \ldots, (u_n, k_n)} &= (u_j, k_j) \text{ s.t. } 1 \leq j \leq n \land u_j \le u_i \forall i = 1, \ldots, n \\
-  \edges{G} &= \SetOf{\e \SuchThat{G(\e) \in \SetOf{\Plus, \Minus}}} \\
-  \sources{G_t} &= \SetOf{(v, p) \SuchThat{(u, v, p, v_{G_t}) \in \edges{G_t} \land u \in \U}}
+  \inedges{G} &= \SetOf{\e \SuchThat{G(\e) \in \SetOf{\Plus, \Minus}}} \\
+  \sources{G_t} &= \SetOf{(v, p) \SuchThat{(u, v, p, v_{G_t}) \in \inedges{G_t} \land u \in \U}}
 \end{align*}%
 }
 
@@ -79,25 +79,25 @@
     \left\{
       \begin{array}{ll}
         \conflictHole{\edecomp{\e_i}}_{i \leq n} &
-          \outedges{v'}{p'} = \SetOf{\e_1, \ldots, \e_n}
+          \children{v'}{p'} = \SetOf{\e_1, \ldots, \e_n}
         \\
         \multiVertex{\e'} &
-          \outedges{v'}{p'} = \SetOf{\e'{=}(u_1, v_1, p_1, v_1')}
+          \children{v'}{p'} = \SetOf{\e'{=}(u_1, v_1, p_1, v_1')}
           \land |\parents{v_1'}| > 1
         \\
         \cycleVertex{\e'} &
-          \outedges{v'}{p'} = \SetOf{\e'{=}(u_1, v_1, p_1, v_1')}
+          \children{v'}{p'} = \SetOf{\e'{=}(u_1, v_1, p_1, v_1')}
           \land |\parents{v_1'}| = 1
           \\ & \quad
           \land v_1' = \min{\ancestors{v_1'}}
         \\
         \edecomp{\e'} &
-          \outedges{v'}{p'} = \SetOf{\e'{=}(u_1, v_1, p_1, v_1')}
+          \children{v'}{p'} = \SetOf{\e'{=}(u_1, v_1, p_1, v_1')}
           \land |\parents{v_1'}| = 1
           \\ & \quad
           \land v_1' \neq \min{\ancestors{v_1'}}
         \\
-        \emptyHole{v'}{p'} & \outedges{v'}{p'} = \varnothing \\
+        \emptyHole{v'}{p'} & \children{v'}{p'} = \varnothing \\
       \end{array}
     \right.
   \end{array}
@@ -111,25 +111,25 @@
     \left\{
       \begin{array}{ll}
         \conflictHole{\pdecomp{\e_i}}_{i \leq n} &
-          \outedges{v'}{p'} = \SetOf{\e_1, \ldots, \e_n}
+          \children{v'}{p'} = \SetOf{\e_1, \ldots, \e_n}
         \\
         \multiVertex{\e'} &
-          \outedges{v'}{p'} = \SetOf{\e'{=}(u_1, v_1, p_1, v_1')}
+          \children{v'}{p'} = \SetOf{\e'{=}(u_1, v_1, p_1, v_1')}
           \land |\parents{v_1'}| > 1
         \\
         \cycleVertex{\e'} &
-          \outedges{v'}{p'} = \SetOf{\e'{=}(u_1, v_1, p_1, v_1')}
+          \children{v'}{p'} = \SetOf{\e'{=}(u_1, v_1, p_1, v_1')}
           \land |\parents{v_1'}| = 1
           \\ & \quad
           \land v_1' = \min{\ancestors{v_1'}}
         \\
         \pdecomp{\e'} &
-          \outedges{v'}{p'} = \SetOf{\e'{=}(u_1, v_1, p_1, v_1')}
+          \children{v'}{p'} = \SetOf{\e'{=}(u_1, v_1, p_1, v_1')}
           \land |\parents{v_1'}| = 1
           \\ & \quad
           \land v_1' \neq \min{\ancestors{v_1'}}
         \\
-        \emptyHole{v'}{p'} & \outedges{v'}{p'} = \varnothing \\
+        \emptyHole{v'}{p'} & \children{v'}{p'} = \varnothing \\
       \end{array}
     \right.
   \end{array}
@@ -143,25 +143,25 @@
     \left\{
       \begin{array}{ll}
         \conflictHole{\tdecomp{\e_i}}_{i \leq n} &
-          \outedges{v'}{p'} = \SetOf{\e_1, \ldots, \e_n}
+          \children{v'}{p'} = \SetOf{\e_1, \ldots, \e_n}
         \\
         \multiVertex{\e'} &
-          \outedges{v'}{p'} = \SetOf{\e'{=}(u_1, v_1, p_1, v_1')}
+          \children{v'}{p'} = \SetOf{\e'{=}(u_1, v_1, p_1, v_1')}
           \land |\parents{v_1'}| > 1
         \\
         \cycleVertex{\e'} &
-          \outedges{v'}{p'} = \SetOf{\e'{=}(u_1, v_1, p_1, v_1')}
+          \children{v'}{p'} = \SetOf{\e'{=}(u_1, v_1, p_1, v_1')}
           \land |\parents{v_1'}| = 1
           \\ & \quad
           \land v_1' = \min{\ancestors{v_1'}}
         \\
         \tdecomp{\e'} &
-          \outedges{v'}{p'} = \SetOf{\e'{=}(u_1, v_1, p_1, v_1')}
+          \children{v'}{p'} = \SetOf{\e'{=}(u_1, v_1, p_1, v_1')}
           \land |\parents{v_1'}| = 1
           \\ & \quad
           \land v_1' \neq \min{\ancestors{v_1'}}
         \\
-        \emptyHole{v'}{p'} & \outedges{v'}{p'} = \varnothing \\
+        \emptyHole{v'}{p'} & \children{v'}{p'} = \varnothing \\
       \end{array}
     \right.
   \end{array}
