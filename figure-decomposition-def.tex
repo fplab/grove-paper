@@ -78,7 +78,7 @@
     \edecompPrime{\e{=}(u, v, p, v')}{p'} = \\
     \left\{
       \begin{array}{ll}
-        \conflictHole{\edecomp{\e_i}}_{i \leq n} &
+        \conflictHole[i \leq n]{\edecomp{\e_i}}{v'}{p'} &
           \children{v'}{p'} = \SetOf{\e_1, \ldots, \e_n}
         \\
         \multiVertex{\e'} &
@@ -110,8 +110,9 @@
     \pdecompPrime{\e{=}(u, v, p, v')}{p'} = \\
     \left\{
       \begin{array}{ll}
-        \conflictHole{\pdecomp{\e_i}}_{i \leq n} &
+        \conflictHole[i \leq n]{\pdecomp{\e_i}}{v'}{p'} &
           \children{v'}{p'} = \SetOf{\e_1, \ldots, \e_n}
+          \land \sources{}
         \\
         \multiVertex{\e'} &
           \children{v'}{p'} = \SetOf{\e'{=}(u_1, v_1, p_1, v_1')}
@@ -142,7 +143,7 @@
     \tdecompPrime{\e{=}(u, v, p, v')}{p'} = \\
     \left\{
       \begin{array}{ll}
-        \conflictHole{\tdecomp{\e_i}}_{i \leq n} &
+        \conflictHole[i \leq n]{\tdecomp{\e_i}}{v'}{p'} &
           \children{v'}{p'} = \SetOf{\e_1, \ldots, \e_n}
         \\
         \multiVertex{\e'} &

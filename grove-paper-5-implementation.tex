@@ -62,7 +62,7 @@ Optimizations: least fixed point
 We determine $e$ by starting at the root of the graph and including every connected
 vertex that has a single parent. In positions where there are no children, we
 leave an empty hole $\hole$. In positions where there are multiple children, we
-leave a conflict hole of the form $\conflictHole{e_1,\ldots,e_n}$. Whenever we
+leave a conflict hole of the form $\conflictHole{e_1,\ldots,e_n}{v}{p}$. Whenever we
 encounter a vertex with multiple parents, we add its corresponding expression to
 the second component $MP$ and leave an indirect reference $\multiVertex{u}$, where $u$ is
 the unique identifier of the referenced vertex
