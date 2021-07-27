@@ -88,24 +88,29 @@ We write $\defaultpos{k}$ undefined when there does not exist a $p$ such that $\
 Let $t$ denote a term and $\Set$ a set of terms.
 
 \begin{definition}
-  A \emph{constructor} $k$ names the form of a term that is not a hole.
+  A \emph{constructor} $k \in \K$ is a form of AST node.
 \end{definition}
 
 \begin{definition}
-  A \emph{unique identifier} $u \in \U$ is an object that can be distiinguished from other unique identifiers by inspection.
+  A \emph{unique identifier} $u \in \U$ is an object that can be distinguished from other unique identifiers.
 \end{definition}
 
 \begin{definition}
-  A \emph{vertex} $v{=}(u, k)$ is an instance of constructor $k \in \K$ with unique identifier $u$.
+  A \emph{vertex} $v{=}(u, k) \in \V$ is a uniquely identifiable instance of a constructor.
 \end{definition}
 
 \begin{definition}
-  A \emph{position} $p$ names an origin of directed edges.
+  A \emph{position} $p \in \P$ is a constructor-specific location from which edges may originate.
 \end{definition}
 
 \begin{definition}
-  An \emph{edge} $\e{=}(u, v, p, v^\prime)$ is a directed connection from vertex $v$ to vertex $v'$, originating from position $p$, and identified by $u$.
-  We call $v$ the \emph{source} vertex and $v'$ the \emph{target} vertex.
+  A \emph{source} $(v{=}(u, k), p) \in \V \times \P$ is a vertex paired with a position.
+  A \emph{valid source} is a source for which there exists a sort $S$ such that $(p, S) \in \arity{k}$.
+\end{definition}
+
+\begin{definition}
+  An \emph{edge} $\e{=}(u, v, p, v^\prime) \in \E$ is a uniquely identifiable instance of a directed link from one vertex to another.
+  We call $(v, p)$ the \emph{source} of edge $\e$.
 \end{definition}
 
 \begin{definition}
@@ -118,101 +123,95 @@ Let $t$ denote a term and $\Set$ a set of terms.
 \end{definition}
 
 \begin{definition}
-  The \emph{in-graph} of a vertex $v$ is the subgraph containing all mappings from edges targeting $v$ to $\Plus$ or $\Minus$.
+  The \emph{ingraph of a vertex} is the subgraph of all edges targeting the vertex.
+  The target vertex is called the \emph{invertex} of the ingraph.
+  The \emph{ingraph of a term} is the ingraph of its corresponding vertex if the term is not a conflict,
+  and the union of the ingraphs of the conflicting terms otherwise.
+  For a term $t$, we denote its ingraph and invertex as $G_t$ and $v_{G_t}$, respectively.
 \end{definition}
 
 \begin{definition}
-  The \emph{out-edges} of a vertex $v$ and position $p$ is the set of all live edges with source $v$ originating from $p$.
+  The \emph{inedges of a graph} are the edges it maps to $\Plus$ or $\Minus$.
+  The \emph{inedges of a term} are the inedges of its ingraph.
 \end{definition}
 
 \begin{definition}
-  The \emph{parents} of a vertex $v$ is the set of all live edges targeting $v$.
+  The \emph{sources of a graph} are the sources of its inedges.
+  The \emph{sources of a term} are the sources of its ingraph.
 \end{definition}
 
 \begin{definition}
-  The \emph{ancestors} of a vertex $v$ is defined recursively as the parents of $v$ and their ancestors.
+  The \emph{children} of a source are the live edges originating from it.
 \end{definition}
 
-% \begin{definition}
-%   The \emph{in-graph} of a term $t$ is the subgraph associated with $t$, when it exists, which maps every edge targeting the root vertex of $t$.
-%   For example, when $t$ is of the form $\eFun{G}{q}{\tau}{e}$, its in-graph is $G$.
-%   If $t$ is of the form $\multiVertex{\e}$ or $\cycleVertex{\e}$, its in-graph maps the associated edge to $\Plus$ and all other edges to $\bot$.
-%   If $t$ is not a reference and does not have an associated graph, then it is a conflict hole and therefore does not have an in-graph.
-%   We write $G_t$ to denote the in-graph of $t$.
-% \end{definition}
+\begin{definition}
+  The \emph{parents of a vertex} are the live edges targeting it.
+  The \emph{parents of a term} are the parents of its corresponding vertex.
+\end{definition}
 
-% Let $G_t$, called the \emph{in-graph} of term $t$, denote one of the following:
-% \begin{itemize}
-%   \item
-%     The graph associated with term $t$, when such a graph exists.
-%     For example, when $t$ is of the form $\eFun{G}{q}{\tau}{e}$, we have $G_t = G$.
-%   \item
-%     Otherwise,
-%     if $t \in \SetOf{\multiVertex{\e}, \cycleVertex{\e}}$,
-%     then $G_t = \SetOf{\e \mapsto \Plus}$.
-% \end{itemize}
+\begin{definition}
+  The \emph{ancestors of a vertex} are defined recursively as the parents of the vertex and their ancestors.
+  The \emph{ancestors of a term} are the ancestors of its corresponding vertex.
+\end{definition}
 
-% Let $v_{G_t}$, called the \emph{in-vertex} of term $t$,
-% denote the destination vertex of the edge(s) of $G_t$,
-% provided that $t$ is well sorted.
-
-Let $\fresh{u}$ denote a fresh id.
+Let $\fresh{u}$ denote a fresh unique identifier.
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
 \subsubsection{Well-sortedness}
 
 \begin{definition}
-  A graph $G$ is well sorted if $\inedges{G}$ are well sorted.
+  A \emph{well sorted graph} is a graph defined on only well sorted edges.
 \end{definition}
 
 \begin{definition}
-  An edge $(u, (u_1, k_1), p, (u_2, k_2))$ is well sorted if $(p, \sort{k_2}) \in \arity{k_1}$.
+  A \emph{well sorted edge} is an edge $\e{=}(u_0, (u, k), p, (u', k'))$
+  with a well sorted source that can have children of the sort of its target,
+  i.e., $(p, \sort{k'}) \in \arity{k}$.
 \end{definition}
 
 \begin{definition}
-  A grove $(\Set[NP], \Set[MP], \Set[U])$ is well sorted if all of the following hold:
+  A \emph{well sorted source} is a source $(v{=}(u, k), p)$
+  with a vertex that can have children at its position,
+  i.e., there exists a sort $S \in \SetOf{Exp, Pat, Var}$ such that $(p, S) \in \arity{k}$.
+\end{definition}
+
+\begin{definition}
+  A \emph{well sorted grove} is a grove $(\Set[NP], \Set[MP], \Set[U])$ such that all of the following hold:
   \begin{enumerate}
-    \item The terms of $\Set[NP], \Set[MP],$ and $\Set[U]$ are well sorted.
-      % $\Set[NP]$, $\Set[MP]$, and $\Set[U]$ contain only well sorted terms.
-    \item For all $t \in \Set[NP]$,
-      we have $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) = \Plus}}} = 0$.
-      % The terms in $\Set[NP]$ correspond to edges with target vertices that have no parents.
-    \item For all $t \in \Set[MP]$,
-      we have $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) = \Plus}}} > 1$.
-      % The terms in $\Set[MP]$ correspond to edges with target vertices that have multiple parents.
-    \item For all $t \in \Set[U]$, all of the following hold:
+    \item $\Set[NP], \Set[MP],$ and $\Set[U]$ contain only well sorted terms.
+    % The terms in $\Set[NP]$ correspond to edges with target vertices that have no parents.
+    \item For each $t \in \Set[NP]$, $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) = \Plus}}} = 0$.
+    % The terms in $\Set[MP]$ correspond to edges with target vertices that have multiple parents.
+    \item For each $t \in \Set[MP]$, $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) = \Plus}}} > 1$.
+    % The terms in $\Set[U]$ correspond to edges with target vertices that are unicycle roots.
+    \item For each $t \in \Set[U]$, all of the following hold:
       \begin{enumerate}
         \item $\SizeOf{\SetOf{\e{=}(u, v, p, v') \SuchThat{G_t(\e) = \Plus}}} = 1$.
         \item $v' = \min{\ancestors{v'}}$.
       \end{enumerate}
-      % The terms in $\Set[U]$ correspond to edges with target vertices that are unicycle roots.
-    \item For all $t \in \Set[MP] \cup \Set[U]$,
-      we have $\SizeOf{\SetOf{\e{=}(u, \rootVertex, \Root, v) \SuchThat{\e \in \inedges{G_t} \land u \in \U \land v \in \V}}} = 0$.
-      % Any terms corresponding to edges originating from $\rootVertex$ are in $\Set[NP]$.
+    % Any terms corresponding to edges originating from $\rootVertex$ are in $\Set[NP]$.
+    \item For each $t \in \Set[MP] \cup \Set[U]$, $(\rootVertex, \Root) \notin \sources{G_t}$.
   \end{enumerate}
 \end{definition}
 
 \begin{definition}
-  A term $t$ is well sorted if one of the following holds:
+  A \emph{well sorted term} is a term $t$ such that one of the following holds:
   \begin{itemize}
 
-    \item $t = \emptyHole{v{=}(u, k)}{p}$
-      and there exists $s \in \SetOf{Exp, Pat, Typ}$
-      such that $(p, s) \in \arity{k}$.
-      % An empty hole is well sorted if the associated source vertex can have
-      % children at the associated position.
+    % An empty hole is well sorted if its source vertex can have children at the source position.
+    \item $t = \emptyHole{v}{p}$ and $(v, p)$ is a well sorted source.
 
     \item $t = \conflictHole{t_i}_{i \leq n}$ and all of the following hold:
       \begin{enumerate}
-        \item For all $i = 1, \ldots, n$, we have $t_i$ is well sorted.
-          % The conflicting terms are well sorted ...
-        \item
-          There exist $v_0 \in \V, p_0 \in \P$ such that,
-          for all $i = 1, \ldots, n$,
-          and all $\e{=}(u, v, p, v')$ such that $G_{t_i}(\e) = \Plus$,
-          we have $v = v_0$ and $p = p_0$.
-          % ... and all of their incoming edges have the same source vertex and position.
+        % The conflicting terms are well sorted ...
+        \item Each $t_i$ is a well sorted term.
+        % ... and all of their incoming edges have the same source vertex and position.
+        \item $\SizeOf{\sources{G_t}} = 1$.
+          % There exist $v_0 \in \V, p_0 \in \P$ such that,
+          % for all $i = 1, \ldots, n$,
+          % and all $\e{=}(u, v, p, v')$ such that $G_{t_i}(\e) = \Plus$,
+          % we have $v = v_0$ and $p = p_0$.
       \end{enumerate}
 
     \item $t = \multiVertex{\e}$ and all of the following hold:
@@ -562,7 +561,6 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
     \applyAction{ (\Set, \Z{t}) }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }
 \end{mathpar}
-
 \noindent $\boxed{\applyAction{ \Z{t} }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }}$
 %
 \begin{mathpar}
