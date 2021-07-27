@@ -37,18 +37,18 @@ We identify conflict holes up to reordering.
 \[
   \arraycolsep=0pt
   \begin{array}{ll}
-    \multicolumn{2}{l}{\defaultposOp : \K \to \P} \\
+    \multicolumn{2}{l}{\defaultposOp : \K \to \P \times \P} \\
     \hline
-    \defaultpos{\Root}={} & \Root \\
-    \defaultpos{\ExpLam}={} & \LamBody \\
-    \defaultpos{\ExpApp}={} & \AppFun \\
-    \defaultpos{\ExpPlus}={} & \PlusLeft \\
-    \defaultpos{\ExpTimes}={} & \TimesLeft \\
-    \defaultpos{\TypArrow}={} & \ArrowArg \\
+    \defaultpos{\Root}={} & (\Root, \Root) \\
+    \defaultpos{\ExpLam}={} & (\LamBody, \LamBody) \\
+    \defaultpos{\ExpApp}={} & (\AppFun, \AppArg) \\
+    \defaultpos{\ExpPlus}={} & (\PlusLeft, \PlusRight) \\
+    \defaultpos{\ExpTimes}={} & (\TimesLeft, \TimesRight) \\
+    \defaultpos{\TypArrow}={} & (\ArrowArg, \ArrowResult) \\
   \end{array}
 \]
 %
-We write $\defaultpos{k}$ undefined when there does not exist a $p$ such that $\defaultpos{k} = p$.
+% We write $\defaultpos{k}$ undefined when there does not exist a $p$ such that $\defaultpos{k} = p$.
 
 \noindent $\boxed{\constructor{t} = k}$
 %
@@ -115,7 +115,11 @@ Let $t$ denote a term and $\Set$ a set of terms.
 \end{definition}
 
 \begin{definition}
-  An \emph{edge state} $s \in \Sigma{=}\SetOf{\Plus, \Minus}$ indicates whether an edge is live $\left(\Plus\right)$ or deleted $\left(\Minus\right)$.
+  An \emph{edge state} $s \in \Sigma{=}\SetOf{\Plus, \Minus}$
+  can be associated with an edge to determine if the edge
+  is \emph{live} $\left(\Plus\right)$
+  or \emph{deleted} $\left(\Minus\right)$
+  in a graph.
 \end{definition}
 
 \begin{definition}
@@ -126,9 +130,16 @@ Let $t$ denote a term and $\Set$ a set of terms.
 \begin{definition}
   The \emph{ingraph of a vertex} is the subgraph of all edges targeting the vertex.
   The target vertex is called the \emph{invertex} of the ingraph.
+  The constructor of the invertex is called the \emph{inconstructor} of the ingraph.
   The \emph{ingraph of a term} is the ingraph of its corresponding vertex if the term is not a conflict,
-  and the union of the ingraphs of the conflicting terms otherwise.
-  For a term $t$, we denote its ingraph and invertex as $G_t$ and $v_{G_t}$, respectively.
+  and the union of ingraphs of conflicting terms otherwise.
+  The \emph{invertex of a term} is the invertex(es) of its ingraph.
+  The \emph{inconstructor of a term} is the inconstructor(s) of its ingraph.
+  For a term $t$, we denote the
+    ingraph, invertex, invertex set, inconstructor, and inconstructor set
+  as
+    $G_t, v_{G_t}, \Q{v}_{G_t,} k_{G_t}, \Q{k}_{G_t}$,
+  respectively.
 \end{definition}
 
 \begin{definition}
@@ -182,15 +193,11 @@ Let $\fresh{u}$ denote a fresh unique identifier.
   \begin{enumerate}
     \item $\Set[NP], \Set[MP],$ and $\Set[U]$ contain only well sorted terms.
     % The terms in $\Set[NP]$ correspond to edges with target vertices that have no parents.
-    \item For each $t \in \Set[NP]$, $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) = \Plus}}} = 0$.
+    \item For each $t \in \Set[NP]$, $\SizeOf{\live{G_t}} = 0$.
     % The terms in $\Set[MP]$ correspond to edges with target vertices that have multiple parents.
-    \item For each $t \in \Set[MP]$, $\SizeOf{\SetOf{\e \SuchThat{G_t(\e) = \Plus}}} > 1$.
+    \item For each $t \in \Set[MP]$, $\SizeOf{\live{G_t}} > 1$.
     % The terms in $\Set[U]$ correspond to edges with target vertices that are unicycle roots.
-    \item For each $t \in \Set[U]$, all of the following hold:
-      \begin{enumerate}
-        \item $\SizeOf{\SetOf{\e{=}(u, v, p, v') \SuchThat{G_t(\e) = \Plus}}} = 1$.
-        \item $v' = \min{\ancestors{v'}}$.
-      \end{enumerate}
+    \item For each $t \in \Set[U]$, $\live{G_t} = \SetOf{(u, v, p, v')} \land v' = \min{\ancestors{v'}}$.
     % Any terms corresponding to edges originating from $\rootVertex$ are in $\Set[NP]$.
     \item For each $t \in \Set[MP] \cup \Set[U]$, $(\rootVertex, \Root) \notin \sources{G_t}$.
   \end{enumerate}
@@ -205,48 +212,43 @@ Let $\fresh{u}$ denote a fresh unique identifier.
 
     \item $t = \conflictHole[i \leq n]{t_i}{v}{p}$ and all of the following hold:
       \begin{enumerate}
-        % The source is well sorted.
-        \item $(v, p)$ is a well sorted source.
         % The terms are well sorted.
         \item Each $t_i$ is a well sorted term.
         % The inedges of the terms have the same source.
-        \item $\SizeOf{\sources{G_t}} = 1$.
+        \item $\sources{G_t} = \SetOf{(v, p)}$.
       \end{enumerate}
 
-    \item $t = \multiVertex{\e}$ and all of the following hold:
+    \item $t = \multiVertex{\e{=}(u, v, p, v')}$ and all of the following hold:
       \begin{enumerate}
-        \item $\e$ is well sorted.
-          % The corresponding edge is well sorted ...
-        \item $\SizeOf{\SetOf{\e' \SuchThat{G_t(\e') = \Plus}}} > 1$.
-          % ... and its target vertex has multiple parents.
+        % The corresponding edge is well sorted ...
+        \item $\e$ is a well sorted edge.
+        % ... and its target vertex has multiple parents.
+        \item $\SizeOf{\parents{v'}} > 1$.
       \end{enumerate}
 
-    \item $t = \cycleVertex{(u, v, p, v')}$ and all of the following hold:
+    \item $t = \cycleVertex{\e{=}(u, v, p, v')}$ and all of the following hold:
       \begin{enumerate}
-        \item $(u, v, p, v')$ is well sorted.
-          % The corresponding edge is well sorted ...
+        % The corresponding edge is well sorted ...
+        \item $\e$ is a well sorted edge.
+        % ... and its target vertex is the root ...
         \item $v' = \min{\ancestors{v'}}$
-          % ... and its target vertex is the root ...
-        \item For all $\e{=}(u_{\e}, v_{\e}, p_{\e}, v_{\e}')$
-          such that $v_{\e}' \in \ancestors{v'}$,
-          we have $\SizeOf{\parents{v_{\e}'}} = 1$.
-          % ... of a unicycle.
+        % ... of a unicycle.
+        \item For each $v'' \in \ancestors{v'}$, $\SizeOf{\parents{v''}} = 1$.
       \end{enumerate}
 
-    \item Otherwise, $G_t$ exists and all of the following hold:
+    \item Otherwise, $t$ is an AST node and all of the following hold:
       \begin{enumerate}
-        \item $G_t$ is well sorted.
-          % All incoming edges are well sorted ...
-        \item For all $\e{=}(u, v, p, v') \in \inedges{G_t}$,
-          we have $v' = v_{G_t}$.
-          % ... all incoming edges have the same destination vertex (and we call it the in-vertex of t).
+        % All incoming edges are well sorted ...
+        \item $G_t$ is a well sorted graph.
+        % ... all incoming edges have the same destination vertex (and we call it the in-vertex of t).
+        \item For each $\e{=}(u, v, p, v') \in \inedges{G_t}$, we have $v' = v_{G_t}$.
+        % The in-graph of t is not empty.
         \item $\SizeOf{\inedges{G_t}} \geq 1$.
-          % The in-graph of t is not empty.
+        % The destination vertices of all incoming edges have the same id and constructor.
+        % The constructor matches the term.
         \item There exists $u_0 \in \U$ such that,
           for all $\e{=}(u, v, p, v') \in \inedges{G_t}$,
           we have $v' = v_{G_t} = (u_0, \constructor{t})$.
-          % The destination vertices of all incoming edges have the same id and constructor.
-          % The constructor matches the term.
       \end{enumerate}
   \end{itemize}
 \end{definition}
@@ -260,7 +262,7 @@ Let $\fresh{u}$ denote a fresh unique identifier.
 
 \figureDecompositionDefHelpersContent
 
-0% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
 \subsubsection{Decomposition}
 
@@ -284,21 +286,21 @@ Let $\fresh{u}$ denote a fresh unique identifier.
 %
 \figureDecompositionDefEdecomp
 
-\noindent $\boxed{\pdecomp{\e} = q}$
-%
-\figureDecompositionDefPdecomp
-
-\noindent $\boxed{\tdecomp{\e} = \tau}$
-%
-\figureDecompositionDefTdecomp
-
 \noindent $\boxed{\edecompPrime{\e}{p} = e}$
 %
 \figureDecompositionDefEdecompPrime
 
+\noindent $\boxed{\pdecomp{\e} = q}$
+%
+\figureDecompositionDefPdecomp
+
 \noindent $\boxed{\pdecompPrime{\e}{p} = q}$
 %
 \figureDecompositionDefPdecompPrime
+
+\noindent $\boxed{\tdecomp{\e} = \tau}$
+%
+\figureDecompositionDefTdecomp
 
 \noindent $\boxed{\tdecompPrime{\e}{p} = \tau}$
 %
@@ -485,7 +487,7 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
 %
 \begin{align*}
   \erase{\cursor{q}} &= q \\
-  \erase{\conflictHole{\Z{q}, \SetOf{q_i}_{i \leq n}}}{v}{p} &= \conflictHole{\erase{\Z{q}}, \SetOf{q_i}_{i \leq n}}{v}{p}
+  \erase{\conflictHole{\Z{q}, \SetOf{q_i}_{i \leq n}}{v}{p}} &= \conflictHole{\erase{\Z{q}}, \SetOf{q_i}_{i \leq n}}{v}{p}
 \end{align*}
 
 \noindent $\boxed{\erase{\Z{\tau}} = \tau}$
@@ -494,24 +496,12 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
   \erase{\cursor{\tau}} &= \tau \\
   \erase{\left(\tArrow{G}{\Z{\tau}_1}{\tau_2}\right)} &= \tArrow{G}{\erase{\Z{\tau}_1}}{\tau_2} \\
   \erase{\left(\tArrow{G}{\tau_1}{\Z{\tau}_2}\right)} &= \tArrow{G}{\tau_1}{\erase{\Z{\tau}_2}} \\
-  \erase{\conflictHole{\Z{\tau}, \SetOf{\tau_i}_{i \leq n}}}{v}{p} &= \conflictHole{\erase{\Z{\tau}}, \SetOf{\tau_i}_{i \leq n}}{v}{p}
+  \erase{\conflictHole{\Z{\tau}, \SetOf{\tau_i}_{i \leq n}}{v}{p}} &= \conflictHole{\erase{\Z{\tau}}, \SetOf{\tau_i}_{i \leq n}}{v}{p}
 \end{align*}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{User Actions}
-
-\begin{theorem}[Sensibility]
-  For any zippered grove $\Z{\Grove}$
-  such that $\erase{\Z{\Grove}}$ is well sorted
-    and $\recomp{\erase{\Z{\Grove}}} = G$,
-  and any user action $\alpha$,
-  if
-  \[
-    \applyAction{\Z{\Grove}}{v}{p}{\alpha}{\Q{a}}{v'}{p'},
-  \]
-  then $G \action{\Q{a}} G'$ and $G'$ is well sorted.
-\end{theorem}
 
 \[
   \arraycolsep=0pt
@@ -529,112 +519,124 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
   \end{array}
 \]
 
-\noindent $\boxed{\applyAction{ \Z{\Grove} }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }}$
+\begin{theorem}[Sensibility]
+  For any zippered grove $\Z{\Grove}$
+  such that $\erase{\Z{\Grove}}$ is well sorted
+    and $\recomp{\erase{\Z{\Grove}}} = G$,
+  and any user action $\alpha$,
+  if
+  \[
+    \applyAction{\Z{\Grove}}{\alpha}{\Q{a}}{c},
+  \]
+  then $G \action{\Q{a}} G'$ and $G'$ is well sorted.
+\end{theorem}
+
+\noindent $\boxed{\applyAction{ \Z{\Grove} }{ \alpha }{ \Q{a} }{ c }}$
 %
 \begin{mathpar}
   \inferrule{
-    \applyAction{ \Z{\Set}_{NP} }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ \Z{\Set}_{NP} }{ \alpha }{ \Q{a} }{ c }
   }{
-    \applyAction{ (\Z{\Set}_{NP}, \Set[MP], \Set[U]) }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ (\Z{\Set}_{NP}, \Set[MP], \Set[U]) }{ \alpha }{ \Q{a} }{ c }
   }
 
   \inferrule{
-    \applyAction{ \Z{\Set}_{MP} }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ \Z{\Set}_{MP} }{ \alpha }{ \Q{a} }{ v' }{ p' }
   }{
-    \applyAction{ (\Set[NP], \Z{\Set}_{MP}, \Set[U]) }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ (\Set[NP], \Z{\Set}_{MP}, \Set[U]) }{ \alpha }{ \Q{a} }{ c }
   }
 
   \inferrule{
-    \applyAction{ \Z{\Set}_U }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ \Z{\Set}_U }{ \alpha }{ \Q{a} }{ c }
   }{
-    \applyAction{ (\Set[NP], \Set[MP], \Z{\Set}_U) }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ (\Set[NP], \Set[MP], \Z{\Set}_U) }{ \alpha }{ \Q{a} }{ c }
   }
 \end{mathpar}
 
-\noindent $\boxed{\applyAction{ \Z{\Set} }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }}$
+\noindent $\boxed{\applyAction{ \Z{\Set} }{ \alpha }{ \Q{a} }{ c }}$
 %
 \begin{mathpar}
   \inferrule{
-    \applyAction{ \Z{t} }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ \Z{t} }{ \alpha }{ \Q{a} }{ c }
   }{
-    \applyAction{ (\Set, \Z{t}) }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ (\Set, \Z{t}) }{ \alpha }{ \Q{a} }{ c }
   }
 \end{mathpar}
-\noindent $\boxed{\applyAction{ \Z{t} }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }}$
+\noindent $\boxed{\applyAction{ \Z{t} }{ \alpha }{ \Q{a} }{ c }}$
 %
 \begin{mathpar}
   \inferrule{
-    \applyAction{ \Z{q} }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ \Z{q} }{ \alpha }{ \Q{a} }{ c }
   }{
-    \applyAction{ (\eFun{G}{\Z{q}}{\tau}{e}) }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ (\eFun{G}{\Z{q}}{\tau}{e}) }{ \alpha }{ \Q{a} }{ c }
   }
 
   \inferrule{
-    \applyAction{ \Z{\tau} }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ \Z{\tau} }{ \alpha }{ \Q{a} }{ c }
   }{
-    \applyAction{ (\eFun{G}{q}{\Z{\tau}}{e}) }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ (\eFun{G}{q}{\Z{\tau}}{e}) }{ \alpha }{ \Q{a} }{ c }
   }
 
   \inferrule{
-    \applyAction{ \Z{e} }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ \Z{e} }{ \alpha }{ \Q{a} }{ c }
   }{
-    \applyAction{ (\eFun{G}{q}{\tau}{\Z{e}}) }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ (\eFun{G}{q}{\tau}{\Z{e}}) }{ \alpha }{ \Q{a} }{ c }
   }
 
   \inferrule{
-    \applyAction{ \Z{e}_1 }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ \Z{e}_1 }{ \alpha }{ \Q{a} }{ c }
   }{
-    \applyAction{ \eApp{G}{\Z{e}_1}{e_2} }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ \eApp{G}{\Z{e}_1}{e_2} }{ \alpha }{ \Q{a} }{ c }
   }
 
   \inferrule{
-    \applyAction{ \Z{e}_2 }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ \Z{e}_2 }{ \alpha }{ \Q{a} }{ c }
   }{
-    \applyAction{ \eApp{G}{e_1}{\Z{e}_2} }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ \eApp{G}{e_1}{\Z{e}_2} }{ \alpha }{ \Q{a} }{ c }
   }
 
   \inferrule{
-    \applyAction{ \Z{e}_1 }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ \Z{e}_1 }{ \alpha }{ \Q{a} }{ c }
   }{
-    \applyAction{ (\ePlus{G}{\Z{e}_1}{e_2}) }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ (\ePlus{G}{\Z{e}_1}{e_2}) }{ \alpha }{ \Q{a} }{ c }
   }
 
   \inferrule{
-    \applyAction{ \Z{e}_2 }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ \Z{e}_2 }{ \alpha }{ \Q{a} }{ c }
   }{
-    \applyAction{ (\ePlus{G}{e_1}{\Z{e}_2}) }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ (\ePlus{G}{e_1}{\Z{e}_2}) }{ \alpha }{ \Q{a} }{ c }
   }
 
   \inferrule{
-    \applyAction{ \Z{e}_1 }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ \Z{e}_1 }{ \alpha }{ \Q{a} }{ c }
   }{
-    \applyAction{ (\eTimes{G}{\Z{e}_1}{e_2}) }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ (\eTimes{G}{\Z{e}_1}{e_2}) }{ \alpha }{ \Q{a} }{ c }
   }
 
   \inferrule{
-    \applyAction{ \Z{e}_2 }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ \Z{e}_2 }{ \alpha }{ \Q{a} }{ c }
   }{
-    \applyAction{ (\eTimes{G}{e_1}{\Z{e}_2}) }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ (\eTimes{G}{e_1}{\Z{e}_2}) }{ \alpha }{ \Q{a} }{ c }
   }
 
   \inferrule{
-    \applyAction{ \Z{\tau}_1 }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ \Z{\tau}_1 }{ \alpha }{ \Q{a} }{ c }
   }{
-    \applyAction{ (\tArrow{G}{\Z{\tau}_1}{\tau_2}) }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ (\tArrow{G}{\Z{\tau}_1}{\tau_2}) }{ \alpha }{ \Q{a} }{ c }
   }
 
   \inferrule{
-    \applyAction{ \Z{\tau}_2 }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ \Z{\tau}_2 }{ \alpha }{ \Q{a} }{ c }
   }{
-    \applyAction{ (\tArrow{G}{\tau_1}{\Z{\tau}_2}) }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ (\tArrow{G}{\tau_1}{\Z{\tau}_2}) }{ \alpha }{ \Q{a} }{ c }
   }
 
   \inferrule{
-    \applyAction{ \Z{t} }{ v }{ p }{ \alpha }{ \Q{a} }{ v' }{ p' }
+    \applyAction{ \Z{t} }{ \alpha }{ \Q{a} }{ c }
   }{
-    \applyAction{ \conflictHole{\Z{t}, \SetOf{t_i}_{i \leq n}}{v_c}{p_c} }{ v }{ p }{ \alpha }{
+    \applyAction{ \conflictHole{\Z{t}, \SetOf{t_i}_{i \leq n}}{v}{p} }{ \alpha }{
       \Q{a}
-    }{ v' }{ p' }
+    }{ c }
   }
 \end{mathpar}
 %
@@ -653,11 +655,11 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
     v_k = (\fresh{u}_k, k)
   }{
     % Then the user action Construct(k) produces the following set of graph actions:
-    \applyAction{ \cursor{\emptyHole{v_s{=}(u_s, k_s)}{p_s}} }{ v_s }{ p_s }{ \Construct{k} }{
+    \applyAction{ \cursor{\emptyHole{v_s{=}(u_s, k_s)}{p_s}} }{ \Construct{k} }{
       % 
       % attach the new vertex to the cursor source
       \SetOf{\graphAction{\Plus}{(\fresh{u}, v_s, p_s, v_k)}}
-    }{ v_s }{ p_s }
+    }{ \CVertex{v_k} }
   }
 
   \inferrule[ConstructWrap]{
@@ -665,16 +667,16 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
     % 
     % 1. The term under the cursor (t) has an ingraph (Gt)
     %   (==> t is a basic term or reference, or, equivalently, t is not a conflict or a hole)
-    \sources{G_t} = \SetOf{(v_{s_i}, p_{s_i})}_{i \leq n} \\
+    \livesources{G_t} = \SetOf{(v_{s_i}, p_{s_i})}_{i \leq n} \\
     % 
     % 2. The new constructor (k) has default positions (p_wrap, p_post)
     \defaultpos{k} = (\pWrap, \pPost) \\
     % 
-    % 3. The new constructor and the inconstructor of t (k_Gt) have the same sort
-    \sort{k} = \sort{k_{G_t}} \\
+    % 3. The new constructor and the inconstructor(s) of t (k_Gt) have the same sort
+    \SetOf{\sort{k} = \sort{k_i}}_{k_i \in \Q{k}_{G_t}} \\
     % 
     % 4. The new (default) position and old sort are in the arity of the new constructor
-    (\pWrap, \sort{k_{G_t}}) \in \arity{k} \\\\
+    (\pWrap, \sort{k}) \in \arity{k} \\\\
     % 
     % And we let:
     % 
@@ -684,65 +686,82 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
     % e_i = a new edge from source i to the new vertex
     \SetOf{\e_i}_{i \leq n} = \SetOf{(\fresh{u}_i, v_{s_i}, p_{s_i}, v_k)}_{i \leq n} \\
     % 
-    % e' = a new edge from the new vertex and default position to the old invertex
-    \e' = (\fresh{u}, v_k, \pWrap, v_{G_t})
+    % e' = a new edge from the new vertex and default position to the old invertex(es)
+    \SetOf{\e_i'} = \SetOf{(\fresh{u}, v_k, \pWrap, v_i)}_{v_i \in \Q{v}_{G_t}}
   }{
     % Then the user action Construct(k) produces the following set of graph actions:
-    \applyAction{ \cursor{t} }{ v_s }{ p_s }{ \Construct{k} }{
+    \applyAction{ \cursor{t} }{ \Construct{k} }{
       % 
       % delete the old ingraph
-      \SetOf{\graphAction{\Minus}{\e}}_{\e \in \inedges{G_t}} \cup
+      \SetOf{\graphAction{\Minus}{\e}}_{\e \in \live{G_t}} \cup
       % 
       % construct an equivalent ingraph on the new vertex
       \SetOf{\graphAction{\Plus}{\e_i}}_{i \leq n} \cup
       % 
       % reattach the old invertex to the default position of the new vertex
-      \SetOf{\graphAction{\Plus}{\e'}}
-    }{ v_k }{ \pPost }
+      \SetOf{\graphAction{\Plus}{\e_i'}}_{i \leq n}
+    }{ \CSource{v_k}{\pPost} }
   }
 
   \inferrule[Delete]{
     % If:
     % 
     % 1. The term under the cursor (t) has an ingraph (Gt)
-    \inedges{G_t} = \SetOf{\e_i{=}(u_i, v_{s_i}, p_{s_i}, v_{G_t})}_{i \leq n} \\
+    \live{G_t} = \SetOf{\e_i}_{i \leq n} \\
+    % 
+    % 2. There is a unique source ==> not a deleted root or a multiparent root
+    \livesources{G_t} = \SetOf{(v, p)}
   }{
     % Then the user action Delete produces the following set of graph actions:
-    \applyAction{ \cursor{t} }{ v_s }{ p_s }{ \Delete }{
+    \applyAction{ \cursor{t} }{ \Delete }{
       % 
       % delete the ingraph
       \SetOf{\graphAction{\Minus}{\e_i}}_{i \leq n}
-    }{ v_s }{ p_s }
+    }{ \CSource{v}{p} }
+  }
+
+  \inferrule[DeleteRoot]{
+    % If:
+    % 
+    % 1. The term under the cursor (t) has an ingraph (Gt)
+    \live{G_t} = \SetOf{\e_i}_{i \leq n}
+  }{
+    % Then the user action Delete produces the following set of graph actions:
+    \applyAction{ \cursor{t} }{ \Delete }{
+      % 
+      % delete the ingraph
+      \SetOf{\graphAction{\Minus}{\e_i}}_{i \leq n}
+    }{ \CVertex{v_{G_t}} }
   }
 
   \inferrule[Reposition]{
     % If:
     % 
     % 1. The term under the cursor (t) has an ingraph (Gt)
-    \inedges{G_t} = \SetOf{\e_i}_{i \leq n} \\
+    \live{G_t} = \SetOf{\e_i}_{i \leq n} \\
     % 
-    % 2. The new source vertex (v) has no children at position (p)
-    \children{v}{p} = \varnothing \\
+    % 2. The new source has no children
+    \SizeOf{\children{v}{p}} = 0 \\
     % 
     % 3. The inconstructor (k_Gt) and new source position are in the arity of the new source constructor (k)
-    (p, \sort{k_{G_t}}) \in \arity{k}
+    \SetOf{(p, \sort{k_i}) \in \arity{k}}_{k_i \in \Q{k}_{G_t}}
   }{
     % Then the user action Reposition(v=(u,k), p) produces the following set of graph actions:
-    \applyAction{ \cursor{t} }{ v_s }{ p_s }{ \Reposition{v{=}(u, k)}{p} }{
+    \applyAction{ \cursor{t} }{ \Reposition{v{=}(u, k)}{p} }{
       % 
       % delete the old ingraph
       \SetOf{\graphAction{\Minus}{\e_i}}_{i \leq n} \cup
       % 
-      % attach the old invertex to the new parent
-      \SetOf{\graphAction{\Plus}{(\fresh{u}, v_s, p_s, v_{G_t})}}
-    }{ v }{ p }
+      % attach the old invertex(es) to the new parent
+      \SetOf{\graphAction{\Plus}{(\fresh{u}, v_s, p_s, v_i)}}_{v_i \in \Q{v}_{G_t}}
+    }{ \CSource{v}{p} }
   }
 
   \inferrule[RepositionWrap]{
     % If:
     % 
     % 1. The term under the cursor (t) has an ingraph (Gt)
-    \inedges{G_t} = \SetOf{\e_i}_{i \leq n} \\
+    \live{G_t} = \SetOf{\e_i}_{i \leq n} \\
     % 
     % 2. The new parent vertex (v) has at least one child
     \children{v}{p} = \SetOf{\e_j{=}(u_j, v, p, v_j)}_{j \leq m} \\
@@ -751,10 +770,10 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
     \defaultpos{k} = (\pWrap, \pPost) \\
     % 
     % 4. The new source constructor and the old inconstructor (k_Gt) have the same sort
-    \sort{k} = \sort{k_{G_t}} \\
+    \SetOf{\sort{k} = \sort{k_i}}_{k_i \in \Q{k}_{G_t}} \\
     % 
     % 5. The (default) position and old sort are in the arity of the new source constructor
-    (p_k, \sort{k_{G_t}}) \in \arity{k} \\\\
+    (\pWrap, \sort{k}) \in \arity{k} \\\\
     % 
     % And we let:
     % 
@@ -765,7 +784,7 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
     \e' = (\fresh{u}, v, p, v_{G_t})
   }{
     % Then the user action Reposition(v=(u,k), p) produces the following set of graph actions:
-    \applyAction{ \cursor{t} }{ v_s }{ p_s }{ \Reposition{v{=}(u, k)}{p} }{
+    \applyAction{ \cursor{t} }{ \Reposition{v{=}(u, k)}{p} }{
       % 
       % delete the ingraph of the term under the cursor
       \SetOf{\graphAction{\Minus}{\e_i}}_{i \leq n} \cup
@@ -778,16 +797,16 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
       % 
       % attach the old invertex to the new parent
       \SetOf{\graphAction{\Plus}{\e'}}
-    }{ v_{G_t} }{ \pPost }
+    }{ c }
   }
 
-  \inferrule[Conflict]{
-    \SetOf{\applyAction{ \cursor{t_i} }{ v }{ p }{ \alpha }{ \Q{a}_i }{ v' }{ p' }}_{i \leq n}
-  }{
-    \applyAction{ \cursor{\conflictHole{t_i}_{i \leq n}}{v_c}{p_c} }{ v }{ p }{\alpha}{
-      \bigcup_{i \leq n} \Q{a}_i
-    }{ v' }{ p' }
-  }
+  % \inferrule[Conflict]{
+  %   \SetOf{\applyAction{ \cursor{t_i} }{ v }{ p }{ \alpha }{ \Q{a}_i }{ v' }{ p' }}_{i \leq n}
+  % }{
+  %   \applyAction{ \cursor{\conflictHole{t_i}_{i \leq n}}{v_c}{p_c} }{ v }{ p }{\alpha}{
+  %     \bigcup_{i \leq n} \Q{a}_i
+  %   }{ v' }{ p' }
+  % }
 \end{mathpar}
 
 % TODO: how to handle deleting a multiparent root?
@@ -796,10 +815,7 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
 % - otherwise, stay where you are.
 
 % TODO: modify the rules to merge Conflict behaviors
-% - ConstructWrap
-% - 
 
-% TODO: rename edges to inedges
 % TODO: redo the rules to map between graph cursors instead of source pairs
 
 % TODO: how to work with valid vs almost valid cursors?

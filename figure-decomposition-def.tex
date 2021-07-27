@@ -2,10 +2,12 @@
 \newcommand{\figureDecompositionDefHelpersContent}{%
 \begin{align*}
   \inedges{G} &= \SetOf{\e \SuchThat{G(\e) \in \SetOf{\Plus, \Minus}}} \\
-  \sources{G} &= \SetOf{(v, p) \SuchThat{(u, v, p, v') \in \inedges{G}}} \\
-  \children{v}{p} &= \SetOf{\e{=}(u, v, p, v') \SuchThat{G(\e) = \Plus}} \\
+  \sources{G} &= \SetOf{(v, p) \SuchThat{(u, v, p, v') \in \inedges{G} \land u \in \U \land v' \in \V}} \\
+  \live{G} &= \SetOf{\e \SuchThat{G(\e) = \Plus}} \\
+  \livesources{G} &= \SetOf{(v, p) \SuchThat{(u, v, p, v') \in \live{G} \land u \in \U \land v' \in \V}} \\
+  \children{v}{p} &= \SetOf{\e{=}(u, v, p, v') \in \live{G} \SuchThat{u \in \U \land v' \in \V}} \\
   \ingraph{v} &= \SetOf{\e{=}(u, v', p, v) \mapsto G(\e) \SuchThat{\e \in \inedges{G}}} \\
-  \parents{v} &= \SetOf{v' \SuchThat{\exists \e{=}(u, v', p, v) \land G(\e) = \Plus}} \\
+  \parents{v} &= \SetOf{v' \SuchThat{(u, v', p, v) \in \live{G} \land u \in \U \land p \in \P}} \\
   \ancestors{v} &= \mathopen{}\left( \lfp{\ancestorsPrimeOp} \right)\mathclose{}(v) \\
   \ancestorsPrime{v} &= \parents{v} \cup \ancestorsPrime{\parents{v}} \\
   \min{(u_1, k_1), \ldots, (u_n, k_n)} &= (u_j, k_j) \text{ s.t. } 1 \leq j \leq n \land u_j \le u_i \forall i = 1, \ldots, n
@@ -112,7 +114,6 @@
       \begin{array}{ll}
         \conflictHole[i \leq n]{\pdecomp{\e_i}}{v'}{p'} &
           \children{v'}{p'} = \SetOf{\e_1, \ldots, \e_n}
-          \land \sources{}
         \\
         \multiVertex{\e'} &
           \children{v'}{p'} = \SetOf{\e'{=}(u_1, v_1, p_1, v_1')}

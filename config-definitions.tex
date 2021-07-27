@@ -51,7 +51,7 @@
 
 % judgments
 \newcommand{\act}[5]{#1, #2; #3 \action{#4} #5}
-\newcommand{\applyAction}[7]{#1; (#2, #3) \action{#4} #5; (#6, #7)}
+\newcommand{\applyAction}[4]{#1 \action{#2} #3; #4}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Graphs
@@ -171,6 +171,8 @@
 % helpers
 \newcommand{\inedges}[1]{\text{inedges}\mathopen{}\left(#1\right)\mathclose{}}
 \newcommand{\sources}[1]{\text{sources}\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\live}[1]{\text{live}\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\livesources}[1]{\text{livesources}\mathopen{}\left(#1\right)\mathclose{}}
 
 \DeclareMathOperator{\ingraphOp}{\text{ingraph}}
 \DeclareMathOperator{\childrenOp}{\text{children}}
