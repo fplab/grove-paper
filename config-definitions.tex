@@ -169,10 +169,12 @@
 \newcommand{\tdecompPrime}[2]{\tdecompPrimeOp\mathopen{}\left(#1, #2\right)\mathclose{}}
 
 % helpers
+\newcommand{\invertexes}[1]{\text{invertexes}\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\inconstructors}[1]{\text{inconstructors}\mathopen{}\left(#1\right)\mathclose{}}
 \newcommand{\inedges}[1]{\text{inedges}\mathopen{}\left(#1\right)\mathclose{}}
 \newcommand{\sources}[1]{\text{sources}\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\targets}[1]{\text{targets}\mathopen{}\left(#1\right)\mathclose{}}
 \newcommand{\live}[1]{\text{live}\mathopen{}\left(#1\right)\mathclose{}}
-\newcommand{\livesources}[1]{\text{livesources}\mathopen{}\left(#1\right)\mathclose{}}
 
 \DeclareMathOperator{\ingraphOp}{\text{ingraph}}
 \DeclareMathOperator{\childrenOp}{\text{children}}
@@ -190,6 +192,9 @@
 
 \DeclareMathOperator{\minOp}{\text{min}}
 \renewcommand{\min}[1]{\minOp\mathopen{}\left(#1\right)\mathclose{}}
+
+\DeclareMathOperator*{\argminOp}{arg\,min}
+\newcommand{\argmin}[2]{\argminOp_{#1}\mathopen{}\left(#2\right)\mathclose{}}
 
 \DeclareMathOperator{\rootsOp}{\text{roots}}
 \newcommand{\roots}[1]{\rootsOp\mathopen{}\left(#1\right)\mathclose{}}
