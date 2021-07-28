@@ -6,7 +6,7 @@
 
 \figureTermSyntaxContent
 
-For conflict hole forms $\conflictHole[i \leq n]{t_i}{v}{p}$,
+For conflict hole forms $\conflictHole[i \leq n]{t_i}$,
 it must be the case that $n \geq 2$.
 We identify conflict holes up to reordering.
 
@@ -210,12 +210,12 @@ Let $\fresh{u}$ denote a fresh unique identifier.
     % An empty hole is well sorted if its source vertex can have children at the source position.
     \item $t = \emptyHole{v}{p}$ and $(v, p)$ is a well sorted source.
 
-    \item $t = \conflictHole[i \leq n]{t_i}{v}{p}$ and all of the following hold:
+    \item $t = \conflictHole[i \leq n]{t_i}$ and all of the following hold:
       \begin{enumerate}
         % The terms are well sorted.
         \item Each $t_i$ is a well sorted term.
         % The inedges of the terms have the same source.
-        \item $\sources{G_t} = \SetOf{(v, p)}$.
+        \item $\SizeOf{\sources{G_t}} = 1$.
       \end{enumerate}
 
     \item $t = \multiVertex{\e{=}(u, v, p, v')}$ and all of the following hold:
@@ -348,7 +348,7 @@ Let $\fresh{u}$ denote a fresh unique identifier.
   \erecomp{\eTimes{G}{e_1}{e_2}}
     &= G \cup \erecomp{e_1} \cup \erecomp{e_2}
   \\
-  \erecomp{\conflictHole[i \leq n]{e_i}{v}{p}}
+  \erecomp{\conflictHole[i \leq n]{e_i}}
   &= \bigcup_{i=1}^n \erecomp{e_i}
   \\
   \erecomp{\multiVertex{\e}} &= \SetOf{\e \mapsto \Plus}
@@ -363,7 +363,7 @@ Let $\fresh{u}$ denote a fresh unique identifier.
 \begin{align*}
   \precomp{\pVar{G}{x}} &= G
   \\
-  \precomp{\conflictHole[i \leq n]{q_i}{v}{p}} &= \bigcup_{i=1}^n \precomp{q_i}
+  \precomp{\conflictHole[i \leq n]{q_i}} &= \bigcup_{i=1}^n \precomp{q_i}
   \\
   \precomp{\multiVertex{\e}} &= \SetOf{\e \mapsto \Plus}
   \\
@@ -380,7 +380,7 @@ Let $\fresh{u}$ denote a fresh unique identifier.
   \\
   \trecomp{\tNum{G}} &= G
   \\
-  \trecomp{\conflictHole[i \leq n]{\tau_i}{v}{p}} &= \bigcup_{i=1}^n \trecomp{\tau_i}
+  \trecomp{\conflictHole[i \leq n]{\tau_i}} &= \bigcup_{i=1}^n \trecomp{\tau_i}
   \\
   \trecomp{\multiVertex{\e}} &= \SetOf{\e \mapsto \Plus}
   \\
@@ -418,17 +418,17 @@ Let $\fresh{u}$ denote a fresh unique identifier.
       \\
     &&&&
       \mid \eTimes{G}{e}{\Z{e}}
-      \mid \conflictHole{\Z{e}, \SetOf{e_i}_{i \leq n}}{v}{p}
+      \mid \conflictHole{\Z{e}, \SetOf{e_i}_{i \leq n}}
     \\
     \Z{q} & {}\in{} & ZPat & {}::={} &
       \cursor{q}
-      \mid \conflictHole{\Z{q}, \SetOf{q_i}_{i \leq n}}{v}{p}
+      \mid \conflictHole{\Z{q}, \SetOf{q_i}_{i \leq n}}
     \\
     \Z{\tau} & {}\in{} & ZTyp & {}::={} &
       \cursor{\tau}
       \mid \tArrow{G}{\Z{\tau}}{\tau}
       \mid \tArrow{G}{\tau}{\Z{\tau}}
-      \mid \conflictHole{\Z{\tau}, \SetOf{\tau_i}_{i \leq n}}{v}{p}
+      \mid \conflictHole{\Z{\tau}, \SetOf{\tau_i}_{i \leq n}}
     \\
   \end{array}
 \]
@@ -480,14 +480,14 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
   \erase{\ePlus{G}{e_1}{\Z{e}_2}} &= \ePlus{G}{e_1}{\erase{\Z{e}_2}} \\
   \erase{\eTimes{G}{\Z{e}_1}{e_2}} &= \eTimes{G}{\erase{\Z{e}_1}}{e_2} \\
   \erase{\eTimes{G}{e_1}{\Z{e}_2}} &= \eTimes{G}{e_1}{\erase{\Z{e}_2}} \\
-  \erase{\conflictHole{\Z{e}, \SetOf{e_i}_{i \leq n}}{v}{p}} &= \conflictHole{\erase{\Z{e}}, \SetOf{e_i}_{i \leq n}}{v}{p}
+  \erase{\conflictHole{\Z{e}, \SetOf{e_i}_{i \leq n}}} &= \conflictHole{\erase{\Z{e}}, \SetOf{e_i}_{i \leq n}}
 \end{align*}
 
 \noindent $\boxed{\erase{\Z{q}} = q}$
 %
 \begin{align*}
   \erase{\cursor{q}} &= q \\
-  \erase{\conflictHole{\Z{q}, \SetOf{q_i}_{i \leq n}}{v}{p}} &= \conflictHole{\erase{\Z{q}}, \SetOf{q_i}_{i \leq n}}{v}{p}
+  \erase{\conflictHole{\Z{q}, \SetOf{q_i}_{i \leq n}}} &= \conflictHole{\erase{\Z{q}}, \SetOf{q_i}_{i \leq n}}
 \end{align*}
 
 \noindent $\boxed{\erase{\Z{\tau}} = \tau}$
@@ -496,7 +496,7 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
   \erase{\cursor{\tau}} &= \tau \\
   \erase{\left(\tArrow{G}{\Z{\tau}_1}{\tau_2}\right)} &= \tArrow{G}{\erase{\Z{\tau}_1}}{\tau_2} \\
   \erase{\left(\tArrow{G}{\tau_1}{\Z{\tau}_2}\right)} &= \tArrow{G}{\tau_1}{\erase{\Z{\tau}_2}} \\
-  \erase{\conflictHole{\Z{\tau}, \SetOf{\tau_i}_{i \leq n}}{v}{p}} &= \conflictHole{\erase{\Z{\tau}}, \SetOf{\tau_i}_{i \leq n}}{v}{p}
+  \erase{\conflictHole{\Z{\tau}, \SetOf{\tau_i}_{i \leq n}}} &= \conflictHole{\erase{\Z{\tau}}, \SetOf{\tau_i}_{i \leq n}}
 \end{align*}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -634,7 +634,7 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
   \inferrule{
     \applyAction{ \Z{t} }{ \alpha }{ \Q{a} }{ c }
   }{
-    \applyAction{ \conflictHole{\Z{t}, \SetOf{t_i}_{i \leq n}}{v}{p} }{ \alpha }{
+    \applyAction{ \conflictHole{\Z{t}, \SetOf{t_i}_{i \leq n}} }{ \alpha }{
       \Q{a}
     }{ c }
   }
@@ -646,6 +646,7 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
     % 
     % 1. The source position (p_s) and new constructor (k) sort are valid w.r.t. the parent constructor (k_s)
     (p_s, \sort{k}) \in \arity{k_s} \\
+    \defaultpos{k} \text{ undefined} \\
     % 
     % 2. The term under the cursor is a hole
     % 
@@ -684,7 +685,7 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
     v_k = (\fresh{u}_k, k) \\
     % 
     % e_i = a new edge from source i to the new vertex
-    \SetOf{\e_i}_{i \leq n} = \SetOf{(\fresh{u}_i, v_{s_i}, p_{s_i}, v_k)}_{i \leq n} \\
+    \SetOf{\e_{v_i}}_{v_i \in \Q{v}_{G_t}} = \SetOf{(\fresh{u}_i, v_{s_i}, p_{s_i}, v_k)}_{i \leq n} \\
     % 
     % e' = a new edge from the new vertex and default position to the old invertex(es)
     \SetOf{\e_i'} = \SetOf{(\fresh{u}, v_k, \pWrap, v_i)}_{v_i \in \Q{v}_{G_t}}
@@ -696,7 +697,7 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
       \SetOf{\graphAction{\Minus}{\e}}_{\e \in \live{G_t}} \cup
       % 
       % construct an equivalent ingraph on the new vertex
-      \SetOf{\graphAction{\Plus}{\e_i}}_{i \leq n} \cup
+      \SetOf{\graphAction{\Plus}{\e_{v_i}}}_{v_i \in \Q{v}_{G_t}} \cup
       % 
       % reattach the old invertex to the default position of the new vertex
       \SetOf{\graphAction{\Plus}{\e_i'}}_{i \leq n}
@@ -720,11 +721,12 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
     }{ \CSource{v}{p} }
   }
 
-  \inferrule[DeleteRoot]{
+  \inferrule[DeleteMultiparent]{
     % If:
     % 
     % 1. The term under the cursor (t) has an ingraph (Gt)
-    \live{G_t} = \SetOf{\e_i}_{i \leq n}
+    \live{G_t} = \SetOf{\e_i}_{i \leq n} \\
+    \SizeOf{\livesources{G_t}} > 1
   }{
     % Then the user action Delete produces the following set of graph actions:
     \applyAction{ \cursor{t} }{ \Delete }{
@@ -753,71 +755,15 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
       \SetOf{\graphAction{\Minus}{\e_i}}_{i \leq n} \cup
       % 
       % attach the old invertex(es) to the new parent
-      \SetOf{\graphAction{\Plus}{(\fresh{u}, v_s, p_s, v_i)}}_{v_i \in \Q{v}_{G_t}}
+      \SetOf{\graphAction{\Plus}{(\fresh{u}, v, p, v_i)}}_{v_i \in \Q{v}_{G_t}}
     }{ \CSource{v}{p} }
   }
-
-  \inferrule[RepositionWrap]{
-    % If:
-    % 
-    % 1. The term under the cursor (t) has an ingraph (Gt)
-    \live{G_t} = \SetOf{\e_i}_{i \leq n} \\
-    % 
-    % 2. The new parent vertex (v) has at least one child
-    \children{v}{p} = \SetOf{\e_j{=}(u_j, v, p, v_j)}_{j \leq m} \\
-    % 
-    % 3. The new source constructor (k) has a default position (p_k)
-    \defaultpos{k} = (\pWrap, \pPost) \\
-    % 
-    % 4. The new source constructor and the old inconstructor (k_Gt) have the same sort
-    \SetOf{\sort{k} = \sort{k_i}}_{k_i \in \Q{k}_{G_t}} \\
-    % 
-    % 5. The (default) position and old sort are in the arity of the new source constructor
-    (\pWrap, \sort{k}) \in \arity{k} \\\\
-    % 
-    % And we let:
-    % 
-    %  e_j' = a new edge from the old invertex and default position to the children of the new parent
-    \SetOf{\e_j'}_{j \leq m} = \SetOf{(\fresh{u'}_j, v_{G_t}, p_k, v_j)}_{j \leq m} \\
-    % 
-    % e' = a new edge from the new parent vertex and position to the old invertex (v_Gt)
-    \e' = (\fresh{u}, v, p, v_{G_t})
-  }{
-    % Then the user action Reposition(v=(u,k), p) produces the following set of graph actions:
-    \applyAction{ \cursor{t} }{ \Reposition{v{=}(u, k)}{p} }{
-      % 
-      % delete the ingraph of the term under the cursor
-      \SetOf{\graphAction{\Minus}{\e_i}}_{i \leq n} \cup
-      % 
-      % delete the children of the new parent verrtex
-      \SetOf{\graphAction{\Minus}{\e_j}}_{j \leq m} \cup
-      % 
-      % reattach the children to the default position of the old invertex
-      \SetOf{\graphAction{\Plus}{\e_j'}}_{j \leq m} \cup
-      % 
-      % attach the old invertex to the new parent
-      \SetOf{\graphAction{\Plus}{\e'}}
-    }{ c }
-  }
-
-  % \inferrule[Conflict]{
-  %   \SetOf{\applyAction{ \cursor{t_i} }{ v }{ p }{ \alpha }{ \Q{a}_i }{ v' }{ p' }}_{i \leq n}
-  % }{
-  %   \applyAction{ \cursor{\conflictHole{t_i}_{i \leq n}}{v_c}{p_c} }{ v }{ p }{\alpha}{
-  %     \bigcup_{i \leq n} \Q{a}_i
-  %   }{ v' }{ p' }
-  % }
 \end{mathpar}
 
-% TODO: how to handle deleting a multiparent root?
-% In general:
-% - if you have a unique source, go to it.
-% - otherwise, stay where you are.
 
-% TODO: modify the rules to merge Conflict behaviors
-
-% TODO: redo the rules to map between graph cursors instead of source pairs
-
-% TODO: how to work with valid vs almost valid cursors?
-
-% new judgment form: gamma^ --> a-; c
+% TODO: get rid of conflict source annotations
+% TODO: replace livesources with sources
+% TODO: Lemma: if t is well sorted, then G_t is well sorted
+% TODO: clean up language around ingraph derivatives, and model formally
+% TODO: point out in the narrative that leaving out |children|=0 on Reposition allows locally produced conflicts
+% TODO: define valid and almost-valid cursors
