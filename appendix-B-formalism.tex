@@ -94,6 +94,7 @@ Let $t$ denote a term and $\Set$ a set of terms.
 
 \begin{definition}
   A \emph{unique identifier} $u \in \U$ is an object that can be distinguished from, and compared with, other unique identifiers.
+  We write $\fresh{u}$ to denote a fresh unique identifier $u$.
 \end{definition}
 
 \begin{definition}
@@ -121,22 +122,20 @@ Let $t$ denote a term and $\Set$ a set of terms.
 \end{definition}
 
 \begin{definition}
-  An \emph{edge} $\e{=}(u, v, p, v^\prime) \in \E = \U \times \V \times P \times V$ in a graph $G$
-  is a directed multi-edge in $G$ from \emph{source vertex} $v$ and position $p$ to \emph{target vertex} $v'$.
+  An \emph{edge} $\e{=}(u, v, p, v^\prime) \in \E = \U \times \V \times P \times V$
+  is a directed multi-edge from \emph{source vertex} $v$ and \emph{source position} $p$ to \emph{target vertex} $v'$.
   We call $(v, p)$ the \emph{source of edge} $\e$.
 \end{definition}
 
 \begin{definition}
-  An \emph{edge state} $s \in \Sigma{=}\SetOf{\Plus, \Minus}$
-  is an object that a graph $G$ can map an edge $\e$ to in order to determine if $\e$
-  is a \emph{live edge} $\left(G(\e) = \Plus\right)$
-  or a \emph{deleted edge} $\left(G(\e) = \Minus\right)$.
+  An \emph{edge state} $s \in \Sigma{=}\SetOf{\Plus, \Minus}$ of a graph $G$ is an object that $G$ maps an edge $\e$ to,
+  which determines if $\e$ is a \emph{live edge} $\left(G(\e) = \Plus\right)$ or a \emph{deleted edge} $\left(G(\e) = \Minus\right)$.
 \end{definition}
 
 \begin{definition}
   A \emph{graph} $G : \E \rightarrow \Sigma$ is a partial function from edges to edge states.
   We write $G(\e) = \bot$ to mean that $G(\e)$ is undefined.
-  We write $\live{G}$ to denote the edges graph $G$ maps to $\Plus$.
+  We write $\live{G}$ to denote the edges that graph $G$ maps to $\Plus$.
   \[
     \live{G} = \SetOf{\e \in \E \SuchThat{G(e) = \Plus}}
   \]
@@ -184,7 +183,7 @@ Let $t$ denote a term and $\Set$ a set of terms.
 
 \begin{definition}
   The \emph{ingraph of a term} $t \in Term$
-  is union of ingraphs of conflicting terms if $t$ is a conflict hole,
+  is the union of ingraphs of conflicting terms if $t$ is a conflict hole,
   the empty graph if $t$ is an empty hole,
   and the ingraph of the vertex corresponding to $t$ otherwise.
   \[
@@ -231,8 +230,7 @@ Let $t$ denote a term and $\Set$ a set of terms.
 \end{definition}
 
 \begin{definition}
-  The \emph{ancestors} of a vertex $v \in \V$ in a graph $G$ are defined recursively
-  as the parents of $v$ and their ancestors in $G$.
+  The \emph{ancestors} of a vertex $v \in \V$ are defined recursively as the parents of $v$ and their ancestors.
   We write $\ancestors{v}$ to denote the ancestors of vertex $v$.
   \begin{align*}
     \ancestors{v} &= \mathopen{}\left( \lfp{\ancestorsPrimeOp} \right)\mathclose{}(v) \\
@@ -241,7 +239,7 @@ Let $t$ denote a term and $\Set$ a set of terms.
 \end{definition}
 
 \begin{definition}
-  The \emph{least ancestor} of a vertex $v \in \V$ in a graph $V$ is the ancestor of $v$ with the least unique identifier according to the $\leq$ partial ordering.
+  The \emph{least ancestor} of a vertex $v \in \V$ is the ancestor of $v$ with the least unique identifier according to their partial ordering.
   We write $\min{\ancestors{v}}$ to denote the least ancestor of vertex $v$.
   \[
     \min{\ancestors{v}} = \argmin{(u_i, k_i) \in \ancestors{v}}{u_i}
@@ -281,7 +279,7 @@ Let $t$ denote a term and $\Set$ a set of terms.
     % The terms in $\Set[MP]$ correspond to edges with target vertices that have multiple parents.
     \item For each term $t \in \Set[MP]$, we have $\SizeOf{\live{G_t}} > 1$.
     % The terms in $\Set[U]$ correspond to edges with target vertices that are unicycle roots.
-    \item For each term $t \in \Set[U]$, we have $\live{G_t} = \SetOf{(u, v, p, v')} \land v' = \min{\ancestors{v'}}$.
+    \item For each term $t \in \Set[U]$, we have $\live{G_t} = \SetOf{(u, v, p, v')}$ and $v' = \min{\ancestors{v'}}$.
   \end{enumerate}
 \end{definition}
 
@@ -330,7 +328,7 @@ Let $t$ denote a term and $\Set$ a set of terms.
         % The constructor matches the term.
         \item There exists a unique identifier $u_0 \in \U$ such that,
           for each edge $(u, v, p, v') \in \inedges{G_t}$,
-          we have $v' = v_t = (u_0, \constructor{t})$.
+          we have $v' = (u_0, \constructor{t})$.
       \end{enumerate}
   \end{itemize}
 \end{definition}
@@ -578,23 +576,60 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{User Actions}
+\subsection{User Actions and Graph Cursors}
 
 \[
   \arraycolsep=0pt
-  \begin{array}{llll}
-    \alpha & {}::={} &
+  \begin{array}{lcllll}
+    \alpha & {}\in{} & Act & {}::={} &
       \Construct{k}
       \mid \Delete
       \mid \Reposition{v}{p}
     \\
-    c & {}::={} &
+    c & {}\in{} & Cur & {}::={} &
       \CVertex{v}
       \mid \CEdge{\e}
       \mid \CSource{v}{p}
     \\
   \end{array}
 \]
+
+\begin{definition}
+  A \emph{graph cursor} $c$ for a graph $G$ is a reference to a vertex, an edge, or a source of $G$.
+\end{definition}
+
+\begin{definition}
+  A \emph{well sorted graph cursor} for a graph $G$ is a graph cursor $c$ for $G$ such that one of the following holds:
+  \begin{itemize}
+    \item $c = \CVertex{v}$.
+    \item $c = \CEdge{\e}$ and $\e$ is a well sorted edge of $G$.
+    \item $c = \CSource{v}{p}$ and $(v, p)$ is a well sorted source of $G$.
+  \end{itemize}
+\end{definition}
+
+\begin{definition}
+  An \emph{almost valid graph cursor} for a graph $G$ is a well sorted graph cursor $c$ for $G$ such that one of the following holds:
+  \begin{itemize}
+    \item $c = \CVertex{v}$
+      and $\SetOf{(u, v, p, v'), (u, v', p, v)} \cap \live{G} = \SetOf{\e}$
+      for some $u \in \U$ and some $p \in \P$ and some $v' \in \V$.
+    \item $c = \CEdge{\e}$ and $\e \in \live{G}$.
+    \item $c = \CSource{v}{p}$ and there exists an edge $(u, v, p, v') \in \live{G}$ such that $u \in \U \land v' \in \V$.
+  \end{itemize}
+\end{definition}
+
+\begin{definition}
+  A \emph{valid graph cursor} for a graph $G$ is an almost valid graph cursor $c$ for $G$ such that one of the following holds:
+  \begin{itemize}
+    \item $c = \CVertex{v}$.
+    \item $c = \CEdge{(u, v, p, v')}$ and one of the following holds:
+    \begin{itemize}
+      \item $\SizeOf{\parents{v'}} > 1$.
+      \item $\SizeOf{\parents{v'}} = 1$ and $v' = \min{\ancestors{v'}}$.
+    \end{itemize}
+    \item $c = \CSource{v}{p}$ and $\SizeOf{\children{v}{p}} \neq 1$.
+  \end{itemize}
+\end{definition}
 
 \begin{theorem}[Sensibility]
   For any zippered grove $\Z{\Grove}$
@@ -716,9 +751,7 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
     }{ c }
   }
 \end{mathpar}
-
-Let $\fresh{u}$ denote a fresh unique identifier.
-
+%
 \begin{mathpar}
   \inferrule[Construct]{
     % If:
@@ -837,6 +870,37 @@ Let $\fresh{u}$ denote a fresh unique identifier.
 \end{mathpar}
 
 % TODO: Lemma: if t is well sorted, then G_t is well sorted
-% TODO: clean up language around ingraph derivatives, and model formally
 % TODO: point out in the narrative that leaving out |children|=0 on Reposition allows locally produced conflicts
-% TODO: define valid and almost-valid cursors
+
+% \subsubsection{Post-action cursor fixing}
+
+\noindent
+$\boxed{\fix{c} = c'}$
+%
+\begin{mathpar}
+  \inferrule[FCVertex]{
+  }{
+    \fix{c{=}\CVertex{v}} = c
+  }
+
+  \inferrule[FCSource]{
+    \SizeOf{\children{v}{p}} \neq 1
+  }{
+    \fix{c{=}\CSource{v}{p}} = c
+  }
+
+  \inferrule[FCSourceVertex]{
+    \children{v}{p} = \SetOf{(u, v, p, v')} \\
+    \SizeOf{\parents{v'}} = 1 \\
+    v' \neq \min{\ancestors{v'}}
+  }{
+    \fix{c{=}\CSource{v}{p}} = \CVertex{v'}
+  }
+
+  \inferrule[FCSourceEdge]{
+    \children{v}{p} = \SetOf{(u, v, p, v')} \\
+    \SizeOf{\parents{v'}} > 1 \lor v' = \min{\ancestors{v'}}
+  }{
+    \fix{c{=}\CSource{v}{p}} = \CEdge{(\fresh{u}, v, p, v')}
+  }
+\end{mathpar}
