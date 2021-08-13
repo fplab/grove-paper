@@ -1,18 +1,243 @@
 \section{Formalism}
+\label{sec:Formalism}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Terms}
+\subsection{Graphs}
+\label{sec:Formalism:Graphs}
 
-\figureTermSyntaxContent
+Let $\U$ be a set of \emph{unique identifiers} equipped with a total ordering $\leq$,
+and let $\K$ be a set of \emph{constructors},
+and let $\P$ be a set of \emph{positions}.
+Now, let $\V = \U \times \K$ the set of all \emph{vertices},
+and let $\E = \U \times \V \times \P \times \V$ the set of all \emph{edges},
+and let $\Sigma = \SetOf{\bot, \Plus, \Minus}$ a set of \emph{edge states}
+equipped with a total ordering $\bot \sqsubset \Plus \sqsubset \Minus$ that forms a lattice over $\Sigma$.
 
-For conflict hole forms $\conflictHole[i \leq n]{t_i}$,
-it must be the case that $n \geq 2$.
-We identify conflict holes up to reordering.
+\begin{definition}
+  A \emph{graph} $G : \E \rightarrow \Sigma$ is a function from edges to edge states.
+\end{definition}
+
+Let $G : \E \rightarrow \Sigma$,
+and let $\e \in \E$.
+When $G(\e) = \Plus$, we say $\e$ is \emph{live},
+and when $G(\e) = \Minus$, we say $\e$ is \emph{deleted}.
+
+\begin{definition}
+  The \emph{inedges} of a graph $G : \E \rightarrow \Sigma$,
+  \[
+    \inedges{G} = \SetOf{\e \in \E \SuchThat{G(\e) = \Plus}}.
+  \]
+\end{definition}
+
+\begin{definition}
+  The \emph{sources} of a graph $G : \E \rightarrow \Sigma$,
+  \[
+    \sources{G} = \SetOf{(v, p) \in \V \times \P \SuchThat{(u, v, p, v') \in \live{G} \land u \in \U \land v' \in \V}}.
+  \]
+\end{definition}
+
+\begin{definition}
+  An \emph{edge} $\e{=}(u, v, p, v^\prime) \in \E$ is a directed multi-edge with
+  a unique identifier $u \in \U$,
+  a \emph{source vertex} $v \in \V$,
+  a \emph{source position} $p \in \P$,
+  and a \emph{target vertex} $v' \in \V$.
+\end{definition}
+
+\begin{definition}
+  A \emph{source} $(v, p) \in \V \times \P$ is a vertex $v \in \V$ and a position $p \in \P$.
+\end{definition}
+
+Let $\e{=}(u, v, p, v') \in \E$.
+We call $(v, p)$ the \emph{source} of edge $\e$,
+and we call $v'$ the \emph{target} of edge $\e$.
+
+\begin{definition}
+  The \emph{outedges} of a source $(v, p) \in \V \times \P$,
+  \[
+    \outedges{v}{p} = \SetOf{(u, v, p, v') \in \inedges{G} \SuchThat{u \in \U \land v' \in \V }}
+  \]
+\end{definition}
+
+\begin{definition}
+  The \emph{inedges} of a vertex $v \in \V$,
+  \[
+    \inedges{v} = \SetOf{\e{=}(u, v', p, v) \in \E \SuchThat{G(\e) = \Plus \land u \in \U \land v' \in \V \land p \in \P}}.
+  \]
+\end{definition}
+
+\begin{definition}
+  The \emph{ingraph} of a vertex $v \in \V$ is a graph $G_v : \E \rightarrow \Sigma$
+  such that
+  \[
+    G_v(\e{=}(u, v_\e, p, v_\e')) =
+    \begin{cases}
+      G(\e) & \text{if } v_\e' = v, \text{ and} \\
+      \bot  & \text{if } v_\e' \neq v. \\
+    \end{cases}
+  \]
+  We write $G_v$ to denote the ingraph of vertex $v$.
+\end{definition}
+
+\begin{definition}
+  The \emph{parents} of a vertex $v \in \V$,
+  \[
+    \parents{v} = \SetOf{v' \in \V \SuchThat{(u, v', p, v) \in \live{G} \land u \in \U \land p \in \P}}.
+  \]
+\end{definition}
+
+\begin{definition}
+  The \emph{ancestors} of a vertex $v \in \V$,
+  \[
+    \ancestors{v} = \mathopen{}\left( \lfp{\ancestorsPrimeOp} \right)\mathclose{}(v)
+  \]
+  where $\ancestorsPrime{v} = \parents{v} \cup \ancestorsPrime{\parents{v}}$
+  and $\lfp{\ancestorsPrimeOp}$ is the least fixed point of $\ancestorsPrimeOp$.
+\end{definition}
+
+\begin{definition}
+  The \emph{least vertex} of a set of vertices $\Q{v} \subseteq \V$,
+  \[
+    \min{\Q{v}} = \argmin{(u, k) \in \Q{v}}{u}
+  \]
+  w.r.t. the total ordering ($\leq$) on unique identifiers.
+\end{definition}
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
-\subsubsection{Term Constructors}
+\subsubsection{Well-sortedness}
+
+\begin{definition}
+  A \emph{well sorted graph} is a graph $G : \E \rightarrow \Sigma$
+  such that for all $\e \in \E$,
+  if $G(\e) \in \SetOf{\Plus, \Minus}$,
+  then $\e$ is a well sorted edge. 
+\end{definition}
+
+\begin{definition}
+  A \emph{well sorted edge} is an edge $(u_0, v{=}(u, k), p, (u', k')) \in \E$
+  such that $(v, p)$ is a well sorted source
+  and $(p, \sort{k'}) \in \arity{k}$.
+\end{definition}
+
+\begin{definition}
+  A \emph{well sorted source} is a source $(v{=}(u, k), p) \in \V \times \P$
+  for which there exists a sort $S \in \SetOf{Exp, Pat, Var}$
+  such that $(p, S) \in \arity{k}$.
+\end{definition}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Groves}
+\label{sec:Formalism:Groves}
+
+\figureTermSyntaxContent
+
+For conflict hole forms $\conflictHole[i < n]{t_i}$,
+it must be the case that $n \geq 2$.
+We identify conflict holes up to reordering.
+
+Let $\Set$ denote a set of terms.
+
+\begin{definition}
+  A \emph{grove} $\Grove = (\Set[NP], \Set[MP], \Set[U])$
+  is three sets of terms $\Set[NP], \Set[MP], \Set[U] \in Term$.
+\end{definition}
+
+\begin{definition}
+  The \emph{vertex corresponding to} term $t \in Term$,
+  when $t$ is not an empty hole or a conflict hole,
+  is the unique vertex $v \in \V$ for which there exists an edge $\e{=}(u, v', p, v)$
+  such that $\decomp{\e} = t$.
+  We write $v_t$ to denote the vertex corresponding to $t$.
+\end{definition}
+
+\begin{definition}
+  The \emph{ingraph of a term} $t \in Term$ is a graph $G_t : \E \rightarrow \Sigma$ such that
+  \[
+    G_t =
+    \begin{cases}
+      \bigcup_{t_i} G_{t_i} & t = \conflictHole[i < n]{t_i}, \\
+      \varnothing & t = \emptyHole{v}{p}, \text{ and} \\
+      G_{v_t} & \text{otherwise.} \\
+    \end{cases}
+  \]
+\end{definition}
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+
+\subsubsection{Well-sortedness}
+
+\begin{definition}
+  A \emph{well sorted grove} is a grove $\gamma = (\Set[NP], \Set[MP], \Set[U])$ for which all of the following hold:
+  \begin{enumerate}
+    % All terms are well sorted.
+    \item For each term $t \in \Set[NP] \cup \Set[MP] \cup \Set[U]$, we have $t$ is a well sorted term.
+    % Any terms corresponding to edges originating from $\rootVertex$ are in $\Set[NP]$.
+    \item For each term $t \in \Set[MP] \cup \Set[U]$, we have $(\rootVertex, \Root) \notin \sources{G_t}$.
+    % The terms in $\Set[NP]$ correspond to edges with target vertices that have no parents.
+    \item For each term $t \in \Set[NP]$, we have $\SizeOf{\inedges{G_t}} = 0$.
+    % The terms in $\Set[MP]$ correspond to edges with target vertices that have multiple parents.
+    \item For each term $t \in \Set[MP]$, we have $\SizeOf{\inedges{G_t}} > 1$.
+    % The terms in $\Set[U]$ correspond to edges with target vertices that are unicycle roots.
+    \item For each term $t \in \Set[U]$, we have $\inedges{G_t} = \SetOf{(u, v, p, v')}$ and $v' = \min{\ancestors{v'}}$.
+  \end{enumerate}
+\end{definition}
+
+\begin{definition}
+  A \emph{well sorted term} is a term $t \in Term$ such that one of the following holds:
+  \begin{itemize}
+
+    % An empty hole is well sorted if its source vertex can have children at the source position.
+    \item $t = \emptyHole{v}{p}$ and $(v, p)$ is a well sorted source.
+
+    \item $t = \conflictHole[i < n]{t_i}$ and all of the following hold:
+      \begin{enumerate}
+        % The terms are well sorted.
+        \item For each term $t_i$, we have $t_i$ is a well sorted term.
+        % The inedges of the terms have the same source.
+        \item $\SizeOf{\sources{G_t}} = 1$.
+      \end{enumerate}
+
+    \item $t = \multiVertex{\e{=}(u, v, p, v')}$ and all of the following hold:
+      \begin{enumerate}
+        % The corresponding edge is well sorted ...
+        \item $\e$ is a well sorted edge.
+        % ... and its target vertex has multiple parents.
+        \item $\SizeOf{\inedges{v'}} > 1$.
+      \end{enumerate}
+
+    \item $t = \cycleVertex{\e{=}(u, v, p, v')}$ and all of the following hold:
+      \begin{enumerate}
+        % The corresponding edge is well sorted ...
+        \item $\e$ is a well sorted edge.
+        % ... and its target vertex is the root ...
+        \item $v' = \min{\ancestors{v'}}$
+        % ... of a unicycle.
+        \item For each vertex $v'' \in \ancestors{v'}$, we have $\SizeOf{\inedges{v''}} = 1$.
+      \end{enumerate}
+
+    \item All of the following hold:
+      \begin{enumerate}
+        % All incoming edges are well sorted.
+        \item $G_t$ is a well sorted graph.
+        % The in-graph of t is not empty.
+        \item $\SizeOf{\inedges{G_t}} \geq 1$.
+        % All incoming edges target the vertex corresponding to t.
+        \item For each edge $(u, v, p, v') \in \inedges{G_t}$, we have $v' = v_t$.
+        % The destination vertices of all incoming edges have the same id and constructor.
+        % The constructor matches the term.
+        \item There exists a unique identifier $u_0 \in \U$ such that,
+          for each edge $(u, v, p, v') \in \inedges{G_t}$,
+          we have $v' = (u_0, \constructor{t})$.
+      \end{enumerate}
+  \end{itemize}
+\end{definition}
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+
+\subsubsection{Constructors}
 
 \[
   \arraycolsep=0pt
@@ -84,270 +309,76 @@ We identify conflict holes up to reordering.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Graphs}
-
-Let $t$ denote a term and $\Set$ a set of terms.
-
-\begin{definition}
-  A \emph{constructor} $k \in \K$ is the abstract representation of an atomic unit of structure, e.g., a form of AST node.
-\end{definition}
-
-\begin{definition}
-  A \emph{unique identifier} $u \in \U$ is an object that can be distinguished from, and compared with, other unique identifiers.
-  We write $\fresh{u}$ to denote a fresh unique identifier $u$.
-\end{definition}
-
-\begin{definition}
-  A \emph{vertex} $v{=}(u, k) \in \V = \U \times \K$ is a concrete instance of a constructor, e.g., an AST node.
-\end{definition}
-
-\begin{definition}
-  A \emph{position} $p \in \P$ is a constructor-relative location.
-\end{definition}
-
-\begin{definition}
-  The \emph{default position} $(\pWrap, \pPost) \in \P \times \P$ of a constructor $k$
-  that supports wrapping is a pair of positions relative to $k$:
-  the position where wrapping occurs ($\pWrap$),
-  and the position of the cursor after wrapping ($\pPost$).
-\end{definition}
-
-\begin{definition}
-  A \emph{source} $(v, p) \in \V \times \P$ is a vertex paired with a position.
-\end{definition}
-
-\begin{definition}
-  A \emph{valid source} is a source $(v{=}(u, k), p) \in \V \times \P$
-  for which there exists a sort $S$ such that $(p, S) \in \arity{k}$.
-\end{definition}
-
-\begin{definition}
-  An \emph{edge} $\e{=}(u, v, p, v^\prime) \in \E = \U \times \V \times P \times V$
-  is a directed multi-edge from \emph{source vertex} $v$ and \emph{source position} $p$ to \emph{target vertex} $v'$.
-  We call $(v, p)$ the \emph{source of edge} $\e$.
-\end{definition}
-
-\begin{definition}
-  An \emph{edge state} $s \in \Sigma{=}\SetOf{\Plus, \Minus}$ of a graph $G$ is an object that $G$ maps an edge $\e$ to,
-  which determines if $\e$ is a \emph{live edge} $\left(G(\e) = \Plus\right)$ or a \emph{deleted edge} $\left(G(\e) = \Minus\right)$.
-\end{definition}
-
-\begin{definition}
-  A \emph{graph} $G : \E \rightarrow \Sigma$ is a partial function from edges to edge states.
-  We write $G(\e) = \bot$ to mean that $G(\e)$ is undefined.
-  We write $\live{G}$ to denote the edges that graph $G$ maps to $\Plus$.
-  \[
-    \live{G} = \SetOf{\e \in \E \SuchThat{G(e) = \Plus}}
-  \]
-\end{definition}
-
-\begin{definition}
-  The \emph{inedges} of a graph $G$ are the edges that $G$ is defined on.
-  We write $\inedges{G}$ to denote the inedges of graph $G$.
-  \[
-    \inedges{G} = \SetOf{\e \in \E \SuchThat{G(\e) \in \Sigma}}
-  \]
-\end{definition}
-
-\begin{definition}
-  The \emph{ingraph of a vertex} $v \in V$ in a graph $G$
-  is the subgraph of $G$ containing all edges targeting $v$.
-  We write $G_v$ to denote the ingraph of vertex $v$ in graph $G$.
-  \[
-    G_v(\e) = s \iff G(\e) = s \land \e = (u, v', p, v) \land u \in \U \land v' \in \V \land p \in \P
-  \]
-\end{definition}
-
-\begin{definition}
-  The \emph{invertexes} of a graph $G$ are the target vertices of the inedges of $G$.
-  We write $\invertexes{G}$ to denote the invertexes of graph $G$.
-  \[
-    \invertexes{G} = \SetOf{v' \in V \SuchThat{(u, v, p, v') \in \inedges{G} \land u \in \U \land v \in \V \land p \in \P}}
-  \]
-\end{definition}
-
-\begin{definition}
-  The \emph{inconstructors} of a graph $G$ are the constructors of its invertexes.
-  We write $\inconstructors{G}$ to denote the inconstructors of graph $G$.
-  \[
-    \inconstructors{G} = \SetOf{k \in \K \SuchThat{(u, k) \in \invertexes{G} \land u \in \U}}
-  \]
-\end{definition}
-
-\begin{definition}
-  The \emph{vertex corresponding to a term} $t \in Term$,
-  when $t$ is not an empty hole or a conflict hole,
-  is the unique vertex $v$ for which there exists an edge $\e{=}(u, v', p, v)$ such that $\decomp{\e} = t$.
-  We write $v_t$ to denote the vertex corresponding to term $t$.
-\end{definition}
-
-\begin{definition}
-  The \emph{ingraph of a term} $t \in Term$
-  is the union of ingraphs of conflicting terms if $t$ is a conflict hole,
-  the empty graph if $t$ is an empty hole,
-  and the ingraph of the vertex corresponding to $t$ otherwise.
-  \[
-    G_t =
-    \begin{cases}
-      \bigcup_{t_i} G_{t_i} & t = \conflictHole[i \leq n]{t_i} \\
-      \varnothing & t = \emptyHole{v}{p} \\
-      G_{v_t} & \text{otherwise} \\
-    \end{cases}
-  \]
-\end{definition}
-
-\begin{definition}
-  The \emph{sources} of a graph $G$ are the sources of the live edges of $G$.
-  We write $\sources{G}$ to denote the sources of graph $G$.
-  \[
-    \sources{G} = \SetOf{(v, p) \in \V \times \P \SuchThat{(u, v, p, v') \in \live{G} \land u \in \U \land v' \in \V}}
-  \]
-\end{definition}
-
-\begin{definition}
-  The \emph{targets} of a graph $G$ are the targets of the live edges of $G$.
-  We write $\targets{G}$ to denote the targets of graph $G$.
-  \[
-    \targets{G} = \SetOf{v' \in \V \SuchThat{(u, v, p, v') \in \live{G} \land u \in \U \land v \in \V \land p \in \P}}.
-  \]
-\end{definition}
-
-\begin{definition}
-  The \emph{children} of a source $(v, p) \in \V \times \P$ in a graph $G$
-  are the live edges of $G$ with source $(v, p)$.
-  We write $\children{v}{p}$ to denote the children of source $(v, p)$.
-  \[
-    \children{v}{p} = \SetOf{(u, v, p, v') \in \live{G} \SuchThat{u \in \U \land v' \in \V }}
-  \]
-\end{definition}
-
-\begin{definition}
-  The \emph{parents} of a vertex $v \in \V$ in a graph $G$ are the live edges of $G$ targeting $v$.
-  We write $\parents{v}$ to denote the parents of vertex $v$.
-  \[
-    \parents{v} = \SetOf{v' \in \V \SuchThat{(u, v', p, v) \in \live{G} \land u \in \U \land p \in \P}}
-  \]
-\end{definition}
-
-\begin{definition}
-  The \emph{ancestors} of a vertex $v \in \V$ are defined recursively as the parents of $v$ and their ancestors.
-  We write $\ancestors{v}$ to denote the ancestors of vertex $v$.
-  \begin{align*}
-    \ancestors{v} &= \mathopen{}\left( \lfp{\ancestorsPrimeOp} \right)\mathclose{}(v) \\
-    \ancestorsPrime{v} &= \parents{v} \cup \ancestorsPrime{\parents{v}}
-  \end{align*}
-\end{definition}
-
-\begin{definition}
-  The \emph{least ancestor} of a vertex $v \in \V$ is the ancestor of $v$ with the least unique identifier according to their partial ordering.
-  We write $\min{\ancestors{v}}$ to denote the least ancestor of vertex $v$.
-  \[
-    \min{\ancestors{v}} = \argmin{(u_i, k_i) \in \ancestors{v}}{u_i}
-  \]
-\end{definition}
-
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
-
-\subsubsection{Well-sortedness}
-
-\begin{definition}
-  A \emph{well sorted graph} is a graph that is defined only on well sorted edges.
-\end{definition}
-
-\begin{definition}
-  A \emph{well sorted edge} is an edge with a well sorted source $((u, k), p) \in \V \times \P$
-  and a target $(u', k') \in \V$ of a sort consistent with the source.
-  \[
-    \left( p, \sort{k'} \right) \in \arity{k}
-  \]
-\end{definition}
-
-\begin{definition}
-  A \emph{well sorted source} is a source $(v{=}(u, k), p) \in \V \times \P$ such that $p$ is consistent with $v$,
-  i.e., there exists a sort $S \in \SetOf{Exp, Pat, Var}$ such that $(p, S) \in \arity{k}$.
-\end{definition}
-
-\begin{definition}
-  A \emph{well sorted grove} is a grove $(\Set[NP], \Set[MP], \Set[U])$ for which all of the following hold:
-  \begin{enumerate}
-    % All terms are well sorted.
-    \item For each term $t \in \Set[NP] \cup \Set[MP] \cup \Set[U]$, we have $t$ is a well sorted term.
-    % Any terms corresponding to edges originating from $\rootVertex$ are in $\Set[NP]$.
-    \item For each term $t \in \Set[MP] \cup \Set[U]$, we have $(\rootVertex, \Root) \notin \sources{G_t}$.
-    % The terms in $\Set[NP]$ correspond to edges with target vertices that have no parents.
-    \item For each term $t \in \Set[NP]$, we have $\SizeOf{\live{G_t}} = 0$.
-    % The terms in $\Set[MP]$ correspond to edges with target vertices that have multiple parents.
-    \item For each term $t \in \Set[MP]$, we have $\SizeOf{\live{G_t}} > 1$.
-    % The terms in $\Set[U]$ correspond to edges with target vertices that are unicycle roots.
-    \item For each term $t \in \Set[U]$, we have $\live{G_t} = \SetOf{(u, v, p, v')}$ and $v' = \min{\ancestors{v'}}$.
-  \end{enumerate}
-\end{definition}
-
-\begin{definition}
-  A \emph{well sorted term} is a term $t$ such that one of the following holds:
-  \begin{itemize}
-
-    % An empty hole is well sorted if its source vertex can have children at the source position.
-    \item $t = \emptyHole{v}{p}$ and $(v, p)$ is a well sorted source.
-
-    \item $t = \conflictHole[i \leq n]{t_i}$ and all of the following hold:
-      \begin{enumerate}
-        % The terms are well sorted.
-        \item For each term $t_i$, we have $t_i$ is a well sorted term.
-        % The inedges of the terms have the same source.
-        \item $\SizeOf{\sources{G_t}} = 1$.
-      \end{enumerate}
-
-    \item $t = \multiVertex{\e{=}(u, v, p, v')}$ and all of the following hold:
-      \begin{enumerate}
-        % The corresponding edge is well sorted ...
-        \item $\e$ is a well sorted edge.
-        % ... and its target vertex has multiple parents.
-        \item $\SizeOf{\parents{v'}} > 1$.
-      \end{enumerate}
-
-    \item $t = \cycleVertex{\e{=}(u, v, p, v')}$ and all of the following hold:
-      \begin{enumerate}
-        % The corresponding edge is well sorted ...
-        \item $\e$ is a well sorted edge.
-        % ... and its target vertex is the root ...
-        \item $v' = \min{\ancestors{v'}}$
-        % ... of a unicycle.
-        \item For each vertex $v'' \in \ancestors{v'}$, we have $\SizeOf{\parents{v''}} = 1$.
-      \end{enumerate}
-
-    \item Otherwise, $t$ is not a reference, a conflict hole, or an empty hole, and all of the following hold:
-      \begin{enumerate}
-        % All incoming edges are well sorted ...
-        \item $G_t$ is a well sorted graph.
-        % ... and target the vertex corresponding to t
-        \item For each edge $(u, v, p, v') \in \inedges{G_t}$, we have $v' = v_t$.
-        % The in-graph of t is not empty.
-        \item $\SizeOf{\inedges{G_t}} \geq 1$.
-        % The destination vertices of all incoming edges have the same id and constructor.
-        % The constructor matches the term.
-        \item There exists a unique identifier $u_0 \in \U$ such that,
-          for each edge $(u, v, p, v') \in \inedges{G_t}$,
-          we have $v' = (u_0, \constructor{t})$.
-      \end{enumerate}
-  \end{itemize}
-\end{definition}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \subsection{Decomposition and Recomposition}
+\label{sec:Formalism:Decomposition and Recomposition}
+
+Let $G : \E \rightarrow \Sigma$ be a well sorted graph.
+
+\begin{theorem}
+  There exists a well sorted grove $\Grove$ such that $\decomp{G} = \Grove$ and $\recomp{\Grove} = G$.
+\end{theorem}
+
+% \begin{theorem}
+%   There exists a well sorted grove $\Grove$ such that $\decomp{G} = \Grove$.
+% \end{theorem}
+
+% Proof: provide a witness that demonstrates the conclusion.
+
+Let $\Grove = (\Set[NP], \Set[MP], \Set[U]) = \decomp{G}$.
+
+\begin{lemma}
+  $\Grove$ is a well sorted grove.
+\end{lemma}
+
+\begin{lemma}
+  For each edge $\e \in \inedges{G}$,
+  there exists a term $t \in \Set[NP] \cup \Set[MP] \cup \Set[U]$
+  such that $\decomp{\e} = t$.
+\end{lemma}
+
+\begin{lemma}
+  For each term $t \in \Set[NP] \cup \Set[MP] \cup \Set[U]$,
+  there exists a subgraph $G' \subseteq G$ such that $\decomp{G'} = t$.
+\end{lemma}
+
+\begin{lemma}
+  Let $G|_t$ denote the subgraph of $G$ such that $\decomp{G|_t} = t$.
+  Then
+  \[
+    \bigcup_{t \in \Set[NP] \cup \Set[MP] \cup \Set[U]} G|_t = G.
+  \]
+\end{lemma}
+
+% --
+
+Let $\Grove = (\Set[NP], \Set[MP], \Set[U])$ be a well sorted grove,
+and let $G : \E \rightarrow \Sigma = \recomp{\Grove}$.
+
+\begin{lemma}
+  $G$ is a well sorted graph.
+\end{lemma}
+
+\begin{lemma}
+  For each term $t \in \Set[NP] \cup \Set[MP] \cup \Set[U]$,
+  there exists a subgraph $G' \subseteq G$ such that $\recomp{t} = G'$.
+\end{lemma}
+
+\begin{lemma}
+  Let $G|_t$ denote the subgraph of $G$ such that $\recomp{t} = G|_t$.
+  Then
+  \[
+    \bigcup_{t \in \Set[NP] \cup \Set[MP] \cup \Set[U]} G|_t = G.
+  \]
+\end{lemma}
+
+% \begin{theorem}
+%   For any well sorted graph $G$,
+%   if $\decomp{G} = \Grove$ then $\recomp{\Grove} = G$.
+% \end{theorem}
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
 \subsubsection{Decomposition}
-
-\begin{theorem}
-  For any well sorted graph $G$
-  there exists a well sorted grove $\Grove$
-  such that \[\decomp{G} = \Grove.\]
-\end{theorem}
-
-% Proof: provide a witness that demonstrates the conclusion.
 
 \noindent $\boxed{\decomp{G} = \Grove}$
 %
@@ -385,11 +416,6 @@ Let $t$ denote a term and $\Set$ a set of terms.
 
 \subsubsection{Recomposition}\hspace*{\fill} \\
 
-\begin{theorem}
-  For any well sorted graph $G$,
-  if $\decomp{G} = \Grove$ then $\recomp{\Grove} = G$.
-\end{theorem}
-
 \noindent $\boxed{\recomp{\Grove} = G}$
 %
 \begin{align*}
@@ -423,7 +449,7 @@ Let $t$ denote a term and $\Set$ a set of terms.
   \erecomp{\eTimes{G}{e_1}{e_2}}
     &= G \cup \erecomp{e_1} \cup \erecomp{e_2}
   \\
-  \erecomp{\conflictHole[i \leq n]{e_i}}
+  \erecomp{\conflictHole[i < n]{e_i}}
   &= \bigcup_{i=1}^n \erecomp{e_i}
   \\
   \erecomp{\multiVertex{\e}} &= \SetOf{\e \mapsto \Plus}
@@ -438,7 +464,7 @@ Let $t$ denote a term and $\Set$ a set of terms.
 \begin{align*}
   \precomp{\pVar{G}{x}} &= G
   \\
-  \precomp{\conflictHole[i \leq n]{q_i}} &= \bigcup_{i=1}^n \precomp{q_i}
+  \precomp{\conflictHole[i < n]{q_i}} &= \bigcup_{i=1}^n \precomp{q_i}
   \\
   \precomp{\multiVertex{\e}} &= \SetOf{\e \mapsto \Plus}
   \\
@@ -455,7 +481,7 @@ Let $t$ denote a term and $\Set$ a set of terms.
   \\
   \trecomp{\tNum{G}} &= G
   \\
-  \trecomp{\conflictHole[i \leq n]{\tau_i}} &= \bigcup_{i=1}^n \trecomp{\tau_i}
+  \trecomp{\conflictHole[i < n]{\tau_i}} &= \bigcup_{i=1}^n \trecomp{\tau_i}
   \\
   \trecomp{\multiVertex{\e}} &= \SetOf{\e \mapsto \Plus}
   \\
@@ -493,17 +519,17 @@ Let $t$ denote a term and $\Set$ a set of terms.
       \\
     &&&&
       \mid \eTimes{G}{e}{\Z{e}}
-      \mid \conflictHole{\Z{e}, \SetOf{e_i}_{i \leq n}}
+      \mid \conflictHole{\Z{e}, \SetOf{e_i}_{i < n}}
     \\
     \Z{q} & {}\in{} & ZPat & {}::={} &
       \cursor{q}
-      \mid \conflictHole{\Z{q}, \SetOf{q_i}_{i \leq n}}
+      \mid \conflictHole{\Z{q}, \SetOf{q_i}_{i < n}}
     \\
     \Z{\tau} & {}\in{} & ZTyp & {}::={} &
       \cursor{\tau}
       \mid \tArrow{G}{\Z{\tau}}{\tau}
       \mid \tArrow{G}{\tau}{\Z{\tau}}
-      \mid \conflictHole{\Z{\tau}, \SetOf{\tau_i}_{i \leq n}}
+      \mid \conflictHole{\Z{\tau}, \SetOf{\tau_i}_{i < n}}
     \\
   \end{array}
 \]
@@ -555,14 +581,14 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
   \erase{\ePlus{G}{e_1}{\Z{e}_2}} &= \ePlus{G}{e_1}{\erase{\Z{e}_2}} \\
   \erase{\eTimes{G}{\Z{e}_1}{e_2}} &= \eTimes{G}{\erase{\Z{e}_1}}{e_2} \\
   \erase{\eTimes{G}{e_1}{\Z{e}_2}} &= \eTimes{G}{e_1}{\erase{\Z{e}_2}} \\
-  \erase{\conflictHole{\Z{e}, \SetOf{e_i}_{i \leq n}}} &= \conflictHole{\erase{\Z{e}}, \SetOf{e_i}_{i \leq n}}
+  \erase{\conflictHole{\Z{e}, \SetOf{e_i}_{i < n}}} &= \conflictHole{\erase{\Z{e}}, \SetOf{e_i}_{i < n}}
 \end{align*}
 
 \noindent $\boxed{\erase{\Z{q}} = q}$
 %
 \begin{align*}
   \erase{\cursor{q}} &= q \\
-  \erase{\conflictHole{\Z{q}, \SetOf{q_i}_{i \leq n}}} &= \conflictHole{\erase{\Z{q}}, \SetOf{q_i}_{i \leq n}}
+  \erase{\conflictHole{\Z{q}, \SetOf{q_i}_{i < n}}} &= \conflictHole{\erase{\Z{q}}, \SetOf{q_i}_{i < n}}
 \end{align*}
 
 \noindent $\boxed{\erase{\Z{\tau}} = \tau}$
@@ -571,7 +597,7 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
   \erase{\cursor{\tau}} &= \tau \\
   \erase{\left(\tArrow{G}{\Z{\tau}_1}{\tau_2}\right)} &= \tArrow{G}{\erase{\Z{\tau}_1}}{\tau_2} \\
   \erase{\left(\tArrow{G}{\tau_1}{\Z{\tau}_2}\right)} &= \tArrow{G}{\tau_1}{\erase{\Z{\tau}_2}} \\
-  \erase{\conflictHole{\Z{\tau}, \SetOf{\tau_i}_{i \leq n}}} &= \conflictHole{\erase{\Z{\tau}}, \SetOf{\tau_i}_{i \leq n}}
+  \erase{\conflictHole{\Z{\tau}, \SetOf{\tau_i}_{i < n}}} &= \conflictHole{\erase{\Z{\tau}}, \SetOf{\tau_i}_{i < n}}
 \end{align*}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -594,52 +620,55 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
   \end{array}
 \]
 
+Let $\A = \SetOf{\Plus, \Minus} \times \E$ the set of all \emph{graph actions}.
+We write $a$ to denote a graph action, and $\Q{a}$ to denote a set of graph actions.
+
 \begin{definition}
-  A \emph{graph cursor} $c$ for a graph $G$ is a reference to a vertex, an edge, or a source of $G$.
+  A \emph{graph cursor} is an element of $Cur$.
 \end{definition}
 
 \begin{definition}
-  A \emph{well sorted graph cursor} for a graph $G$ is a graph cursor $c$ for $G$ such that one of the following holds:
+  A \emph{well sorted graph cursor} is a graph cursor $c \in Cur$
+  such that one of the following holds:
+  \begin{itemize}
+    \item $c = \CVertex{v}$ and $v \neq v_{root}$.
+    \item $c = \CEdge{\e}$ and $\e$ is a well sorted edge.
+    \item $c = \CSource{v}{p}$ and $(v, p)$ is a well sorted source.
+  \end{itemize}
+\end{definition}
+
+\begin{definition}
+  An \emph{almost valid graph cursor} is a well sorted graph cursor $c \in Cur$
+  such that one of the following holds:
   \begin{itemize}
     \item $c = \CVertex{v}$.
-    \item $c = \CEdge{\e}$ and $\e$ is a well sorted edge of $G$.
-    \item $c = \CSource{v}{p}$ and $(v, p)$ is a well sorted source of $G$.
+    \item $c = \CEdge{\e}$ and $\e \in \inedges{G}$.
+    \item $c = \CSource{v}{p}$
+      and there exists an edge $\e{=}(u, v', p', v) \in \E$
+      such that $G(\e) \in \SetOf{\Plus, \Minus}$.
   \end{itemize}
 \end{definition}
 
 \begin{definition}
-  An \emph{almost valid graph cursor} for a graph $G$ is a well sorted graph cursor $c$ for $G$ such that one of the following holds:
-  \begin{itemize}
-    \item $c = \CVertex{v}$
-      and $\SetOf{(u, v, p, v'), (u, v', p, v)} \cap \live{G} = \SetOf{\e}$
-      for some $u \in \U$ and some $p \in \P$ and some $v' \in \V$.
-    \item $c = \CEdge{\e}$ and $\e \in \live{G}$.
-    \item $c = \CSource{v}{p}$ and there exists an edge $(u, v, p, v') \in \live{G}$ such that $u \in \U \land v' \in \V$.
-  \end{itemize}
-\end{definition}
-
-\begin{definition}
-  A \emph{valid graph cursor} for a graph $G$ is an almost valid graph cursor $c$ for $G$ such that one of the following holds:
+  A \emph{valid graph cursor} is an almost valid graph cursor $c \in Cur$
+  such that one of the following holds:
   \begin{itemize}
     \item $c = \CVertex{v}$.
     \item $c = \CEdge{(u, v, p, v')}$ and one of the following holds:
     \begin{itemize}
-      \item $\SizeOf{\parents{v'}} > 1$.
-      \item $\SizeOf{\parents{v'}} = 1$ and $v' = \min{\ancestors{v'}}$.
+      \item $\SizeOf{\inedges{G_{v'}}} > 1$.
+      \item $\SizeOf{\inedges{G_{v'}}} = 1$ and $v' = \min{\ancestors{v'}}$.
     \end{itemize}
-    \item $c = \CSource{v}{p}$ and $\SizeOf{\children{v}{p}} \neq 1$.
+    \item $c = \CSource{v}{p}$ and $\SizeOf{\outedges{v}{p}} \neq 1$.
   \end{itemize}
 \end{definition}
 
+Let $\Z{\Grove}$ be a zippered grove such that $\erase{\Z{\Grove}}$ is a well sorted grove,
+and let $G = \recomp{\erase{\Z{\Grove}}}$ a graph,
+and let $\alpha \in Act$ a user action.
+
 \begin{theorem}[Sensibility]
-  For any zippered grove $\Z{\Grove}$
-  such that $\erase{\Z{\Grove}}$ is well sorted
-    and $\recomp{\erase{\Z{\Grove}}} = G$,
-  and any user action $\alpha$,
-  if
-  \[
-    \applyAction{\Z{\Grove}}{\alpha}{\Q{a}}{c},
-  \]
+  If $\applyAction{\Z{\Grove}}{\alpha}{\Q{a}}{c}$,
   then $G \action{\Q{a}} G'$ and $G'$ is well sorted.
 \end{theorem}
 
@@ -746,7 +775,7 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
   \inferrule{
     \applyAction{ \Z{t} }{ \alpha }{ \Q{a} }{ c }
   }{
-    \applyAction{ \conflictHole{\Z{t}, \SetOf{t_i}_{i \leq n}} }{ \alpha }{
+    \applyAction{ \conflictHole{\Z{t}, \SetOf{t_i}_{i < n}} }{ \alpha }{
       \Q{a}
     }{ c }
   }
@@ -756,123 +785,123 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
   \inferrule[Construct]{
     % If:
     % 
-    % 1. The source position (p_s) and new constructor (k) sort are valid w.r.t. the parent constructor (k_s)
-    (p_s, \sort{k}) \in \arity{k_s} \\
-    \defaultpos{k} \text{ undefined} \\
+    % 1. The term under the cursor is a hole
     % 
-    % 2. The term under the cursor is a hole
+    % 2. The user action is well sorted
+    (p_s, \sort{k}) \in \arity{k_s} \\
+    % 
+    % 3. The new constructor does not have default positions
+    \defaultpos{k} \text{ undefined} \\
     % 
     % And we let:
     % 
     % v_k = a new vertex with the new constructor
-    v_k = (\fresh{u}_k, k)
   }{
-    % Then the user action Construct(k) produces the following set of graph actions:
+    % Then we get the following graph actions:
     \applyAction{ \cursor{\emptyHole{v_s{=}(u_s, k_s)}{p_s}} }{ \Construct{k} }{
       % 
       % attach the new vertex to the cursor source
-      \SetOf{\graphAction{\Plus}{(\fresh{u}, v_s, p_s, v_k)}}
-    }{ \CVertex{v_k} }
+      \SetOf{\graphAction{\Plus}{(\fresh{u}_1, v_s, p_s, v{=}(\fresh{u}_2, k))}}
+    }{ \CVertex{v} }
   }
 
   \inferrule[ConstructWrap]{
     % If:
     % 
-    % 1. The term under the cursor (t) has an ingraph (Gt)
-    %   (==> t is a basic term or reference, or, equivalently, t is not a conflict or a hole)
-    \sources{G_t} = \SetOf{(v_{s_i}, p_{s_i})}_{i \leq n} \\
+    % 1. The term under the cursor is not a hole, i.e., it has an ingraph
+    \inedges{G_t} = \SetOf{\e_i{=}(u_i, v_i, p_i, v_i'{=}(u_i', k_i'))}_{i < n} \\
     % 
-    % 2. The new constructor (k) has default positions (p_wrap, p_post)
+    % 2. The new constructor has default positions
     \defaultpos{k} = (\pWrap, \pPost) \\
     % 
-    % 3. The new (default) position and old sort are in the arity of the new constructor
-    (\pWrap, \sort{k}) \in \arity{k} \\\\
+    % The term under the cursor has the same sort as the new constructor
+    \SetOf{\sort{k_i} = \sort{k}}_{i < n} \\
+    % 
+    % 4. The term under the cursor is well sorted w.r.t. the wrap position
+    (\pWrap, \sort{k}) \in \arity{k} \\
     % 
     % And we let:
     % 
     % v_k = a new vertex with the new constructor
-    v_k = (\fresh{u}_k, k) \\
-    % 
-    % e_i = a new edge from source i to the new vertex
-    \SetOf{\e_{v_i}}_{v_i \in \Q{v}_{G_t}} = \SetOf{(\fresh{u}_i, v_{s_i}, p_{s_i}, v_k)}_{i \leq n} \\
-    % 
-    % e' = a new edge from the new vertex and default position to the old invertex(es)
-    \SetOf{\e_i'} = \SetOf{(\fresh{u}, v_k, \pWrap, v_i)}_{v_i \in \Q{v}_{G_t}}
+    v = (\fresh{u}, k) \\
   }{
-    % Then the user action Construct(k) produces the following set of graph actions:
+    % Then we get the following graph actions:
     \applyAction{ \cursor{t} }{ \Construct{k} }{
-      % 
-      % delete the old ingraph
-      \SetOf{\graphAction{\Minus}{\e}}_{\e \in \live{G_t}} \cup
-      % 
-      % construct an equivalent ingraph on the new vertex
-      \SetOf{\graphAction{\Plus}{\e_{v_i}}}_{v_i \in \Q{v}_{G_t}} \cup
-      % 
-      % reattach the old invertex to the default position of the new vertex
-      \SetOf{\graphAction{\Plus}{\e_i'}}_{i \leq n}
-    }{ \CSource{v_k}{\pPost} }
+      \SetOf{
+        % 
+        % delete the vertices under the cursor
+        \graphAction{\Minus}{\e_i},
+        % 
+        % attach the new vertex to the sources of the vertices under the cursor
+        \graphAction{\Plus}{(\fresh{u}_{1i}, v_i, p_i, v)},
+        % 
+        % reattach the old invertex to the default position of the new vertex
+        \graphAction{\Plus}{(\fresh{u}_{2i}, v, \pWrap, v_i')}
+      }_{i < n}
+    }{ \CSource{v}{\pPost} }
   }
 
   \inferrule[Delete]{
     % If:
     % 
-    % 1. The term under the cursor (t) has an ingraph (Gt)
-    \live{G_t} = \SetOf{\e_i}_{i \leq n} \\
+    % 1. The term under the cursor is not a hole, i.e., it has an ingraph
+    \inedges{G_t} = \SetOf{\e_i}_{i < n} \\
     % 
-    % 2. There is a unique source ==> not a deleted root or a multiparent root
+    % 2. The term under the cursor is not a deleted root or a multiparent root
     \sources{G_t} = \SetOf{(v, p)}
   }{
-    % Then the user action Delete produces the following set of graph actions:
+    % Then we get the following graph actions:
     \applyAction{ \cursor{t} }{ \Delete }{
       % 
-      % delete the ingraph
-      \SetOf{\graphAction{\Minus}{\e_i}}_{i \leq n}
+      % delete the vertices under the cursor
+      \SetOf{\graphAction{\Minus}{\e_i}}_{i < n}
     }{ \CSource{v}{p} }
   }
 
   \inferrule[DeleteMultiparent]{
     % If:
     % 
-    % 1. The term under the cursor (t) has an ingraph (Gt)
-    \live{G_t} = \SetOf{\e_i}_{i \leq n} \\
+    % 1. The term under the cursor is not a hole, i.e., it has an ingraph
+    \inedges{G_t} = \SetOf{\e_i{=}(u_i, v_i, p_i, v)}_{i < n} \\
+    % 
+    % 2. The term under the cursor is a multiparent root
     \SizeOf{\sources{G_t}} > 1
   }{
-    % Then the user action Delete produces the following set of graph actions:
+    % Then we get the following graph actions:
     \applyAction{ \cursor{t} }{ \Delete }{
       % 
-      % delete the ingraph
-      \SetOf{\graphAction{\Minus}{\e_i}}_{i \leq n}
-    }{ \CVertex{v_{G_t}} }
+      % delete the vertices under the cursor
+      \SetOf{\graphAction{\Minus}{\e_i}}_{i < n}
+    }{ \CVertex{v} }
   }
 
   \inferrule[Reposition]{
     % If:
     % 
-    % 1. The term under the cursor (t) has an ingraph (Gt)
-    \live{G_t} = \SetOf{\e_i}_{i \leq n} \\
+    % 1. The term under the cursor is not a hole, i.e., it has an ingraph
+    \inedges{G_t} = \SetOf{\e_i{=}(u_i, v_i, p_i, v_i'{=}(u_i', k_i'))}_{i < n} \\
     % 
-    % 2. The new source has no children
-    \SizeOf{\children{v}{p}} = 0 \\
+    % 2. The destination is an empty hole
+    \SizeOf{\outedges{v}{p}} = 0 \\
     % 
-    % 3. The inconstructor (k_Gt) and new source position are in the arity of the new source constructor (k)
-    \SetOf{(p, \sort{k_i}) \in \arity{k}}_{k_i \in \Q{k}_{G_t}}
+    % 3. The constructors under the cursor are well sorted w.r.t. the destination
+    \SetOf{(p, \sort{k_i'}) \in \arity{k}}_{i < n}
   }{
-    % Then the user action Reposition(v=(u,k), p) produces the following set of graph actions:
+    % Thenwe get the following graph actions:
     \applyAction{ \cursor{t} }{ \Reposition{v{=}(u, k)}{p} }{
-      % 
-      % delete the old ingraph
-      \SetOf{\graphAction{\Minus}{\e_i}}_{i \leq n} \cup
-      % 
-      % attach the old invertex(es) to the new parent
-      \SetOf{\graphAction{\Plus}{(\fresh{u}, v, p, v_i)}}_{v_i \in \Q{v}_{G_t}}
+      \SetOf{
+        % 
+        % delete the vertices under the cursor
+        \graphAction{\Minus}{\e_i}
+        % 
+        % reattach them to the destination
+        \graphAction{\Plus}{(\fresh{u}, v, p, v_i)}
+      }_{i < n}
     }{ \CSource{v}{p} }
   }
 \end{mathpar}
 
-% TODO: Lemma: if t is well sorted, then G_t is well sorted
 % TODO: point out in the narrative that leaving out |children|=0 on Reposition allows locally produced conflicts
-
-% \subsubsection{Post-action cursor fixing}
 
 \noindent
 $\boxed{\fix{c} = c'}$
@@ -884,13 +913,13 @@ $\boxed{\fix{c} = c'}$
   }
 
   \inferrule[FCSource]{
-    \SizeOf{\children{v}{p}} \neq 1
+    \SizeOf{\outedges{v}{p}} \neq 1
   }{
     \fix{c{=}\CSource{v}{p}} = c
   }
 
   \inferrule[FCSourceVertex]{
-    \children{v}{p} = \SetOf{(u, v, p, v')} \\
+    \outedges{v}{p} = \SetOf{(u, v, p, v')} \\
     \SizeOf{\parents{v'}} = 1 \\
     v' \neq \min{\ancestors{v'}}
   }{
@@ -898,7 +927,7 @@ $\boxed{\fix{c} = c'}$
   }
 
   \inferrule[FCSourceEdge]{
-    \children{v}{p} = \SetOf{(u, v, p, v')} \\
+    \outedges{v}{p} = \SetOf{(u, v, p, v')} \\
     \SizeOf{\parents{v'}} > 1 \lor v' = \min{\ancestors{v'}}
   }{
     \fix{c{=}\CSource{v}{p}} = \CEdge{(\fresh{u}, v, p, v')}

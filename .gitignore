@@ -26,3 +26,4 @@
 *.pdf
 __*_temp.tex
 *.code-workspace
+*.xcp

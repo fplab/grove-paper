@@ -17,7 +17,7 @@
       \mid \eTimes{G}{e}{e}
       \mid \multiVertex{\e}
       \mid \cycleVertex{\e}
-      \mid \conflictHole[i \leq n]{e_i}
+      \mid \conflictHole[i < n]{e_i}
       \mid \emptyHole{v}{p}
     \\
     \tau & {}\in{} & Typ & {}::={} &
@@ -25,14 +25,14 @@
       \mid \tNum{G}
       \mid \multiVertex{\e}
       \mid \cycleVertex{\e}
-      \mid \conflictHole[i \leq n]{\tau_i}
+      \mid \conflictHole[i < n]{\tau_i}
       \mid \emptyHole{v}{p}
     \\
     q & {}\in{} & Pat{} & {}::={} &
       \pVar{G}{x}
       \mid \multiVertex{\e}
       \mid \cycleVertex{\e}
-      \mid \conflictHole[i \leq n]{q_i}
+      \mid \conflictHole[i < n]{q_i}
       \mid \emptyHole{v}{p}
     \\
   \end{array}
