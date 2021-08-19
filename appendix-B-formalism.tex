@@ -6,103 +6,20 @@
 \subsection{Graphs}
 \label{sec:Formalism:Graphs}
 
-Let $\U$ be a set of \emph{unique identifiers} equipped with a total ordering $\leq$,
-and let $\K$ be a set of \emph{constructors},
-and let $\P$ be a set of \emph{positions}.
-Now, let $\V = \U \times \K$ the set of all \emph{vertices},
-and let $\E = \U \times \V \times \P \times \V$ the set of all \emph{edges},
-and let $\Sigma = \SetOf{\bot, \Plus, \Minus}$ a set of \emph{edge states}
-equipped with a total ordering $\bot \sqsubset \Plus \sqsubset \Minus$ that forms a lattice over $\Sigma$.
-
-\begin{definition}
-  A \emph{graph} $G : \E \rightarrow \Sigma$ is a function from edges to edge states.
-\end{definition}
-
-Let $G : \E \rightarrow \Sigma$,
-and let $\e \in \E$.
-When $G(\e) = \Plus$, we say $\e$ is \emph{live},
-and when $G(\e) = \Minus$, we say $\e$ is \emph{deleted}.
-
-\begin{definition}
-  The \emph{inedges} of a graph $G : \E \rightarrow \Sigma$,
-  \[
-    \inedges{G} = \SetOf{\e \in \E \SuchThat{G(\e) = \Plus}}.
-  \]
-\end{definition}
-
-\begin{definition}
-  The \emph{sources} of a graph $G : \E \rightarrow \Sigma$,
-  \[
-    \sources{G} = \SetOf{(v, p) \in \V \times \P \SuchThat{(u, v, p, v') \in \live{G} \land u \in \U \land v' \in \V}}.
-  \]
-\end{definition}
-
-\begin{definition}
-  An \emph{edge} $\e{=}(u, v, p, v^\prime) \in \E$ is a directed multi-edge with
-  a unique identifier $u \in \U$,
-  a \emph{source vertex} $v \in \V$,
-  a \emph{source position} $p \in \P$,
-  and a \emph{target vertex} $v' \in \V$.
-\end{definition}
-
-\begin{definition}
-  A \emph{source} $(v, p) \in \V \times \P$ is a vertex $v \in \V$ and a position $p \in \P$.
-\end{definition}
-
-Let $\e{=}(u, v, p, v') \in \E$.
-We call $(v, p)$ the \emph{source} of edge $\e$,
-and we call $v'$ the \emph{target} of edge $\e$.
-
-\begin{definition}
-  The \emph{outedges} of a source $(v, p) \in \V \times \P$,
-  \[
-    \outedges{v}{p} = \SetOf{(u, v, p, v') \in \inedges{G} \SuchThat{u \in \U \land v' \in \V }}
-  \]
-\end{definition}
-
-\begin{definition}
-  The \emph{inedges} of a vertex $v \in \V$,
-  \[
-    \inedges{v} = \SetOf{\e{=}(u, v', p, v) \in \E \SuchThat{G(\e) = \Plus \land u \in \U \land v' \in \V \land p \in \P}}.
-  \]
-\end{definition}
-
-\begin{definition}
-  The \emph{ingraph} of a vertex $v \in \V$ is a graph $G_v : \E \rightarrow \Sigma$
-  such that
-  \[
-    G_v(\e{=}(u, v_\e, p, v_\e')) =
-    \begin{cases}
-      G(\e) & \text{if } v_\e' = v, \text{ and} \\
-      \bot  & \text{if } v_\e' \neq v. \\
-    \end{cases}
-  \]
-  We write $G_v$ to denote the ingraph of vertex $v$.
-\end{definition}
-
-\begin{definition}
-  The \emph{parents} of a vertex $v \in \V$,
-  \[
-    \parents{v} = \SetOf{v' \in \V \SuchThat{(u, v', p, v) \in \live{G} \land u \in \U \land p \in \P}}.
-  \]
-\end{definition}
-
-\begin{definition}
-  The \emph{ancestors} of a vertex $v \in \V$,
-  \[
-    \ancestors{v} = \mathopen{}\left( \lfp{\ancestorsPrimeOp} \right)\mathclose{}(v)
-  \]
-  where $\ancestorsPrime{v} = \parents{v} \cup \ancestorsPrime{\parents{v}}$
-  and $\lfp{\ancestorsPrimeOp}$ is the least fixed point of $\ancestorsPrimeOp$.
-\end{definition}
-
-\begin{definition}
-  The \emph{least vertex} of a set of vertices $\Q{v} \subseteq \V$,
-  \[
-    \min{\Q{v}} = \argmin{(u, k) \in \Q{v}}{u}
-  \]
-  w.r.t. the total ordering ($\leq$) on unique identifiers.
-\end{definition}
+\begin{align*}
+  \sources{G} &= \SetOf{(v, p) \in \S \SuchThat{
+    (u, (v, p), v') \in \inedges{G} \land u \in \U \land v' \in \V}} \\
+  \inedges{G} &= \SetOf{\e \in \E \SuchThat{G(\e) = \Plus}} \\
+  \outedges{v}{p} &= \SetOf{(u, (v, p), v') \in \inedges{G} \SuchThat{u \in \U \land v' \in \V }} \\
+  \inedges{v} &= \SetOf{\e{=}(u, (v', p), v) \in \inedges{G} \SuchThat{u \in \U \land (v', p) \in \S}} \\
+  G_v(\e{=}(u, (v, p), v')) &= \begin{cases}
+    G(\e) & v' = v \\
+    \bot  & v' \neq v \\
+  \end{cases} \\
+  \parents{v} &= \SetOf{v' \in \V \SuchThat{(u, (v', p), v) \in \inedges{G} \land u \in \U \land p \in \P}} \\
+  \ancestors{v} &= \mathopen{}\left( \lfp{\ancestorsPrimeOp} \right)\mathclose{}(v) \\
+  \min{\Q{v}} &= \argmin{(u, k) \in \Q{v}}{u}
+\end{align*}
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 

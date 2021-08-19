@@ -11,17 +11,17 @@
     e & {}\in{} & Exp & {}::={} &
       \eVar{G}{x}
       \mid \eFun{G}{q}{\tau}{e}
-      \mid \eApp{G}{e}{e}
+      \mid \eApp{G}{e_1}{e_2}
       \mid \eNum{G}{n}
-      \mid \ePlus{G}{e}{e}
-      \mid \eTimes{G}{e}{e}
+      \mid \ePlus{G}{e_1}{e_2}
+      \mid \eTimes{G}{e_1}{e_2}
       \mid \multiVertex{\e}
       \mid \cycleVertex{\e}
       \mid \conflictHole[i < n]{e_i}
       \mid \emptyHole{v}{p}
     \\
     \tau & {}\in{} & Typ & {}::={} &
-      \tArrow{G}{\tau}{\tau}
+      \tArrow{G}{\tau_1}{\tau_2}
       \mid \tNum{G}
       \mid \multiVertex{\e}
       \mid \cycleVertex{\e}
@@ -42,7 +42,7 @@
 \newcommand{\figureTermSyntax}{%
 \begin{figure}
   \figureTermSyntaxContent
-  \caption{Base syntax, as a grammar, for the lambda calculus that we are considering.}
-  \label{fig:Base syntax}
+  \caption{Syntax of terms}
+  \label{fig:Syntax}
 \end{figure}%
 }

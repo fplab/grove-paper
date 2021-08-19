@@ -2,71 +2,110 @@
 \section{Formalism}%
 \label{sec:Formalism}
 
-We will now make the intuitions developed in the previous section precise
-by defining a collaborative structure editor calculus called Grove.
-We begin in Sec.~\ref{sub:Syntax} with the syntax, then discuss
-the internal graph representation in Sec.~\ref{sub:Convergent Graphs},
-...
+We will now make the intuitions developed in the previous section precise by defining a collaborative structure editor calculus called Grove.
+This section
+  gives the syntax of our source language,
+  discusses the internal representations of graphs and terms,
+  presents a commutative graph edit semantics,
+  and introduces the user action semantics.
+
+% We begin in Sec.~\ref{sub:Syntax} with the syntax,
+% then discuss the internal graph representation in Sec.~\ref{sub:Convergent Graphs},
+% ...
 
 
-TODO: point of this section is commutativity theorem
+% TODO: point of this section is commutativity theorem
 
-TODO: (though as we show in \autoref{sec:Formalism} creating a vertex is implicit in edge creation)
+% TODO: (though as we show in \autoref{sec:Formalism} creating a vertex is implicit in edge creation)
 
-The formalism is rather simple, \autoref{sec:Grove By Example} shows
-that it is sufficient to handle many common situations,
-and this simplicity aids in the predictability.
+% The formalism is rather simple, \autoref{sec:Grove By Example} shows
+% that it is sufficient to handle many common situations,
+% and this simplicity aids in the predictability.
 
 \figureTermSyntax
 
 \subsection{Syntax}%
 \label{sub:Syntax}
 
-The language we are modeling is shown in \autoref{fig:Base syntax}, standard for a simply-typed lambda calculus except that all sorts have empty holes (represented by $\hole$) and conflict holes (of the form $\conflictHole{q,\ldots,q}$).
-In particular, the argument of a lambda can be either a bound variable or a hole.
-Additionally, all non-hole forms have a superscripted identifier $u \in \U$.
+Our source language (\autoref{fig:Syntax}) is a simply typed lambda calculus with references, empty holes, and conflict holes.
+The syntax of terms is sorted into expressions, types, and patterns.
+Expressions include
+  variables $\eVar{G}{x}$,
+  lambda abstractions with pattern arguments $\eFun{G}{q}{\tau}{e}$,
+  applications $\eApp{G}{e_1}{e_2}$,
+  and numbers $\eNum{G}{n}$ with addition $\ePlus{G}{e_1}{e_2}$ and multiplication $\eTimes{G}{e_1}{e_2}$.
+Types include
+  arrows $\tArrow{G}{\tau_1}{\tau_2}$
+  and the type of numbers $\tNum{G}$.
+Patterns include variables $\pVar{G}{x}$.
+Each sort of term also contains
+multiparent references $\multiVertex{\e}$,
+unicycle references $\cycleVertex{\e}$,
+conflict holes $\conflictHole{t_i}_{i < n}$,
+and empty holes $\hole$.
+Note that for conflict holes, it must be the case that $n \geq 2$.
+We identify conflict holes up to reordering.
 
-% Turn that into a constructor set K + position set P + arity function (has
-% type: K -> $\wp$(P)).
+Each term that is not a conflict hole carries an annotation.
+For terms that are not holes, the annotation corresponds to the graph or edge it recomposes to.
+Multiparent references correspond to edges that target
+  \emph{multiparent roots}---vertices targeted by multiple edges.
+Unicycle references correspond to edges that target
+  \emph{unicycle roots}---vertices that are their own least ancestor.
+Empty holes, which denote the absence of any corresponding structure,
+are annotated with the source needed to construct terms in their place.
 
-% TODO: replace positions with macros
+Conflict holes correspond to multiple edges with a common source.
+Since conflict holes cannot be nested or contain empty holes,
+each term in a conflict hole is annotated with the graph or edge it recomposes to,
+and the combined annotations correspond to the graph the entire conflict hole recomposes to.
 
-\figureArity
+% \figureArity
 
 \subsection{Convergent Graphs}%
 \label{sub:Convergent Graphs}
 
-\subsubsection{Graphs}%
-\label{sub:Graphs}
+Let $\U$ be a set of \emph{unique identifiers} equipped with a total ordering $\leq$,
+and $\K$ the \emph{constructors} of terms in the source language,
+and $\P$ the \emph{positions} of subterms in the source language,
+and $\Sigma = \SetOf{\bot, \Plus, \Minus}$ the
+  \emph{edge states} equipped with a total ordering $\bot \sqsubset \Plus \sqsubset \Minus$
+  that forms a lattice over $\Sigma$.
+Now, let $\V = \U \times \K$ all possible \emph{vertices},
+and $\S = \V \times \P$ all possible \emph{sources},
+and $\E = \U \times \S \times \V$ all possible \emph{edges}.
 
-A graph $G : \E \rightarrow \Sigma$ is a function from edges to edge states,
-where $\E = \U \times \V \times \P \times \V$,
-unique IDs are drawn from some suitable set $\U$ equipped with a total ordering $\leq$,
-vertices are drawn from $\V$,
-positions are drawn from $\P$,
-and edge states are drawn from $\Sigma$, all defined below.
+A \emph{graph} $G : \E \rightarrow \Sigma$ is a function from edges to edge states.
+Graphs that represent a complete edit state have a distinguished
+  root vertex $\rootVertex$
+  and root position $\rootPosition$.
+The \emph{inedges} of $G$ are the edges on which $G$ returns $\Plus$.
+The \emph{outedges} of a source are the inedges that have the source.
 
-Each edge $\e = (u, v, p, v^\prime)$ has a unique name, $u \in \U$, and connects
-the child position $p$ of originating vertex $v$ to destination vertex
-$v^\prime$. The state of each edge, $\e$, is determined by the corresponding
-edge state, $G(\e) \in \Sigma = \{ \bot, \Plus, \Minus \}$. When $G(\e) = \bot$,
-$\e$ has not been created or deleted. When $G(\e)$ is $\Plus$, the edge has been
-created. When $G(\e)$ is $\Minus$, the edge has been deleted. The total
-ordering $\bot \sqsubset \Plus \sqsubset \Minus$ forms a lattice over $\Sigma$.
+An \emph{edge} $\e{=}(u, (v, p), v^\prime) \in \E$ represents a directed multi-edge
+identified by $u \in \U$, originating from source $(v, p) \in \S$, with destination vertex $v' \in \V$.
 
-A vertex $v = (u, k)$ identifies a distinct instance of some constructor $k \in
-\K$, corresponding to a non-hole form defined in \autoref{fig:Base syntax}. Each
-contructor has an arity, which we define as a set of positions. A position $p
-\in \P$ identifies a location at some originating vertex from which edges to
-destination vertices may originate. The $\arityOp$ function in
-\autoref{fig:Constructors, Indexes and Arity} gives the complete mapping from
-constructors to potential edge positions with their corresponding sorts. Every
-graph contains a distinguished root vertex, root constructor, and root position,
-respectively named $v_0$, $k_0$, and $p_0$.
+A vertex $v = (u, k) \in \V$ is an instance of constructor $k \in \K$ identified by $u \in \U$.
+Vertices correspond to \emph{constructable terms}---terms that are not references or holes.
+The \emph{inedges} of $v$ are the inedges that target $v$.
+The \emph{ingraph} of $v$ is the subgraph on inedges that target $v$.
+We write $G_v$ to denote the ingraph of $v$.
+The \emph{parents} of $v$ are the source vertices of the inedges of $v$.
+The \emph{ancestors} of $v$ is defined inductively as the parent vertices of $v$ plus their ancestors.
+The \emph{least ancestor} of $v$ is the ancestor with the smallest unique identifier.
 
-\vspace*{\baselineskip}
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
-% TODO: add a lead-in sentence here
+\subsubsection{Well sorted graphs}
+\label{sub:Well sorted graphs}
+
+% TODO: where does this go?
+% 
+% Each contructor has an arity, which we define as a set of position-sort pairs. A position $p
+% \in \P$ identifies a location at some originating vertex from which edges to
+% destination vertices may originate. The $\arityOp$ function in
+% \autoref{fig:Constructors, Indexes and Arity} gives the complete mapping from
+% constructors to potential edge positions with their corresponding sorts.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TODO: put this in a definition box
@@ -202,7 +241,7 @@ Discuss uniqueness of uuid
 % NOTE: this whole section is for describing the 4-tuple
 
 Trees are often easier to work with than arbitrary graphs directly, for example to present the graph to users or for type checking.
-A graph can be decomposed into a collection of expressions governed by the grammar in \autoref{fig:Base syntax}, which we organize into a structure called a grove.
+A graph can be decomposed into a collection of expressions governed by the grammar in \autoref{fig:Syntax}, which we organize into a structure called a grove.
 
 \figureDecompExample
 
