@@ -2,16 +2,18 @@
 \section{Formalism}%
 \label{sec:Formalism}
 
-We will now make the intuitions developed in the previous section precise by defining a collaborative structure editor calculus called Grove.
-This section
-  gives the syntax of our source language,
-  discusses the internal representations of graphs and terms,
-  presents a commutative graph edit semantics,
-  and introduces the user action semantics.
+% TODO: try to introduce groves in section 2?
+% TODO: use key phrases in section 2, e.g.: "unresolved parentage"
 
-% We begin in Sec.~\ref{sub:Syntax} with the syntax,
-% then discuss the internal graph representation in Sec.~\ref{sub:Convergent Graphs},
-% ...
+We will now make the intuitions developed in the previous section precise by defining a collaborative structure editor calculus called Grove.
+This section introduces
+  graphs (\autoref{sub:Convergent Graphs})
+  and commutative graph edits (\autoref{sub:Graph Edits}).
+Users do not edit graphs directly.
+Instead, they work with the decomposition of graphs into groves (\autoref{sub:Groves})%
+---collections of terms with empty holes, conflict holes, and references to terms with unresolved parentage.
+User actions on groves translate to corresponding graph edits (\autoref{sub:User Actions}).
+
 
 
 % TODO: point of this section is commutativity theorem
@@ -22,60 +24,27 @@ This section
 % that it is sufficient to handle many common situations,
 % and this simplicity aids in the predictability.
 
-\figureTermSyntax
-
-\subsection{Syntax}%
-\label{sub:Syntax}
-
-Our source language (\autoref{fig:Syntax}) is a simply typed lambda calculus with references, empty holes, and conflict holes.
-The syntax of terms is sorted into expressions, types, and patterns.
-Expressions include
-  variables $\eVar{G}{x}$,
-  lambda abstractions with pattern arguments $\eFun{G}{q}{\tau}{e}$,
-  applications $\eApp{G}{e_1}{e_2}$,
-  and numbers $\eNum{G}{n}$ with addition $\ePlus{G}{e_1}{e_2}$ and multiplication $\eTimes{G}{e_1}{e_2}$.
-Types include
-  arrows $\tArrow{G}{\tau_1}{\tau_2}$
-  and the type of numbers $\tNum{G}$.
-Patterns include variables $\pVar{G}{x}$.
-Each sort of term also contains
-multiparent references $\multiVertex{\e}$,
-unicycle references $\cycleVertex{\e}$,
-conflict holes $\conflictHole{t_i}_{i < n}$,
-and empty holes $\hole$.
-Note that for conflict holes, it must be the case that $n \geq 2$.
-We identify conflict holes up to reordering.
-
-Each term that is not a conflict hole carries an annotation.
-For terms that are not holes, the annotation corresponds to the graph or edge it recomposes to.
-Multiparent references correspond to edges that target
-  \emph{multiparent roots}---vertices targeted by multiple edges.
-Unicycle references correspond to edges that target
-  \emph{unicycle roots}---vertices that are their own least ancestor.
-Empty holes, which denote the absence of any corresponding structure,
-are annotated with the source needed to construct terms in their place.
-
-Conflict holes correspond to multiple edges with a common source.
-Since conflict holes cannot be nested or contain empty holes,
-each term in a conflict hole is annotated with the graph or edge it recomposes to,
-and the combined annotations correspond to the graph the entire conflict hole recomposes to.
-
 % \figureArity
 
 \subsection{Convergent Graphs}%
 \label{sub:Convergent Graphs}
 
-Let $\U$ be a set of \emph{unique identifiers} equipped with a total ordering $\leq$,
-and $\K$ the \emph{constructors} of terms in the source language,
-and $\P$ the \emph{positions} of subterms in the source language,
-and $\Sigma = \SetOf{\bot, \Plus, \Minus}$ the
-  \emph{edge states} equipped with a total ordering $\bot \sqsubset \Plus \sqsubset \Minus$
-  that forms a lattice over $\Sigma$.
-Now, let $\V = \U \times \K$ all possible \emph{vertices},
-and $\S = \V \times \P$ all possible \emph{sources},
-and $\E = \U \times \S \times \V$ all possible \emph{edges}.
+% Let $\U$ be a set of \emph{unique identifiers} equipped with a total ordering $\leq$,
+% and $\K$ the \emph{constructors} of terms in the source language,
+% and $\P$ the \emph{positions} of subterms in the source language,
+% and $\Sigma = \SetOf{\bot, \Plus, \Minus}$ the
+%   \emph{edge states} equipped with a total ordering $\bot \sqsubset \Plus \sqsubset \Minus$ that forms a lattice over $\Sigma$.
+% Now, let $\V = \U \times \K$ all possible \emph{vertices},
+% and $\S = \V \times \P$ all possible \emph{sources},
+% and $\E = \U \times \S \times \V$ all possible \emph{edges}.
 
-A \emph{graph} $G : \E \rightarrow \Sigma$ is a function from edges to edge states.
+A \emph{graph} $G : \E \rightarrow \Sigma$ is a function from edges to edge states,
+  where $\E = \U \times \S \times \V$,
+  unique identifiers are drawn from some suitable set $\U$ equipped with a total ordering $\leq$,
+  sources are drawn from $\S$,
+  vertices are drawn from $\V$,
+  and edge states are drawn from $\Sigma$,
+  all defined below.
 Graphs that represent a complete edit state have a distinguished
   root vertex $\rootVertex$
   and root position $\rootPosition$.
@@ -85,8 +54,20 @@ The \emph{outedges} of a source are the inedges that have the source.
 An \emph{edge} $\e{=}(u, (v, p), v^\prime) \in \E$ represents a directed multi-edge
 identified by $u \in \U$, originating from source $(v, p) \in \S$, with destination vertex $v' \in \V$.
 
-A vertex $v = (u, k) \in \V$ is an instance of constructor $k \in \K$ identified by $u \in \U$.
-Vertices correspond to \emph{constructable terms}---terms that are not references or holes.
+The \emph{edge states} $\Sigma = \SetOf{\bot, \Plus, \Minus}$ determine which edges are live in a graph.
+For example, if $G(\e) = \Plus$ for some $G : \E \rightarrow \Sigma, \e \in \E$,
+then we say $\e$ is \emph{live}, i.e., it corresponds to a term in the graph decomposition, as explained in \autoref{sub:Graph Decomposition}.
+The total ordering $\bot \sqsubset \Plus \sqsubset \Minus$ forms a lattice over $\Sigma$.
+
+A \emph{source} is a pair $(v, p) \in \S$,
+  where $\S = \V \times \P$,
+  vertices are drawn from $\V$,
+  and positions are drawn from $\P$.
+
+A \emph{vertex} $v = (u, k) \in \V = \U \times \K$ is a constructor instance,
+  where unique identifiers are drawn from $\U$
+  and constructors are drawn from $k \in \K$.
+Vertices represent \emph{constructable terms}, i.e., terms that are not references or holes.
 The \emph{inedges} of $v$ are the inedges that target $v$.
 The \emph{ingraph} of $v$ is the subgraph on inedges that target $v$.
 We write $G_v$ to denote the ingraph of $v$.
@@ -157,7 +138,7 @@ edges originating from it.
 % unique IDs $u$ (for both edges and vertexes).
 % - holes are not explicit in the graph
 
-\subsubsection{Graph Edits}%
+\subsection{Graph Edits}%
 \label{sub:Graph Edits}
 
 We define a graph edit $\alpha \in \A = \left\{\Plus, \Minus\right\} \times \E$
@@ -231,6 +212,54 @@ Discuss uniqueness of uuid
 
 \subsubsection{Agda Mechanization}%
 \label{sub:Agda Mechanization}
+
+\subsection{Groves}%
+\label{sub:Groves}
+
+\figureTermSyntax
+
+% TODO: check for \hole --> \emptyHole
+
+Our source language (\autoref{fig:Syntax}) is a simply typed lambda calculus with references, empty holes, and conflict holes.
+The syntax of terms is sorted into
+  expressions $e$,
+  types $\tau$,
+  and patterns $q$.
+These can include
+  graph annotations $G$,
+  edge annotations $\e$,
+  or source annotations $(v, p)$,
+  which we introduce in \autoref{sub:Convergent Graphs}.
+Expressions include
+  variables $\eVar{G}{x}$,
+  lambda abstractions with pattern arguments $\eFun{G}{q}{\tau}{e}$,
+  applications $\eApp{G}{e_1}{e_2}$,
+  and numbers $\eNum{G}{n}$ with addition $\ePlus{G}{e_1}{e_2}$ and multiplication $\eTimes{G}{e_1}{e_2}$.
+Types include
+  arrows $\tArrow{G}{\tau_1}{\tau_2}$
+  and the type of numbers $\tNum{G}$.
+Patterns include variables $\pVar{G}{x}$.
+Each sort of term also contains
+and empty holes $\hole_{(v, p)}$.
+multiparent references $\multiVertex{\e}$,
+unicycle references $\cycleVertex{\e}$,
+and conflict holes $\conflictHole{t_i}_{i < n}$.
+For conflict holes, it must be the case that $n \geq 2$.
+We identify conflict holes up to reordering.
+
+Each term that is not a conflict hole carries an annotation.
+For terms that are not holes, the annotation corresponds to the graph or edge it recomposes to.
+Multiparent references correspond to edges that target
+  \emph{multiparent roots}---vertices targeted by multiple edges.
+Unicycle references correspond to edges that target
+  \emph{unicycle roots}---vertices that are their own least ancestor.
+Empty holes, which denote the absence of any corresponding structure,
+are annotated with the source needed to construct terms in their place.
+
+Conflict holes correspond to multiple edges with a common source.
+Since conflict holes cannot be nested or contain empty holes,
+each term in a conflict hole is annotated with the graph or edge it recomposes to,
+and the combined annotations correspond to the graph the entire conflict hole recomposes to.
 
 \subsection{Graph Decomposition}%
 \label{sub:Graph Decomposition}
