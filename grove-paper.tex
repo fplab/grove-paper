@@ -1,3 +1,5 @@
+% !TEX program = lualatex
+
 %% For double-blind review submission, w/o CCS and ACM Reference (max submission space)
 %\documentclass[acmsmall,review,anonymous,nonacm]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
 \documentclass[acmsmall,10pt,review,anonymous]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
@@ -36,6 +38,9 @@
 \bibliographystyle{ACM-Reference-Format}
 %\citestyle{acmauthoryear}
 \citestyle{acmnumeric}
+
+% TODO: consolidate all the macros into here
+\input{macros}
 
 \input{config-tex}
 \input{config-tikz}
@@ -125,12 +130,12 @@
 %% environment and commands, and keywords command.
 \maketitle
 
-\input{grove-paper-1-introduction}
-\input{grove-paper-2-grove-by-example}
-\input{grove-paper-3-formalism}
-\input{grove-paper-5-implementation}
-\input{grove-paper-6-related-work}
-\input{grove-paper-7-discussion-and-conclusion}
+\input{introduction}
+\input{grove-by-example}
+\input{formalism}
+\input{implementation}
+\input{related-work}
+\input{discussion-and-conclusion}
 
 %% Acknowledgments
 \begin{acks}                            %% acks environment is optional
