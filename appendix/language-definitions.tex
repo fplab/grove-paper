@@ -1,2 +1,78 @@
 \section{Language Definitions}
 \label{sec:language-definitions}
+
+\begin{definition}
+  A \emph{language representation}
+  $\Delta = (\Sorts, \Constructors, \Positions, \ConstructorSorts, \PositionSorts, \PositionConstructors)$
+  is a six-tuple consisting of three finite ordered sets with three binary relations:
+
+  \begin{minipage}{.48\linewidth}
+    \[
+      \arraycolsep=4pt
+      \begin{array}{lrcr}
+        \text{Sorts}        & \Sorts        & = & \Setof{S_i}_{i < |\Sorts| }        \\
+        \text{Constructors} & \Constructors & = & \Setof{C_i}_{i < |\Constructors| } \\
+        \text{Positions}    & \Positions    & = & \Setof{P_i}_{i < |\Positions| }    \\
+      \end{array}
+    \]
+  \end{minipage}
+  \hfil
+  \begin{minipage}{.48\linewidth}
+    \[
+      \arraycolsep=4pt
+      \begin{array}{lrcr}
+        \text{Position Constructors} & \PositionConstructors & \subseteq & \Positions \times \Constructors \\
+        \text{Position Sorts}        & \PositionSorts        & \subseteq & \Positions \times \Sorts        \\
+        \text{Constructor Sorts}     & \ConstructorSorts     & \subseteq & \Constructors \times \Sorts     \\
+      \end{array}
+    \]
+  \end{minipage}
+  %
+  such that the relations satisfy the following properties:
+  \begin{enumerate}
+    \item For each position $P \in \Positions$,
+          there is a unique constructor $C \in \Constructors$ such that $(P, C) \in \PositionConstructors$.
+    \item For each position $P \in \Positions$,
+          there is a unique sort $S \in \Sorts$ such that $(P, S) \in \PositionSorts$.
+    \item For each constructor $C \in \Constructors$,
+          there is a unique sort $S \in \Sorts$ such that $(C, S) \in \ConstructorSorts$.
+  \end{enumerate}
+\end{definition}
+
+\begin{definition}
+  In any language representation $\Delta$,
+  the \emph{ports} of a constructor $C \in \Constructors$, denoted $\Ports{C}$,
+  is the largest subset of $\Positions$ such that $(P, C) \in \PositionConstructors$ for all $P \in \Ports{C}$.
+\end{definition}
+
+\begin{definition}
+  The \emph{arity map} of a language representation $\Delta$
+  is a binary relation $\Arity \subseteq \Constructors \times \Pow{\Positions}$
+  defined by $\Arity = \Setof{(C, [C]_\Positions)}_{C \in \Constructors}$.
+\end{definition}
+
+\begin{theorem}
+  \label{thm:langrep-rel-funs}
+  The relations of a language representation are total functions.
+\end{theorem}
+
+\begin{theorem}
+  \label{thm:langrep-arity-fun}
+  In any language representation, arity maps are total functions.
+\end{theorem}
+
+Theorems \ref{thm:langrep-rel-funs} and \ref{thm:langrep-arity-fun}
+justify the use of function notation when working with language representations and arity maps.
+For example, for any $P \in \Positions$, we may write $\PositionConstructors(P)$
+to denote the unique constructor $C \in \Constructors$ such that $(P, C) \in \PositionConstructors$.
+
+\begin{theorem}
+  Any language representation $\Delta$ with arity map $\Arity$
+  satisfies the property that $\PositionConstructors(P) = C$ if and only if $P \in \Arity(C)$.
+\end{theorem}
+
+\begin{proof}
+  Let $\Delta$ be a language representation with arity map $\Arity$.
+  For any $P \in \Positions$, if $\PositionConstructors(P) = C$ then $P \in \Ports{C}$ implies $P \in \Arity(C)$.
+  Conversely, for any $C \in \Constructors$, if $P \in \Arity(C)$ then $P \in \Ports{C}$ implies $\PositionConstructors(P) = C$.
+\end{proof}
