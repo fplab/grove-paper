@@ -2,7 +2,43 @@
 \section{Introduction}%
 \label{sec:Introduction}
 
-TODO: fix the following warning which are reported by LaTeX but not Overleaf: Class acmart Warning: A possible image without description on input line 321.
+A \emph{collaborative structure editor} is an editor that
+(1) allows multiple concurrent users to work on a shared document, while also
+(2) providing structure-aware editor services such as projectional editing, syntax highlighting, or automatic code folding.
+%
+Collaborative editing research focuses on the design and implementation of real-time, multi-user, character-based communication systems,
+whereas structure editors typically presume a more complex document schema and then focus on some other aspect of the user experience.
+In both settings, preservation of user intent is a core technical challenge.
+%
+Although collaborative editors and structure editors have overlapping goals (optimal user experience)
+and complementary design challenges (subject-subject versus subject-object harmony),
+to our knowledge, there is no comprehensive, principled account of their combined use.
+
+Since collaborative editors are essentially distributed systems, existing work tends to focus on extensions to distribution protocols.
+Lots of examples using OT. (Google Docs)
+OT is complex and largely textual.
+OT can make sense for real time systems: users typically change one character at a time, and instant feedback can help to prevent conflicts.
+On the other hand, OT system designs can be difficult to extend.
+
+Alternatively, there's CRDT. (Peritext?)
+CRDT is easier to implement, but harder to design for.
+There's an All-CRDT editor---it turned out to be not so realistic. (what's it called again?)
+
+Structure editing has been a recurring theme in the computer science literature since at least Engelbart's ``Mother of All Demos.''
+Provides automation for domain experts and reduces the barrier to entry for everyone else.
+Popular for editing programs, i.e., for programming language-specific editors.
+
+However, modern program editors typically disable editor services (like what?) when the document is not in a consistent state,
+a phenomenon called the ``gap problem.''
+Of course, in the presence of multiple concurrent users, the problem gets worse.
+
+In a collaborative setting,
+Hazel is a structure editor with support for advanced editing services, (e.g., semantic actions?).
+
+\newpage
+
+
+
 
 Motivation:
 
