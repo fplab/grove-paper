@@ -1,0 +1,27 @@
+\section{Language Construction}
+\label{sec:language-construction}
+
+\begin{definition}
+  A \emph{signature}
+  $\Sig = (\Sorts, \Constructors, \Positions, \Sp, \Sc, \ArityInv)$ consists of
+  \begin{enumerate}
+    \item a set $\Sorts$ of \emph{sorts},
+    \item a set $\Constructors$ of \emph{constructors}, or vertex types,
+    \item a set $\Positions$ of \emph{positions}, or edge types,
+    \item a function $\Sc : \Constructors \to \Sorts$ assigning each constructor a sort,
+    \item a function $\Sp : \Positions \to \Sorts$ assigning each position a sort,
+    \item a function $\ArityInv : \Positions \to \Constructors$ assigning each position a constructor.
+  \end{enumerate}
+\end{definition}
+
+\begin{definition}
+  The \emph{ports} $\Ports{C}$ over constructor $C$ is the set
+  \[ \Setof{P \in \Positions \suchthat \ArityInv(P) = C} \]
+  of positions assigned to constructor $C$.
+\end{definition}
+
+\begin{definition}
+  The \emph{arity map} $\Arity : \Constructors \to \Pow{\Positions}$ of signature $\Sig$ is
+  \[ \Arity = (\ArityInv)^{-1} \]
+  the inverse of its constructor assignment function.
+\end{definition}

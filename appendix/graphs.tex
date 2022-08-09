@@ -1,3 +1,46 @@
 \section{Graphs}
 \label{sec:graphs}
 
+\begin{definition}
+  A \emph{graph} $G = (\Sig, U, V, S, E, \States)$ consists of
+  \begin{enumerate}
+    \item A signature $\Sig = (\Sorts, \Constructors, \Positions, \Sp, \Sc, \ArityInv)$.
+    \item A set $U$ of unique identifiers with total order $\leq$.
+    \item A set $V \subseteq U \times \Constructors$ of vertices.
+    \item A set $S \subseteq V \times \Positions$ of edge sources.
+    \item A set $E \subseteq U \times S \times V$ of edges.
+    \item A function $\States : E \to \Setof{\bot,+,-}$ assigning each edge one of the following states.
+          \begin{itemize}
+            \item not yet constructed ($\bot$)
+            \item constructed and not yet deleted ($+$)
+            \item deleted ($-$)
+          \end{itemize}
+  \end{enumerate}
+\end{definition}
+
+\begin{definition}
+  A graph $G = (\Sig, U, V, E, \States)$ is \emph{well sorted}
+  if every edge $e \in E$ with $\Sigma(e) \in \Setof{+,-}$ is well sorted.
+\end{definition}
+
+\begin{definition}
+  An edge $e = (u, ((u_1, C_1), P), (u_2, C_2))$ is \emph{well sorted}
+  if $P \in \Arity(C_1)$ and $\Sc(C_2) = \Sp(P)$.
+\end{definition}
+
+\subsection{Graph Queries}
+\label{sec:graph-queries}
+
+\[
+  \arraycolsep=2pt
+  \begin{array}{rcl}
+    \inedges(G)      & {=} & \Setof{e \in E \suchthat G(e) = +}                                                   \\
+    \sources(G)      & {=} & \Setof{s \in S \suchthat (u, s, v) \in \inedges(G), u \in U, v \in V}                \\
+    \outedges(s;G)   & {=} & \Setof{(u, s, v) \in \inedges(G) \suchthat u \in U, v \in V}                         \\
+    \inedges(v;G)    & {=} & \Setof{(u, s, v) \in \inedges(G) \suchthat u \in U, s \in S}                         \\
+    \parents(v;G)    & {=} & \Setof{v' \in V \suchthat (u, (v', P), v) \in inedges(G), u \in U, P \in \Positions} \\
+    \ancestors(v;G)  & {=} & (\lfp(\ancestors'))(v)                                                               \\
+    \ancestors'(v;G) & {=} & \parents(v) \bigcup_{v' \in \parents(v)} \ancestors(v')                              \\
+    \min(\Set{v})    & {=} & \argmin_{(u, C) \in \Set{v}}(u)                                                      \\
+  \end{array}
+\]

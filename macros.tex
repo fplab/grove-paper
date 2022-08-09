@@ -1,21 +1,68 @@
 % Generic Notations
+\newcommand{\EmptySet}{\emptyset}
 \newcommand{\Set}[1]{\overline{#1}}
 \newcommand{\Setof}[1]{\left\{#1\right\}}
 \newcommand{\suchthat}{\mid}
 \newcommand{\Pow}[1]{\mathscr{P}\mathopen{}\left(#1\right)\mathclose{}}
 
-% Language Definitions
+% judgments
+\newcommand{\proves}{\vdash}
+\DeclareMathOperator{\sorting}{\mathrm{sorting}}
+
+\newcommand{\Sorting}{\hat{\Gamma}}
+% calculus of well-sorted syntax
+% \newcommand{\fun}[2]{\lambda #1.#2}
+
+% Language Syntax
+\newcommand{\Sig}{\mathcal{L}}
 \newcommand{\Sorts}{\mathcal{S}}
 \newcommand{\Constructors}{\mathcal{C}}
 \newcommand{\Positions}{\mathcal{P}}
-\newcommand{\ConstructorSorts}{\Sorts_\Constructors}
-\newcommand{\PositionSorts}{\Sorts_\Positions}
-\newcommand{\PositionConstructors}{\Constructors_\Positions}
+\newcommand{\Sc}{\Sorts_\Constructors}
+\newcommand{\Sp}{\Sorts_\Positions}
 \newcommand{\Arity}{\mathcal{A}}
-\newcommand{\Ports}[1]{[#1]_\Positions}
+\newcommand{\ArityInv}{\Arity^{-1}}
+\newcommand{\Ports}[1]{\Positions/#1}
+
+% Language Format
+\newcommand{\Format}{\Phi}
 
 % Identifier Sets
-\newcommand{\IdSet}{\mathcal{U}}
+\newcommand{\IdSet}{U}
 \newcommand{\IdxSet}[1]{\IdSet_{#1}}
 
-\DeclareMathOperator{\join}{\sqcup}
+% Terms
+\newcommand{\e}{\varepsilon}
+
+% Graphs
+\newcommand{\States}{\Sigma}
+
+% Graph Helpers
+\newcommand{\inedges}{\mathrm{inedges}}
+\newcommand{\outedges}{\mathrm{outedges}}
+\newcommand{\sources}{\mathrm{sources}}
+\newcommand{\parents}{\mathrm{parents}}
+\newcommand{\ancestors}{\mathrm{ancestors}}
+\newcommand{\lfp}{\mathrm{lfp}}
+\newcommand{\argmin}{\mathrm{arg}\,\mathrm{min}}
+
+% Trees
+\newcommand{\sort}{\sigma}
+\newcommand{\term}{t}
+\newcommand{\ptree}{\breve{\term}}
+\newcommand{\tree}{\hat{\term}}
+\newcommand{\multiparent}[2]{\textcolor{red}{{\curlyveedownarrow_{#1}^{#2}}}}
+\newcommand{\cycle}[2]{\textcolor{red}{\rcirclearrowleft_{#1}^{#2}}}
+\newcommand{\Hole}{\square} %\textcolor{violet}{\llparenthesis}}\textcolor{violet}{\rrparenthesis}}
+\newcommand{\multichild}[2][]{%
+{\noexpandarg\StrSubstitute{#2}{,}{\textcolor{red}{\,\textbf{|}\,}}[\myargs]%
+{\textcolor{red}{\textbf{\{}}\myargs\textcolor{red}{\textbf{\}}}_{#1}}}}%
+% \newcommand{\Hole}[2]{\square_{\id{(#1, #2)}}}
+
+% Category Theory
+\renewcommand{\L}{\mathbb{L}}
+\renewcommand{\S}{\mathbb{S}}
+\newcommand{\ev}{\varepsilon}
+\newcommand{\T}[1]{\tilde{#1}}
+\newcommand{\id}{\textrm{id}}
+

@@ -1,0 +1,118 @@
+\section{Categorical Treatment}
+\label{sec:categorical}
+
+\subsection{Type Theory}
+
+A vocabulary $\Omega = (\Sorts, \Constructors, \Positions)$
+
+A dictionary $\Delta = (\ArityInv, \Sp, \Sc)$
+
+A syntax $\Sig = (\Omega, \Delta)$
+
+\[
+  \arraycolsep=2pt
+  \begin{array}{lrcl}
+    \text{Sorts}     & S                                                            \\
+    \text{Equations} & e      & {::=} & a \mid a \otimes a                          \\
+    \text{Atoms}     & a      & {::=} & P \mid C                                    \\
+    \text{Sortings}  & \Gamma & {::=} & \cdot \mid \Gamma, a : S \mid \Gamma, P : C \\
+  \end{array}
+\]
+
+\judgboxa{\sorting(\Sigma) = \Sorting}{The canonical sorting of syntax $\Sig$ is $\Sorting$}
+
+\[
+  \sorting((\Omega, (\ArityInv, \Sp, \Sc))) = \sorting(\ArityInv), \sorting(\Sp), \sorting(\Sc)
+\]
+
+\judgboxa{\sorting(R) = \Sorting}{The canonical sorting of relation $R$ is $\Sorting$}
+
+\[
+  \arraycolsep=2pt
+  \begin{array}{lcl}
+    \sorting(\EmptySet)               & = & \cdot              \\
+    \sorting(R \uplus \Setof{(x, y)}) & = & \sorting(R), x : y \\
+  \end{array}
+\]
+
+\judgbox{\Gamma \proves e}{Under $\Gamma$, equation $e$ is well sorted}
+
+\begin{mathpar}
+  \Infer{ }{
+    a : S \in \Gamma
+  }{
+    \Gamma \proves a
+  }
+
+  \Infer{ }{
+    P : C \in \Gamma
+  }{
+    \Gamma \proves P \otimes C
+  }
+
+  \Infer{ }{
+    P : C \in \Gamma
+  }{
+    \Gamma \proves C \to P
+  }
+\end{mathpar}
+
+\judgbox{\Gamma \proves e : S}{Under $\Gamma$, equation $e$ has sort $S$}
+
+\begin{mathpar}
+  \Infer{ }{
+    a : S \in \Gamma
+  }{
+    \Gamma \proves a : S
+  }
+
+  \Infer{ }{
+    P : C \in \Gamma \\
+    C : S \in \Gamma
+  }{
+    \Gamma \proves P \to C : S
+  }
+
+  \Infer{ }{
+    P : C \in \Gamma \\
+    \Gamma \proves P : S
+  }{
+    \Gamma \proves C \to P : S
+  }
+\end{mathpar}
+
+\subsection{The category of languages}
+
+\begin{definition}
+  A \emph{language} $L = [\Sig, \Format]$ is the internal hom in the category of all representable languages.
+\end{definition}
+
+
+The category $\L$ of all representable languages
+consists of finite sets and coproducts and total functions on them.
+
+\subsection{The category of syntax}
+
+For any language syntax $\Sig = (\Sorts, \Constructors, \Positions, \ArityInv, \Sp, \Sc)$,
+% there is an index category $\J_\Sig$ consisting of
+
+\subsection{The category of well-sorted syntax}
+
+In any language $\Sig = (\Sorts, \Constructors, \Positions, \ArityInv, \Sp, \Sc)$,
+there is a category $\L{\Sorts}{\Constructors}{\Positions}$ of well-sorted syntax consisting of
+\begin{enumerate}
+  \item Objects $\Sorts, \Constructors, \Positions$ and their finite products.
+        $\Positions$ is initial.
+        $\Sorts$ is terminal.
+  \item Morphisms are (total) functions.
+\end{enumerate}
+
+there is a diagram $D_\Sigma : \L{\Sorts}{\Constructors}{\Positions} \to \S$.
+% https://q.uiver.app/?q=WzAsMyxbMCwwLCJQIl0sWzEsMSwiUyJdLFsxLDAsIkMiXSxbMCwyLCJcXENwIl0sWzIsMSwiXFxTYyJdLFswLDEsIlxcU3AiLDJdXQ==
+\[\begin{tikzcd}
+    P & C \\
+    & S
+    \arrow["\ArityInv", from=1-1, to=1-2]
+    \arrow["\Sc", from=1-2, to=2-2]
+    \arrow["\Sp"', from=1-1, to=2-2]
+  \end{tikzcd}\]

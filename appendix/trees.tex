@@ -1,0 +1,23 @@
+\section{Trees}
+\label{sec:trees}
+
+\begin{definition}
+  Given a graph $G = (\Sig, U, V, S, E, \States)$,
+  a \emph{term} $v^{\Set{\e}}$ consists of
+  \begin{enumerate}
+    \item A vertex $v$
+    \item A set $\Set{\e} \subseteq U \times S$ of \emph{inedges}, or identifiable edge sources.
+  \end{enumerate}
+\end{definition}
+
+\begin{definition}
+  Given a signature $\Sig = (\Sorts, \Constructors, \Positions, \Sp, \Sc, \ArityInv)$,
+  a \emph{tree} $\tree$ is
+  \[
+    \arraycolsep=2pt
+    \begin{array}{rcl}
+      \tree & {::=} & t \mid \multichild{t_i}_{i < n} \mid \Hole^s             \\
+      t     & {::=} & v^{\Set{\e}} \mid \multiparent{u}{\e} \mid \cycle{u}{\e} \\
+    \end{array}
+  \]
+\end{definition}

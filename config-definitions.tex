@@ -8,13 +8,13 @@
 
 % notation
 \def\_{\texttt{\textunderscore}}
-\newcommand{\id}[1]{\textcolor{gray}{\ensuremath{#1}}}
+\renewcommand{\id}[1]{\textcolor{gray}{\ensuremath{#1}}}
 \newcommand{\eid}[2]{\tensor*{#2}{^{\id{#1}}}}
 \newcommand{\abs}[1]{\left\lvert#1\right\rvert}
 \newcommand{\figureCode}[1]{\textbf{\texttt{#1}}\vskip1em}
 \newcommand{\Z}[1]{\hat{#1}}
 \newcommand{\Q}[1]{\bar{#1}}
-\newcommand{\Set}[1][]{\Theta_{#1}}
+\renewcommand{\Set}[1][]{\Theta_{#1}}
 \newcommand{\SetOf}[1]{\left\{#1\right\}}
 \newcommand{\SuchThat}[1]{ : #1}
 \newcommand{\SequenceOf}[1]{\left.#1\right|}
@@ -59,7 +59,7 @@
 \DeclareMathOperator{\sortOp}{\text{sort}}
 \DeclareMathOperator{\arityOp}{\text{arity}}
 \DeclareMathOperator{\fixOp}{\text{fix}}
-\newcommand{\sort}[1]{\sortOp\mathopen{}\left(#1\right)\mathclose{}}
+\renewcommand{\sort}[1]{\sortOp\mathopen{}\left(#1\right)\mathclose{}}
 \newcommand{\arity}[1]{\arityOp\mathopen{}\left(#1\right)\mathclose{}}
 \newcommand{\fix}[1]{\fixOp\mathopen{}\left(#1\right)\mathclose{}}
 
@@ -174,8 +174,8 @@
 % helpers
 \newcommand{\invertexes}[1]{\text{invertexes}\mathopen{}\left(#1\right)\mathclose{}}
 \newcommand{\inconstructors}[1]{\text{inconstructors}\mathopen{}\left(#1\right)\mathclose{}}
-\newcommand{\inedges}[1]{\text{inedges}\mathopen{}\left(#1\right)\mathclose{}}
-\newcommand{\sources}[1]{\text{sources}\mathopen{}\left(#1\right)\mathclose{}}
+\renewcommand{\inedges}[1]{\text{inedges}\mathopen{}\left(#1\right)\mathclose{}}
+\renewcommand{\sources}[1]{\text{sources}\mathopen{}\left(#1\right)\mathclose{}}
 \newcommand{\targets}[1]{\text{targets}\mathopen{}\left(#1\right)\mathclose{}}
 \newcommand{\live}[1]{\text{live}\mathopen{}\left(#1\right)\mathclose{}}
 
@@ -187,17 +187,17 @@
 \DeclareMathOperator{\lfpOp}{\text{lfp}}
 \DeclareMathOperator{\ancestorsPrimeOp}{\ancestorsOp^\prime}
 \newcommand{\ingraph}[1]{\ingraphOp\mathopen{}\left(#1\right)\mathclose{}}
-\newcommand{\outedges}[2]{\outedgesOp\mathopen{}\left(#1, #2\right)\mathclose{}}
-\newcommand{\parents}[1]{\parentsOp\mathopen{}\left(#1\right)\mathclose{}}
-\newcommand{\ancestors}[1]{\ancestorsOp\mathopen{}\left(#1\right)\mathclose{}}
+\renewcommand{\outedges}[2]{\outedgesOp\mathopen{}\left(#1, #2\right)\mathclose{}}
+\renewcommand{\parents}[1]{\parentsOp\mathopen{}\left(#1\right)\mathclose{}}
+\renewcommand{\ancestors}[1]{\ancestorsOp\mathopen{}\left(#1\right)\mathclose{}}
 \newcommand{\ancestorsPrime}[1]{\ancestorsPrimeOp\mathopen{}\left(#1\right)\mathclose{}}
-\newcommand{\lfp}[1]{\lfpOp\mathopen{}\left(#1\right)\mathclose{}}
+\renewcommand{\lfp}[1]{\lfpOp\mathopen{}\left(#1\right)\mathclose{}}
 
 \DeclareMathOperator{\minOp}{\text{min}}
 \renewcommand{\min}[1]{\minOp\mathopen{}\left(#1\right)\mathclose{}}
 
 \DeclareMathOperator*{\argminOp}{arg\,min}
-\newcommand{\argmin}[2]{\argminOp_{#1}\mathopen{}\left(#2\right)\mathclose{}}
+\renewcommand{\argmin}[2]{\argminOp_{#1}\mathopen{}\left(#2\right)\mathclose{}}
 
 \DeclareMathOperator{\rootsOp}{\text{roots}}
 \newcommand{\roots}[1]{\rootsOp\mathopen{}\left(#1\right)\mathclose{}}

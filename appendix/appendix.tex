@@ -1,14 +1,30 @@
 % ! % TEX program = lualatex
 
+\PassOptionsToPackage{bookmarks=false}{hyperref}
 \documentclass[acmsmall,10pt,review,anonymous,nonacm]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
 
+\usepackage{mathpartir}
 \usepackage{amsmath}
-\usepackage{hyperref}
+\usepackage{quiver}
+
+\def\OPTIONConf{0}
+\def\OPTIONArxiv{0}
+\usepackage{jdunfield}
+\usepackage{rulelinks}
+\usepackage{graphicx}
+
+\let\colonapprox\undefined % Avoid redefinition error in `colonequals`
+\let\colonsim\undefined % Avoid redefinition error in `colonequals`
+\usepackage{colonequals}
+
+\usepackage{stmaryrd}
+
+\usepackage{MnSymbol}
+\let\mnast=\ast
+\let\ast=\abxast
 
 \input{../macros}
-
-\def\OPTIONConf=1
-\usepackage{jdunfield}
+\input{../rulecommands}
 
 \begin{document}
 
@@ -16,8 +32,10 @@
 \subtitle{Appendix}
 \maketitle
 
-\input{language-definitions}
-\input{identifiers}
-% \input{graphs}
+\input{language-construction}
+\input{graphs}
+\input{trees}
+\newpage
+\input{categorical}
 
 \end{document}
