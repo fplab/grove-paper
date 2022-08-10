@@ -2,6 +2,41 @@
 \section{Introduction}%
 \label{sec:Introduction}
 
+
+start with something that everyone can accept: ``programming is collaborative.''
+
+briefly introduce 3 types: diff, OT, CRDT
+
+tease out some common problems (tree-native, collaborative)
+
+propose a solution
+
+
+
+
+
+general motivation: programming is a collaborative activity
+
+today usually takes the form of coarse-grained solutions, e.g, git
+
+if you try to use eg google docs for this, there are several problems
+(gap problem, diffs don't handle repositioning well)
+
+diff is not really an ideal way of communicating change: e.g., how repositioning gets mishandled
+
+CRDT: tree-native vs text. think about obvious limitation of existing tools
+
+
+
+algorithms for collaborative text editing are well developed
+natural fit for text
+not a natural fit for trees
+so if you want to build a grove, a more natural approach is needed
+
+
+a lot of collaborative editing of other sorts (not necessarily programming) requires a tree model,
+but that problem doesn't seem to have been study directly (maybe except JSON CRDT).
+
 A \emph{collaborative structure editor} is an editor that
 (1) allows multiple concurrent users to work on a shared document, while also
 (2) providing structure-aware editor services such as projectional editing, syntax highlighting, or automatic code folding.
