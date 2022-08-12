@@ -2,73 +2,104 @@
 \section{Introduction}%
 \label{sec:Introduction}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-start with something that everyone can accept: ``programming is collaborative.''
+Programming is an increasingly collaborative activity.
+Today, collaborative editing services are either provided directly by an asynchronous,
+diff-and-merge-based version control system like git, darcs, or pijul,
+or they are integrated into a real-time editor built on top of a distributed consistency protocol such as OT or CRDT.
 
-briefly introduce 3 types: diff, OT, CRDT
+Diff-and-merge is not an ideal collaborative editing solution.
+Since diffs do not provide information on the original scope or ordering of edits,
+the merging process must reconstruct an approximation, e.g., as a sequence of line additions and deletions.
+Clearly, in the context of editing programs,
+a line-based merge is not only less likely to succeed than one which retains finer grained information about changes over time,
+it is also less likely to produce useful information about conflicting edit states, when they arise.
 
-tease out some common problems (tree-native, collaborative)
+Operational Transformation (OT), on the other hand, goes perhaps too far in the opposite direction.
+OT is a distributed system architecture that coordinates the proliferation and maintainance of edit states and actions.
+Industrial-scale collaborative editors such as Google Docs tend to employ OT
+as it provides strong theoretical guarantees on the eventual consistency of causally-ordered events
+while remaining suitable for real-time applications.
+It does so by maintaining a history of recent edits, or operations, while transforming individual edits to preserve a causal ordering.
+But fully featured distributed systems that maintain causal orderings of arbitrary events are hard to design well,
+so in practice OT-based systems tend to be restricted to linear text editing or have fewer features than comparable single-user alternatives.
 
-propose a solution
+Convergent Replicated Data Types (CRDTs) were proposed as a reaction to the complexity of Operational Transformation,
+though the claim is currently under strutiny by the research community.
+A CRDT is essentially a distributed data structure with an API for building and interacting with it.
+CRDTs avoid the need for explicit state synchronization by requiring that allowable edit actions inhabit a lattice.
 
-
-
-
-
-general motivation: programming is a collaborative activity
-
-today usually takes the form of coarse-grained solutions, e.g, git
-
-if you try to use eg google docs for this, there are several problems
-(gap problem, diffs don't handle repositioning well)
-
-diff is not really an ideal way of communicating change: e.g., how repositioning gets mishandled
-
-CRDT: tree-native vs text. think about obvious limitation of existing tools
-
-
-
-algorithms for collaborative text editing are well developed
-natural fit for text
-not a natural fit for trees
-so if you want to build a grove, a more natural approach is needed
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-a lot of collaborative editing of other sorts (not necessarily programming) requires a tree model,
-but that problem doesn't seem to have been study directly (maybe except JSON CRDT).
 
-A \emph{collaborative structure editor} is an editor that
-(1) allows multiple concurrent users to work on a shared document, while also
-(2) providing structure-aware editor services such as projectional editing, syntax highlighting, or automatic code folding.
-%
-Collaborative editing research focuses on the design and implementation of real-time, multi-user, character-based communication systems,
-whereas structure editors typically presume a more complex document schema and then focus on some other aspect of the user experience.
-In both settings, preservation of user intent is a core technical challenge.
-%
-Although collaborative editors and structure editors have overlapping goals (optimal user experience)
-and complementary design challenges (subject-subject versus subject-object harmony),
-to our knowledge, there is no comprehensive, principled account of their combined use.
+% start with something that everyone can accept: ``programming is collaborative.''
 
-Since collaborative editors are essentially distributed systems, existing work tends to focus on extensions to distribution protocols.
-Lots of examples using OT. (Google Docs)
-OT is complex and largely textual.
-OT can make sense for real time systems: users typically change one character at a time, and instant feedback can help to prevent conflicts.
-On the other hand, OT system designs can be difficult to extend.
+% briefly introduce 3 types: diff, OT, CRDT
 
-Alternatively, there's CRDT. (Peritext?)
-CRDT is easier to implement, but harder to design for.
-There's an All-CRDT editor---it turned out to be not so realistic. (what's it called again?)
+% tease out some common problems (tree-native, collaborative)
 
-Structure editing has been a recurring theme in the computer science literature since at least Engelbart's ``Mother of All Demos.''
-Provides automation for domain experts and reduces the barrier to entry for everyone else.
-Popular for editing programs, i.e., for programming language-specific editors.
+% propose a solution
 
-However, modern program editors typically disable editor services (like what?) when the document is not in a consistent state,
-a phenomenon called the ``gap problem.''
-Of course, in the presence of multiple concurrent users, the problem gets worse.
 
-In a collaborative setting,
-Hazel is a structure editor with support for advanced editing services, (e.g., semantic actions?).
+
+
+
+% general motivation: programming is a collaborative activity
+
+% today usually takes the form of coarse-grained solutions, e.g, git
+
+% if you try to use eg google docs for this, there are several problems
+% (gap problem, diffs don't handle repositioning well)
+
+% diff is not really an ideal way of communicating change: e.g., how repositioning gets mishandled
+
+% CRDT: tree-native vs text. think about obvious limitation of existing tools
+
+
+
+% algorithms for collaborative text editing are well developed
+% natural fit for text
+% not a natural fit for trees
+% so if you want to build a grove, a more natural approach is needed
+
+
+% a lot of collaborative editing of other sorts (not necessarily programming) requires a tree model,
+% but that problem doesn't seem to have been study directly (maybe except JSON CRDT).
+
+% A \emph{collaborative structure editor} is an editor that
+% (1) allows multiple concurrent users to work on a shared document, while also
+% (2) providing structure-aware editor services such as projectional editing, syntax highlighting, or automatic code folding.
+% %
+% Collaborative editing research focuses on the design and implementation of real-time, multi-user, character-based communication systems,
+% whereas structure editors typically presume a more complex document schema and then focus on some other aspect of the user experience.
+% In both settings, preservation of user intent is a core technical challenge.
+% %
+% Although collaborative editors and structure editors have overlapping goals (optimal user experience)
+% and complementary design challenges (subject-subject versus subject-object harmony),
+% to our knowledge, there is no comprehensive, principled account of their combined use.
+
+% Since collaborative editors are essentially distributed systems, existing work tends to focus on extensions to distribution protocols.
+% Lots of examples using OT. (Google Docs)
+% OT is complex and largely textual.
+% OT can make sense for real time systems: users typically change one character at a time, and instant feedback can help to prevent conflicts.
+% On the other hand, OT system designs can be difficult to extend.
+
+% Alternatively, there's CRDT. (Peritext?)
+% CRDT is easier to implement, but harder to design for.
+% There's an All-CRDT editor---it turned out to be not so realistic. (what's it called again?)
+
+% Structure editing has been a recurring theme in the computer science literature since at least Engelbart's ``Mother of All Demos.''
+% Provides automation for domain experts and reduces the barrier to entry for everyone else.
+% Popular for editing programs, i.e., for programming language-specific editors.
+
+% However, modern program editors typically disable editor services (like what?) when the document is not in a consistent state,
+% a phenomenon called the ``gap problem.''
+% Of course, in the presence of multiple concurrent users, the problem gets worse.
+
+% In a collaborative setting,
+% Hazel is a structure editor with support for advanced editing services, (e.g., semantic actions?).
 
 \newpage
 
