@@ -8,35 +8,41 @@ Programming is an increasingly collaborative activity.
 Today, collaborative editing services are either provided directly by an asynchronous,
 diff-and-merge-based version control system like git, darcs, or pijul,
 or they are integrated into a real-time editor built on top of a distributed consistency protocol such as OT or CRDT.
+Whereas algorithms for collaborative text editing have been well developed,
+we know far less about collaborative editing of more structured documents---specifically, of program source files---%
+hence we are motivated to ask the following questions:
+\begin{itemize}
+\item Is there a more natural model for collaborative editing of tree structures?
+\item How do we preserve user intent in the presence of concurrent, non-linear edits?
+\end{itemize}
 
-Diff-and-merge is not an ideal collaborative editing solution.
+Diff-and-merge is clearly not an ideal solution.
 Since diffs do not provide information on the original scope or ordering of edits,
 the merging process must reconstruct an approximation, e.g., as a sequence of line additions and deletions.
-Clearly, in the context of editing programs,
-a line-based merge is not only less likely to succeed than one which retains finer grained information about changes over time,
-it is also less likely to produce useful information about conflicting edit states, when they arise.
+In a tree-native setting,
+line-based merging is not only less likely to succeed than one which retains finer grained information,
+it is also less able to provide useful information about conflicting edit states as they arise.
+Moreover, because diffs cannot guarantee preservation of user intent,
+critical features such as identity-preserving repositioning are impossible to implement on top of them.
 
 Operational Transformation (OT), on the other hand, goes perhaps too far in the opposite direction.
-OT is a distributed system architecture that coordinates the proliferation and maintainance of edit states and actions.
-Industrial-scale collaborative editors such as Google Docs tend to employ OT
-as it provides strong theoretical guarantees on the eventual consistency of causally-ordered events
-while remaining suitable for real-time applications.
-It does so by maintaining a history of recent edits, or operations, while transforming individual edits to preserve a causal ordering.
-But fully featured distributed systems that maintain causal orderings of arbitrary events are hard to design well,
-so in practice OT-based systems tend to be restricted to linear text editing or have fewer features than comparable single-user alternatives.
+It is a distributed system architecture that coordinates the proliferation and maintainance of edits and edit states.
+Industrial-scale collaborative editors, such as Google Docs,
+employ OT for real-time applications requiring strong eventual consistency of causally ordered events.
+It does so by maintaining an event log it transforms upon each new entry in order to preserve the causal ordering.
 
-Convergent Replicated Data Types (CRDTs) were proposed as a reaction to the complexity of Operational Transformation,
-though the claim is currently under strutiny by the research community.
-A CRDT is essentially a distributed data structure with an API for building and interacting with it.
-CRDTs avoid the need for explicit state synchronization by requiring that allowable edit actions inhabit a lattice.
+The Convergent Replicated Data Type (CRDT) was proposed as a simpler alternative to the OT architecture.
+CRDTs do not require causal ordering maintenance because the language of edits must form a join semilattice,
+thereby ensuring the edit state update function increases monotoncally.
+(Foreshadow solution by warning about a shortcoming of CRDT.)
+
+(Propose Grove as a solution)
+
+% OT is a natural fit for character-based editing, but the architecture is hard to extend, so it is rarely used for more structured documents.
+% CRDT imposes less restrictions on the structure of the underlying document,
+% providing a more natural substrate for collaborative structure editing.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-% start with something that everyone can accept: ``programming is collaborative.''
-
-% briefly introduce 3 types: diff, OT, CRDT
 
 % tease out some common problems (tree-native, collaborative)
 
@@ -45,17 +51,6 @@ CRDTs avoid the need for explicit state synchronization by requiring that allowa
 
 
 
-
-% general motivation: programming is a collaborative activity
-
-% today usually takes the form of coarse-grained solutions, e.g, git
-
-% if you try to use eg google docs for this, there are several problems
-% (gap problem, diffs don't handle repositioning well)
-
-% diff is not really an ideal way of communicating change: e.g., how repositioning gets mishandled
-
-% CRDT: tree-native vs text. think about obvious limitation of existing tools
 
 
 
