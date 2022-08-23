@@ -5,52 +5,52 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Programming is an increasingly collaborative activity.
-Today, collaborative editing services are either provided directly by an asynchronous,
-diff-and-merge-based version control system like git, darcs, or pijul,
-or they are integrated into a real-time editor built on top of a distributed consistency protocol such as OT or CRDT.
-Whereas algorithms for collaborative text editing have been well developed,
-we know far less about collaborative editing of more structured documents---specifically, of program source files---%
-hence we are motivated to ask the following questions:
-\begin{itemize}
-\item Is there a more natural model for collaborative editing of tree structures?
-\item How do we preserve user intent in the presence of concurrent, non-linear edits?
-\end{itemize}
+Today, collaborative editing services are either
+provided directly by an asynchronous diff-and-merge version control system like git, darcs, or pijul,
+or they are integrated into a real-time editor backed by a distributed collaboration protocol such as OT or CRDT.
+Whereas algorithms for collaborative text editing have been well developed in the OT setting,
+we know far less about collaborative editing of tree-structured documents.
 
-Diff-and-merge is clearly not an ideal solution.
+Diff-and-merge is clearly not an ideal solution for collaborative tree editing.
 Since diffs do not provide information on the original scope or ordering of edits,
 the merging process must reconstruct an approximation, e.g., as a sequence of line additions and deletions.
-In a tree-native setting,
-line-based merging is not only less likely to succeed than one which retains finer grained information,
-it is also less able to provide useful information about conflicting edit states as they arise.
-Moreover, because diffs cannot guarantee preservation of user intent,
-critical features such as identity-preserving repositioning are impossible to implement on top of them.
+In a tree-native setting, line-based merging can fail in ways that methods which retain finer grained information would not.
+Moreover, user intent can be impossible to preserve,
+so critical features such as identity-preserving repositioning are impossible to implement reliably on top of them.
 
 Operational Transformation (OT), on the other hand, goes perhaps too far in the opposite direction.
-It is a distributed system architecture that coordinates the proliferation and maintainance of edits and edit states.
+OT is a distributed system architecture that coordinates the proliferation and maintainance of edits and edit states.
 Industrial-scale collaborative editors, such as Google Docs,
 employ OT for real-time applications requiring strong eventual consistency of causally ordered events.
 It does so by maintaining an event log it transforms upon each new entry in order to preserve the causal ordering.
 
 The Convergent Replicated Data Type (CRDT) was proposed as a simpler alternative to the OT architecture.
 CRDTs do not require causal ordering maintenance because the language of edits must form a join semilattice,
-thereby ensuring the edit state update function increases monotoncally.
-(Foreshadow solution by warning about a shortcoming of CRDT.)
+thereby ensuring the edit state update function increases monotonically.
+CRDT places fewer constraints than OT on the language of edits,
+so calculi for editing tree-native documents can be simpler to model for CRDT than OT.
+Similarly, by eliminating all but one design constraint, edit calculi for CRDT can be easier to implement and extend.
 
-(Propose Grove as a solution)
+Unfortunately, monotonicity merely changes the nature of the complexity rather than eliminating it entirely.
+Although tree-native document editing calculi may ultimately admit simpler designs under CRDT than OT,
+there are no generic recipes for transforming a sequential tree editing calculus into one suitable for CRDT.
+Consequently, progress of CRDT-backed tree editors has slowed as the research community debates whether CRDT is living up to its promise.
+Thus, we are motivated to ask:
+Is there a more natural model for collaborative editing of trees?
+And how do we preserve user intent in the presence of concurrent edits in a tree-native editor?
 
-% OT is a natural fit for character-based editing, but the architecture is hard to extend, so it is rarely used for more structured documents.
-% CRDT imposes less restrictions on the structure of the underlying document,
-% providing a more natural substrate for collaborative structure editing.
+To address these gaps in the literature, we propose \emph{Grove}, a CRDT-backed calculus for collaborative structure editing.
+At its heart is a simple partially ordered set of operations over a labeled multidigraph with a distinguished root vertex.
+In this setting, conflicting edit states may be reified as multi-edges,
+allowing conflicts to be exposed as they arise and enabling novel forms of collaboration.
+We establish an isomorphism between labeled multidigraphs and a collection of forests called a \emph{grove},
+enabling more familiar interactions with sub-trees of the graph in more familiar settings, e.g., as a term in a programming language editor.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% tease out some common problems (tree-native, collaborative)
-
-% propose a solution
-
-
-
-
+We are further motivated by whether there exists a more natural medium for collaborative extension of sophisticated structure editors like Hazel.
+Hazel maintains a sensibility invariant, i.e., every edit state is semantically valid.
+Scaling editor services in the presence of many collaborators is difficult but necessary in a world of increasing connectivity.
+By providing a first step in that direction,
+we believe Grove has the potential to spark a new wave of inquiry into collaborative structure editing.
 
 
 
