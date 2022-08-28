@@ -5,52 +5,130 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Programming is an increasingly collaborative activity.
-Today, collaborative editing services are either
-provided directly by an asynchronous diff-and-merge version control system like git, darcs, or pijul,
-or they are integrated into a real-time editor backed by a distributed collaboration protocol such as OT or CRDT.
-Whereas algorithms for collaborative text editing have been well developed in the OT setting,
-we know far less about collaborative editing of tree-structured documents.
+Today, most programming editors are not explicitly designed with collaboration in mind,
+so programmers rely on ad hoc integrations of asynchronous diff-based version control systems like Git, Darcs, or Pijul.
 
-Diff-and-merge is clearly not an ideal solution for collaborative tree editing.
-Since diffs do not provide information on the original scope or ordering of edits,
-the merging process must reconstruct an approximation, e.g., as a sequence of line additions and deletions.
-In a tree-native setting, line-based merging can fail in ways that methods which retain finer grained information would not.
-Moreover, user intent can be impossible to preserve,
-so critical features such as identity-preserving repositioning are impossible to implement reliably on top of them.
+Asynchronous diffing is not an ideal solution to collaboration because
+the merging process must solve the \textbf{inverse problem}---inference of compatible edits in a simplistic edit action language.
+For example, suppose Alice and Bob are collaboratively editing a file comprised of a single line \verb|A B|.
+Alice changes the file to \verb|A B C| and communicates the change to Bob as a diff (Figure \ref{fig:inverse-problem:alice}).
+At the same time, Bob changes the file to \verb|A D B| and sends Alice a diff (Figure \ref{fig:inverse-problem:bob}).
+Both parties changed the same line, but in a different way,
+so when Bob applies Alice's diff, a merge conflict arises and the contents of Bob's editor is mangled as in Figure \ref{fig:inferse-problem:diff}.
 
-Operational Transformation (OT), on the other hand, goes perhaps too far in the opposite direction.
-OT is a distributed system architecture that coordinates the proliferation and maintainance of edits and edit states.
-Industrial-scale collaborative editors, such as Google Docs,
-employ OT for real-time applications requiring strong eventual consistency of causally ordered events.
-It does so by maintaining an event log it transforms upon each new entry in order to preserve the causal ordering.
+\begin{figure}[H]
+  \begin{subfigure}{.45\linewidth}
+\begin{verbatim}
+1c1
+< A B
+---
+> A B C
+\end{verbatim}
+    \label{fig:inverse-problem:alice}
+    \subcaption{From Alice to Bob}
+  \end{subfigure}
+  \hfil
+  \begin{subfigure}{.45\linewidth}
+\begin{verbatim}
+1c1
+< A B
+---
+> A D B
+\end{verbatim}
+    \label{fig:inverse-problem:bob}
+    \subcaption{From Bob to Alice}
+  \end{subfigure}
 
-The Convergent Replicated Data Type (CRDT) was proposed as a simpler alternative to the OT architecture.
-CRDTs do not require causal ordering maintenance because the language of edits must form a join semilattice,
-thereby ensuring the edit state update function increases monotonically.
-CRDT places fewer constraints than OT on the language of edits,
-so calculi for editing tree-native documents can be simpler to model for CRDT than OT.
-Similarly, by eliminating all but one design constraint, edit calculi for CRDT can be easier to implement and extend.
+  \begin{subfigure}{.45\linewidth}
+\begin{verbatim}
+<<<<<<< Alice
+A B C
+||||||| base
+A B
+=======
+A D B
+>>>>>>> Bob
+\end{verbatim}
+    \label{fig:inverse-problem:diff}
+    \subcaption{Bob's editor (diff)}
+  \end{subfigure}
+  \hfil
+  \begin{subfigure}{.45\linewidth}
+\begin{verbatim}
+A { B | D} { C | B}
+\end{verbatim}
+    \label{fig:inverse-problem:grove}
+    \subcaption{Bob's editor (Grove)}
+  \end{subfigure}
+  \label{fig:inverse-problem}
+  \caption{The effects of diff-and-merge on conflicting edit states}
+\end{figure}
 
-Unfortunately, monotonicity merely changes the nature of the complexity rather than eliminating it entirely.
-Although tree-native document editing calculi may ultimately admit simpler designs under CRDT than OT,
-there are no generic recipes for transforming a sequential tree editing calculus into one suitable for CRDT.
-Consequently, progress of CRDT-backed tree editors has slowed as the research community debates whether CRDT is living up to its promise.
-Thus, we are motivated to ask:
-Is there a more natural model for collaborative editing of trees?
-And how do we preserve user intent in the presence of concurrent edits in a tree-native editor?
+An alternative to solving the inverse problem is to build the editor on top of a distributed collaboration protocol such as OT or,
+more recently, to model the shared edit state as a CRDT---a data structure implemented behind a fixed set of commutative update operations.
+Commutativity is desirable because it reduces collaboration to a simple matter of record and replay.
+Since CRDT imposes no other design constraints, it is potentially better suited for collaborative program editing than diff-and-merge.
+For instance, the \textbf{conflict problem}---how to meaningfully represent conflicts without mangling edit state---%
+becomes easier to solve as the language of edits becomes more precise (Figure \ref{fig:inverse-problem:grove}).
 
-To address these gaps in the literature, we propose \emph{Grove}, a CRDT-backed calculus for collaborative structure editing.
-At its heart is a simple partially ordered set of operations over a labeled multidigraph with a distinguished root vertex.
-In this setting, conflicting edit states may be reified as multi-edges,
-allowing conflicts to be exposed as they arise and enabling novel forms of collaboration.
-We establish an isomorphism between labeled multidigraphs and a collection of forests called a \emph{grove},
-enabling more familiar interactions with sub-trees of the graph in more familiar settings, e.g., as a term in a programming language editor.
+Although CRDT may offer a more natural medium for collaborative programming than diffs,
+care must be taken to ensure the preservation of user intent.
+Suppose Alice and Bob are collaboratively editing the line \verb|A B| with Alice's cursor on \verb|A| and Bob's on \verb|B|.
+If Alice moves \verb|A| to the other side of \verb|B|, it isn't obvious where Bob's cursor should go.
+Naively, since the cursor was originally on the second element (\verb|B|), it could simply stay there,
+which in this case means it winds up on \verb|A|.
+Realistically, \verb|A| and \verb|B| could be very long functions, in which case Bob's cursor would suddenly appear to move a great distance.
+If Bob's cursor remained on \verb|B| instead, there would be no disorienting jump.
+To solve this \textbf{repositioning problem} and affect confusion-free movement, all editable content must be uniquely identifiable.
 
-We are further motivated by whether there exists a more natural medium for collaborative extension of sophisticated structure editors like Hazel.
-Hazel maintains a sensibility invariant, i.e., every edit state is semantically valid.
-Scaling editor services in the presence of many collaborators is difficult but necessary in a world of increasing connectivity.
-By providing a first step in that direction,
-we believe Grove has the potential to spark a new wave of inquiry into collaborative structure editing.
+
+% To address these concerns, we propose \emph{Grove}, a CRDT-backed collaborative structure editing calculus.
+% Grove models the shared edit state as a labeled multidigraph with a distinguished root vertex
+% and a pair of commutative vertex insertion and deletion operations such that deletion always wins.
+% In this setting, collaboration is replay and conflicting edits have a natural representation as edges with a common origin or destination.
+% We establish an isomorphism between a graph and its cooresponding \emph{grove}, or collection of disjoint forests,
+% enabling a full range of existing tree-based interactivity, for instance as terms in a programming language editor.
+
+% We are further motivated by the pursiut of a collaborative extension for Hazel, an integrated programming language and structure editor
+% that provides semantic editor services by enforcing a sensibility invariant, i.e., every edit state is semantically valid,
+% an interesting avenue of future work with potential implications for the scalability of collaborative programming editors.
+
+% do this instead:
+%   the standard method is diff-based version control.
+%   diff is bad, evene for what it's indended for.
+%   here's why: solving inverse problem ==> have to infer edits
+%   alternative approach is to record the edits directly and then form a CRDT s.t. collaboration can be accomplished by sending your edits to your collaborators
+%   primarily been explored in the setting of real time text editing
+%   there are some aspects of this approach that don't make it suitable for programming:
+%   1. the repositioning problem
+%   2. the conflict problem (even json crdt does ad hoc conflict resolution)
+
+% Note: you'd still want to solve these problems for text as well, but we're interested in making this work for Hazel
+% Hazel is good for this because it already has a rich calculus of edit actions -- motivates the tree focus
+% Even when it comes to rich text editing, we really wanna be working with trees: due to markup
+
+% move to related work
+
+% Operational Transformation (OT), on the other hand, goes perhaps too far in the opposite direction.
+% OT is a distributed system architecture that coordinates the proliferation and maintainance of edits and edit states.
+% Industrial-scale collaborative editors, such as Google Docs,
+% employ OT for real-time applications requiring strong eventual consistency of causally ordered events.
+% It does so by maintaining an event log it transforms upon each new entry in order to preserve the causal ordering.
+
+% The Convergent Replicated Data Type (CRDT) was proposed as a simpler alternative to the OT architecture.
+% CRDTs do not require causal ordering maintenance because the language of edits must form a join semilattice,
+% thereby ensuring the edit state update function increases monotonically.
+% CRDT places fewer constraints than OT on the language of edits,
+% so calculi for editing tree-native documents can be simpler to model for CRDT than OT.
+% Similarly, by eliminating all but one design constraint, edit calculi for CRDT can be easier to implement and extend.
+
+% Unfortunately, monotonicity merely changes the nature of the complexity rather than eliminating it entirely.
+% Although tree-native document editing calculi may ultimately admit simpler designs under CRDT than OT,
+% there are no generic recipes for transforming a sequential tree editing calculus into one suitable for CRDT.
+% Consequently, progress of CRDT-backed tree editors has slowed as the research community debates whether CRDT is living up to its promise.
+% Thus, we are motivated to ask:
+% Is there a more natural model for collaborative editing of trees?
+% And how do we preserve user intent in the presence of concurrent edits in a tree-native editor?
 
 
 
