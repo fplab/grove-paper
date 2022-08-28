@@ -78,16 +78,18 @@ If Alice moves \verb|A| to the other side of \verb|B|, it isn't obvious where Bo
 Naively, since the cursor was originally on the second element (\verb|B|), it could simply stay there,
 which in this case means it winds up on \verb|A|.
 Realistically, \verb|A| and \verb|B| could be very long functions, in which case Bob's cursor would suddenly appear to move a great distance.
-If Bob's cursor remained on \verb|B| instead, there would be no disorienting jump.
-To solve this \textbf{repositioning problem} and affect confusion-free movement, all editable content must be uniquely identifiable.
+If Bob's cursor does not need to react to other users' activity, there is no risk of a disorienting jump.
+One way to solve this \textbf{repositioning problem} and affect confusion-free movement is to uniquely identify every piece of editable content.
 
-
-% To address these concerns, we propose \emph{Grove}, a CRDT-backed collaborative structure editing calculus.
-% Grove models the shared edit state as a labeled multidigraph with a distinguished root vertex
-% and a pair of commutative vertex insertion and deletion operations such that deletion always wins.
-% In this setting, collaboration is replay and conflicting edits have a natural representation as edges with a common origin or destination.
-% We establish an isomorphism between a graph and its cooresponding \emph{grove}, or collection of disjoint forests,
-% enabling a full range of existing tree-based interactivity, for instance as terms in a programming language editor.
+To address these problems we propose \emph{Grove}, a CRDT-backed collaborative structure editor.
+Grove represents the edit state as a labeled, directed multigraph with vertex insertion and deletion operations such that deletion always wins.
+In the graph, conflicts have a natural representation as edges with common origin or destination vertices.
+Each label includes a unique identifier which enables not only a solution to the repositioning problem
+but also a means to construct symbolic references into the edit state.
+By leveraging an isomorphism between the graph and its corresponding \emph{grove}---%
+a collection of disjoint forests connected via symbolic reference---%
+views of the graph may be projected into a tree-native setting, for instance as terms in the Hazel editor,
+without adding compexity to the underlying collaboration model.
 
 % We are further motivated by the pursiut of a collaborative extension for Hazel, an integrated programming language and structure editor
 % that provides semantic editor services by enforcing a sensibility invariant, i.e., every edit state is semantically valid,
@@ -179,50 +181,50 @@ To solve this \textbf{repositioning problem} and affect confusion-free movement,
 
 
 
-Motivation:
+% Motivation:
 
-- collaborative editing (both synchronous ala Google Docs and asynchronous version control)
-is good and important as computing grows
+% - collaborative editing (both synchronous ala Google Docs and asynchronous version control)
+% is good and important as computing grows
 
-- semantic structure editing is good because it solves the gap problem (semantic editor services
-are always available) -- cite Hazelnut papers (talk about holes)
+% - semantic structure editing is good because it solves the gap problem (semantic editor services
+% are always available) -- cite Hazelnut papers (talk about holes)
 
-- previous approaches to collaborative editing have limitations
+% - previous approaches to collaborative editing have limitations
 
-- diff/merge based approaches (trying to solve the inverse problem based on final states --
-you lose the actual actions that were performed, and have to reconstruct them or an approx.
-of them i.e. add line/delete line actions -- would need to adapt this to structure editing,
-some papers have started to look at that, but fundamentally we don't want to throw away the
-knowledge we have about the edits!)
+% - diff/merge based approaches (trying to solve the inverse problem based on final states --
+% you lose the actual actions that were performed, and have to reconstruct them or an approx.
+% of them i.e. add line/delete line actions -- would need to adapt this to structure editing,
+% some papers have started to look at that, but fundamentally we don't want to throw away the
+% knowledge we have about the edits!)
 
-- operational transforms (complexity, you have to patch previous actions based on new actions)
+% - operational transforms (complexity, you have to patch previous actions based on new actions)
 
-- CRDT-based collaborative editing (that's all been on text, not PL semantics) -- this is good
-because it is relatively simple: you just send all the edits to all the replicas and they are
-convergent by design
+% - CRDT-based collaborative editing (that's all been on text, not PL semantics) -- this is good
+% because it is relatively simple: you just send all the edits to all the replicas and they are
+% convergent by design
 
-- we want to have the same convergence for a CRDT-based collaborative structure editor that maintains
-the sensibility invariant of Hazelnut, i.e. every editor state has meaning. mention that maintaining sensibility
-allows scaling of semantic editor services in the presence of large number of collaborators (in contrast,
-using VS Code or other collaborative text editors with large numbers of collaborators means that almost always
-the semantic editor services will be disabled because the program is going to be broken in multiple places
-transiently)
+% - we want to have the same convergence for a CRDT-based collaborative structure editor that maintains
+% the sensibility invariant of Hazelnut, i.e. every editor state has meaning. mention that maintaining sensibility
+% allows scaling of semantic editor services in the presence of large number of collaborators (in contrast,
+% using VS Code or other collaborative text editors with large numbers of collaborators means that almost always
+% the semantic editor services will be disabled because the program is going to be broken in multiple places
+% transiently)
 
-this is tricky because:
+% this is tricky because:
 
-- some edits might be conflicting -- solve this with "conflict holes"
+% - some edits might be conflicting -- solve this with "conflict holes"
 
-- adding cut/paste or delete/restore allows for degenerate programs (cycles, multiple parents, etc.)
+% - adding cut/paste or delete/restore allows for degenerate programs (cycles, multiple parents, etc.)
 
-- since we are commutative, we solve both synchronus and async collaborative editing
+% - since we are commutative, we solve both synchronus and async collaborative editing
 
-- and this resolves issues around merges and conflicts
+% - and this resolves issues around merges and conflicts
 
-- contribution of this paper is to solve these problems from type-theoretic first principles:
+% - contribution of this paper is to solve these problems from type-theoretic first principles:
 
-- ...
+% - ...
 
-- Hazel
+% - Hazel
 
 \subsection{Contributions and Paper Organization}%
 \label{sec:Contributions and Paper Organization}
