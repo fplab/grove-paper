@@ -15,28 +15,27 @@ Instead, they work with the decomposition of graphs into groves (\autoref{sub:Gr
 User actions on groves translate to corresponding graph edits (\autoref{sub:User Actions}).
 
 
+TODO: point of this section is commutativity theorem
 
-% TODO: point of this section is commutativity theorem
+TODO: (though as we show in \autoref{sec:Formalism} creating a vertex is implicit in edge creation)
 
-% TODO: (though as we show in \autoref{sec:Formalism} creating a vertex is implicit in edge creation)
+The formalism is rather simple, \autoref{sec:Grove By Example} shows
+that it is sufficient to handle many common situations,
+and this simplicity aids in the predictability.
 
-% The formalism is rather simple, \autoref{sec:Grove By Example} shows
-% that it is sufficient to handle many common situations,
-% and this simplicity aids in the predictability.
-
-% \figureArity
+\figureArity{}
 
 \subsection{Convergent Graphs}%
 \label{sub:Convergent Graphs}
 
-% Let $\U$ be a set of \emph{unique identifiers} equipped with a total ordering $\leq$,
-% and $\K$ the \emph{constructors} of terms in the source language,
-% and $\P$ the \emph{positions} of subterms in the source language,
-% and $\Sigma = \SetOf{\bot, \Plus, \Minus}$ the
-%   \emph{edge states} equipped with a total ordering $\bot \sqsubset \Plus \sqsubset \Minus$ that forms a lattice over $\Sigma$.
-% Now, let $\V = \U \times \K$ all possible \emph{vertices},
-% and $\S = \V \times \P$ all possible \emph{sources},
-% and $\E = \U \times \S \times \V$ all possible \emph{edges}.
+Let $\U$ be a set of \emph{unique identifiers} equipped with a total ordering $\leq$,
+and $\K$ the \emph{constructors} of terms in the source language,
+and $\P$ the \emph{positions} of subterms in the source language,
+and $\Sigma = \SetOf{\bot, \Plus, \Minus}$ the
+  \emph{edge states} equipped with a total ordering $\bot \sqsubset \Plus \sqsubset \Minus$ that forms a lattice over $\Sigma$.
+Now, let $\V = \U \times \K$ all possible \emph{vertices},
+and $\S = \V \times \P$ all possible \emph{sources},
+and $\E = \U \times \S \times \V$ all possible \emph{edges}.
 
 A \emph{graph} $G : \E \rightarrow \Sigma$ is a function from edges to edge states,
   where $\E = \U \times \S \times \V$,
@@ -90,33 +89,34 @@ The \emph{least ancestor} of $v$ is the ancestor with the smallest unique identi
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TODO: put this in a definition box
-
 A graph $G$ is well sorted if
 for all $\e = (u, (u_1, k_1), p, (u_2, k_2))$
 such that $G(\e) \neq \bot$,
-we have $(p, \sort(k_2)) \in \arity(k_1)$.
+we have $(p, \sort (k_2)) \in \arity k_1$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-% In decomp section:
-% - If a graph is well sorted, then there exists a grove. (i.e., exhaustiveness check for expr)
-%   - want to show that expr is a total function on Exp's
-% - If decomp(G) = Grove, then vertices(Grove) = vertices(edges(G))
-%   - every vertex should be part of the decomposition
-% - correctness of grove components:
-%   - e_r: rootVertex(e_r) = v_r
-%   - MP: for every expression in MP, |parents(the root vertex)| > 1
-%   - NP: for every expression in NP, |parents(the root vertex)| = 0
-%   - U: for every expression in U, |parents(the root vertex)| = 1 and the root vertex = min(ancestors(the root vertex))
-%     - every other vertex notin U has exactly 1 parent and is not its own min-ancestor
-%   - we've accounted for every edge:
-%     - want to say edges(Grove) = edges(G), but we don't have a clean way to say that
-%     - there is a choice from (an infinite family of graphs) recomposition(Grove) (which are all structurally equivalent to G, modulo edge ids)
+In decomp section:
+- If a graph is well sorted, then there exists a grove. (i.e., exhaustiveness check for expr)
+  - want to show that expr is a total function on Exps
+- If decomp(G) = Grove, then vertices(Grove) = vertices(edges(G))
+  - every vertex should be part of the decomposition
+- correctness of grove components:
+  - $e_r$: rootVertex($e_r) = v_r$
+  - MP: for every expression in MP, |parents(the root vertex)| > 1
+  - NP: for every expression in NP, |parents(the root vertex)| = 0
+  - U: for every expression in U, |parents(the root vertex)| = 1 and the root vertex = min(ancestors(the root vertex))
+    - every other vertex notin U has exactly 1 parent and is not its own min-ancestor
+  - we've accounted for every edge:
+    - want to say edges(Grove) = edges(G), but we don't have a clean way to say that
+    - there is a choice from (an infinite family of graphs) recomposition(Grove) (which are all structurally equivalent to G, modulo edge ids)
 
-% correctness covers:
-% - invertibility (w/ some identity assignment)
-% - parentage (things are multiparented correctly)
+
+
+correctness covers:
+- invertibility (w/ some identity assignment)
+- parentage (things are multiparented correctly)
 
 \vspace*{\baselineskip}
 
@@ -125,10 +125,10 @@ we have $(p, \sort(k_2)) \in \arity(k_1)$.
 A graph can be derived from an expression in the calculus by starting with an
 empty graph, selecting unique ids $u, u_k$ and constructor $k$ for the outermost
 expression, and creating edge $\e = (u, v_0, p_0, (u_k, k))$. Then, for each
-sub-term at some position $p \in \arity(k)$, select unique id $u'$ and
+sub-term at some position $p \in \arity k$, select unique id $u'$ and
 constructor $k'$ and create edge $e' = (u', v, p, v')$ with $v = (u_k, k)$, $v'
 = (u', k')$. Continuing in this manner, treat each sub-term as if it were the
-outermost, starting with the ones at positions in $\arity(k')$, and create edges
+outermost, starting with the ones at positions in $\arity k'$, and create edges
 to the vertices representing their immediate sub-terms until only empty holes
 remain. Note that empty holes are not modeled explicitly in the graph. Wherever
 an empty hole appears in an expression, the corresponding graph position has no
@@ -216,7 +216,7 @@ Discuss uniqueness of uuid
 \subsection{Groves}%
 \label{sub:Groves}
 
-\figureTermSyntax
+\figureTermSyntax{}
 
 % TODO: check for \hole --> \emptyHole
 
@@ -299,15 +299,15 @@ In the example, $e_r$ is the expression corresponding to the main root, $\vRoot$
 % TODO: change z_... to macro use w/ same appearance as in the graph
 In addition, $z_{\id{52}}$ has no parents because it was deleted, so it also appears in $NP$.
 
-% The first component $e_r$ is the expression derived from the root vertex $v_0$.
-% \autoref{fig:Decomposition expr} defines $\expr(v)$ which determines the expression derived from $v$.
-% There is one rule for each term constructor.
-% For example, the expression derived from ${+}_{\id{38}} = (38, \ExpPlus)$ is $\expr'({+}_{\id{38}}, \PlusLeft) \text{+}^{\id{38}} \expr'({+}_{\id{38}}, \PlusRight)$.
-% In each child position, $\expr'(v, p)$ determines the subterm for the children of $v$ at position $p$.
-% An empty hole $\hole$ appears if there are no children at the given position.
-% A conflict hole $\conflictHole{e_1,\ldots,e_n}$ appears if there are multiple children.
-% If there is one child, the expression is determined recursively unless that child appears in $MP$ or $U$, discussed below, in which case we leave a reference, $\multiVertex{u}$ or $\cycleVertex{u}$, respectively.
-% For the $\ExpLam$ case, we define $\patt(q)$ and $\type(\tau)$ similarly.
+The first component $e_r$ is the expression derived from the root vertex $v_0$.
+\autoref{fig:Decomposition expr} defines $\expr(v)$ which determines the expression derived from $v$.
+There is one rule for each term constructor.
+For example, the expression derived from ${+}_{\id{38}} = (38, \ExpPlus)$ is $\expr'({+}_{\id{38}}, \PlusLeft) \text{+}^{\id{38}} \expr'({+}_{\id{38}}, \PlusRight)$.
+In each child position, $\expr'(v, p)$ determines the subterm for the children of $v$ at position $p$.
+An empty hole $\hole$ appears if there are no children at the given position.
+A conflict hole $\conflictHole{e_1,\ldots,e_n}$ appears if there are multiple children.
+If there is one child, the expression is determined recursively unless that child appears in $MP$ or $U$, discussed below, in which case we leave a reference, $\multiVertex{u}$ or $\cycleVertex{u}$, respectively.
+For the $\ExpLam$ case, we define $\patt(q)$ and $\type(\tau)$ similarly.
 
 The second component $MP$ is the set of expressions derived from a vertex with multiple parents.
 Wherever an edge to such a vertex appears, we place a reference to it $\multiVertex{u}$.
@@ -386,21 +386,21 @@ OR
 We could go the indirect route and avoid having to prove the theorem.
 (this way is easier to start with, and it's how GRV works)
 
-% Mapping to b actions
+Mapping to b actions
 
-% \[
-%   \begin{array}{l}
-%     \textrm{User Actions}: \grave{e} \in Act ::= e \mid \#u \mid \conflict{\grave{e}}{\grave{e}}                                                       \\
-%     \s : \G \to Act \times \V^{\ast{}} \times \V^{\ast{}} \times \V^{\ast{}}                                                                                          \\
-%     \s(G) = (\grave{e}, \MP(G), \CC(G), \D(G))                                                                                                         \\
-%     \MP(G) = \left\{ v \in \vertexes(G) \mid \exists e_1,e_2 \in \liveEdges(G), e_1= \right.                                                           \\
-%     \qquad \left. (v,p_1,v_1), e_2=(v,p_2,v_2), e_1 \ne e_2 \right\}                                                                                   \\
-%     \CC(G) = \ldots                                                                                                                                    \\
-%     \D(G) = \orphans(G) \setminus \left\{ v_0 \right\}                                                                                                 \\
-%     \orphans(G) = \left\{ v \in \vertexes(G) \mid \forall e=(v^\prime,p,v^{\prime\prime}) \in \right.                                                  \\
-%     \qquad \left. \liveEdges(G), v^{\prime\prime} \ne v \right\}                                                                                       \\
-%     \vertexes(G) = \left\{ v \mid \exists e = (v^\prime, p, v^{\prime\prime}) \in \edges(G), v \in \left\{ v^\prime, v^{\prime\prime}\right\} \right\} \\
-%     \edges(G) = \left\{ e \mid G(e) \ne \bot \right\}                                                                                                  \\
-%     \liveEdges(G) = \left\{ e \mid G(e) = + \right\}                                                                                                   \\
-%   \end{array}
-% \]
+\[
+  \begin{array}{l}
+    \textrm{User Actions}: \grave{e} \in Act ::= e \mid \#u \mid \conflict{\grave{e}}{\grave{e}}                                                       \\
+    \s : \G \to Act \times \V^{\ast{}} \times \V^{\ast{}} \times \V^{\ast{}}                                                                                          \\
+    \s(G) = (\grave{e}, \MP(G), \CC(G), \D(G))                                                                                                         \\
+    \MP(G) = \left\{ v \in \vertexes(G) \mid \exists e_1,e_2 \in \liveEdges(G), e_1= \right.                                                           \\
+    \qquad \left. (v,p_1,v_1), e_2=(v,p_2,v_2), e_1 \ne e_2 \right\}                                                                                   \\
+    \CC(G) = \ldots                                                                                                                                    \\
+    \D(G) = \orphans(G) \setminus \left\{ v_0 \right\}                                                                                                 \\
+    \orphans(G) = \left\{ v \in \vertexes(G) \mid \forall e=(v^\prime,p,v^{\prime\prime}) \in \right.                                                  \\
+    \qquad \left. \liveEdges(G), v^{\prime\prime} \ne v \right\}                                                                                       \\
+    \vertexes(G) = \left\{ v \mid \exists e = (v^\prime, p, v^{\prime\prime}) \in \edges(G), v \in \left\{ v^\prime, v^{\prime\prime}\right\} \right\} \\
+    \edges(G) = \left\{ e \mid G(e) \ne \bot \right\}                                                                                                  \\
+    \liveEdges(G) = \left\{ e \mid G(e) = + \right\}                                                                                                   \\
+  \end{array}
+\]

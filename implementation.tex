@@ -84,17 +84,17 @@ Graph decomposition occurs in three steps.
 % TODO: use code generation instead: have Lang.ml generate expr / expr' / ... for us; then we don't need this figure.
 % TODO: maybe show this figure and say that it's possible to handle generically without code generation
 
-% \begin{figure}
-%   \[
-%     \arraycolsep=0pt
-%     \begin{array}{lrlll}
-%       \textrm{Trees:\qquad}  & t & {}\in Tree & {}::={} & \textrm{Vertex}(v, m) \mid \textrm{Ref}(v) \\
-%       \textrm{Maps:}         & m & {}\in Map & {}::={} & \varnothing \mid p \mapsto [(\e, t), \ldots, (\e, t)]; m \\
-%     \end{array}
-%   \]
-%   \caption{Syntax of graph decomposition trees as a grammar.}
-%   \label{fig:Syntax of graph decomposition trees}
-% \end{figure}
+\begin{figure}
+  \[
+    \arraycolsep=0pt
+    \begin{array}{lrlll}
+      \textrm{Trees:\qquad}  & t & {}\in Tree & {}::={} & \textrm{Vertex}(v, m) \mid \textrm{Ref}(v) \\
+      \textrm{Maps:}         & m & {}\in Map & {}::={} & \varnothing \mid p \mapsto [(\e, t), \ldots, (\e, t)]; m \\
+    \end{array}
+  \]
+  \caption{Syntax of graph decomposition trees as a grammar.}
+  \label{fig:Syntax of graph decomposition trees}
+\end{figure}
 
 
 lemma: a unicycle is a cycle with trees hanging off of it
