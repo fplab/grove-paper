@@ -2,8 +2,7 @@
 \label{sec:marked-calculus}
 
 \subsection{Syntax}
-\[
-\begin{array}{lllll}
+\[\begin{array}{lllll}
      \EMV \in & \EMName & \Coloneqq & 
         \var{x}
         \mid \num 
@@ -51,9 +50,9 @@
         \mid \tNum{}
         \mid \starrow \\
     \Provp \in & \Prov & \Coloneqq &
-        (v, p) \mid \mathsf{exp}(v, p) \mid \rightarrow_L(\Provp) \mid \rightarrow_R(\Provp)
-\end{array}
-\]
+        (v, p) \mid \mathsf{exp}(v, p) \mid \rightarrow_L(\Provp) \mid \rightarrow_R(\Provp) \\
+    m \in & \mathsf{Mode} & \Coloneqq & \mathsf{syn} \mid \mathsf{ana}(\STMV)
+\end{array}\]
 
 \subsection{Types}
 
@@ -102,31 +101,36 @@
 %
 \begin{mathpar}
   \inferrule[TCUnknown1]{ }{
-    \consistent{\TUnknown}{\STMV}
+    \consistent{\TUnknown}{\SSTMV}
   }
 
-  % \inferrule[TCUnknown2]{ }{
-  %   \consistent{\TMV}{\TUnknown}
-  % }
+  \inferrule[TCUnknown2]{ }{
+    \consistent{\STMV}{\TUnknown}
+  }
 
-  % \inferrule[TCRefl]{ }{
-  %   \consistent{\TMV}{\TMV}
-  % }
+  \inferrule[TCRefl]{ }{
+    \consistent{\STMV}{\STMV}
+  }
 
-  % \inferrule[TCArr]{
-  %   \consistent{\TMV_1}{\TMV_1'} \\
-  %   \consistent{\TMV_2}{\TMV_2'} \\
-  % }{
-  %   \consistent{\TArrow{\TMV_1}{\TMV_2}}{\TArrow{\TMV_1'}{\TMV_2'}}
-  % }
-
-  % \inferrule[TCProd]{
-  %   \consistent{\TMV_1}{\TMV_1'} \\
-  %   \consistent{\TMV_2}{\TMV_2'} \\
-  % }{
-  %   \consistent{\TProd{\TMV_1}{\TMV_2}}{\TProd{\TMV_1'}{\TMV_2'}}
-  % }
+  \inferrule[TCArr]{
+    \consistent{\STMV_1}{\STMV_1'} \\
+    \consistent{\STMV_2}{\STMV_2'} \\
+  }{
+    \consistent{\TArrow{\STMV_1}{\STMV_2}}{\TArrow{\STMV_1'}{\STMV_2'}}
+  }
 \end{mathpar} \\
+
+\judgbox{\ensuremath{\matchedArrowConstraint{\STMV}{\STMV_1}{\STMV_2}{C}}} $\STMV$ has matched arrow type $\TArrow{\STMV_1}{\STMV_2}$ and generates constraints $C$
+%
+\begin{mathpar}
+  \judgment{ }{
+    \matchedArrowConstraint{\TUnknown^p}{\TUnknown^{\rightarrow_L(p)}}{\TUnknown^{\rightarrow_R(p)}}{\{ \TUnknown^p \approx \tarr{\TUnknown^{\rightarrow_L(p)}}{\TUnknown^{\rightarrow_R(p)}} \}}
+  }{TMAHole-C}
+
+  \judgment{ }{
+    \matchedArrowConstraint{\TArrow{\STMV_1}{\STMV_2}}{\STMV_1}{\STMV_2}{\{\}}
+  }{TMAArr-C}
+\end{mathpar}
 
 \subsection{Unmarked expressions}
 \label{sec:marked-unmarked-expressions}
@@ -286,33 +290,10 @@
     }
 \end{mathpar}
 
-\subsubsection{Constrained Matched Arrow}
-
-\judgbox{\ensuremath{\matchedArrowConstraint{\STMV}{\STMV_1}{\STMV_2}{C}}} $\STMV$ has matched arrow type $\TArrow{\STMV_1}{\STMV_2}$ and generates constraints $C$
-\begin{mathpar}
-  \judgment{ }{
-    \matchedArrowConstraint{\TUnknown^p}{\TUnknown^{\rightarrow_L(p)}}{\TUnknown^{\rightarrow_R(p)}}{\{ \TUnknown^p \approx \tarr{\TUnknown^{\rightarrow_L(p)}}{\TUnknown^{\rightarrow_R(p)}} \}}
-  }{TMAHole-C}
-
-  \judgment{ }{
-    \matchedArrowConstraint{\TArrow{\STMV_1}{\STMV_2}}{\STMV_1}{\STMV_2}{\{\}}
-  }{TMAArr-C}
-\end{mathpar}
-
-
-\subsubsection{Mode}
-%
-\[
-\begin{array}{cc}
-    m \in Mode \coloneqq & syn \mid ana(\STMV) \\
-\end{array}
-\]
-
-\subsubsection{Local Info Mapping}
-
-\judgbox{\Setof{(u,w,\ctx,m)}} 
-%
-$M$ is a set of 4-tuples of $u$ (vertex-IDs), $w$ (edge-IDs), \ctx and mode $m$
+% \subsubsection{Local Info Mapping}
+% \judgbox{\Setof{(u,w,\ctx,m)}} 
+% %
+% $M$ is a set of 4-tuples of $u$ (vertex-IDs), $w$ (edge-IDs), \ctx and mode $m$
 
 % \subsubsection{Meet of Types} 
 % \judgbox{\meet{\STMV_1}{\STMV_2}}
@@ -325,7 +306,7 @@ $M$ is a set of 4-tuples of $u$ (vertex-IDs), $w$ (edge-IDs), \ctx and mode $m$
 %     & & \bot otherwise
 % \end{array}\]
 
-\subsection{Marking judgments}
+\subsection{Marking}
 
 \judgbox{\synMarkConstraint{\ctx}{\EMV}{\ECMV}{\STMV}{C}{M}} $\EMV$ is marked into $\ECMV$ and synthesizes type $\STMV$ and generates constraints $C$ and local info mapping $M$
 %
