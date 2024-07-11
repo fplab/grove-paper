@@ -71,21 +71,21 @@
     \ensuremath{{#1} \constraintTurn {#2} \constraintAna {#3} \constraintBar {#4} \constraintBar {#5}}
     \end{mybox}
 }
-\newcommand{\synMarkConstraint}[6]{
+\newcommand{\synMarkConstraint}[4]{
     \begin{mybox}{\colorCBkgSyn}
-    \ensuremath{{#1} \constraintTurn {#2} \goodcolor{\colorMKText}        {\looparrowright} {#3}
-    \constraintSyn {#4} \constraintBar {#5} \mid {#6}}
+      \ensuremath{{#1} \constraintTurn {#2} \goodcolor{\colorMKText}        {\looparrowright} {#3}
+      \constraintSyn {#4}}
     \end{mybox}
 }
-\newcommand{\anaMarkConstraint}[6]{
+\newcommand{\anaMarkConstraint}[4]{
     \begin{mybox}{\colorCBkgAna}
-    \ensuremath{{#1} \constraintTurn {#2} \goodcolor{\colorMKText}{\looparrowright} {#3}
-    \constraintAna {#4} \constraintBar {#5} \mid {#6}}
+      \ensuremath{{#1} \constraintTurn {#2} \goodcolor{\colorMKText}{\looparrowright} {#3}
+    \constraintAna {#4}}
     \end{mybox}
 }
 
-\newcommand{\mConstraint}[0]{M}
-\newcommand{\cConstraint}[0]{C}
+\newcommand{\mConstraint}[0]{\ensuremath{L}}
+\newcommand{\cConstraint}[0]{\ensuremath{C}}
 
 
 \newcommand{\meet}[2]{{#1} \sqcap {#2}}

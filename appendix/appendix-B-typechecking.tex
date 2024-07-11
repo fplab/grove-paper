@@ -2,9 +2,17 @@
 \label{sec:marked-calculus}
 \todo{rename all uses of local info mappings}
 \subsection{Syntax}
-\[
-\begin{array}{lllll}
-     \EMV \in & \EMName & \Coloneqq & 
+\[\begin{array}{lcllll}
+    \TMV & \in & \TMName & \Coloneqq & 
+        \tnum 
+        \mid \tarrow 
+        \mid \multiref 
+        \mid \uniref \\ 
+    \TLMV & \in & \TLMName & \Coloneqq &
+        \ehole
+        \mid \lexp{\TMV}
+        \mid \conflict{\TMV} \\
+     \EMV & \in & \EMName & \Coloneqq & 
         \var{x}
         \mid \num 
         \mid \plus{\ELV_1}{\ELV_2} 
@@ -13,11 +21,11 @@
         \mid \app{\ELV_1}{\ELV_2}
         \mid \multiref
         \mid \uniref \\
-     \ELV \in & \ELMName & \Coloneqq & 
+     \ELV & \in & \ELMName & \Coloneqq & 
         \ehole
         \mid \lexp{\EMV} 
         \mid \conflict{\EMV} \\
-     \ECMV \in & \ECMName & \Coloneqq &
+     \ECMV & \in & \ECMName & \Coloneqq &
         \var{x}
         \mid \num
         \mid \plus{\ELMV_1}{\ELMV_2}
@@ -26,34 +34,33 @@
         \mid \app{\ELMV_1}{\ELMV_2}
         \mid \multiref
         \mid \uniref \\ 
-        & & & \ECFree{\var{x}} 
-        \mid \incontype
+        & & & &
+          \ECFree{\var{x}} 
         \mid \lamasc
         \mid \lamanamarr
-        \mid \apsynmarr \\ 
-        % \mid \lamge \\
-     \ELMV \in & \ELMName & \Coloneqq &
+        \mid \apsynmarr
+        \mid \incontype \\
+    \ELMV & \in & \ELMName & \Coloneqq &
         \ehole
         \mid \lexp{\ECMV}
         \mid \conflict{\ECMV} \\
-
-    \TMV \in & \TMName & \Coloneqq & 
-        \tnum 
-        \mid \tarrow 
-        \mid \multiref 
-        \mid \uniref \\ 
-    \TLMV \in & \TLMName & \Coloneqq &
-        \ehole
-        \mid \lexp{\TMV}
-        \mid \conflict{\TMV} \\
-    \STMV \in & \STMName & \Coloneqq & 
+    \STMV & \in & \STMName & \Coloneqq & 
         \TUnknown
         \mid \tNum{}
-        \mid \starrow \\
-    \Provp \in & \Prov & \Coloneqq &
-        (v, p) \mid \mathsf{exp}(v, p) \mid \rightarrow_L(\Provp) \mid \rightarrow_R(\Provp)
-\end{array}
-\]
+        \mid \TArrow{\STMV_1}{\STMV_2} \\
+    \PTMV & \in & \PTMName & \Coloneqq & 
+        \TUnknown^{\Provp}
+        \mid \tNum{}
+        \mid \TArrow{\PTMV_1}{\PTMV_2} \\
+    \Provp & \in & \Prov & \Coloneqq &
+        \mathsf{typ}(\ell)
+        \mid \mathsf{exp}(\ell)
+        \mid \mathsf{ref}(w)
+        \mid \mathsf{mark}(u)
+        \mid ~\rightarrow_L(\Provp) \mid ~\rightarrow_R(\Provp)
+        \mid \mathsf{anon} \\
+    m & \in & \mathsf{Mode} & \Coloneqq & \mathsf{syn} \mid \mathsf{ana}(\STMV)
+\end{array}\]
 
 \subsection{Types}
 
@@ -105,28 +112,45 @@
     \consistent{\TUnknown}{\STMV}
   }
 
-  % \inferrule[TCUnknown2]{ }{
-  %   \consistent{\TMV}{\TUnknown}
-  % }
+  \inferrule[TCUnknown2]{ }{
+    \consistent{\STMV}{\TUnknown}
+  }
 
-  % \inferrule[TCRefl]{ }{
-  %   \consistent{\TMV}{\TMV}
-  % }
+  \inferrule[TCRefl]{ }{
+    \consistent{\STMV}{\STMV}
+  }
 
-  % \inferrule[TCArr]{
-  %   \consistent{\TMV_1}{\TMV_1'} \\
-  %   \consistent{\TMV_2}{\TMV_2'} \\
-  % }{
-  %   \consistent{\TArrow{\TMV_1}{\TMV_2}}{\TArrow{\TMV_1'}{\TMV_2'}}
-  % }
-
-  % \inferrule[TCProd]{
-  %   \consistent{\TMV_1}{\TMV_1'} \\
-  %   \consistent{\TMV_2}{\TMV_2'} \\
-  % }{
-  %   \consistent{\TProd{\TMV_1}{\TMV_2}}{\TProd{\TMV_1'}{\TMV_2'}}
-  % }
+  \inferrule[TCArr]{
+    \consistent{\STMV_1}{\STMV_1'} \\
+    \consistent{\STMV_2}{\STMV_2'} \\
+  }{
+    \consistent{\TArrow{\STMV_1}{\STMV_2}}{\TArrow{\STMV_1'}{\STMV_2'}}
+  }
 \end{mathpar} \\
+
+\judgbox{\ensuremath{\matchedArrow{\STMV}{\STMV_1}{\STMV_2}}} $\STMV$ has matched arrow type $\TArrow{\STMV_1}{\STMV_2}$
+%
+\begin{mathpar}
+  \inferrule[TMAUnknown]{ }{
+    \matchedArrow{\TUnknown}{\TUnknown}{\TUnknown}
+  }
+
+  \inferrule[TMAArr]{ }{
+    \matchedArrow{\TArrow{\STMV_1}{\STMV_2}}{\STMV_1}{\STMV_2}
+  }
+\end{mathpar} \\
+
+\judgbox{\ensuremath{\matchedArrowConstraint{\STMV}{\STMV_1}{\STMV_2}{C}}} $\STMV$ has matched arrow type $\TArrow{\STMV_1}{\STMV_2}$ and generates constraints $C$
+%
+\begin{mathpar}
+  \judgment{ }{
+    \matchedArrowConstraint{\TUnknown^\Provp}{\TUnknown^{\rightarrow_L(\Provp)}}{\TUnknown^{\rightarrow_R(\Provp)}}{\{ \TUnknown^\Provp \approx \tarr{\TUnknown^{\rightarrow_L(\Provp)}}{\TUnknown^{\rightarrow_R(\Provp)}} \}}
+  }{TMAUnknown-C}
+
+  \judgment{ }{
+    \matchedArrowConstraint{\TArrow{\STMV_1}{\STMV_2}}{\STMV_1}{\STMV_2}{\{\}}
+  }{TMAArr-C}
+\end{mathpar}
 
 \subsection{Unmarked expressions}
 \label{sec:marked-unmarked-expressions}
@@ -172,15 +196,14 @@
     \ctxSynTypeU{\ctx}{\mult{\ELV_1}{\ELV_2}}{\tNum{}}
   }
 
-  \inferrule[USMultiLocation]{ }{
+  \inferrule[USMultiLocationConflict]{ }{
     \ctxSynTypeU{\ctx}{\multiref}{\TUnknown}
   }
 
-  \inferrule[USCycleLocation]{ }
+  \inferrule[USCycleLocationConflict]{ }
   {
     \ctxSynTypeU{\ctx}{\uniref}{\TUnknown} 
-  }
-  
+  }  
 \end{mathpar} \\
 
 \judgbox{\ctxSynTypeU{\ctx}{\ELV}{\STMV}} $\ELV$ synthesizes type $\STMV$
@@ -190,17 +213,17 @@
         \ctxSynTypeU{\ctx}{\ehole}{\TUnknown}
     }
 
-    \inferrule[USExp]{
+    \inferrule[USOnly]{
         \ctxSynTypeU{\ctx}{\EMV}{\STMV}
     }{ 
         \ctxSynTypeU{\ctx}{\lexp{\EMV}}{\STMV}
     }
     
-    \inferrule[USLocal]{
+    \inferrule[USLocalConflict]{
+      \Setof{\ctxSynTypeU{\ctx}{\EMV_i}{\STMV_i}}_{i<n}
     }{
-        \ctxSynTypeU{\ctx}{\conflict{\TMV}}{\TUnknown}
+        \ctxSynTypeU{\ctx}{\conflict{\EMV}}{\TUnknown}
     }
-
 \end{mathpar}
 
 \judgbox{\ctxAnaTypeU{\ctx}{\EMV}{\STMV}} $\EMV$ analyzes against type $\STMV$
@@ -215,6 +238,15 @@
     \ctxAnaTypeU{\ctx}{\reglam}{\STMV_3}
   }
 
+  \inferrule[UAMultiLocationConflict]{ }{
+    \ctxAnaTypeU{\ctx}{\multiref}{\STMV}
+  }
+
+  \inferrule[UACycleLocationConflict]{ }
+  {
+    \ctxAnaTypeU{\ctx}{\uniref}{\STMV} 
+  }
+
   \inferrule[UASubsume]{
     \ctxSynTypeU{\ctx}{\EMV}{\STMV'} \\
     \consistent{\STMV}{\STMV'} \\
@@ -227,11 +259,20 @@
 \judgbox{\ctxAnaTypeU{\ctx}{\ELV}{\STMV}} $\ELV$ analyzes against type $\STMV$
 %
 \begin{mathpar}
-    \inferrule[ULASubsume]{ 
-        \ctxSynTypeU{\ctx}{\ELV}{\STMV'} \\
-        \consistent{\STMV}{\STMV'}
+    \inferrule[UAHole]{ }{
+        \ctxAnaTypeU{\ctx}{\ehole}{\STMV}
+    }
+
+    \inferrule[UAOnly]{
+        \ctxAnaTypeU{\ctx}{\EMV}{\STMV}
     }{ 
-        \ctxAnaTypeU{\ctx}{\ELV}{\STMV}
+        \ctxAnaTypeU{\ctx}{\lexp{\EMV}}{\STMV}
+    }
+
+    \inferrule[UALocalConflict]{
+      \Setof{\ctxAnaTypeU{\ctx}{\EMV_i}{\STMV}}_{i<n}
+    }{
+      \ctxAnaTypeU{\ctx}{\conflict{\EMV}}{\STMV}
     }
 \end{mathpar}
 
@@ -260,59 +301,12 @@
   }{
     \subsumable{\app{\ELV_1}{\ELV_2}}
   }
-
-  \inferrule[USuMultiParent]{ }{
-    \subsumable{\multiref}
-  }
-
-  \inferrule[USuUnicycle]{ }{
-    \subsumable{\uniref}
-  }
 \end{mathpar}
 
-\judgbox{\subsumable{\ELV}} $\ELV$ is subsumable
-%
-\begin{mathpar}
-    \inferrule[USuHole]{ }{
-        \subsumable{\emptyHole{v}{p}}
-    }
-
-    \inferrule[USuExp]{ }{
-        \subsumable{\lexp{\EMV}}
-    }
-
-    \inferrule[USuConflict]{ }{
-        \subsumable{\conflict{\EMV}}
-    }
-\end{mathpar}
-
-\subsubsection{Constrained Matched Arrow}
-
-\judgbox{\ensuremath{\matchedArrowConstraint{\STMV}{\STMV_1}{\STMV_2}{C}}} $\STMV$ has matched arrow type $\TArrow{\STMV_1}{\STMV_2}$ and generates constraints $C$
-\begin{mathpar}
-  \judgment{ }{
-    \matchedArrowConstraint{\TUnknown^p}{\TUnknown^{\rightarrow_L(p)}}{\TUnknown^{\rightarrow_R(p)}}{\{ \TUnknown^p \approx \tarr{\TUnknown^{\rightarrow_L(p)}}{\TUnknown^{\rightarrow_R(p)}} \}}
-  }{TMAHole-C}
-
-  \judgment{ }{
-    \matchedArrowConstraint{\TArrow{\STMV_1}{\STMV_2}}{\STMV_1}{\STMV_2}{\{\}}
-  }{TMAArr-C}
-\end{mathpar}
-
-
-\subsubsection{Mode}
-%
-\[
-\begin{array}{cc}
-    m \in Mode \coloneqq & syn \mid ana(\STMV) \\
-\end{array}
-\]
-
-\subsubsection{Local Info Mapping}
-
-\judgbox{\Setof{(u,w,\ctx,m)}} 
-%
-$M$ is a set of 4-tuples of $u$ (vertex-IDs), $w$ (edge-IDs), \ctx and mode $m$
+% \subsubsection{Local Info Mapping}
+% \judgbox{\Setof{(u,w,\ctx,m)}} 
+% %
+% $M$ is a set of 4-tuples of $u$ (vertex-IDs), $w$ (edge-IDs), \ctx and mode $m$
 
 % \subsubsection{Meet of Types} 
 % \judgbox{\meet{\STMV_1}{\STMV_2}}
@@ -325,176 +319,362 @@ $M$ is a set of 4-tuples of $u$ (vertex-IDs), $w$ (edge-IDs), \ctx and mode $m$
 %     & & \bot otherwise
 % \end{array}\]
 
-\subsection{Marking judgments}
+\subsection{Marking}
 
-\judgbox{\synMarkConstraint{\ctx}{\EMV}{\ECMV}{\STMV}{C}{M}} $\EMV$ is marked into $\ECMV$ and synthesizes type $\STMV$ and generates constraints $C$ and local info mapping $M$
+\judgbox{\synMarkConstraint{\ctx}{\EMV}{\ECMV}{\STMV}} $\EMV$ is marked into $\ECMV$ and synthesizes type $\STMV$
 %
 \begin{mathpar}
-  \inferrule[MKSCVar]{
+  \inferrule[MKSVar]{
     \inCtx{\ctx}{x}{\STMV}
   }{
-    \synMarkConstraint{\ctx}{\eVar{u}{x}}{\eVar{u}{x}}{\STMV}{\constraintNil{}}{\mapNil}
+     \synMarkConstraint{\ctx}{\eVar{u}{x}}{\eVar{u}{x}}{\STMV}
   }
 
-  \inferrule[MKSCFree]{
+  \inferrule[MKSFree]{
     \notInCtx{\ctx}{x}
   }{
-    \synMarkConstraint{\ctx}{\eVar{u}{x}}{\ECFree{\eVar{u}{x}}}{\TUnknown^{exp(u)}}{\constraintNil{}}{\mapNil}
+    \synMarkConstraint{\ctx}{\eVar{u}{x}}{\ECFree{\eVar{u}{x}}}{\TUnknown}
   }
 
-  \inferrule[MKSCNum]{ }{
-    \synMarkConstraint{\ctx}{\eNum{u}{n}}{\eNum{u}{n}}{\tNum{}}{\constraintNil{}}{\mapNil}
+  \inferrule[MKSNum]{ }{
+    \synMarkConstraint{\ctx}{\eNum{u}{n}}{\eNum{u}{n}}{\tNum{}}
   }
 
-  \inferrule[MKSCPlus]{
-    \anaMarkConstraint{\ctx}{\ELV_1}{\ELMV_1}{\tNum{}}{\cConstraint_1}{\mConstraint_1} \\
-    \anaMarkConstraint{\ctx}{\ELV_2}{\ELMV_2}{\tNum{}}{\cConstraint_2}{\mConstraint_2}
+  \inferrule[MKSPlus]{
+    \anaMarkConstraint{\ctx}{\ELV_1}{\ELMV_1}{\tNum{}} \\
+    \anaMarkConstraint{\ctx}{\ELV_2}{\ELMV_2}{\tNum{}}
   }{
-    \synMarkConstraint{\ctx}{\ePlus{u}{\ELV_1}{\ELV_2}}{\ePlus{u}{\ELMV_1}{\ELMV_2}}{\tNum{}}{\cConstraint_1 \cup \cConstraint_2}{\mConstraint_1 \cup \mConstraint_2}
+    \synMarkConstraint{\ctx}{\ePlus{u}{\ELV_1}{\ELV_2}}{\ePlus{u}{\ELMV_1}{\ELMV_2}}{\tNum{}}
   }
 
-  \inferrule[MKSCTimes]{
-    \anaMarkConstraint{\ctx}{\ELV_1}{\ELMV_1}{\tNum{}}{\cConstraint_1}{\mConstraint_1} \\
-    \anaMarkConstraint{\ctx}{\ELV_2}{\ELMV_2}{\tNum{}}{\cConstraint_2}{\mConstraint_2}
+  \inferrule[MKSTimes]{
+    \anaMarkConstraint{\ctx}{\ELV_1}{\ELMV_1}{\tNum{}} \\
+    \anaMarkConstraint{\ctx}{\ELV_2}{\ELMV_2}{\tNum{}}
   }{
-    \synMarkConstraint{\ctx}{\eTimes{u}{\ELV_1}{\ELV_2}}{\eTimes{u}{\ELMV_1}{\ELMV_2}}{\tNum{}}{\cConstraint_1 \cup \cConstraint_2}{\mConstraint_1 \cup \mConstraint_2}
+    \synMarkConstraint{\ctx}{\eTimes{u}{\ELV_1}{\ELV_2}}{\eTimes{u}{\ELMV_1}{\ELMV_2}}{\tNum{}}
   }
 
-  \inferrule[MKSCLam]{
+  \inferrule[MKSLam]{
     \graphErase{\TLMV_1} = \STMV_1 \\
-    \synMarkConstraint{\extendCtx{\ctx}{x}{\STMV_1}}{\ELV}{\ELMV}{\STMV_2}{\cConstraint}{\mConstraint}
+    \synMarkConstraint{\extendCtx{\ctx}{x}{\STMV_1}}{\ELV}{\ELMV}{\STMV_2}
   }{
-    \synMarkConstraint{\ctx}{\lam{x}{\TLMV_1}{\ELV}}{\lam{x}{\TLMV_1}{\ELMV}}{\starrow}{\cConstraint}{\mConstraint}
+    \synMarkConstraint{\ctx}{\lam{x}{\TLMV_1}{\ELV}}{\lam{x}{\TLMV_1}{\ELMV}}{\starrow}
   }
 
-  \inferrule[MKSCAp1]{
-    \synMarkConstraint{\ctx}{\ELV_1}{\ELMV_1}{\STMV}{\cConstraint_1}{\mConstraint_1} \\
-    \matchedArrowConstraint{\STMV}{\STMV_1}{\STMV_2}{\cConstraint_2} \\
-    \anaMarkConstraint{\ctx}{\ELV_2}{\ELMV_2}{\STMV_1}{\cConstraint_3}{\mConstraint_2} \\
+  \inferrule[MKSAp1]{
+    \synMarkConstraint{\ctx}{\ELV_1}{\ELMV_1}{\STMV} \\
+    \matchedArrow{\STMV}{\STMV_1}{\STMV_2} \\
+    \anaMarkConstraint{\ctx}{\ELV_2}{\ELMV_2}{\STMV_1} \\
   }{
-    \synMarkConstraint{\ctx}{\eApp{u}{\ELV_1}{\ELV_2}}{\eApp{u}{\ELMV_1}{\ELMV_2}}{\STMV_2}{\cConstraint_1 \cup \cConstraint_2 \cup \cConstraint_3}{\mConstraint_1 \cup \mConstraint_2}
+    \synMarkConstraint{\ctx}{\eApp{u}{\ELV_1}{\ELV_2}}{\eApp{u}{\ELMV_1}{\ELMV_2}}{\STMV_2}
   }
 
-  \inferrule[MKSCAp2]{
-    \synMarkConstraint{\ctx}{\ELV_1}{\ELMV_1}{\STMV}{\cConstraint_1}{\mConstraint_1} \\
+  \inferrule[MKSAp2]{
+    \synMarkConstraint{\ctx}{\ELV_1}{\ELMV_1}{\STMV} \\
     \notMatchedArrow{\STMV} \\
-    \anaMarkConstraint{\ctx}{\ELV_2}{\ELMV_2}{\TUnknown^{\rightarrow_{L}{(exp(u))}}}{\cConstraint_2}{\mConstraint_2}
+    \anaMarkConstraint{\ctx}{\ELV_2}{\ELMV_2}{\TUnknown}
   }{
-    \synMarkConstraint{\ctx}{\eApp{u}{\ELV_1}{\ELV_2}}{\app{\ECApSynNonMatchedArrow{\ELMV_1}}{\ELMV_2}}{\TUnknown^{\rightarrow_{R}{(exp(u))}}}{\cConstraint_1 \cup \cConstraint_2 \cup \SetOf{\constrain{\TUnknown^{exp(u)}}{\tarr{\TUnknown^{\rightarrow_L(exp(u))}}{\TUnknown^{\rightarrow_R(exp(u))}}}}
-    }{\mConstraint_1 \cup \mConstraint_2}
+    \synMarkConstraint{\ctx}{\eApp{u}{\ELV_1}{\ELV_2}}{\app{\ECApSynNonMatchedArrow{\ELMV_1}}{\ELMV_2}}{\TUnknown}
   }
 
-  \inferrule[MKSCMultiParent]{ }{
-    \synMarkConstraint{\ctx}{\multiref}{\multiref}{\TUnknown^{exp(id-of(v))}}{\constraintNil{}}{(id-of(v), w , \ctx, syn)}
+  \inferrule[MKSMultiLocationConflict]{ }{
+    \synMarkConstraint{\ctx}{\multiref}{\multiref}{\TUnknown}
   }
   
-  \inferrule[MKSCUnicycle]{ }{
-    \synMarkConstraint{\ctx}{\uniref}{\uniref}{\TUnknown^{exp(id-of(v)}}{\constraintNil{}}{(id-of(v),w , \ctx, syn)}
+  \inferrule[MKSCycleLocationConflict]{ }{
+    \synMarkConstraint{\ctx}{\uniref}{\uniref}{\TUnknown}
   }  
 \end{mathpar} \\
 
-\judgbox{\synMarkConstraint{\ctx}{\ELV}{\ELMV}{\STMV}{\cConstraint}{\mConstraint}}
+\judgbox{\synMarkConstraint{\ctx}{\ELV}{\ELMV}{\STMV}} $\ELV$ is marked into $\ELMV$ and synthesizes type $\STMV$
 %
 \begin{mathpar}
-    \inferrule[MKSCHole]{ }{
-        \synMarkConstraint{\ctx}{\emptyHole{v}{p}}{\emptyHole{v}{p}}{\TUnknown^{exp(v,p)}}{\Setof{\constrain{\TUnknown^{exp(v,p)}}{\texttt{etc}}}}{\mapNil}
+    \inferrule[MKSHole]{ }{
+        \synMarkConstraint{\ctx}{\emptyHole{\ell}}{\emptyHole{\ell}}{\TUnknown}
     }
 
-    \inferrule[MKSCExp]{ 
-        \synMarkConstraint{\ctx}{\EMV}{\ECMV}{\STMV}{\cConstraint}{\mConstraint}
+    \inferrule[MKSOnly]{ 
+        \synMarkConstraint{\ctx}{\EMV}{\ECMV}{\STMV}
     }{ 
-        \synMarkConstraint{\ctx}{\lexp{\EMV}}{\lexp{\ECMV}}{\STMV}{\cConstraint}{\mConstraint} 
+        \synMarkConstraint{\ctx}{\lexp{\EMV}}{\lexp{\ECMV}}{\STMV}
     }
 
-   \inferrule[MKSCConflict]{ 
-    \Setof{\synMarkConstraint{\ctx}{\EMV}{\ECMV}{\STMV_i}{\cConstraint_i}{\mConstraint_i}}_{i<n}
+   \inferrule[MKSLocalConflict]{ 
+      \Setof{\synMarkConstraint{\ctx}{\EMV_i}{\ECMV_i}{\STMV_i}}_{i<n}
     }{
-        \synMarkConstraint{\ctx}{\conflict{\EMV}}{\conflict{\ECMV}}{\TUnknown^{exp(v,p)}}{\Setof{\constrain{\TUnknown^{(exp(u_i))}}{\STMV_i}}_{i<n} \cup \bigcup_{i<n} \cConstraint_i}{\bigcup_{i<n} \mConstraint_1}
+        \synMarkConstraint{\ctx}{\conflict{\EMV}}{\conflict{\ECMV}}{\TUnknown}
     }
 \end{mathpar}
 
-\judgbox{\anaMarkConstraint{\ctx}{\ELV}{\ELMV}{\STMV}{\cConstraint}{\mConstraint}}
+\judgbox{\anaMarkConstraint{\ctx}{\EMV}{\ECMV}{\STMV}} $\EMV$ is marked into $\ECMV$ and analyzes type $\STMV$
 %
 \begin{mathpar}
-    \inferrule[MKACSubsume]{ 
-        \synMarkConstraint{\ctx}{\ELV}{\ELMV}{\STMV'}{\cConstraint}{\mConstraint} \\
-        \consistent{\STMV}{\STMV'} \\
-        \subsumable{\ELMV}
-    }{
-        \anaMarkConstraint{\ctx}{\ELV}{\ELMV}{\STMV}{\cConstraint}{\mConstraint}    
-    }
-
-    \inferrule[MKAConflict]{ 
-        \Setof{\anaMarkConstraint{\ctx}{\EMV_i}{\ECMV_i}{\STMV}{\cConstraint_i}{\mapNil}}_{i<n}
-    }{ 
-        \anaMarkConstraint{\ctx}{\conflict{\EMV}}{\conflict{\ECMV}}{\STMV}{\bigcup_{i<n} \cConstraint_i}{\mapNil}
-    }
-
-    \inferrule[MKACSuInconType]{
-        \synMarkConstraint{\ctx}{\ELV}{\ELMV}{\STMV'}{\cConstraint}{\mConstraint} \\
-        \inconsistent{\STMV}{\STMV'} \\
-    }{
-        \anaMarkConstraint{\ctx}{\ELV}{\incontype}{\STMV}{\cConstraint}{\mConstraint}    
-    }
-\end{mathpar}
-
-
-\judgbox{\anaMarkConstraint{\ctx}{\EMV}{\ECMV}{\STMV}{\cConstraint}{\mConstraint}} $\EMV$ is marked into $\ECMV$ and analyzes type $\STMV$ and generates constraints \cConstraint and local-info mapping \mConstraint
-%
-\begin{mathpar}
-    \inferrule[MKACLam1]{
+    \inferrule[MKALam1]{
+        \matchedArrow{\STMV_3}{\STMV_1}{\STMV_2} \\
         \graphErase{\TLMV} = \STMV \\
-        \matchedArrowConstraint{\STMV_3}{\STMV_1}{\STMV_2}{\cConstraint_1} \\
         \consistent{\STMV}{\STMV_1} \\
-        \anaMarkConstraint{\extendCtx{\ctx}{x}{\STMV}}{\ELV}{\ELMV}{\STMV_2}{\cConstraint_2}{\mConstraint_1}
+        \anaMarkConstraint{\extendCtx{\ctx}{x}{\STMV}}{\ELV}{\ELMV}{\STMV_2}
     }{
-        \anaMarkConstraint{\ctx}{\lam{x}{\TLMV}{\EMV}}{\lam{x}{\TLMV}{\ELMV}}{\STMV_3}{\cConstraint_1 \cup \cConstraint_2 \cup \Setof{\constrain{\STMV}{\STMV_1}}}{\mConstraint_1}
+        \anaMarkConstraint{\ctx}{\lam{x}{\TLMV}{\EMV}}{\lam{x}{\TLMV}{\ELMV}}{\STMV_3}
     }
 
-     \inferrule[MKACLam2]{
-        \graphErase{\TLMV} = \STMV \\
+     \inferrule[MKALam2]{
         \notMatchedArrow{\STMV_3} \\
-        \anaMarkConstraint{\extendCtx{\ctx}{x}{\STMV}}{\ELV}{\ELMV}{\TUnknown^{anon}}{\cConstraint}{\mConstraint}
+        \graphErase{\TLMV} = \STMV \\
+        \anaMarkConstraint{\extendCtx{\ctx}{x}{\STMV}}{\ELV}{\ELMV}{\TUnknown}
     }{
-        \anaMarkConstraint{\ctx}{\reglam}{\ECLamAnaNonMatchedArrow{\var{x}}{\TLMV}{\ELMV}}{\STMV_3}{\cConstraint \cup \Setof{\constrain{\TUnknown^{exp(u)}}{\STMV_3}}}{\mConstraint}
+        \anaMarkConstraint{\ctx}{\reglam}{\ECLamAnaNonMatchedArrow{\var{x}}{\TLMV}{\ELMV}}{\STMV_3}
     }
 
-    \inferrule[MKACLam3]{
-        \erase{\TLMV} = \STMV \\
-        \matchedArrowConstraint{\STMV_3}{\STMV_1}{\STMV_2}{\cConstraint_1} \\
+    \inferrule[MKALam3]{
+        \matchedArrow{\STMV_3}{\STMV_1}{\STMV_2} \\
+        \graphErase{\TLMV} = \STMV \\
         \inconsistent{\STMV}{\STMV_1} \\
-        \anaMarkConstraint{\extendCtx{\ctx}{x}{\STMV_1}}{\ELV}{\ELMV}{\STMV_2}{\cConstraint_2}{\mConstraint}
+        \anaMarkConstraint{\extendCtx{\ctx}{x}{\STMV_1}}{\ELV}{\ELMV}{\STMV_2}
     }{
-        \anaMarkConstraint{\ctx}{\reglam}{\ECLamInconAsc{\var{x}}{\TLMV}{\ELMV}}{\STMV_3}{\cConstraint_1 \cup \cConstraint_2 \cup \Setof{\constrain{\TUnknown^{exp(u)}}{\STMV_3}}}{\mConstraint}
+        \anaMarkConstraint{\ctx}{\reglam}{\ECLamInconAsc{\var{x}}{\TLMV}{\ELMV}}{\STMV_3}
     }
 
-\inferrule[MKACMultiParent]{
-    }{
-    \anaMarkConstraint{\ctx}{\multiref}{\multiref}{\STMV}{\constraintNil{}}{(id-of(v), w ,\ctx, ana(\STMV))}
-  }
+    \inferrule[MKAMultiLocationConflict]{ }{
+      \anaMarkConstraint{\ctx}{\multiref}{\multiref}{\STMV}
+    }
   
-  \inferrule[MKACUnicycle]{ 
-    }{
-    \anaMarkConstraint{\ctx}{\uniref}{\uniref}{\STMV}{\constraintNil{}}{(id-of(v), w ,\ctx, ana(\STMV))}
+  \inferrule[MKACycleLocationConflict]{ }{
+    \anaMarkConstraint{\ctx}{\uniref}{\uniref}{\STMV}
   }
 
-  \inferrule[MKACInconsistentTypes]{
-    \synMarkConstraint{\ctx}{\EMV}{\ECMV}{\STMV'}{\cConstraint}{\mConstraint} \\
-    \inconsistent{\STMV}{\STMV'} \\
-    \subsumable{\EMV}
-  }{
-    \anaMarkConstraint{\ctx}{\EMV}{\incontype}{\STMV}{\cConstraint}{\mConstraint}
-  }
-
-  \inferrule[MKACSubsume]{
-    \synMarkConstraint{\ctx}{\EMV}{\ECMV}{\STMV'}{\cConstraint}{\mConstraint} \\
+  \inferrule[MKASubsume]{
+    \synMarkConstraint{\ctx}{\EMV}{\ECMV}{\STMV'} \\
     \consistent{\STMV}{\STMV'} \\
     \subsumable{\EMV}
   }{
-    \anaMarkConstraint{\ctx}{\EMV}{\ECMV}{\STMV}{\cConstraint}{\mConstraint}
+    \anaMarkConstraint{\ctx}{\EMV}{\ECMV}{\STMV}
   }    
+
+  \inferrule[MKAInconsistentTypes]{
+    \synMarkConstraint{\ctx}{\EMV}{\ECMV}{\STMV'} \\
+    \inconsistent{\STMV}{\STMV'} \\
+    \subsumable{\EMV}
+  }{
+    \anaMarkConstraint{\ctx}{\EMV}{\incontype}{\STMV}
+  }
 \end{mathpar}
 
+\judgbox{\anaMarkConstraint{\ctx}{\ELV}{\ELMV}{\STMV}} $\ELV$ is marked into $\ELMV$ and analyzes against type $\STMV$
+%
+\begin{mathpar}
+    \inferrule[MKSHole]{ }{
+        \anaMarkConstraint{\ctx}{\emptyHole{\ell}}{\emptyHole{\ell}}{\STMV}
+    }
+
+    \inferrule[MKAOnly]{ 
+        \anaMarkConstraint{\ctx}{\EMV}{\ECMV}{\STMV}
+    }{ 
+        \anaMarkConstraint{\ctx}{\lexp{\EMV}}{\lexp{\ECMV}}{\STMV}
+    }
+
+   \inferrule[MKALocalConflict]{ 
+      \Setof{\anaMarkConstraint{\ctx}{\EMV_i}{\ECMV_i}{\STMV}}_{i<n}
+    }{
+        \anaMarkConstraint{\ctx}{\conflict{\EMV}}{\conflict{\ECMV}}{\STMV}
+    }
+\end{mathpar}
+
+\subsection{Marked expressions}
+
+\judgbox{\synConstraint{\ctx}{\ECMV}{\PTMV}{\cConstraint}{\mConstraint}}
+$\ECMV$ synthesizes type $\STMV$, generating constraints $\cConstraint$, location conflict context $\mConstraint$
+%
+\begin{mathpar}
+  \inferrule[MSVar]{
+    \inCtx{\ctx}{x}{\PTMV}
+  }{
+    \synConstraint{\ctx}{\eVar{u}{x}}{\PTMV}{\constraintNil{}}{\mapNil}
+  }
+
+  \inferrule[MSFree]{
+    \notInCtx{\ctx}{x}
+  }{
+    \synConstraint{\ctx}{\ECFree{\eVar{u}{x}}}{\TUnknown^{\mathsf{mark}(u)}}{\constraintNil{}}{\mapNil}
+  }
+
+  \inferrule[MSNum]{ }{
+    \synConstraint{\ctx}{\eNum{u}{n}}{\tNum{}}{\constraintNil{}}{\mapNil}
+  }
+
+  \inferrule[MSPlus]{
+    \anaConstraint{\ctx}{\ELMV_1}{\tNum{}}{\cConstraint_1}{\mConstraint_1} \\
+    \anaConstraint{\ctx}{\ELMV_2}{\tNum{}}{\cConstraint_2}{\mConstraint_2}
+  }{
+    \synConstraint{\ctx}{\ePlus{u}{\ELMV_1}{\ELMV_2}}{\tNum{}}{\cConstraint_1 \cup \cConstraint_2}{\mConstraint_1 \cup \mConstraint_2}
+  }
+
+  \inferrule[MSTimes]{
+    \anaConstraint{\ctx}{\ELMV_1}{\tNum{}}{\cConstraint_1}{\mConstraint_1} \\
+    \anaConstraint{\ctx}{\ELMV_2}{\tNum{}}{\cConstraint_2}{\mConstraint_2}
+  }{
+    \synConstraint{\ctx}{\eTimes{u}{\ELMV_1}{\ELMV_2}}{\tNum{}}{\cConstraint_1 \cup \cConstraint_2}{\mConstraint_1 \cup \mConstraint_2}
+  }
+
+  \inferrule[MSLam]{
+    \graphErase{\TLMV_1} = \PTMV_1 \\
+    \synConstraint{\extendCtx{\ctx}{x}{\PTMV_1}}{\ELMV}{\PTMV_2}{\cConstraint}{\mConstraint}
+  }{
+    \synConstraint{\ctx}{\lam{x}{\TLMV_1}{\ELMV}}{\starrow}{\cConstraint}{\mConstraint}
+  }
+
+  \inferrule[MSAp1]{
+    \synConstraint{\ctx}{\ELMV_1}{\PTMV}{\cConstraint_1}{\mConstraint_1} \\
+    \matchedArrowConstraint{\PTMV}{\PTMV_1}{\PTMV_2}{\cConstraint_2} \\
+    \anaConstraint{\ctx}{\ELMV_2}{\PTMV_1}{\cConstraint_3}{\mConstraint_2} \\
+  }{
+    \synConstraint{\ctx}{\eApp{u}{\ELMV_1}{\ELMV_2}}{\PTMV_2}{\cConstraint_1 \cup \cConstraint_2 \cup \cConstraint_3}{\mConstraint_1 \cup \mConstraint_2}
+  }
+
+  \inferrule[MSAp2]{
+    \synConstraint{\ctx}{\ELMV_1}{\PTMV}{\cConstraint_1}{\mConstraint_1} \\
+    \notMatchedArrow{\PTMV} \\
+    \anaConstraint{\ctx}{\ELMV_2}{\TUnknown^{\rightarrow_{L}{(\mathsf{mark}(u))}}}{\cConstraint_2}{\mConstraint_2}
+  }{
+    \synConstraint{\ctx}{\app{\ECApSynNonMatchedArrow{\ELMV_1}}{\ELMV_2}}{\TUnknown^{\rightarrow_{R}{(\mathsf{mark}(u))}}}
+      {\cConstraint_1 \cup \cConstraint_2 \cup \SetOf{\constrain{\TUnknown^{\mathsf{mark}(u)}}{\tarr{\TUnknown^{\rightarrow_L(\mathsf{mark}(u))}}{\TUnknown^{\rightarrow_R(\mathsf{mark}(u))}}}}}
+      {\mConstraint_1 \cup \mConstraint_2}
+  }
+
+  \inferrule[MSMultiLocationConflict]{ }{
+    \synConstraint{\ctx}{\multiref}{\TUnknown^{\mathsf{ref}(w)}}{\constraintNil{}}{(v, w, \ctx, \mathsf{syn})}
+  }
+  
+  \inferrule[MSCycleLocationConflict]{ }{
+    \synConstraint{\ctx}{\uniref}{\TUnknown^{\mathsf{ref}(w)}}{\constraintNil{}}{(v ,w, \ctx, \mathsf{syn})}
+  }  
+\end{mathpar}
+
+\judgbox{\synConstraint{\ctx}{\ELMV}{\PTMV}{\cConstraint}{\mConstraint}}
+$\ELMV$ synthesizes type $\PTMV$, generating constraints $\cConstraint$, location conflict context $\mConstraint$
+%
+\begin{mathpar}
+    \inferrule[MSHole]{ }{
+      \synConstraint{\ctx}{\emptyHole{\ell}}{\TUnknown^{\mathsf{exp}(\ell)}}{\constraintNil{}}{\mapNil}
+    }
+
+    \inferrule[MSOnly]{ 
+        \synConstraint{\ctx}{\ECMV}{\PTMV}{\cConstraint}{\mConstraint}
+    }{ 
+        \synConstraint{\ctx}{\lexp{\ECMV}}{\PTMV}{\cConstraint}{\mConstraint} 
+    }
+
+   \inferrule[MSLocalConflict]{ 
+      \Setof{\synConstraint{\ctx}{\ECMV}{\PTMV_i}{\cConstraint_i}{\mConstraint_i}}_{i<n}
+    }{
+      \synConstraint{\ctx}{\conflict{\ECMV}}{\TUnknown^{\mathsf{exp}(\ell)}}{\bigcup_{i<n} \cConstraint_i \cup \Setof{\constrain{\TUnknown^{\mathsf{exp}(\ell)}}{\PTMV_i}}_{i<n}}{\bigcup_{i<n} \mConstraint_i}
+    }
+\end{mathpar}
+
+\judgbox{\anaConstraint{\ctx}{\ECMV}{\PTMV}{\cConstraint}{\mConstraint}}
+$\ECMV$ analyzes against type $\PTMV$, generating constraints \cConstraint, location conflict context \mConstraint
+%
+\begin{mathpar}
+    \inferrule[MALam1]{
+        \matchedArrowConstraint{\PTMV_3}{\PTMV_1}{\PTMV_2}{\cConstraint_1} \\
+        \graphErase{\TLMV} = \PTMV \\
+        \consistent{\PTMV}{\PTMV_1} \\
+        \anaConstraint{\extendCtx{\ctx}{x}{\PTMV}}{\ELMV}{\PTMV_2}{\cConstraint_2}{\mConstraint_1}
+    }{
+        \anaConstraint{\ctx}{\lam{x}{\TLMV}{\ELMV}}{\PTMV_3}{\cConstraint_1 \cup \cConstraint_2 \cup \Setof{\constrain{\PTMV}{\PTMV_1}}}{\mConstraint_1}
+    }
+
+    \inferrule[MALam2]{
+        \notMatchedArrow{\PTMV_3} \\
+        \graphErase{\TLMV} = \PTMV \\
+        \anaConstraint{\extendCtx{\ctx}{x}{\PTMV}}{\ELMV}{\TUnknown^{\mathsf{anon}}}{\cConstraint}{\mConstraint}
+    }{
+        \anaConstraint{\ctx}{\ECLamAnaNonMatchedArrow{\var{x}}{\TLMV}{\ELMV}}{\PTMV_3}{\cConstraint \cup \Setof{\constrain{\TUnknown^{\mathsf{mark}(u)}}{\PTMV_3}}}{\mConstraint}
+  }
+
+    \inferrule[MALam3]{
+        \matchedArrowConstraint{\PTMV_3}{\PTMV_1}{\PTMV_2}{\cConstraint_1} \\
+        \graphErase{\TLMV} = \PTMV \\
+        \inconsistent{\PTMV}{\PTMV_1} \\
+        \anaConstraint{\extendCtx{\ctx}{x}{\PTMV_1}}{\ELMV}{\PTMV_2}{\cConstraint_2}{\mConstraint}
+    }{
+        \anaConstraint{\ctx}{\ECLamInconAsc{\var{x}}{\TLMV}{\ELMV}}{\PTMV_3}{\cConstraint_1 \cup \cConstraint_2 \cup \Setof{\constrain{\TUnknown^{\mathsf{mark}(u)}}{\PTMV_3}}}{\mConstraint}
+    }
+
+    \inferrule[MAMultiLocationConflict]{
+    }{
+      \anaConstraint{\ctx}{\multiref}{\PTMV}{\Setof{\constrain{\TUnknown^{\mathsf{ref}(v)}}{\PTMV}}}{(v, w ,\ctx, \mathsf{ana}(\PTMV))}
+    }
+  
+    \inferrule[MACycleLocationConflict]{ 
+    }{
+      \anaConstraint{\ctx}{\uniref}{\PTMV}{\Setof{\constrain{\TUnknown^{\mathsf{ref}(v)}}{\PTMV}}}{(v, w ,\ctx, \mathsf{ana}(\PTMV))}
+    }
+
+    \inferrule[MASubsume]{
+        \synConstraint{\ctx}{\ECMV}{\PTMV'}{\cConstraint}{\mConstraint} \\
+        \consistent{\PTMV}{\PTMV'} \\
+        \subsumable{\ECMV}
+    }{
+      \anaConstraint{\ctx}{\ECMV}{\PTMV}{\cConstraint \cup \Setof{\constrain{\PTMV}{\PTMV'}}}{\mConstraint}
+    }
+
+    \inferrule[MAInconsistentTypes]{
+        \synConstraint{\ctx}{\ECMV}{\PTMV'}{\cConstraint}{\mConstraint} \\
+        \inconsistent{\PTMV}{\PTMV'} \\
+        \subsumable{\ECMV}
+    }{
+      \anaConstraint{\ctx}{\incontype}{\PTMV}{\cConstraint \cup
+      \Setof{\constrain{\TUnknown^{\mathsf{mark}(\mathsf{idof}(\ECMV))}}{\PTMV}}}{\mConstraint}
+    }
+\end{mathpar}
+
+\judgbox{\anaConstraint{\ctx}{\ELMV}{\PTMV}{\cConstraint}{\mConstraint}}
+$\ELMV$ analyzes against type $\PTMV$, generating constraints \cConstraint, location conflict context \mConstraint
+%
+\begin{mathpar}
+    \inferrule[MAHole]{ }{
+      \anaConstraint{\ctx}{\emptyHole{\ell}}{\PTMV}{\Setof{\constrain{\TUnknown^{\mathsf{exp}(\ell)}}{\PTMV}}}{\mapNil}
+    }
+
+    \inferrule[MAOnly]{ 
+        \anaConstraint{\ctx}{\ECMV}{\PTMV}{\cConstraint}{\mConstraint}
+    }{ 
+        \anaConstraint{\ctx}{\lexp{\ECMV}}{\PTMV}{\cConstraint}{\mConstraint} 
+    }
+
+    \inferrule[MALocalConflict]{ 
+        \Setof{\anaConstraint{\ctx}{\ECMV_i}{\PTMV}{\cConstraint_i}{\mConstraint_i}}_{i<n}
+    }{ 
+      \anaConstraint{\ctx}{\conflict{\ECMV}}{\PTMV}{\bigcup_{i<n} \cConstraint_i \cup
+      \Setof{\constrain{\TUnknown^{\mathsf{exp}(\ell)}}{\PTMV}}}{\bigcup_{i<n} \mConstraint_i}
+    }
+\end{mathpar}
+
+
+\judgbox{\subsumable{\ECMV}} $\ECMV$ is subsumable
+%
+\begin{mathpar}
+    \inferrule[MSuVar]{ }{
+    \subsumable{\eVar{u}{x}}
+  }
+
+  \inferrule[MSuNum]{ }{
+    \subsumable{\eNum{u}{n}}
+  }
+
+  \inferrule[MSuPlus]{ }{
+    \subsumable{\plus{\ELMV_1}{\ELMV_2}}
+  }
+
+  \inferrule[MSuTimes]{ }{
+    \subsumable{\mult{\ELMV_1}{\ELMV_2}}
+  }
+
+  \inferrule[MSuAp]{ }{
+    \subsumable{\app{\ELMV_1}{\ELMV_2}}
+  }
+\end{mathpar}
 
 \judgbox{\markless{\ECMV}} $\ECMV$ has no marks
 %
@@ -506,7 +686,6 @@ $M$ is a set of 4-tuples of $u$ (vertex-IDs), $w$ (edge-IDs), \ctx and mode $m$
     \inferrule[MLNum]{ }{
         \markless{\num}
     }
-
 
     \inferrule[MLLam]{
         \markless{\ELMV}
@@ -548,7 +727,7 @@ $M$ is a set of 4-tuples of $u$ (vertex-IDs), $w$ (edge-IDs), \ctx and mode $m$
 %
 \begin{mathpar}
     \inferrule[MLHole]{ }{
-        \markless{\emptyHole{v}{p}}
+        \markless{\emptyHole{\ell}}
     }
 
     \inferrule[MLExp]{ 
@@ -561,231 +740,6 @@ $M$ is a set of 4-tuples of $u$ (vertex-IDs), $w$ (edge-IDs), \ctx and mode $m$
         \Setof{\markless{\ECMV_i}}_{i<n}
     }{
         \markless{\conflict{\ECMV}}
-    }
-    
-\end{mathpar}
-
-
-\judgbox{\synConstraint{\ctx}{\ELMV}{\STMV}{\cConstraint}{\mConstraint}} $\ELMV$ analyzes type $\STMV$ under typing context $\ctx$ and generates constraints \cConstraint, and local-info \mConstraint
-%
-\begin{mathpar}
-    \inferrule[MSCHole]{ }{
-        \synConstraint{\ctx}{\emptyHole{v}{p}}{\TUnknown^{exp(v,p)}}{\Setof{\constrain{\TUnknown^{exp(v,p)}}{\texttt{etc}}}}{\mapNil}
-    }
-
-    \inferrule[MSCExp]{ 
-        \synConstraint{\ctx}{\ECMV}{\STMV}{\cConstraint}{\mConstraint}
-    }{ 
-        \synConstraint{\ctx}{\lexp{\ECMV}}{\STMV}{\cConstraint}{\mConstraint} 
-    }
-
-   \inferrule[MSCConflict]{ 
-    \Setof{\synConstraint{\ctx}{\ECMV}{\STMV_i}{\cConstraint_i}{\mConstraint_i}}_{i<n}
-    }{
-        \synConstraint{\ctx}{\conflict{\ECMV}}{\TUnknown^{(v,p)}}{\Setof{\constrain{\TUnknown^{(exp(u))}}{\STMV_i}}_{i<n} \cup \bigcup_{i<n} \cConstraint_i}{\bigcup_{i<n} \mConstraint_1}
-    }
-\end{mathpar}
-
-\judgbox{\synConstraint{\ctx}{\ECMV}{\STMV}{\cConstraint}{\mConstraint}} $\ECMV$ analyzes type $\STMV$ under typing context $\ctx$ and generates constraints \cConstraint, and local-info \mConstraint
-%
-\begin{mathpar}
-    \inferrule[MSCVar]{
-    \inCtx{\ctx}{x}{\STMV}
-  }{
-    \synConstraint{\ctx}{\eVar{u}{x}}{\STMV}{\constraintNil{}}{\mapNil}
-  }
-
-  \inferrule[MSCFree]{
-    \notInCtx{\ctx}{x}
-  }{
-    \synConstraint{\ctx}{\ECFree{\eVar{u}{x}}}{\TUnknown^{exp(u)}}{\constraintNil{}}{\mapNil}
-  }
-
-  \inferrule[MSCNum]{ }{
-    \synConstraint{\ctx}{\eNum{u}{n}}{\tNum{}}{\constraintNil{}}{\mapNil}
-  }
-
-  \inferrule[MSCPlus]{
-    \anaConstraint{\ctx}{\ELMV_1}{\tNum{}}{\cConstraint_1}{\mConstraint_1} \\
-    \anaConstraint{\ctx}{\ELMV_2}{\tNum{}}{\cConstraint_2}{\mConstraint_2}
-  }{
-    \synConstraint{\ctx}{\ePlus{u}{\ELMV_1}{\ELMV_2}}{\tNum{}}{\cConstraint_1 \cup \cConstraint_2}{\mConstraint_1 \cup \mConstraint_2}
-  }
-
-  \inferrule[MSCTimes]{
-    \anaConstraint{\ctx}{\ELMV_1}{\tNum{}}{\cConstraint_1}{\mConstraint_1} \\
-    \anaConstraint{\ctx}{\ELMV_2}{\tNum{}}{\cConstraint_2}{\mConstraint_2}
-  }{
-    \synConstraint{\ctx}{\eTimes{u}{\ELMV_1}{\ELMV_2}}{\tNum{}}{\cConstraint_1 \cup \cConstraint_2}{\mConstraint_1 \cup \mConstraint_2}
-  }
-
-  \inferrule[MSCLam]{
-    \graphErase{\TLMV_1} = \STMV_1 \\
-    \synConstraint{\extendCtx{\ctx}{x}{\STMV_1}}{\ELMV}{\STMV_2}{\cConstraint}{\mConstraint}
-  }{
-    \synConstraint{\ctx}{\lam{x}{\TLMV_1}{\ELMV}}{\starrow}{\cConstraint}{\mConstraint}
-  }
-
-  \inferrule[MSCAp1]{
-    \synConstraint{\ctx}{\ELMV_1}{\STMV}{\cConstraint_1}{\mConstraint_1} \\
-    \matchedArrowConstraint{\STMV}{\STMV_1}{\STMV_2}{\cConstraint_2} \\
-    \anaConstraint{\ctx}{\ELMV_2}{\STMV_1}{\cConstraint_3}{\mConstraint_2} \\
-  }{
-    \synConstraint{\ctx}{\eApp{u}{\ELMV_1}{\ELMV_2}}{\STMV_2}{\cConstraint_1 \cup \cConstraint_2 \cup \cConstraint_3}{\mConstraint_1 \cup \mConstraint_2}
-  }
-
-  \inferrule[MSCAp2]{
-    \synConstraint{\ctx}{\ELMV_1}{\STMV}{\cConstraint_1}{\mConstraint_1} \\
-    \notMatchedArrow{\STMV} \\
-    \anaConstraint{\ctx}{\ELMV_2}{\TUnknown^{\rightarrow_{L}{(exp(u))}}}{\cConstraint_2}{\mConstraint_2}
-  }{
-    \synConstraint{\ctx}{\app{\ECApSynNonMatchedArrow{\ELMV_1}}{\ELMV_2}}{\TUnknown^{\rightarrow_{R}{(exp(u))}}}{\cConstraint_1 \cup \cConstraint_2 \cup \SetOf{\constrain{\TUnknown^{exp(u)}}{\tarr{\TUnknown^{\rightarrow_L(exp(u))}}{\TUnknown^{\rightarrow_R(exp(u))}}}}
-    }{\mConstraint_1 \cup \mConstraint_2}
-  }
-
-  \inferrule[MSCMultiParent]{ }{
-    \synConstraint{\ctx}{\multiref}{\TUnknown^{exp(id-of(v))}}{\constraintNil{}}{(id-of(v), w , \ctx, syn)}
-  }
-  
-  \inferrule[MSCUnicycle]{ }{
-    \synConstraint{\ctx}{\uniref}{\TUnknown^{exp(id-of(v)}}{\constraintNil{}}{(id-of(v),w , \ctx, syn)}
-  }  
-\end{mathpar}
-
-\judgbox{\anaConstraint{\ctx}{\ELMV}{\STMV}{\cConstraint}{\mConstraint}} $\ELMV$ analyzes type $\STMV$ under typing context $\ctx$ and generates constraints \cConstraint, and local-info \mConstraint
-%
-\begin{mathpar}
-    \inferrule[MACSubsume]{ 
-        \synConstraint{\ctx}{\ELMV}{\STMV'}{\cConstraint}{\mConstraint} \\
-        \consistent{\STMV}{\STMV'} \\
-        \subsumable{\ELMV}
-    }{
-        \anaConstraint{\ctx}{\ELMV}{\STMV}{\cConstraint}{\mConstraint}    
-    }
-
-    \inferrule[MAConflict]{ 
-        \Setof{\anaConstraint{\ctx}{\ECMV_i}{\STMV}{\cConstraint_i}{\mapNil}}_{i<n}
-    }{ 
-        \anaConstraint{\ctx}{\conflict{\ECMV}}{\STMV}{\bigcup_{i<n} \cConstraint_i}{\mapNil}
-    }
-
-    \inferrule[MACSuInconType]{
-        \synConstraint{\ctx}{\ELMV}{\STMV'}{\cConstraint}{\mConstraint} \\
-        \inconsistent{\STMV}{\STMV'} \\
-    }{
-        \anaConstraint{\ctx}{\incontype}{\STMV}{\cConstraint}{\mConstraint}    
-    }
-\end{mathpar}
-
-\judgbox{\anaConstraint{\ctx}{\ECMV}{\STMV}{\cConstraint}{\mConstraint}} $\ECMV$ analyzes type $\STMV$ under typing context $\ctx$ and generates constraints \cConstraint, and local-info \mConstraint
-%
-\begin{mathpar}
-    \inferrule[MACLam1]{
-        \graphErase{\TLMV} = \STMV \\
-        \matchedArrowConstraint{\STMV_3}{\STMV_1}{\STMV_2}{\cConstraint_1} \\
-        \consistent{\STMV}{\STMV_1} \\
-        \anaConstraint{\extendCtx{\ctx}{x}{\STMV}}{\ELMV}{\STMV_2}{\cConstraint_2}{\mConstraint_1}
-    }{
-        \anaConstraint{\ctx}{\lam{x}{\TLMV}{\ELMV}}{\STMV_3}{\cConstraint_1 \cup \cConstraint_2 \cup \Setof{\constrain{\STMV}{\STMV_1}}}{\mConstraint_1}
-    }
-
-    \inferrule[MACLam2]{
-        \graphErase{\TLMV} = \STMV \\
-        \notMatchedArrow{\STMV_3} \\
-        \anaConstraint{\extendCtx{\ctx}{x}{\STMV}}{\ELMV}{\TUnknown^{anon}}{\cConstraint}{\mConstraint}
-    }{
-        \anaConstraint{\ctx}{\ECLamAnaNonMatchedArrow{\var{x}}{\TLMV}{\ELMV}}{\STMV_3}{\cConstraint \cup \Setof{\constrain{\TUnknown^{exp(u)}}{\STMV_3}}}{\mConstraint}
-  }
-
-    \inferrule[MACLam3]{
-        \erase{\TLMV} = \STMV \\
-        \matchedArrowConstraint{\STMV_3}{\STMV_1}{\STMV_2}{\cConstraint_1} \\
-        \inconsistent{\STMV}{\STMV_1} \\
-        \anaConstraint{\extendCtx{\ctx}{x}{\STMV_1}}{\ELMV}{\STMV_2}{\cConstraint_2}{\mConstraint}
-    }{
-        \anaConstraint{\ctx}{\ECLamInconAsc{\var{x}}{\TLMV}{\ELMV}}{\STMV_3}{\cConstraint_1 \cup \cConstraint_2 \cup \Setof{\constrain{\TUnknown^{exp(u)}}{\STMV_3}}}{\mConstraint}
-    }
-
-    \inferrule[MACMultiParent]{
-    }{
-        \anaConstraint{\ctx}{\multiref}{\STMV}{\constraintNil{}}{(id-of(v), w ,\ctx, ana(\STMV))}
-    }
-  
-    \inferrule[MACUnicycle]{ 
-    }{
-        \anaConstraint{\ctx}{\uniref}{\STMV}{\constraintNil{}}{(id-of(v), w ,\ctx, ana(\STMV))}
-     }
-
-    \inferrule[MACInconsistentTypes]{
-        \synConstraint{\ctx}{\ECMV}{\STMV'}{\cConstraint}{\mConstraint} \\
-        \inconsistent{\STMV}{\STMV'} \\
-        \subsumable{\EMV}
-    }{
-        \anaConstraint{\ctx}{\incontype}{\STMV}{\cConstraint}{\mConstraint}
-    }
-
-    \inferrule[MACSubsume]{
-        \synConstraint{\ctx}{\ECMV}{\STMV'}{\cConstraint}{\mConstraint} \\
-        \consistent{\STMV}{\STMV'} \\
-        \subsumable{\EMV}
-    }{
-        \anaConstraint{\ctx}{\ECMV}{\STMV}{\cConstraint}{\mConstraint}
-    }
-\end{mathpar}
-
-
-\judgbox{\subsumable{\ECMV}} $ECMV$ is subsumable
-%
-\begin{mathpar}
-    \inferrule[UMSuVar]{ }{
-    \subsumable{\eVar{u}{x}}
-  }
-
-  \inferrule[UMSuNum]{ }{
-    \subsumable{\eNum{u}{n}}
-  }
-
-  \inferrule[UMSuPlus]{ 
-    \subsumable{\ELMV_1} \\
-    \subsumable{\ELMV_2}
-  }{
-    \subsumable{\plus{\ELMV_1}{\ELMV_2}}
-  }
-
-  \inferrule[UMSuTimes]{ 
-    \subsumable{\ELMV_1} \\
-    \subsumable{\ELMV_2}
-  }{
-    \subsumable{\mult{\ELMV_1}{\ELMV_2}}
-  }
-
-  \inferrule[UMSuAp]{
-    \subsumable{\ELMV_1} \\
-    \subsumable{\ELMV_2}
-  }{
-    \subsumable{\app{\ELMV_1}{\ELMV_2}}
-  }
-
-  \inferrule[UMSuMultiParent]{ }{
-    \subsumable{\multiref}
-  }
-
-  \inferrule[UMSuUnicycle]{ }{
-    \subsumable{\uniref}
-  }
-\end{mathpar}
-
-\judgbox{\subsumable{\ELMV}} $\ELMV$ is subsumable
-%
-\begin{mathpar}
-    \inferrule[UMSuHole]{ }{
-        \subsumable{\emptyHole{v}{p}}
-    }
-
-    \inferrule[UMSuExp]{ 
-        \subsumable{\ECMV}
-    }{
-        \subsumable{\lexp{\ECMV}}
     }
 \end{mathpar}
 
