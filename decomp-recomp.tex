@@ -1,0 +1,133 @@
+\documentclass[acmsmall,dvipsnames,10pt,review,anonymous]{acmart}\settopmatter{printfolios=true}
+
+% \title{Decomp-Recomp}
+
+\newcommand{\edgevar}[0]{\ensuremath{\epsilon}}
+\newcommand{\set}[1]{\{#1\}}
+
+\begin{document}
+% \maketitle
+
+\begin{definition}
+    U-top(v) holds if and only if there exists a sequence w(i), $1 \leq i \leq n$, where $n > 1$, such that: 
+    \begin{itemize}
+        \item w(i+1) is the unique parent of w(i) for all $1\leq i < n$
+        \item w(1) = v = w(n)
+        \item the id of v is the min of the ids of w(i)
+    \end{itemize}
+\end{definition}
+
+\begin{definition}
+    X-inner(v, w) holds if and only if not U-top(v), v has unique parent v’, and either w = v’ and X-top(w), or X-inner(v’ ,w).
+\end{definition}
+
+\begin{lemma}
+\label{lem:u-top}
+    If U-top(v), then v has unique parent w such that either w = v or U-inner(w, v).
+\end{lemma}
+\begin{proof}
+
+    $v=w(1)$ has unique parent $w=w(2)$. If $n=2$, then $w=w(2)=v$, and we have $w=v$.
+    
+    Otherwise, consider the minimum $1<m\leq n$ such that $v=w(m)$. 
+
+    Helper fact: not U-top(w(i)) for all $1 < i < m$.
+
+    \ 
+    
+    Prove X-inner(w(m-i), v) for all $1\leq i < m-1$, by induction on $i$. 
+
+    Base case: w(m-1). X-inner(w(m-1), v) because not U-top(w(m-1)) by the helper, w(m-1) has unique parent w(m)=v, and U-top(v). 
+
+    Inductive step: w(m-i-1). X-inner(w(m-i-1), v) because not U-top(w(m-i-1)) by the helper, w(m-i-1) has unique parent w(m-i), and by the induction hypothesis, X-inner(w(m-i), v). 
+\end{proof}
+
+\begin{theorem}
+\label{thm:vertex-class}
+    For each vertex v, one and only one of the following holds, and this classification is decidable:
+\begin{itemize}
+    \item NP-top(v)
+    \item MP-top(v) 
+    \item U-top(v)
+    \item NP-inner(v,w)
+    \item MP-inner(v,w)
+    \item U-inner(v,w)
+\end{itemize}
+\end{theorem}
+% \begin{proof}
+%     (uses lemma \ref{lem:u-top})
+% \end{proof}
+
+\begin{corollary}
+\label{cor:edge-class}
+    For each edge \edgevar, one and only one of the following holds, and this classification is decidable:
+\begin{itemize}
+    \item NP-edge(\edgevar)
+    \item MP-edge(\edgevar) 
+    \item U-edge(\edgevar)
+\end{itemize}
+\end{corollary}
+
+\begin{lemma}
+    If X-inner(v, w), then X-top(w).
+\end{lemma}
+
+\begin{lemma}
+    If X-edge(e, v), then X-top(v).
+\end{lemma}
+
+\begin{lemma}
+    For each vertex v, v-of(decomp’(v)) = v.
+\end{lemma}
+
+\begin{lemma}
+\label{lem:redecomp-eq}
+    For each vertex v, recomp(decomp(v)) = $\bigcup_{(E\ u`\ v\ p\ v`) \in G}$ \set{(E u’ v p v’)} $\cup$ recomp(decomp’(v’)).
+\end{lemma}
+
+\begin{lemma}
+\label{lem:parent-top-inner}
+    If (E u’ v p v’) and X-top(v), and not MP-top(v’), and not U-top(v’), then X-inner(v’, v).
+\end{lemma}
+
+\begin{lemma}
+\label{lem:parent-inner-inner}
+    If (E u’ v p v’) and X-top(v), and not MP-top(v’), and not U-top(v’), then X-inner(v’, v).
+\end{lemma}
+
+\begin{lemma}
+\label{lem:redecomp-side1}
+    For each w s.t. X-inner(w, v), for each e in recomp(decomp(w)), X-edge(e, v).
+\end{lemma}
+% uses {lem:parent-inner-inner}
+
+\begin{lemma}
+\label{lem:redecomp-source}
+    e is in recomp(decomp(source of e))
+\end{lemma}
+
+\begin{lemma}
+\label{lem:redecomp-side2}
+    If X-inner(w, v), then recomp(decomp(w)) $\subseteq$ recomp(decomp(v)). 
+\end{lemma}
+
+\begin{lemma}
+\label{lem:redecomp-top}
+    For each vertex v such that X-top(v), recomp(decomp(v)) = \set{\edgevar s.t. X-edge(\edgevar,v)}.
+\end{lemma}
+% \begin{proof}
+%     (uses lemmas \ref{lem:redecomp-eq}, \ref{lem:redecomp-side1}, \ref{lem:parent-top-inner} for first direction, uses {lem:redecomp-source} and {lem:redecomp-side2} for second direction)
+% \end{proof}
+
+\begin{theorem}
+\label{thm:redecomp}
+    For each graph G, recomp(decomp(G)) = G. 
+\end{theorem}
+% \begin{proof}
+%     (uses lemma \ref{lem:redecomp-top})
+% \end{proof}
+
+
+
+
+\end{document}

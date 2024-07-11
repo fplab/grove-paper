@@ -2,6 +2,12 @@
 \section{Discussion and Conclusion}%
 \label{sec:Discussion and Conclusion}
 
+Contribution 1 and Contribution 2 together result in a typed collaborative structure calculus
+where, uniquely, all edits, including code relocations that stymie existing approaches, commute and where there are no semantic gaps: all possible editor states, including editor states with various kinds of unresolved conflicts, are semantically meaningful.
+
+In practice, it may be helpful to garbage collect orphaned vertices once there is consensus across collaborators that the deletion is permanent, but we do not consider this consensus protocol formally in this paper. In an open-ended collaboration scenario (where the set of collaborators is not known, e.g. on GitHub), we simply retain all vertices.
+
+
 TODO: leaves
 
 TODO: our model supports treating these as a cons-list of characters

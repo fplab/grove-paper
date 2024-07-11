@@ -35,6 +35,7 @@
 \def\P{\mathcal{P}}
 \def\S{\mathcal{S}}
 \def\U{\mathcal{U}}
+\def\W{\mathcal{W}}
 \def\V{\mathcal{V}}
 \def\e{\varepsilon}
 \def\AA{\textbf{A}}
@@ -52,6 +53,8 @@
 % judgments
 \newcommand{\act}[5]{#1, #2; #3 \action{#4} #5}
 \newcommand{\applyAction}[4]{#1 \action{#2} #3; #4}
+\newcommand{\applyUserAction}[3]{#1 \action{#2} #3}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Graphs
@@ -75,7 +78,7 @@
 % \newcommand{\Edge}[1]{Edge~#1}
 % \newcommand{\Vertex}[1]{Vertex~#1}
 \newcommand{\multiVertex}[1]{\textcolor{red}{\ensuremath{\curlyveedownarrow_{#1}}}}
-\newcommand{\cycleVertex}[1]{\textcolor{red}{\ensuremath{\rcirclearrowleft_{#1}}}}
+\newcommand{\cycleVertex}[1]{\textcolor{red}{\ensuremath{\circlearrowleft_{#1}}}}
 \newcommand{\orphanVertex}[1]{\textcolor{red}{\ensuremath{\mathbf{\ndownarrow_{#1}}}}}
 \newcommand{\rootVertex}{v_\text{root}}
 \newcommand{\rootPosition}{p_\text{root}}
@@ -132,7 +135,7 @@
 \newcommand{\conflictHole}[2][]{%
 {\noexpandarg\StrSubstitute{#2}{,}{\textcolor{red}{\,\textbf{|}\,}}[\myargs]%
 {\textcolor{red}{\textbf{\{}}\myargs\textcolor{red}{\textbf{\}}}_{#1}}}}%
-\newcommand{\emptyHole}[2]{\square_{\id{(#1, #2)}}}
+\newcommand{\emptyHole}[2]{{}^{\id{(#1, #2)}}\square}
 
 \newcommand{\eVar}[2]{\eid{#1}{#2}}
 \newcommand{\eFun}[4]{\eid{#1}{\lambda} #2 : #3 . #4}
@@ -144,11 +147,36 @@
 \newcommand{\tArrow}[3]{#2 \eid{#1}{\rightarrow} #3}
 \newcommand{\tNum}[1]{\eid{#1}{Num}}
 
+\newcommand{\var}[1]{\eid{u}{#1}}
+\newcommand{\app}[2]{\eApp{u}{#1}{#2}}
+\newcommand{\num}{\eNum{u}{n}}
+\newcommand{\ehole}{\emptyHole{v}{p}}
+\newcommand{\lexp}[1]{{}^{w}{#1}}
+\newcommand{\conflict}[1]{{}^{\id{(v,p)}}\conflictHole[i<n]{{}^{w_i}{#1}_{i}}}
+\newcommand{\multiref}{\multiVertex{(w,v)}}
+\newcommand{\uniref}{\cycleVertex{(w,v)}}
+\newcommand{\plus}[2]{\ePlus{u}{#1}{#2}}
+\newcommand{\mult}[2]{\eTimes{u}{#1}{#2}}
+\newcommand{\lam}[3]{\eid{u}{\lambda} #1 : #2 . #3}
+\newcommand{\reglam}{\lam{x}{\TLMV}{\ELV}}
+\newcommand{\freevar}{\ECFree{\var{x}}}
+\newcommand{\incontype}{\ECInconType{\ECMV}}
+\newcommand{\lamasc}{\ECLamInconAsc{\var{x}}{\TLMV}{\ELMV}}
+\newcommand{\lamanamarr}{\ECLamAnaNonMatchedArrow{\var{x}}{\TLMV}{\ELMV}}
+\newcommand{\apsynmarr}{\app{\ECApSynNonMatchedArrow{\ELMV_1}}{\ELMV_2}}
+\newcommand{\lamge}{\ECLamGraphErasure{\lam{x}{\TLMV}{\ELV}}}
+\newcommand{\tnum}{\tNum{u}}
+\newcommand{\tarrow}{\tArrow{u}{\TMV_1}{\TMV_2}}
+\newcommand{\starrow}{\tArrow{}{\sigma_1}{\sigma_2}}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Zippered Terms
 
 \newcommand{\cursor}[1]{{\vartriangleright}#1{\vartriangleleft}}
 \newcommand{\erase}[1]{#1\mathclose{}^{\diamond}\mathclose{}}
+\newcommand{\markErase}[1]{#1\mathclose{}^{\square}\mathclose{}}
+\newcommand{\graphErase}[1]{#1\mathclose{}^{\triangle}\mathclose{}}
+\newcommand{\erasesToRow}[2]{\markErase{#1} & = & #2}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Decomposition

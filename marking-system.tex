@@ -1,0 +1,219 @@
+
+\section{Marking System}%
+\label{sec:Marking System}
+
+[Motivation about how groves may be ill-typed because of arbitrary actions and conflicts, causing gaps in semantic services (rehash some of intro)]
+
+[POPL 24] introduce the \emph{marked lambda calculus} to ...
+
+We enrich groves and their underlying syntax of terms by \emph{marking} them, that is, systematically adding error marks during the type-checking process to enable \emph{total error localization and recovery}, refining the work from [popl 24]\todo{cite} to fit grove's collaborative needs. This allows the editor to optimistically recover from errors by formalizing the cases in which they can occur, and also provide more helpful error messages and editor services.
+
+In addition to type-checking and marking expressions, we also gather type-inference constraints and \emph{local-info} sets, further augmenting the editor with the ability to inspect and mark \emph{multi-location} and \emph{cycle} conflicts against the different contexts their occurrences can appear in, providing valuable information to the user while resolving these conflicts.
+
+In \autoref{sub:marking-recap}, we revisit the marked lambda calculus and establish all the required machinery to type-check and mark expressions using a conventional bidirectional system \todo{cite TAPL?}. Next, in \autoref{sub:marking-groves}, we introduce the constructs required to handle the various conflicts that can arise from the graph-based setting when type-checking a tree-native surface language. And finally, we describe the mechanization for the marking system in \autoref{sub:marking-agda} done using the Agda \todo{cite} proof assistant.
+
+[Recap marking judgments using old lam and ap rules]
+
+% Further, we will also develop the notion of type consistency and matched arrows from gradual typing to setup the necessary infrastructure required to bidirectionally type-check expressions. This gives rise to typing judgments for both marked and unmarked expressions along with a \emph{marking judgment}, the heart of the [POPL 24] work. Then, we adopt a constraint based type inference system to systematically gather constraints from the child nodes to infer and construct types for the top level program allowing the user to omit type annotations. 
+
+% Although, most of the machinery remains the same from [POPL 24], it is interesting to note the case of multiparent references where such terms can be typed according to multiple contexts. Additionally, the marking system along with the base grammar for groves has been mechanized using the Agda proof assistant.
+
+\subsection{Marking Groves}
+\label{sub:marking-groves}
+We extend the marked lambda calculus to groves. Most of the machinery remains largely the same as in [POPL 24]; we focus our attention on conflicts.
+
+[Discuss the unmarked language as an instantiation of the generic term language described in Sec 3.2; probably can't do this properly until all the language for section 3 is figured out]
+
+First, we introduce here the syntax of the \emph{unmarked} language which comprises two mutually defined expression sorts: $Exp$ \& $ExpList$, denoted by $\EMV$ and $\ELV$ respectively as displayed in \autoref{fig:unmarked-language}. In addition, this unmarked language is an instantiation of the generic term syntax introduced in \autoref{sub:Groves}, with $\EMV$ \& $\TMV$ being the expression and type sorts along with their mutually defined list counterparts $\ELV$ \& $\TLMV$ that allow us to model holes (empty list), \emph{regular} singleton expressions, and local conflicts. Type-checking this base unmarked language is straightforward using conventional bidirectional type-checking rules and we introduce the sort of semantic types $STyp$, denoted by $\sigma$, which builds on ideas from \todo{cite GTLC} Gradually Typed Lambda Calculus (GTLC). This is achieved using 4 mutual type-checking judgments as displayed in \autoref{fig:unmarked-judgments}. The rules are not very different from most simply typed lambda calculi except for the cases where we treat \emph{conflicts} as holes. For the sake of brevity, we have chosen to omit the rules here, but they are expressed in detail in \autoref{sec:marked-unmarked-expressions}. 
+
+\begin{figure}
+    \judgbox{\ctxSynTypeU{\ctx}{\EMV}{\sigma}} 
+    \judgbox{\ctxSynTypeU{\ctx}{\ELV}{\sigma}}
+    \judgbox{\ctxAnaTypeU{\ctx}{\EMV}{\sigma}} 
+    \judgbox{\ctxAnaTypeU{\ctx}{\ELV}{\sigma}}
+    \centering
+    \includegraphics[width=0.5\linewidth]{}
+    \caption{Type-checking Unmarked Expressions}
+    \label{fig:unmarked-judgments}
+\end{figure}
+
+\begin{figure}
+    \[
+    \begin{array}{lclll}
+     \EMV \in & Exp & \coloneqq & 
+        \var{x}
+        \mid  \num 
+        \mid \plus{\ELV_1}{\ELV_2} 
+        \mid \mult{\ELV_1}{\ELV_2}
+        \mid \lam{x}{\TLMV}{\ELV}
+        \mid \app{\ELV_1}{\ELV_2}
+        \mid \multiref
+        \mid \uniref \\
+     \ELV \in & ExpList & \coloneqq & 
+        \ehole
+        \mid \lexp{\EMV} 
+        \mid \conflict{\EMV} \\
+    \TMV \in & \Typ & \coloneqq & 
+        \tnum 
+        \mid \tarrow 
+        \mid \multiref 
+        \mid \uniref \\ 
+    \TLMV \in & TypList & \coloneqq &
+        \ehole
+        \mid \lexp{\TMV}
+        \mid \conflict{\TMV} \\
+    \end{array}
+    \]
+    \centering
+    \includegraphics[width=0.5\linewidth]{}
+    \caption{Unmarked Language}
+    \label{fig:unmarked-language}
+\end{figure}
+
+\begin{figure}
+    \[
+    \begin{array}{lclll}
+    \ECMV \in & MExp & \coloneqq &
+        \var{x}
+        \mid \num
+        \mid \plus{\ELMV_1}{\ELMV_2}
+        \mid \mult{\ELMV_1}{\ELMV_2}
+        \mid \lam{x}{\TLMV}{\ELV}
+        \mid \app{\ELMV_1}{\ELMV_2}
+        \mid \multiref
+        \mid \uniref \\ 
+        & & & \ECFree{\var{x}} 
+        \mid \incontype
+        \mid \lamasc
+        \mid \lamanamarr
+        \mid \apsynmarr \\ 
+        % \mid \lamge \\
+     \ELMV \in & MExpList & \coloneqq &
+        \ehole
+        \mid \lexp{\ECMV}
+        \mid \conflict{\ECMV} \\
+    \end{array}
+    \]
+    \centering
+    \includegraphics[width=0.5\linewidth]{}
+    \caption{Marked Language}
+    \label{fig:marked-language}
+\end{figure}
+
+\begin{figure}
+    \[
+    \begin{array}{lclll}
+    \sigma \in & STyp & \coloneqq & 
+        \TUnknown
+        \mid \tNum{}
+        \mid \starrow \\
+    \end{array}
+    \]
+    \judgbox{\graphErase{\TLMV} = \sigma}
+    \[\begin{array}{rrcl}
+        \Prov & \Provp & \Coloneqq & u \mid exp(u) \mid \rightarrow_L(\Provp) \mid \rightarrow_R(\Provp)\\
+        \TMName  & \TMV  & \Coloneqq & \dots \mid \TUnknown^{p} \mid \TUnknown^{(v,p)}\\
+    \end{array}\]
+    \judgbox{\ensuremath{\matchedArrowConstraint{\sigma}{\sigma_1}{\sigma_2}{C}}}
+    \centering
+    \includegraphics[width=0.5\linewidth]{}
+    \caption{Other machinery}
+    \label{fig:marking-machinery}
+\end{figure}
+
+\begin{figure}
+    \judgbox{\synMarkConstraint{\ctx}{\EMV}{\ECMV}{\sigma}{\cConstraint}{\mConstraint}} 
+    \judgbox{\synMarkConstraint{\ctx}{\ELV}{\ELMV}{\sigma}{\cConstraint}{\mConstraint}} 
+    \judgbox{\anaMarkConstraint{\ctx}{\EMV}{\ECMV}{\sigma}{\cConstraint}{\mConstraint}} 
+    \judgbox{\anaMarkConstraint{\ctx}{\ELV}{\ELMV}{\sigma}{\cConstraint}{\mConstraint}} 
+    \centering
+    \includegraphics[width=0.5\linewidth]{}
+    \caption{Marking Expressions}
+    \label{fig:marking-judgments}
+\end{figure}
+
+
+Next, we introduce the heart of the marking machinery in \autoref{fig:marking-judgments} \todo{add fig}, again in the form of 4 mutually defined judgments along with the marked language denoted by $\ECMV$ \& $\ELMV$. However, here, we add error marks to the expression when one of the premises fails, and type-checking cannot continue further, thereby adding first-class support for error localization. In addition to marking the expressions and type-checking them, at this stage, we also collect inference constraints and \emph{local-info} sets, which come into play when the user has to deal with \emph{multi-location} and \emph{cycle} conflicts.
+
+Now, we examine the marking rules for lambda abstractions and function applications. 
+
+\begin{mathpar}
+\label{inf:lam-ana}
+\inferrule[MKACLam1]{
+        \graphErase{\TLMV} = \sigma \\
+        \matchedArrowConstraint{\sigma_3}{\sigma_1}{\sigma_2}{\cConstraint_1} \\
+        \consistent{\sigma}{\sigma_1} \\
+        \anaMarkConstraint{\extendCtx{\ctx}{x}{\sigma}}{\ELV}{\ELMV}{\sigma_2}{\cConstraint_2}{\mConstraint_1}
+    }{
+        \anaMarkConstraint{\ctx}{\lam{x}{\TLMV}{\EMV}}{\lam{x}{\TLMV}{\ELMV}}{\sigma_3}{\cConstraint_1 \cup \cConstraint_2 \cup \Setof{\constrain{\sigma}{\sigma_1}}}{\mConstraint_1}
+    }
+
+     \inferrule[MKACLam2]{
+        \graphErase{\TLMV} = \sigma \\
+        \notMatchedArrow{\sigma_3} \\
+        \anaMarkConstraint{\extendCtx{\ctx}{x}{\sigma}}{\ELV}{\ELMV}{\TUnknown^{anon}}{\cConstraint}{\mConstraint}
+    }{
+        \anaMarkConstraint{\ctx}{\reglam}{\ECLamAnaNonMatchedArrow{\var{x}}{\TLMV}{\ELMV}}{\sigma_3}{\cConstraint \cup \Setof{\constrain{\TUnknown^{exp(u)}}{\sigma_3}}}{\mConstraint}
+    }
+
+    \inferrule[MKACLam3]{
+        \erase{\TLMV} = \sigma \\
+        \matchedArrowConstraint{\sigma_3}{\sigma_1}{\sigma_2}{\cConstraint_1} \\
+        \inconsistent{\sigma}{\sigma_1} \\
+        \anaMarkConstraint{\extendCtx{\ctx}{x}{\sigma_1}}{\ELV}{\ELMV}{\sigma_2}{\cConstraint_2}{\mConstraint}
+    }{
+        \anaMarkConstraint{\ctx}{\reglam}{\ECLamInconAsc{\var{x}}{\TLMV}{\ELMV}}{\sigma_3}{\cConstraint_1 \cup \cConstraint_2 \cup \Setof{\constrain{\TUnknown^{exp(u)}}{\sigma_3}}}{\mConstraint}
+    }
+\end{mathpar}
+
+
+- core unmarked language
+- marked language
+- semantic types
+- matched arrows from GTLC
+- local-info stuff
+- provenance and inference stuff
+
+% \subsubsection{Holes} TODO holes aren't really new?
+
+\subsubsection{Local Conflicts}
+To mark local conflicts, we recursively mark all subterms, gather the constraint and local info sets, and synthesize the unknown type; such conflicts are treated essentially as holes. 
+
+\[
+\inferrule[MKSCConflict]{ 
+    \Setof{\synMarkConstraint{\ctx}{\EMV}{\ECMV}{\sigma_i}{\cConstraint_i}{\mConstraint_i}}_{i<n}
+}{
+    \synMarkConstraint{\ctx}{\conflict{\EMV}}{\conflict{\ECMV}}{\TUnknown^{(v,p)}}{\Setof{\constrain{\TUnknown^{(exp(u_i))}}{\sigma_i}}_{i<n} \cup \bigcup_{i<n} \cConstraint_i}{\bigcup_{i<n} \mConstraint_1}
+}
+\]
+
+\subsubsection{Multi-Location Conflicts}
+
+\[
+\inferrule[MKSCMultiParent]{ }{
+    \synMarkConstraint{\ctx}{\multiref}{\multiref}{\TUnknown^{exp(id-of(v))}}{\constraintNil{}}{(id-of(v), w , \ctx, syn)}
+}
+\]
+
+\subsubsection{Cycle Conflicts}
+
+\[
+\inferrule[MKSCUnicycle]{ }{
+    \synMarkConstraint{\ctx}{\uniref}{\uniref}{\TUnknown^{exp(id-of(v)}}{\constraintNil{}}{(id-of(v),w , \ctx, syn)}
+}  
+\]
+
+\subsection{Agda Mechanization}
+\label{sub:marking-agda}
+Our extension of the marked lambda calculus has been mechanized in the Agda proof assistant, taking the standard approach of modeling judgments as inductive datatypes and inference rules as constructors. Marked terms are implicitly typed, allowing local info mappings to be computed as a function of these terms.
+
+% TODO discuss how no type hole inference/constraint generation so 
+% TODO discuss how it is separate from the grove agda but a correspondence can be proven?
+
+% Questions while porting over marking system
+% - new judgments for marking expressions
+% - need to prove totality and unicity of marking
+% - then type checking both regular and marked expressions
+% - need to check if we need to introduce new marked errors
+% - typeset all of this
+% - get all of this working in Agda?

@@ -17,7 +17,7 @@
 \path (-7.5em,0cm) node (node/Simple/cx) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:Simple:c}}}};
 %%%%
 \path (0cm,0cm) node (node/Wrap/a) [anchor=base] {\strut};
-\path [draw,->,alice step] (node/Simple/cx) to (-2em, 0cm |- node/Wrap/a);
+\path [draw,->,alice step] (node/Simple/cx) to (-2em, 0cm |- node/Wrap/a)
 \end{tikzpicture}
 }%
 \label{fig:Wrap:a}
@@ -90,7 +90,7 @@
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Example of Wrapping.  (Note that this figure omits the orphaned \vSimpleX{} since it is no longer relevant to the narrative of this paper.)}%
+\caption{Wrapping results in a patch which (a) cuts the original term (edge deletion), (b) creates the outer term at the same location (edge insertion), then (c) pastes the original term (edge insertion).}%
 \label{fig:Wrap}
 \end{minipage}
 % \end{figure}
@@ -161,8 +161,10 @@
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Example of Repositioning Code.}%
+\caption{Term relocation results in a patch which (a) cuts the term (edge deletion) then (b) pastes it in its new location (edge insertion). Vertex identities and downstream edges are conserved.}%
+\Description{This figures shows an example of the repositioning action}
 \label{fig:Move}
 \end{minipage}
+\vspace{-10px}
 \end{figure}
 }

@@ -2,149 +2,131 @@
 \section{Introduction}%
 \label{sec:Introduction}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Software development is a highly collaborative activity. 
+Development teams typically collaborate with the aid of a version control system (VCS) like Git~\cite{git}, Subversion~\cite{subversion}, or Darcs~\cite{darcs}. 
+These systems maintain a branching history of \emph{commits} to a source code repository, each consisting of a \emph{patch} together with various metadata, e.g. a human-readable commit message. Patches are imperative programs written in a 
+\emph{patch language} defining a set of primitive editing commands.
+The standard POSIX \li{patch} language, for example, specifies commands for inserting and deleting specified lines of text at specified line numbers within a file. 
 
-Programming is an increasingly collaborative activity.
-Today, most programming editors are not explicitly designed with collaboration in mind,
-so programmers rely on ad hoc integrations of asynchronous diff-based version control systems like Git, Darcs, or Pijul.
+Developers do not typically express program edits using the patch language directly, nor in any case do version control systems typically have access to a log of the developer's edits. Instead, version control systems must \emph{synthesize} patches from the file system state using heuristic algorithms, such as the classic \li{diff} algorithm that synthesizes a patch that minimizes the edit distance between two file system states.\todo{cite}
 
-Asynchronous diffing is not an ideal solution to collaboration because
-the merging process must solve the \textbf{inverse problem}---inference of compatible edits in a simplistic edit action language.
-For example, suppose Alice and Bob are collaboratively editing a file comprised of a single line \verb|A B|.
-Alice changes the file to \verb|A B C| and communicates the change to Bob as a diff (Figure \ref{fig:inverse-problem:alice}).
-At the same time, Bob changes the file to \verb|A D B| and sends Alice a diff (Figure \ref{fig:inverse-problem:bob}).
-Both parties changed the same line, but in a different way,
-so when Bob applies Alice's diff, a merge conflict arises and the contents of Bob's editor is mangled as in Figure \ref{fig:inferse-problem:diff}.
+When two patches, developed concurrently in branches based on a common ancestral commit, must be merged, version control systems deploy a \emph{three-way merge algorithm}. The standard approach is to apply the \emph{local patch} first, then modify the \emph{remote patch} by shifting its line numbers to account for the local patch's line insertions and deletions. This algorithm is an \emph{operational transform}~\cite{ot}. 
+Character-level operational transforms are similarly used for real-time collaborative editing, e.g. in tools like Google Docs and in Visual Studio Code's Live Share feature~\cite{crdts-for-text}. 
 
-\begin{figure}[H]
-  \begin{subfigure}{.45\linewidth}
-\begin{verbatim}
-1c1
-< A B
----
-> A B C
-\end{verbatim}
-    \label{fig:inverse-problem:alice}
-    \subcaption{From Alice to Bob}
-  \end{subfigure}
-  \hfil
-  \begin{subfigure}{.45\linewidth}
-\begin{verbatim}
-1c1
-< A B
----
-> A D B
-\end{verbatim}
-    \label{fig:inverse-problem:bob}
-    \subcaption{From Bob to Alice}
-  \end{subfigure}
+\paragraph{Problem 1: Merging Sensibly} 
+When merging patches, conflicts (e.g. due to different modifications to the same location) are unavoidable. However, 
+standard three-way merge algorithms for line-based patch languages commonly identify spurious conflicts, fail to identify legitimate conflicts, or silently duplicate or misplace code. Let us briefly review some classic problems with these systems. Appendix~\ref{appendix:merge-problems} shows examples of the problematic default behavior of Git in each of these scenarios.\todo{write this, can move to supplement if needed}
 
-  \begin{subfigure}{.45\linewidth}
-\begin{verbatim}
-<<<<<<< Alice
-A B C
-||||||| base
-A B
-=======
-A D B
->>>>>>> Bob
-\end{verbatim}
-    \label{fig:inverse-problem:diff}
-    \subcaption{Bob's editor (diff)}
-  \end{subfigure}
-  \hfil
-  \begin{subfigure}{.45\linewidth}
-\begin{verbatim}
-A { B | D} { C | B}
-\end{verbatim}
-    \label{fig:inverse-problem:grove}
-    \subcaption{Bob's editor (Grove)}
-  \end{subfigure}
-  \label{fig:inverse-problem}
-  \caption{The effects of diff-and-merge on conflicting edit states}
-\end{figure}
+The \textbf{granularity problem} 
+arises when both commits make edits to different locations within a single line of code. For example, one patch might rename a function argument while the other adds a new argument. 
+Similarly, if one patch renames an type while another 
+makes unrelated changes to code that references that type,
+there will be conflicts at every line of code shared between the two patches. 
+% A notable special case is the \textbf{wrapping problem}, which arises when one patch changes the nesting of code structures, e.g. by wrapping a code block within a new control flow construct, thereby changing the indentation of every line in the block. These changes can cause conflicts.
+ 
+The \textbf{relocation conflict problem} arises when two patches relocate a code block to different locations. 
+Standard patch languages operationalize code relocation as simply a deletion paired with an insertion. The merge will therefore fail to identify this legitimate location conflict and instead silently duplicate the code block at both locations.
 
-An alternative to solving the inverse problem is to build the editor on top of a distributed collaboration protocol such as OT or,
-more recently, to model the shared edit state as a CRDT---a data structure implemented behind a fixed set of commutative update operations.
-Commutativity is desirable because it reduces collaboration to a simple matter of record and replay.
-Since CRDT imposes no other design constraints, it is potentially better suited for collaborative program editing than diff-and-merge.
-For instance, the \textbf{conflict problem}---how to meaningfully represent conflicts without mangling edit state---%
-becomes easier to solve as the language of edits becomes more precise (Figure \ref{fig:inverse-problem:grove}).
+The \textbf{relocation modification problem} arises when one commit relocates a code block that another commit modifies. 
+A naive approach would silently leave the modifications at the original location. A more sophisticated block-based approach, like that deployed by \li{git}, might indicate a conflict when an insertion occurs within the bounds of a code block that has been deleted.
 
-Although CRDT may offer a more natural medium for collaborative programming than diffs,
-care must be taken to ensure the preservation of user intent.
-Suppose Alice and Bob are collaboratively editing the line \verb|A B| with Alice's cursor on \verb|A| and Bob's on \verb|B|.
-If Alice moves \verb|A| to the other side of \verb|B|, it isn't obvious where Bob's cursor should go.
-Naively, since the cursor was originally on the second element (\verb|B|), it could simply stay there,
-which in this case means it winds up on \verb|A|.
-Realistically, \verb|A| and \verb|B| could be very long functions, in which case Bob's cursor would suddenly appear to move a great distance.
-If Bob's cursor does not need to react to other users' activity, there is no risk of a disorienting jump.
-One way to solve this \textbf{repositioning problem} and affect confusion-free movement is to uniquely identify every piece of editable content.
+These classic problems have motivated research into richer patch languages, more sophisticated patch synthesis algorithms, and corresponding improvements to three-way merge algorithms. 
+For example, systems like Git address the nesting problem by allowing indentation changes from one patch to be merged with other changes that do not modify indentation. 
+More sophisticated systems like GumTree, SmartDifferencer\todo{cites, others} deploy parsers and tree differencing algorithms to better
+address the granularity problem.
 
-To address these problems we propose \emph{Grove}, a CRDT-backed collaborative structure editor.
-Grove represents the edit state as a labeled, directed multigraph with vertex insertion and deletion operations such that deletion always wins.
-In the graph, conflicts have a natural representation as edges with common origin or destination vertices.
-Each label includes a unique identifier which enables not only a solution to the repositioning problem
-but also a means to construct symbolic references into the edit state.
-By leveraging an isomorphism between the graph and its corresponding \emph{grove}---%
-a collection of disjoint forests connected via symbolic reference---%
-views of the graph may be projected into a tree-native setting, for instance as terms in the Hazel editor,
-without adding compexity to the underlying collaboration model.
+Addressing the relocation-related problems is more difficult.
+A common approach is to enrich the patch language to make code relocation a primitive command.
+However, correctly synthesizing code relocation commands given only the initial and final state of the repository requires heuristics. 
+The typical approach is to assume that a matching deletion and insertion is due to code relocation. However, relocated code is often also modified. 
+In these cases, it is difficult to determine whether a deletion and a similar but not identical insertion are related by relocation, rather than coincidental code similarity. 
+Developers often intentionally copy and then modify code, so there may be multiple partially matching insertions for a given deletion and there is no clear way to decide which, if any, are related by relocation. 
+The developer's actual actions, e.g. cuts, copies, and pastes, are not persisted into the file system, nor are there persistent identifiers associated with code structures represented as text, so text-file-based systems have no choice but to deploy imperfect heuristics.
 
-% We are further motivated by the pursiut of a collaborative extension for Hazel, an integrated programming language and structure editor
-% that provides semantic editor services by enforcing a sensibility invariant, i.e., every edit state is semantically valid,
-% an interesting avenue of future work with potential implications for the scalability of collaborative programming editors.
+\paragraph{Contribution 1: Grove: A Collaborative Structure Editor Calculus} 
+This paper considers the problem of collaborative editing for \emph{structure editors},
+which eschew text editing. Instead, developers code by applying tree edit actions directly to a continuously evolving \emph{program sketch}, i.e. a syntax tree with holes, shown projected visually in various ways to the developer. 
+Structure editing has been studied since the 1980s with the Cornell Program Synthesizer 
+and research continues to this day, with numerous active projects including Scratch, Snap!, and other block-based editors (which are widely used in educational and end-user programming settings), Jetbrains MPS (which has been deployed in industry), and Hazel (a live functional programming environment rooted in a structure editor calculus called Hazelnut, which serves as 
+an active research platform). 
 
-% do this instead:
-%   the standard method is diff-based version control.
-%   diff is bad, evene for what it's indended for.
-%   here's why: solving inverse problem ==> have to infer edits
-%   alternative approach is to record the edits directly and then form a CRDT s.t. collaboration can be accomplished by sending your edits to your collaborators
-%   primarily been explored in the setting of real time text editing
-%   there are some aspects of this approach that don't make it suitable for programming:
-%   1. the repositioning problem
-%   2. the conflict problem (even json crdt does ad hoc conflict resolution)
+Inspired by Hazelnut, this paper introduces Grove, a \emph{collaborative structure editor calculus} for arbitrary syntax trees that does not suffer from the problems just outlined. 
+This is in large part due to a substantial simplification of the overall collaborative
+editing architecture. In particular, we \emph{eliminate patch synthesis (i.e. diff algorithms) entirely}, 
+instead deriving patches directly from the log of edits performed by the developer. 
+We also \emph{eliminate the need for three-way merge algorithms (i.e. operational transforms) entirely}.
+Instead, we define the patch language such that all edits commute, 
+so remote patches can be applied without transformation. 
+We prove a \emph{convergence theorem} that ensures that replicas (a.k.a. clones) of a repository will converge to the same state 
+when the same set of patches are applied, regardless of the order in which they are applied.
+The patch language forms what is known as a \emph{commutative replicated data type (CmRDT)}.
 
-% Note: you'd still want to solve these problems for text as well, but we're interested in making this work for Hazel
-% Hazel is good for this because it already has a rich calculus of edit actions -- motivates the tree focus
-% Even when it comes to rich text editing, we really wanna be working with trees: due to markup
+Defining a structure editor calculus that supports code insertion, deletion, and relocation using only commutative edits, and avoiding the problems outlined above, is not trivial. The Hazelnut action language is neither commutative nor does it support relocation. 
+Relocation is particularly challenging because of the potential for relocation conflicts,
+including the potential for cyclic relocation (when one commit relocates node $A$ beneath node $B$, and the other \emph{vice versa}). 
 
-% move to related work
+This need to represent conflicting states means that we cannot use a single syntax tree as Grove's 
+core data structure. Instead, we use a directed labeled multi-graph. A vertex corresponds to a syntax tree node and is labeled with a \emph{unique identifier (UID)} and a \emph{constructor}, e.g. \li{Plus}. An edge is also labeled with a UID and establishes a parent-child relationships at a labeled \emph{position} for the parent vertex's constructor, e.g. at the \li{L} or \li{R} position of the \li{Plus} constructor. We refer to a parent vertex and position collectively as a \emph{location}.
 
-% Operational Transformation (OT), on the other hand, goes perhaps too far in the opposite direction.
-% OT is a distributed system architecture that coordinates the proliferation and maintainance of edits and edit states.
-% Industrial-scale collaborative editors, such as Google Docs,
-% employ OT for real-time applications requiring strong eventual consistency of causally ordered events.
-% It does so by maintaining an event log it transforms upon each new entry in order to preserve the causal ordering.
+The \emph{Grove patch language} is quite simple: a patch can insert or delete an edge (which might cause the creation of a mentioned vertex if it did not already exist). 
+To ensure commutativity, deletion of an edge is permanent, i.e.
+the edges form a two-phase set (2P-Set) CmRDT. The edit actions that users perform are given meaning by a straightforward translation to a graph patch. 
+Relocation simply translates to 
+edge deletion and insertion. Critically, vertices are \emph{not} deleted during relocation,
+so we do not need to deploy heuristics to identify relocated nodes.
 
-% The Convergent Replicated Data Type (CRDT) was proposed as a simpler alternative to the OT architecture.
-% CRDTs do not require causal ordering maintenance because the language of edits must form a join semilattice,
-% thereby ensuring the edit state update function increases monotonically.
-% CRDT places fewer constraints than OT on the language of edits,
-% so calculi for editing tree-native documents can be simpler to model for CRDT than OT.
-% Similarly, by eliminating all but one design constraint, edit calculi for CRDT can be easier to implement and extend.
+Structure editors are designed to provide editing affordances for trees, not graphs where there may be any number of children at a given location, vertices may have any number of parents, and where there may be cycles. 
+To support conventional tree-based structure editing, 
+we define a \emph{decomposition} of our program graph into a \emph{grove}, which is a set of 
+programs with holes, local conflicts, and conflict references between them to account for motifs that arise when editing collaboratively. 
+In particular, a location with no out-edges decomposes to a \emph{hole}. 
+More than one out-edge at a given location decomposes to an explicitly represented \emph{local conflict}. 
+More than one in-edge indicates that a vertex has a \emph{location conflict}, so we leave a \emph{location conflict reference} at each of the conflicting locations. 
+Finally, cycles are broken during decomposition by leaving a \emph{cycle conflict reference} at an arbitrary (but deterministically chosen) edge. 
+Resolving these various conflicts simply requires 
+manipulating these constructs like any other syntactic construct, e.g. deleting all but one location conflict reference to determine a unique location for a node. 
 
-% Unfortunately, monotonicity merely changes the nature of the complexity rather than eliminating it entirely.
-% Although tree-native document editing calculi may ultimately admit simpler designs under CRDT than OT,
-% there are no generic recipes for transforming a sequential tree editing calculus into one suitable for CRDT.
-% Consequently, progress of CRDT-backed tree editors has slowed as the research community debates whether CRDT is living up to its promise.
-% Thus, we are motivated to ask:
-% Is there a more natural model for collaborative editing of trees?
-% And how do we preserve user intent in the presence of concurrent edits in a tree-native editor?
+\paragraph{Problem 2: Semantic Gaps During Conflict Resolution}
+When working with traditional version control systems,
+resolving conflicts can take time and require reasoning about 
+syntax, types, and program behavior.
+Traditionally, however, conflicts are indicated by inserting extra-linguistic markers
+into files. 
+These markers are not typically understood by the parser, and 
+because they include conflicting alternatives, they cannot generally be removed 
+or concatenated to result in a sensible program. 
+Consequently, language services that require a well-formed, meaningful program
+(e.g. type error localization, go-to-definition, live evaluation and so on) 
+either fail to operate or exhibit gaps in service, e.g. because they are relying on 
+data from a compile prior to the merge attempt. Developers are left to reason without the aid of much of their tooling during conflict resolution. This is an instance of the more general \textbf{semantic gap problem} when programming tools encounter incomplete programs~\cite{HazelSNAPL}. 
+
+The previous work on the Hazelnut structure editor calculus addresses the semantic gap problem in the single-user setting by 
+defining a type system and type error localization system (the \emph{marked lambda calculus}) for incomplete programs, i.e. programs with holes. 
+Notably, type error localization is proven to be \emph{total}, i.e. the system is able to assign static meaning to \emph{every} syntactically well-formed expression by inserting \emph{marks} to localize errors. Marking employs local type inference as codified by a \emph{bidirectional type system} as well as \emph{gradual typing}, i.e. the theory of \emph{type holes}, to recover from situations where type errors make it impossible to 
+determine a known type. 
+A separate type hole filling phase deploys unification-based (i.e. non-local) type inference to fill type holes when possible, 
+or allows the user to interactively select from hole fillings that partially satisfy generated constraints when there are type conflicts.
 
 
+\paragraph{Contribution 2: Total Type Error Localization and Recovery for Groves}
 
-% algorithms for collaborative text editing are well developed
-% natural fit for text
-% not a natural fit for trees
-% so if you want to build a grove, a more natural approach is needed
+This paper extends this work to develop a total type error localization system for groves, introduced in Contribution 1 above as the result of decomposing a commutatively edited graph into a set of terms with empty holes, local conflicts, location conflict references, and cycle conflict references. This paper develops a type (and type error localization) discipline for handling these novel constructs. We follow the marked lambda calculus in rooting our \emph{marked grove calculus} in bidirectional type checking, deploying gradual typing when conflicts do not allow a single type to be inferred, and then layering on a unification-based type inference system to opportunistically fill holes or suggest partial solutions when there are conflicting types due to conflicting syntax.
+
+\paragraph{Paper Outline}
+
+\autoref{sec:Grove By Example} introduces Grove by example, demonstrating its behavior in each of the problematic scenarios named above. 
+\autoref{sec:Formalism} then formally defines Grove's graph structure, commutative patch language, grove decomposition procedure, and edit action language. We establish key metatheoretic properties using the Agda proof assistant. 
+\autoref{sec:Type System} instantiates Grove with a simply typed lambda calculus, then defines a bidirectional type and type localization system for groves and proves totality and other key metatheoretic properties using the Agda proof assistant. 
+\autoref{sec:Implementation} describes our OCaml implementation of Grove, which is defined modularly to allow it to be instantiated with arbitrary syntax trees. 
+\autoref{sec:Related Work} reviews related work in more detail. 
+\autoref{sec:Discussion and Conclusion} concludes with a discussion and directions for future work on collaborative editing.
 
 
-% a lot of collaborative editing of other sorts (not necessarily programming) requires a tree model,
-% but that problem doesn't seem to have been study directly (maybe except JSON CRDT).
+% A lot of collaborative editing of other sorts (not necessarily programming) requires a tree model,
+% But that problem doesn't seem to have been studied directly (maybe except JSON CRDT).
 
 % A \emph{collaborative structure editor} is an editor that
-% (1) allows multiple concurrent users to work on a shared document, while also
+% (1) allows multiple concurrent users to work on a shared document while also
 % (2) providing structure-aware editor services such as projectional editing, syntax highlighting, or automatic code folding.
 % %
 % Collaborative editing research focuses on the design and implementation of real-time, multi-user, character-based communication systems,
@@ -153,19 +135,19 @@ without adding compexity to the underlying collaboration model.
 % %
 % Although collaborative editors and structure editors have overlapping goals (optimal user experience)
 % and complementary design challenges (subject-subject versus subject-object harmony),
-% to our knowledge, there is no comprehensive, principled account of their combined use.
+% To our knowledge, there is no comprehensive, principled account of their combined use.
 
 % Since collaborative editors are essentially distributed systems, existing work tends to focus on extensions to distribution protocols.
 % Lots of examples using OT. (Google Docs)
 % OT is complex and largely textual.
-% OT can make sense for real time systems: users typically change one character at a time, and instant feedback can help to prevent conflicts.
+% OT can make sense for real-time systems: users typically change one character at a time, and instant feedback can help to prevent conflicts.
 % On the other hand, OT system designs can be difficult to extend.
 
 % Alternatively, there's CRDT. (Peritext?)
-% CRDT is easier to implement, but harder to design for.
+% CRDT is easier to implement but harder to design for.
 % There's an All-CRDT editor---it turned out to be not so realistic. (what's it called again?)
 
-% Structure editing has been a recurring theme in the computer science literature since at least Engelbart's ``Mother of All Demos.''
+% Structure editing has been a recurring theme in computer science literature since at least Engelbart's ``Mother of All Demos.''
 % Provides automation for domain experts and reduces the barrier to entry for everyone else.
 % Popular for editing programs, i.e., for programming language-specific editors.
 
@@ -195,10 +177,10 @@ without adding compexity to the underlying collaboration model.
 
 % - previous approaches to collaborative editing have limitations
 
-% - diff/merge based approaches (trying to solve the inverse problem based on final states --
-% you lose the actual actions that were performed, and have to reconstruct them or an approx.
-% of them i.e. add line/delete line actions -- would need to adapt this to structure editing,
-% some papers have started to look at that, but fundamentally we don't want to throw away the
+% - diff/merge-based approaches (trying to solve the inverse problem based on final states --
+% you lose the actual actions that were performed and have to reconstruct them or an approx.
+% of them i.e., add line/delete line actions -- would need to adapt this to structure editing,
+% Some papers have started to look at that, but fundamentally, we don't want to throw away the
 % knowledge we have about the edits!)
 
 % - operational transforms (complexity, you have to patch previous actions based on new actions)
@@ -208,19 +190,19 @@ without adding compexity to the underlying collaboration model.
 % convergent by design
 
 % - we want to have the same convergence for a CRDT-based collaborative structure editor that maintains
-% the sensibility invariant of Hazelnut, i.e. every editor state has meaning. mention that maintaining sensibility
-% allows scaling of semantic editor services in the presence of large number of collaborators (in contrast,
+% the sensibility invariant of Hazelnut, i.e., every editor state has meaning. mention that maintaining sensibility
+% allows scaling of semantic editor services in the presence of a large number of collaborators (in contrast,
 % using VS Code or other collaborative text editors with large numbers of collaborators means that almost always
-% the semantic editor services will be disabled because the program is going to be broken in multiple places
+% The semantic editor services will be disabled because the program is going to be broken in multiple places
 % transiently)
 
-% this is tricky because:
+% This is tricky because:
 
 % - some edits might be conflicting -- solve this with "conflict holes"
 
 % - adding cut/paste or delete/restore allows for degenerate programs (cycles, multiple parents, etc.)
 
-% - since we are commutative, we solve both synchronus and async collaborative editing
+% - since we are commutative, we solve both synchronous and async collaborative editing
 
 % - and this resolves issues around merges and conflicts
 
@@ -231,4 +213,4 @@ without adding compexity to the underlying collaboration model.
 % - Hazel
 
 % \subsection{Contributions and Paper Organization}%
-% \label{sec:Contributions and Paper Organization}
+% \label{sec: Contributions and Paper Organization}

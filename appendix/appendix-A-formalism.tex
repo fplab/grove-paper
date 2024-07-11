@@ -1,7 +1,9 @@
-\section{Formalism}
-\label{sec:Formalism}
+\section{Grove Formalism}
+\label{sec:Grove Formalism}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 
 \subsection{Graphs}
 \label{sec:Formalism:Graphs}
@@ -12,9 +14,9 @@
   \inedges{G} &= \SetOf{\e \in \E \SuchThat{G(\e) = \Plus}} \\
   \outedges{v}{p} &= \SetOf{(u, (v, p), v') \in \inedges{G} \SuchThat{u \in \U \land v' \in \V }} \\
   \inedges{v} &= \SetOf{\e{=}(u, (v', p), v) \in \inedges{G} \SuchThat{u \in \U \land (v', p) \in \S}} \\
-  G_v(\e{=}(u, (v, p), v')) &= \begin{cases}
-    G(\e) & v' = v \\
-    \bot  & v' \neq v \\
+  G_v(\e{=}(u, (v', p), v'')) &= \begin{cases}
+    G(\e) & v = v'' \\
+    \bot  & v \neq v'' \\
   \end{cases} \\
   \parents{v} &= \SetOf{v' \in \V \SuchThat{(u, (v', p), v) \in \inedges{G} \land u \in \U \land p \in \P}} \\
   \ancestors{v} &= \mathopen{}\left( \lfp{\ancestorsPrimeOp} \right)\mathclose{}(v) \\
@@ -67,7 +69,7 @@ Let $\Set$ denote a set of terms.
   when $t$ is not an empty hole or a conflict hole,
   is the unique vertex $v \in \V$ for which there exists an edge $\e{=}(u, v', p, v)$
   such that $\decomp{\e} = t$.
-  We write $v_t$l to denote the vertex corresponding to $t$.
+  We write $v_t$ to denote the vertex corresponding to $t$.
 \end{definition}
 
 \begin{definition}
@@ -174,7 +176,7 @@ Let $\Set$ denote a set of terms.
   \end{array}
 \]
 %
-\figureArityContent
+% \figureArityContent
 %
 \[
   \arraycolsep=0pt
@@ -467,9 +469,15 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
   \end{array}
 \end{gather*}
 
+
+
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
-\subsubsection{Cursor Erasure}\hspace*{\fill} \\
+\subsubsection{Cursor Erasure}
+\hspace*{\fill} \\
+
+
+\noindent $\boxed{\erase{\Z{G}} = G}$
 
 \noindent $\boxed{\erase{\Z{\gamma}} = \gamma}$
 %
@@ -538,7 +546,7 @@ Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term
 \]
 
 Let $\A = \SetOf{\Plus, \Minus} \times \E$ the set of all \emph{graph actions}.
-We write $a$ to denote a graph action, and $\Q{a}$ to denote a set of graph actions.
+We write $a$ to denote a graph action and $\Q{a}$ to denote a set of graph actions.
 
 \begin{definition}
   A \emph{graph cursor} is an element of $Cur$.
@@ -555,7 +563,7 @@ We write $a$ to denote a graph action, and $\Q{a}$ to denote a set of graph acti
 \end{definition}
 
 \begin{definition}
-  An \emph{almost valid graph cursor} is a well sorted graph cursor $c \in Cur$
+  An \emph{almost valid graph cursor} is a well-sorted graph cursor $c \in Cur$
   such that one of the following holds:
   \begin{itemize}
     \item $c = \CVertex{v}$.
@@ -584,10 +592,113 @@ Let $\Z{\Grove}$ be a zippered grove such that $\erase{\Z{\Grove}}$ is a well so
 and let $G = \recomp{\erase{\Z{\Grove}}}$ a graph,
 and let $\alpha \in Act$ a user action.
 
+% \noindent $\boxed{\uparrow{\recomp{\Z{\Grove}}}} = \Z{G}$
+
+% $\recomp{\erase{\Z{\Grove}}} = \erase{\Z{G}}$
+
+% \noindent $\boxed{\downarrow{\decomp{\Z{G}}}} = \Z{\Grove}$
+% 
+$\decomp{\erase{\Z{G}}} = \erase{\Z{\Grove}}$
+
+
+% \begin{theorem}[Graph-Grove Equivalence]
+%     If $\applyUserAction{\Z{\Grove}}{\alpha}{\Z{\Grove'}}$ where 
+%     $\applyAction{\Z{\Grove}}{\alpha}{\Q{a}}{c}$ and $\Z{G} = {\uparrow{\recomp{\Z{\Grove}}}}$ such that $\applyUserAction{G}{ \Q{a} }{G'}$ then $\downarrow{\decomp{\Z{ G'}}}$ = $\Z{\Grove'}$
+% \end{theorem}
+
 \begin{theorem}[Sensibility]
   If $\applyAction{\Z{\Grove}}{\alpha}{\Q{a}}{c}$,
   then $G \action{\Q{a}} G'$ and $G'$ is well sorted.
 \end{theorem}
+
+% \noindent $\boxed{\applyUserAction{\Z{\Grove}}{\alpha}{\Z{\Grove'}}}$
+
+% \begin{mathpar}
+%     \inferrule{
+%     \applyUserAction{ \Z{\Set}_{NP} }{ \alpha }{ \Z{\Set'}_{NP} }
+%   }{
+%     \applyUserAction{ (\Z{\Set}_{NP}, \Set[MP], \Set[U]) }{ \alpha }{ (\Z{\Set'}_{NP}, \Set[MP], \Set[U]) }
+%   }
+
+%   \inferrule{
+%     \applyUserAction{ \Z{\Set}_{MP} }{ \alpha }{ \Z{\Set'}_{MP} }
+%   }{
+%     \applyUserAction{ (\Set[NP], \Z{\Set}_{MP}, \Set[U]) }{ \alpha }{ (\Set[NP], \Z{\Set'}_{MP}, \Set[U]) }
+%   }
+
+%   \inferrule{
+%     \applyUserAction{ \Z{\Set}_{U} }{ \alpha }{ \Z{\Set'}_{U} }
+%   }{
+%     \applyUserAction{ (\Set[NP], \Set[MP], \Set[U]) }{ \alpha }{ (\Set[NP], \Set[MP], \Z{\Set'}_{U}) }
+%   }
+% \end{mathpar}
+
+% \noindent $\boxed{\applyUserAction{\Z{\Set}}{\alpha}{\Z{\Set'}}}$
+
+% \begin{mathpar}
+%     \inferrule{
+%         \applyUserAction{\Z{t}}{\alpha}{\Z{t'}}
+%     }{ 
+%         \applyUserAction{(\Set, \Z{t})}{\alpha}{\Set' \cup \Z{t'}} 
+%     }
+% \end{mathpar}
+
+% \noindent $\boxed{\applyUserAction{\Z{t}}{\alpha}{\Z{t'}}}$
+
+% \begin{mathpar}
+%     \inferrule[Construct]{
+%     (p_s, \sort{k}) \in \arity{k_s} \\
+%     \defaultpos{k} \text{ undefined} \\
+%     v_k = (u_k, k) \\  % For the new term 
+%     \decomp{G_{v_k}} = t
+%   }{
+%     \applyUserAction{ \cursor{\emptyHole{v_s{=}(u_s, k_s)}{p_s}} }{ \Construct{k, u_k, u_{\e}} }{\Z{t}}
+%   }
+
+%   \inferrule[ConstructWrap]{
+%     G[\inedges{G_t} = \SetOf{\e_i{=}(u_i, v_i, p_i, v_i'{=}(u_i', k_i'))}_{i < n}] = \SetOf{\Minus{}}_{i < n} \\ % edges pointing to term are deleted
+%     v_k = (u_k, k) \\ % new term
+%     \decomp{G_{v_k}} = t' \\ % where cursor will go? 
+%     \defaultpos{k} = (\pWrap, \pPost) \\ 
+%     \SetOf{\sort{k_i} = \sort{k}}_{i < n} \\
+%     (\pWrap, \sort{k}) \in \arity{k} \\
+%     G[\SetOf{(u_i, (v_i, p_i), v_k}] = \SetOf{\Plus}_{i < n} \\ % edges from old terms parents to fresh term
+%     G[\SetOf{(u_i, (v_k, \pWrap), v_{i'})}] = \SetOf{\Plus}_{n \leq i < 2n} \\ 
+%     % edges from new term to now orphaned term
+%   }{
+%     \applyUserAction{\cursor{t}}{\Construct{k, u_k, \Q{u}_{i < 2n}}}{\Z{t'}}
+%   }
+
+
+%   \inferrule[Delete]{
+%     \sources{G_{t_{victim}}} = {(v,p)}\\ % Victim's source
+%     \decomp{G_v} = t' \\ % Parent term
+%     G[\inedges{G_{t_{victim}}} = \SetOf{\e_{i}}_{i < n}] = \SetOf{\Minus} % edges pointing to this term are deleted
+%     % check notation
+%     }{
+%     \applyUserAction{\cursor{t}}{\Delete}{\Z{t'};t_{victim}}
+%   }
+
+%   \inferrule[DeleteMultiparent]{
+%     \decomp{G_v} = t' \\
+%     | \sources{G_t} | > 1
+%   }
+%   {
+%     \applyUserAction{\cursor{t}}{\Delete}{\Z{t'}}
+%   }
+
+%   \inferrule[Reposition]{
+%     G[\inedges{G_t} = \SetOf{\e_{i}}_{i < n}] = \SetOf{\Minus} \\ % edges pointing to t are deleted
+%     % G(v) = \varnothing \\ % is this really the same thing?
+%     | \outedges{v}{p} | = 0 \\ % new spot must be empty hole
+%     \SetOf{(p, \sort{k_i'}) \in \arity{k}}_{i < n} 
+%     G[\inedges{G_{v_i}} = \SetOf{(u_{\e_i}, (v,p), v_i)}_{i < n}] = \SetOf{\Plus} \\
+%     \decomp{G_v} = t'
+%   }{
+%     \applyUserAction{\cursor{t}}{\Reposition{(v=(u, k),p)}{\Q{u_{\e}}}}{\Z{t'}}
+%   }
+
+% \end{mathpar}
 
 \noindent $\boxed{\applyAction{ \Z{\Grove} }{ \alpha }{ \Q{a} }{ c }}$
 %

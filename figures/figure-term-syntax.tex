@@ -1,0 +1,27 @@
+\newcommand{\termMV}{t}
+\newcommand{\subtermMV}{\overline{t}}
+
+\newcommand{\figureTermSyntaxContent}{%
+
+\[
+\begin{array}{lclll}
+     \termMV \in & Term & \coloneqq & 
+        \eid{u}{\K}\ \subtermMV_1 ... \subtermMV_n
+        \mid \multiref
+        \mid \uniref \\
+     \subtermMV \in & SubTerm & \coloneqq & 
+        \ehole
+        \mid \lexp{\termMV} 
+        \mid \conflict{\termMV} \\  
+\end{array}
+\]
+}
+
+\newcommand{\figureTermSyntax}{%
+\begin{figure}
+  \figureTermSyntaxContent
+  \caption{Syntax of terms}
+  \Description{This figure describes the grammar for the syntax of generic terms}
+  \label{fig:Syntax}
+\end{figure}%
+}

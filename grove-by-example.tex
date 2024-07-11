@@ -2,235 +2,213 @@
 \section{Grove By Example}%
 \label{sec:Grove By Example}
 
-This section introduces collaborative structure editing in Grove.
-We begin in \autoref{sub:Program Representation} with how we use graphs to represent programs with holes.
-\autoref{sub:Single-User Actions} explores actions performed by a single user, Alice,
-and \autoref{sub:Multi-user Interactions} explores interactions between two users, Alice and Bob,
-as they edit their own instances of a shared program.
+This section introduces collaborative structure editing in Grove by example.
+\autoref{sub:Program Representation} describes how we use graphs to represent collaborative program sketches. 
+\autoref{sub:Single-User Actions} then shows examples of edits being performed by a single user, Alice. 
+\autoref{sub:Multi-user Interactions}-\ref{sub:Merge Conflicts} then describes a collaboration between two users, Alice and Bob,
+as they edit their own branches of a program and periodically merge in each other's edits, starting with examples without conflicts, then considering the various kinds of conflicts that might arise.
 
-\subsection{Program Representation}%
+For simplicity and concision, all of the examples in this section will be for a 
+language of standard arithmetic operations, 
+but our formalism in \autoref{sec:Formalism} and our implementation in \autoref{sec:Implementation} are parameterized by an arbitrary abstract syntax.
+
+\figureSimple
+
+
+Grove can form the basis for both a conventional version control workflow,
+where edits are batched into commits, or real-time collaborative editing, 
+where edits are communicated as they occur. This paper makes no assumptions about which batching mode is in use, nor do we consider the well-studied problem of reliably and efficiently communicating patches over a network\todo{cite something, dist sys textbook?}.\todo{maybe include a brief note in the discussion about cursors being represented by locations?} 
+%\autoref{sub:Cursors} discusses representing cursor locations when in real-time mode. 
+
+\subsection{Representing Collaborative Program Sketches as Graphs}%
 \label{sub:Program Representation}
 
-\figureSimple{}
+The \textit{edit state} of a Grove branch is a directed multi-graph representing a \emph{collaborative program sketch}, meaning an incomplete program, i.e. one that may have \emph{holes} and (as we will return to) conflicts. 
+For example, \autoref{fig:Simple:a} gives one such graph and its corresponding \emph{decomposition} into, in this case, a single syntax tree,~\texttt{x * \hole},
+whose missing right operand is a hole, denoted $\hole$.
 
-The \textit{edit state} of a Grove instance is a graph representing a program
-in a language with concrete syntax for holes,
-or terms that have not been written yet or have already been deleted.
-For example, \autoref{fig:Simple:a} gives one such graph and its corresponding program,~\texttt{x * \hole},
-whose missing right operand is denoted by $\hole$.
+Each vertex represents a term in the specified language, except for a distinguished root vertex, 
+and is labeled with a unique identifier (UID) and a \emph{constructor}. 
+In \autoref{fig:Simple:a}, the root vertex has UID 0 and constructor~\textbullet. 
+Vertices \vSimpleTimes{} and \vSimpleX{} have UIDs 2 and 4 and constructors~\texttt{*} and \texttt{var(}$x$\texttt{)}, respectively.
+For clarity, we abbreviate \texttt{var(}$x$\texttt{)} as simply \texttt{x}; here, $x$ is a constructor parameter. We treat identifiers and literals as indivisible, but we discuss character-level editing in Section~TODO:REF\todo{ref}.
 
-The edit state is a directed graph with a distinguished root vertex.
-Each vertex represents a term in a hypothetical programming language
-and is labeled with a globally unique identifier and a term constructor.     % TODO: should we informally define `constructor' here?
-In \autoref{fig:Simple:a}, the root vertex has identifier 0 and constructor~\textbullet.
-Terms \vSimpleTimes{} and \vSimpleX{} have constructors~\texttt{*} and \texttt{var(x)}, respectively.
-For clarity, we abbreviate \texttt{var(x)} as simply \texttt{x}.
+An edge indicates that the destination vertex is a child of the origin vertex. 
+Each edge is labeled with a UID~(e.g.,~1 and~3 in \autoref{fig:Simple:a})
+and a \emph{position} (e.g., \texttt{Root} and \texttt{L} in \autoref{fig:Simple:a}). 
+The parent vertex's constructor determines a set of valid {positions}. 
+For instance, the~\texttt{*} constructor defines positions
+~\texttt{L}~(for the left operand)
+and~\texttt{R}~(for the right operand).
+The~\texttt{var} constructor is a leaf so it defines no positions.
+The root vertex constructor~\textbullet~has a single child position, \texttt{Root}.
 
-Each constructor has an associated set of \emph{child positions} for naming subterms.
-For instance, the~\texttt{*} constructor has positions
-for~\texttt{L}~(i.e., left child)
-and~\texttt{R}~(i.e., right child).
-The~\texttt{var} constructor has no child positions
-and takes a variable name as an argument, e.g.,~\texttt{x} in \texttt{var(x)}.\footnote{Note that,
-  for the purposes of this paper, we represent identifiers and number literals
-  indivisibly.  See Section~TODO:REF, for how we would allow editing individual characters.}      % TODO: should we keep this footnote?
-The root vertex constructor~\textbullet~has a single child position \texttt{Root}.
-
-Each edge is labeled with a globally unique identifier~(e.g.,~1 and~3 in \autoref{fig:Simple:a})
-and a child position (e.g., \texttt{Root} and \texttt{L} in \autoref{fig:Simple:a}).
-An edge indicates that the destination vertex is a child of the origin vertex at the given position.
 %Visually, we indicate the position of an edge by the location of its origin.
-For clarity, we reserve odd numbers for vertex identifiers and even numbers for edge identifiers.
 
-Finally, holes are represented by the absence of a child.
+Holes arise in the decomposition by the absence of a child at a valid position.
 For example, in \autoref{fig:Simple:a} the absence of an \texttt{R} child under \vSimpleTimes{}
 corresponds to the hole in the right operand of~\texttt{x * \hole}.
 
-\figureWrapMove{}
+For clarity, we use odd numbers for vertex UIDs and even numbers for edge UIDs. In practice, UIDs would be generated by a mechanism
+that effectively ensures that collaborators always generate distinct UIDs, e.g. by generating
+universally unique IDs (UUIDs)~\cite{IETF RFC 4122}.
+
 % \figureMove{}
 
-\subsection{Single-User Actions}%
+\subsection{Edits}%
 \label{sub:Single-User Actions}
+\figureWrapMove
 
-In the remainder of this section, we consider user actions and interactions,
-starting in this subsection with a single user performing one edit at a time
-and continuing in \autoref{sub:Multi-user Interactions} with multiple users performing single edits concurrently.
+Individual users perform \emph{edits} to evolve the edit state. This paper abstracts over the user interface aspects of structure editors and makes no usability-related claims; edits could be performed through, for example, drag-and-drop interactions (as in block-based editors like Scratch) or keyboard interactions (as in MPS and Hazel). % User interface design for structure editors remains an active research area.
+% The common thread is that structure editors maintain a program sketch throughout the editing process.
 
-Each action by the user corresponds to one or more graph update operations.
-Graph updates can only add fresh edges or vertices or remove existing edges.
-All user actions are relative to an instance-local cursor and cursors are not replicated across instances.
-We discuss cursor representations in detail in \autoref{sub:Cursors}.
+Each edit translates directly to a \emph{graph patch}, which consists of a sequence of \emph{patch commands}. The Grove patch language requires only two patch commands:  \emph{edge insertion} and \emph{edge deletion}. A vertex is inserted when it is included in an edge insertion command.
 
-\subsubsection{Construction Actions}%
+To illustrate the Grove patch language, let us consider a sequence of standard edits, found across structure editors, performed by a single user, Alice.
+
+\subsubsection{Hole Filling}%
 \label{sub:Construction}
 
-To start our examples, say Alice's cursor is on the hole in~\texttt{x * \hole} in \autoref{fig:Simple:a}.
-Alice constructs the variable~\texttt{y}, which produces the edit state in \autoref{fig:Simple:b}.
-This fills the hole by creating a new vertex \vSimpleY{} containing the variable reference
-as a child of \vSimpleTimes{} at position \texttt{R} connected via edge \eSimpleY{}.
-The resulting graph represents the expression \texttt{x * y}.
+First, Alice fills the hole in the right position of \texttt{x * \hole} from \autoref{fig:Simple:a} with the variable~\texttt{y}. The resulting edit state is shown in \autoref{fig:Simple:b}.
+The patch corresponding to this hole filling action inserts an edge, labeled \eSimpleY{}, from the vertex corresponding to the parent term, \vSimpleTimes{}, to the newly constructed variable's vertex, \vSimpleY{}. 
+The resulting graph decomposes to the term \texttt{x * y}.
 
-\subsubsection{Deletion Actions}%
+\subsubsection{Deletion}%
 \label{sub:Deletion}
 
 % \figureMove{}
 
-Next, Alice moves the cursor to~\texttt{x} and deletes it, leavingx~\texttt{\hole{} * y}.
-This deletes edge~\eSimpleX{} as shown in \autoref{fig:Simple:c}.
-Notice that vertex \vSimpleX{} continues to exist,
-and if it had any children, those children would remain connected to it.
+Next, Alice moves the cursor to~\texttt{x} in \autoref{fig:Simple:b} and deletes it, 
+causing the deletion of edge~\eSimpleX{} and  resulting in the decomposition~\texttt{\hole{} * y} as shown in \autoref{fig:Simple:c}.
 
-Once a vertex is created, it is never deleted.
-This allows further interaction with those vertices by other users without risk of spontaneous cursor motion,
-as shown later in this section.
-In remaining diagrams, we omit such orphaned vertices if they are not relevant to the exposition.
-
-Once an edge with a particular identifier is deleted, it cannot be recreated.
+Once an edge with a particular identifier is deleted, it cannot be re-inserted.
 For instance, if Alice performed an ``undo'' on this deletion,
-a fresh edge between \vSimpleTimes{} and \vSimpleX{} would be created.
+a fresh edge between \vSimpleTimes{} and \vSimpleX{} would be created. (We can allow simple undo only if the patch has not yet been communicated to a collaborator). 
 
-\subsubsection{Wrapping Actions}%
+Notice that vertex \vSimpleX{} continues to exist (and if it had any children, they would remain connected to it; see below for the implications in the collaborative setting). In the remaining figures, we omit such orphaned vertices if they are not relevant to the exposition.
+
+% The same state would arise if Alice cut \li{x}: we assume each user has an individually managed clipboard, so until a corresponding {paste} edit is performed the vertex is deleted but it can be restored by edge insertion.
+
+\subsubsection{Wrapping}%
 \label{sub:Wrapping}
 
-Next, Alice moves the cursor to parent vertex \vSimpleTimes{}
-and constructs a binary addition expression with constructor~\texttt{+}.
-If the cursor were on a hole,
-a fresh term would be constructed in its place, as in \autoref{sub:Construction} above.
-However, since Alice's cursor is on an existing term \texttt{*},
-it is interpreted as a wrapping action instead of a construction action.
-This corresponds to the following sequence of graph updates, shown in \autoref{fig:Wrap}:
-(a) delete edge \eSimpleTimes{} leaving \vSimpleTimes{} temporarily orphaned,
-(b) add fresh vertex \vWrapPlus{} as a child of the root vertex, and
-(c) add fresh edge to \vSimpleTimes{} in left (\texttt{L}) child position of the new vertex.
-Our choice here of wrapping with a bias for the left child position is arbitrary.
+Next, Alice moves the cursor to the parent term \vSimpleTimes{} in \autoref{fig:Simple:c}
+with the intention of wrapping it in a binary addition expression with constructor~\texttt{+}.
 
-\subsubsection{Repositioning Actions}%
+Many structure editors define a primitive wrapping edit, choosing a position heuristically (e.g. favoring the left). Others 
+require the user to cut the original term, construct the new outer term, then paste
+the original term in the intended position. 
+
+In either case, the corresponding sequence of patch commands would produce the edit states shown in \autoref{fig:Wrap}: the edge connecting the root to the original term is deleted (effectively cutting the original term), leaving \vSimpleTimes{} temporarily orphaned, then an edge to the new outer term is inserted, followed by an edge reconnecting the original term (effectively pasting the original term).
+
+\subsubsection{Relocation}%
 \label{sub:Repositioning}
 
-We have two options for moving a term from one place to another.
-The first is to delete the term from its original position and then reconstruct it in its new position.
-Since edges are uniquely identifiable,
-this option precludes the use of edge identities in any cursor representation,
-as doing so would lead directly to the repositioning problem.
+Alice changes her mind and decides to relocate the multiplication from the left to the right position of the addition. A structure editor might support this using drag-and-drop or cut-and-paste affordances. In either case, the resulting patch commands will proceed through the two states shown in \autoref{fig:Move}: deleting the original incoming edge and then inserting an edge at the new location. Notice that the sub-graph corresponding to the relocated term itself is never deleted nor re-inserted, in contrast to conventional line-based patch languages.
+See below for the implications in the collaborative setting.
 
-Consequently, we take the second option: explicit repositioning actions that preserve identities.
-These could be triggered by, for example, a drag and drop or a cut and paste---but not a copy and paste,
-or a second paste after a cut, which do not need to preserve identity
-and so could rely on reconstruction as already described in \autoref{sub:Construction}.
+\subsubsection{Copying} 
+\label{sub:Copy}
+A copy-and-paste, or a cut followed by multiple pastes, would of course involve copying the graph structure of the original term but generating fresh UIDs (not shown).
 
-In the graph, explicit repositioning involves simply deleting the edge from the original parent
-and then adding a new edge to it from the new parent.
-Thus the term is indeed \textit{repositioned}, not copied.
-
-For example, in \autoref{fig:Move} Alice continues by
-repositioning \texttt{\hole{} * y} from the left child of \texttt{+} to the right child.
-This corresponds to the following sequence of graph edits, shown in \autoref{fig:Move}:
-(a) delete \eWrapTimes{} leaving \vSimpleTimes{} temporarily orphaned and
-(b) add \eMoveTimes{} to \vSimpleTimes{} in the right child position of \vWrapPlus{}.
 
 % \figureDifferentParts{}
-\figureDifferentPartsNestedParts{}
 
 %\figureCommutativity{}
-\begin{figure}
+\subsection{Collaboration}%
+\label{sub:Multi-user Interactions}
+
+We now turn our attention to how Grove handles collaboration.
+The examples in this section generalize to collaborations between any number of users,
+but for simplicity we consider only two: Alice and Bob.
+Alice and Bob are each concurrently editing their own branches of the repository (or their own instance of a real-time collaborative editor), 
+performing edits that translate to patches as described above. 
+They periodically communicate these patches to one another. \autoref{fig:Commutativity} diagrams the Grove collaboration model.\todo{stretch: include a comparable diagram for }
+
+
+
+\begin{figure}[h]
   \centering
   \begin{tikzpicture}
-    \path (-3cm, 0cm) node (a) [align=center]            {Original \\ Version};
-    \path ( 0cm, 1cm) node (b) [align=center,alice node] {Alice's  \\ Version};
-    \path ( 0cm,-1cm) node (c) [align=center,bob node]   {Bob's    \\ Version};
-    \path ( 3cm, 0cm) node (d) [align=center]            {Synchronized \\ Version};
+    \path (-3cm, 0cm) node (a) [align=center]            {Base \\ Branch};
+    \path ( 0cm, 1cm) node (b) [align=center,alice node] {Alice's  \\ Branch};
+    \path ( 0cm,-1cm) node (c) [align=center,bob node]   {Bob's    \\ Branch};
+    \path ( 3cm, 0cm) node (d) [align=center]            {Merged \\ Branch};
     \path [draw,->,alice step] (a) -- node [pos=0.7,align=center,auto]      {Alice's \\ Edits} (b);
     \path [draw,->,bob step]   (a) -- node [pos=0.7,align=center,auto,swap] {Bob's \\ Edits}   (c);
-    \path [draw,->,merge step] (b) -- node [pos=0.3,align=center,auto]      {Share \\ Edits} (d);
-    \path [draw,->,merge step] (c) -- node [pos=0.3,align=center,auto,swap] {Share \\ Edits} (d);
+    \path [draw,->,merge step] (b) -- node [pos=0.3,align=center,auto]      {Apply \\Bob's Patch} (d);
+    \path [draw,->,merge step] (c) -- node [pos=0.3,align=center,auto,swap] {Apply \\Alice's Patch} (d);
   \end{tikzpicture}
-  \caption{Commutativity of Edits.}
+  \caption{Collaboration in Grove is simple due to the commutativity of Grove's patch language.}
+  \Description{This figures describes the commutativity of edits}
   \label{fig:Commutativity}
 \end{figure}
 
-\subsection{Multi-user Interactions}%
-\label{sub:Multi-user Interactions}
 
-We now turn our attention to how Grove handles multiple users.
-The examples in this section generalize to any number of users,
-but for simplicity we consider only two: Alice and Bob.
-Alice and Bob each maintain their own editor instances independently
-and perform actions relative to its state using their own cursors, as we discuss in \autoref{sub:Cursors}.
 
-Users collaborate by sharing graph updates corresponding to user edits,
-e.g., via direct network connections or relayed through a server.
-% TODO: CITE(how to share network data -- DHT? consensus? ).
-The granularity of communication may vary.
-For real-time collaboration, graph updates may be sent as they occur.
-For asynchronous version control, updates may be batched together in the form of commits.
-As we will show, since these edits are commutative,
-all instances converge to the same state once all updates are shared.
-We assume users have some way to create globally unique identifiers
-% for verticies and edges
-without coordination~(e.g.,~GUIDs).
-% TODO:CITE:GUIDS).
+\subsubsection{Commutativity}%
+\figureDifferentPartsNestedParts
 
-\subsubsection{Editing Different Parts of the Code}%
+\label{sub:Commutativity:informal}
+The Grove patch language is commutative, meaning that there is no need for a 
+complex three-way merge algorithm (i.e. operational transform). Instead, each 
+user can simply apply incoming patches to their own edit state as they arrive, no matter the order in 
+which they arrive. If two users have received the same set of patches, their edit state will converge.
+
+The key properties that make the Grove patch language commutative is that 
+edge deletion is permanent and vertex insertion is permanent.
+We establish commutativity formally in \autoref{sec:Formalism}.
+For now, let us consider several example scenarios that demonstrate 
+how Grove handles different collaborative editing scenarios, particularly 
+the problematic situations outlined in \autoref{sec:Introduction}. 
+
+\subsubsection{Solving the Granularity Problem}%
 \label{sub:Editing Different Parts of the Code}
 
-Alice and Bob start where Alice left off in the previous section
-with the state \texttt{\hole{} + \hole{} * y} shown in \autoref{fig:Move:b}.
+Alice and Bob start where Alice left off in \autoref{fig:Move:b} 
+with the term \texttt{\hole{} + \hole{} * y}.
 Alice then adds~\vDifferentPartsAlice{} as the left child of \vSimpleTimes{}.
-At the same time, Bob changes \vSimpleY{} to \vDifferentPartsBob{}.
-Before either shares their graph updates with the other,
-Alice and Bob have the graphs in \autoref{fig:DifferentParts:a} and \autoref{fig:DifferentParts:b}, respectively.
+Concurrently, Bob changes \vSimpleY{} to \vDifferentPartsBob{}.
+Before sharing their patches,
+Alice and Bob have the edit states \autoref{fig:DifferentParts:a} and \autoref{fig:DifferentParts:b}, respectively.
 Note that the transition from \autoref{fig:Move:b} to \autoref{fig:DifferentParts:b}
 represents multiple graph updates,
 i.e., deleting~\eSimpleY{} and adding~\eDifferentPartsBob{} along with its child~\vDifferentPartsBob{}.
 We thus mark the transition with a star.
-Once Alice and Bob share their graph edits and apply each other's updates to their own copy of the graph,
-they both have the graph in \autoref{fig:DifferentParts:c}.
+Once Alice and Bob share their patches and apply each other's patch to their own edit state,
+both edit states converge to the graph in \autoref{fig:DifferentParts:c}.\todo{add more spacing around terms in Fig 5} 
+Because Grove's patch language is structural rather than line-based, the fact that these edits happened to be close to one another (i.e. in the same arithmetic expression) does not run afoul of the \textbf{granularity problem} described in \autoref{sec:Introduction}.
 
 % \figureNestedParts{}
 
-\subsubsection{Commutativity}%
-\label{sub:Commutativity:informal}
-
-% \todo{rev}
-Note that aside from sharing edge deletions and additions,
-merging requires no coordination between Alice and Bob.
-For example, suppose Alice and Bob did not transmit their edits to each other
-but instead to a third user, Chris.
-Chris can apply the edits from Alice and Bob in any order
-and will always get the graph in \autoref{fig:DifferentParts:c}.
-
-In other words, our update model obeys the commutativity shown in \autoref{fig:Commutativity}.
-For any sequences of edits from Alice and Bob,
-applying them in any order always produces the same results.
-(We show this formally in \autoref{sub:Commutativity:formal}.)
-
-\subsubsection{Editing Nested Parts of the Code}%%
+\subsubsection{Solving the Relocation Modification Problem}%%
 \label{sub:Editing Nested Parts of the Code}
 
-After all of Alice's and Bob's updates have been shared,
-they both have the edit state \texttt{\hole{} + u * y} in \autoref{fig:DifferentParts:c}.
+After converging on \texttt{\hole{} + u * y} in \autoref{fig:DifferentParts:c}, 
 Alice changes~\vDifferentPartsAlice{} to~\vNestedPartsAlice{},
-producing the graph in \autoref{fig:NestedParts:a}.
-Meanwhile, Bob repositions~\vSimpleTimes{} (along with its children)
-from the~\texttt{R} child of~\vWrapPlus{} to its~\texttt{L} child
-by deleting~\eMoveTimes{} and adding~\eNestedPartsBob{}.
-The resulting graph is shown in \autoref{fig:NestedParts:b}.
-Because updates are located by edge identifiers instead of by paths relative to the root vertex,
-each of Alice's and Bob's updates can be applied to the other's graph
-and afterwards they will both have the graph in \autoref{fig:NestedParts:c}.
+producing the edit state in \autoref{fig:NestedParts:a}.
+Meanwhile, Bob relocates~\vSimpleTimes{} (bringing along its children)
+from the~\texttt{R} position of~\vWrapPlus{} to the~\texttt{L} position. As discussed above, this involves deleting~\eMoveTimes{} and adding~\eNestedPartsBob{}.
+Bob's resulting edit state is shown in \autoref{fig:NestedParts:b}.\todo{}
 
-Note that commutativity has consequences in this scenario.
-Since all updates must eventually lead to the same edit state regardles of the order in which they are applied,
-if Alice, say, receives Bob's deletion of~\eMoveTimes{}, makes some local changes,
-and then receives Bob's addition of~\eNestedPartsBob{},
-the result must still be the graph in \autoref{fig:NestedParts:c}.
-In that case, Alice's edits would then temporarily be within the term deleted by Bob.
-Thus, our semantics must allows users to edit deleted terms.
-Whether or how this is presented in the user interface is another question.
+Although Alice has modified a term that Bob has concurrently relocated, the edits commute: Alice's modifications are relocated to the new location chosen by Bob.
+This addresses the \textbf{relocation modification problem} described in \autoref{sec:Introduction}.
+In a line-based setting, this kind of edit can lead to silent code duplication or spurious conflicts (the threat of which, in the author's experience, can inhibit development teams from performing useful code reorganizations).
 
-% TODO: \todo{TODO}She can restore that code using a restoration action add a fresh edge to it.
+% TODO: \todo{TODO}She can restore that code using a restoration action and add a fresh edge to it.
 
-\subsection{Merge Conflicts}%
+\subsubsection{Warning of Edits under Disconnected Terms}
+
+If instead of relocating the multiplication in \autoref{fig:NestedParts}, Bob had deleted it (i.e. disconnected it from the root), then Alice's edits would still commute, but her edits would be applied under a deleted term. 
+
+This situation could also arise in a real-time collaborative editor, where each individual edit might arrive at any time (rather than in atomic commits). If Alice, say, receives Bob's deletion of~\eMoveTimes{}, then makes her edits 
+before receiving Bob's subsequent insertion of~\eNestedPartsBob{} to complete the relocation, 
+Alice's edits would then temporarily be under a disconnected term. 
+
+This does not present a formal problem or conflict. A subsequent edit might reconnect a disconnected term, so it is sensible for edits to these terms to be recorded. 
+However, heuristically, a system might warn users, perhaps after a period of quiescence in a real-time setting, that Alice's edits were effectively deleted and provide affordances for interacting with disconnected terms.
+
+\subsection{Conflicts}%
 \label{sub:Merge Conflicts}
 
 Although the collaborative edits discussed so far merge cleanly,
@@ -240,10 +218,10 @@ and consider separate cases for \emph{multi-child}, \emph{multi-parent}, and \em
 As with merge conflicts in version-control systems such as git, these all require user intervention to resolve.
 We consider common merge scenarios first, then move onto more unusual scenarios.
  
-\subsubsection{Multi-child conflicts}%
+\subsubsection{Local Conflicts}%
 \label{sub:Multi-child conflicts}
 
-\figureMultiChild{}
+\figureMultiChild
 
 Suppose Alice and Bob both have the edit state \texttt{w * v + \hole} in \autoref{fig:NestedParts:c}.
 Alice moves the cursor to the hole and constructs~\vMultiChildAlice{} as the~\texttt{R} child of~\vWrapPlus{}.
@@ -280,13 +258,13 @@ that could continue to work inside and outside the conflict in a graph-based mod
 % It is just the where the multi-child happens that editor services may break down.
 \autoref{sec:Related Work} discusses more differences.
 
-\subsubsection{Multi-parent conflicts}%
+\subsubsection{Multi-Location Conflicts}%
 \label{sub:Multi-parent conflicts}
 
-\figureMultiParent{}
+\figureMultiParent
 
 Multi-parent conflicts occur when multiple edges share a destination vertex,
-as opposed to multi-child conflicts which share a common origin.
+as opposed to multi-child conflicts, which share a common origin.
 An example of this is in \autoref{fig:MultiParent},
 which shows the edit state Alice and Bob converge on after deleting the conflict and the \texttt{v}.
 Alice then moves~\vNestedPartsAlice{} to the~\texttt{R} position of~\vSimpleTimes{}.
@@ -294,7 +272,7 @@ At the same time, Bob also moves~\vNestedPartsAlice{} to the~\texttt{R} position
 This results in the edit states of \autoref{fig:MultiParent:b} and \autoref{fig:MultiParent:c}
 In both cases, the edits are modeled as one edge deletion followed by one edge addition.
 Alice deletes~\eNestedPartsAlice{} and adds~\eMultiParentAlice{}.
-At the same times, Bob deletes~\eNestedPartsAlice{} and adds~\eMultiParentBob{}.
+At the same time, Bob deletes~\eNestedPartsAlice{} and adds~\eMultiParentBob{}.
 As we explain in \autoref{sec:Formalism}, deletions are idempotent,
 so the fact that Alice and Bob both deleted~\eNestedPartsAlice{} will not lead to a conflict.
 However, both~\eMultiParentAlice{} (added by Alice) and~\eMultiParentBob{} (added by Bob)
@@ -345,7 +323,7 @@ TODO: talk about how to resolve the conflict
 \subsubsection{Cycles}%
 \label{sub:Multi-User Cycles}
 
-\figureCycle{}
+\figureCycle
 
 In addition to multi-child and multi-parent conflicts, merges
 can cause cycles in the graph.\footnote{In theory a single user could
@@ -371,13 +349,13 @@ or deleting both~\eMultiCycleAliceTimes{} and~\eMultiCycleAlicePlus{}~(thus favo
 
 \paragraph{Disconnected Cycles}
 
-\figureDisconnect{}
+\figureDisconnect
 
-TODO: technically a cycle
+% TODO: technically a cycle
 
-TODO: in general detect when there are or were edits to something now deleted
+% TODO: in general detect when there are or were edits to something now deleted
 
-\todo{UI would show orphans only once edits orphans occur}
+% \todo{UI would show orphans only once edits orphans occur}
 
 Finally, there is a particular type of cycle worth discussing.
 
@@ -416,42 +394,42 @@ Fortunately, we can detect this situation and warn the user
 since the disconnection appears after merging two graphs
 in which vertexes were not already disconnected.
 
-\subsection{Cursors}%
-\label{sub:Cursors}
+% \subsection{Cursors}%
+% \label{sub:Cursors}
 
-\paragraph{Representation}
+% \paragraph{Representation}
 
-For most editing a cursor is represented by a position within a vertex.
-For example, in TODO, Bob's cursor might be at the TODO position of the TODO:vertex.
-Representing it this way means that if Bob or some other user deletes TODO:vertex
-and replaces it with a different vertex, Bob's cursor is still valid.
-We specify a position within a vertex instead of a vertex because TODO.
+% For most editing a cursor is represented by a position within a vertex.
+% For example, in TODO, Bob's cursor might be at the TODO position of the TODO:vertex.
+% Representing it this way means that if Bob or some other user deletes TODO:vertex
+% and replaces it with a different vertex, Bob's cursor is still valid.
+% We specify a position within a vertex instead of a vertex because TODO.
 
-However, there is one case where we need a more precise cursor.
-That is when a vertex has a multi-child conflict (e.g. TODO in FIG:TODO).
-We want users to beable to put their cussor on either the conflict as a whole
-(e.g., TODO: \texttt{\{ x | y \}})
-or on an individual element (e.g., \texttt{x} or \texttt{y}).
-In the former case, a pair of a vertex and a child position suffices.
-For the latter case, we represent cursors by an edge identifier (e.g., TODO in TODO:FIG).
+% However, there is one case where we need a more precise cursor.
+% That is when a vertex has a multi-child conflict (e.g. TODO in FIG:TODO).
+% We want users to be able to put their cursor on either the conflict as a whole
+% (e.g., TODO: \texttt{\{ x | y \}})
+% or on an individual element (e.g., \texttt{x} or \texttt{y}).
+% In the former case, a pair of a vertex and a child position suffices.
+% For the latter case, we represent cursors by an edge identifier (e.g., TODO in TODO:FIG).
 
-\paragraph{Communication}
+% \paragraph{Communication}
 
-In our system all edits use edge and vertex identifiers, and user
-cursors do not affect the interpretation of graph edits.
-Thus, cursors need not be communicated to other users.
-However, in a collaborative setting, seeing the cursors of other users
-can be useful.
-For this purpose, editors can announce their cursor position to other editors.
-At any point in time, the announcement
-with the most recent timestamp
-for a particular user
-is used.
+% In our system all edits use edge and vertex identifiers, and user
+% cursors do not affect the interpretation of graph edits.
+% Thus, cursors need not be communicated to other users.
+% However, in a collaborative setting, seeing the cursors of other users
+% can be useful.
+% For this purpose, editors can announce their cursor position to other editors.
+% At any point in time, the announcement
+% with the most recent timestamp
+% for a particular user
+% is used.
 
-Note that this cursor position may refer to edges or verticies that
-do not yet exist on the receivers machine.
-In these cases, we can either not display the other user's cursor (and perhaps
-have a visual display flagging this fact), or we can display the most recent
-cursor that represents a valid position in the local graph (perhaps
-shown in a fadded color to show that this cursor is known to not be up to date).
-(Or perhaps, all cursors always fade/decay over time like on radar blips.)
+% Note that this cursor position may refer to edges or verticies that
+% do not yet exist on the receivers machine.
+% In these cases, we can either not display the other user's cursor (and perhaps
+% have a visual display flagging this fact), or we can display the most recent
+% cursor that represents a valid position in the local graph (perhaps
+% shown in a fadded color to show that this cursor is known to not be up to date).
+% (Or perhaps, all cursors always fade/decay over time like on radar blips.)

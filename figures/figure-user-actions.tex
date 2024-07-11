@@ -1,0 +1,26 @@
+\newcommand{\figureUserActionContent}{%
+  \[
+  \arraycolsep=0pt
+  \begin{array}{lcllll}
+    \alpha & {}\in{} & Act & {}::={} &
+      \Construct{k}
+      \mid \Delete
+      \mid \Reposition{v}{p}
+    \\
+    c & {}\in{} & Cur & {}::={} &
+      \CVertex{v}
+      \mid \CEdge{\e}
+      \mid \CSource{v}{p}
+    \\
+  \end{array}
+\]
+}
+
+\newcommand{\figureUserActionSyntax}{%
+\begin{figure}
+  \figureUserActionContent
+  \caption{The syntax of user actions}
+  \Description{This figure describes the grammar for the syntax of user actions}
+  \label{fig:User Action Syntax}
+\end{figure}%
+}

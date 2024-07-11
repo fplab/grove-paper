@@ -15,69 +15,92 @@
 
 % GRV -- how it is implemented, how it connects to the formalism, describe the graph,
 
-We implemented the core Grove calculus of \autoref{sec:Formalism} as an OCaml library.
+We implemented the core Grove calculus of \autoref{sec:Grove Formalism} as an OCaml library.
 Our code is parameterized by a syntax specification for expressions that we generate automatically, which makes the implemented language of expressions easier to modify or replace.
 We also built a Web browser-based Grove editor as a proof of concept.
 
-Since we cannot implement an infinite mapping directly, the graph is a data structure, \texttt{Graph.t}, that maps from edges to the edge states $\left\{\Plus, \Minus\right\}$.
-We do not represent edges that map to $\bot$.
+\subsection{Graph Implementation}
+\label{sec: Graph Implementation}
+The graph data structure \texttt{Graph.t} is implemented as \texttt{OCaml Map} data structure with insertion and selection operations whose asymptotic worst-case complexity is logarithmic with respect to the size of the map. Since we cannot implement an infinite mapping directly, the graph only maps
+live or deleted edges to edge states $\left\{\Plus, \Minus\right\}$. We do not represent edges that map to $\bot$.
 
-% TODO: rename Decomposition.ml to Grove.ml
-
-There's a function \verb!decompose! of type \verb!Graph.t) : t * Edge.Set.t Vertex.Map.t! that 
-
-From this graph, we compute the set of all edges and the set of live edges with a linear scan.
-
-% TODO: make this into a listing
-
-\begin{verbatim}
-  Graph.edges : Graph.t -> Edge.Set.t
-  Graph.live_edges : Graph.t -> Edge.Set.t
-\end{verbatim}
-
-% TODO: keep connecting the code to the formalism like this
-
-These vertices are partitioned into three sets: multi-parented, single-parented, or orphaned.
-A vertex $v$ is considered a parent of another vertex $v'$ if there is a live edge from $v$ to $v'$.
-
-For each vertex, we take the parent and child edge sets.
-
-% TODO: fix the formalism for parents (to work with edges instead of vertices) and then check that it matches the implementation. Try renaming parents to vparents and adding parents for edges.
-
-% TODO: Talk about how the graph is implemented (not as an actual function, but as a map from edges to edge states) so that we can denote the set of created + deleted edges clearly, as well as all of the vertices that have ever been created.
-
-For a graph $G : \E \to \Sigma$ where $\E = \U \times \V \times \P \times \V$, our graph decomposition algorithm runs in $O(\abs{\V} \log \abs{\V} + \abs{\E} \log \abs{\V})$.
+For a graph $G : (\E = \U \times \V \times \P \times \V) \to \Sigma$, our graph decomposition algorithm runs in $O(\abs{\V} \log \abs{\V} + \abs{\E} \log \abs{\V})$.
 It begins with a scan of all edges that have been created or deleted $O(\abs{\E})$.
 Their vertices at both ends are partitioned into three sets: multi-parented, single-parented, or orphaned.
 Their relationships are recorded in maps for $O(\log \abs{\V})$ lookups of parent and child edge sets.
 After the vertices have been partitioned, we traverse the various single-parented components and produce equivalent expressions $O(\abs{\V})$.
-For unicycles, we traverse backwards until a vertex is seen twice $O(\abs{\V})$, then proceed forward to find the least vertex on the cycle $O(\abs{\V})$.
+For unicycles, we traverse backwards until a vertex is seen twice $O(\abs{\V})$, then proceed forward to find the least vertex on the cycle $O(\abs{\V})$. Once the least vertex is found, decomposition of unicycle begins with it, thus ensuring any edges to it become references to a unicycle root.
+
+\subsection{Grove Implementation}
+\label{sec: Grove Implementation}
+
+% TODO: Talk about Uuid Generation
+First, we set up \texttt{Uuid.ml}, a module to generate well-founded monotonically increasing unique IDs for all the parts of our code that require unique identifiers.This module has features that allow it to both generate and check for the well-foundedness of a given ID.. Our programmatically generated target language syntax, explained further in \autoref{sec: Parameterized Code Generation}, provides a \texttt{Lang.Constructor.t} corresponding to $k \in \K$ from \autoref{sec:Grove Formalism}.Further, we have a \texttt{Vertex.ml} module that \emph{wraps} a given \texttt{Lang.Constructor.t} with a UUID, such that, $\V = \K \times \U$. This also allows for the vertices to be ordered by their UUIDs. Internally, we represent edge-sources ($s = (v,p)$) as a record containing \texttt{Vertex.t}\textit{s} and \texttt{Lang.Position.t}\textit{s}, where the latter encodes the child positions and arities of the various constructors, in \texttt{Cursor.ml}. That is, a cursor (or a source) serves as a point of focus for graph actions and it references a position relative to some vertex. 
+
+Then we have edges corresponding to $\E = \U \times \S \times \V$, implemented in \texttt{Egde.ml} UUID wrapped \emph{source} from a source to a target. Edge states ($\Sigma$), are expressed as variant type with two variants \texttt{Created} and \texttt{Deleted} representing $\Plus$ and $\Minus$ respectively.Since we do not directly implement infinite mappings in \texttt{Graph}, $\bot$ does not have a corresponding variant. Further, trees are defined in \texttt{Tree.ml} to represent disjointed graph components. A tree is a vertex with a (possibly empty) set of children or is a reference to one. The children are a list of \emph{child}s, where a child is a tree paired with an edge UUID. We also have a helper \texttt{child\_map : (Lang.Position.t * (Uuid.Id.t $*$ t) list) list $->$ children Position\_map.t} that takes in pairs of target language positions and lists of pairs Uuid and trees to return a map of the children. Here, a position\_map is a structure that \emph{maps} \texttt{Lang.position.t}s to their appropriate child representations.
+
+Finally, the logic and infrastructure for a grove that a given graph decomposes into using the decomposition algorithm is implemented in \texttt{Grove.ml}.
+
+% TODO: Tree.ml, Position_map.mk, Grove.ml, Graph_action.ml
+
+
+\subsection{Parameterized Code Generation}
+\label{sec: Parameterized Code Generation}
+
+% How do you give it the corresponding language definition to generate child positions, arities
+
+
+% % TODO: rename Decomposition.ml to Grove.ml
+
+% There's a function \verb!decompose! of type \verb!Graph.t) : t * Edge.Set.t Vertex.Map.t! that 
+
+% From this graph, we compute the set of all edges and the set of live edges with a linear scan.
+
+% % TODO: make this into a listing
+
+% \begin{verbatim}
+%   Graph.edges : Graph.t -> Edge.Set.t
+%   Graph.live_edges : Graph.t -> Edge.Set.t
+% \end{verbatim}
+
+% % TODO: keep connecting the code to the formalism like this
+
+% These vertices are partitioned into three sets: multi-parented, single-parented, or orphaned.
+% A vertex $v$ is considered a parent of another vertex $v'$ if there is a live edge from $v$ to $v'$.
+
+% For each vertex, we take the parent and child edge sets.
+
+% % TODO: fix the formalism for parents (to work with edges instead of vertices) and then check that it matches the implementation. Try renaming parents to vparents and adding parents for edges.
+
+% % TODO: Talk about how the graph is implemented (not as an actual function, but as a map from edges to edge states) so that we can denote the set of created + deleted edges clearly, as well as all of the vertices that have ever been created.
+
+
 
 % TODO: is this still a thing?
 % Compared to the core language, our implementation lacks support for lists and case expressions.
 
-Optimizations: least fixed point
+% Optimizations: least fixed point
 
 
-We determine $e$ by starting at the root of the graph and including every connected
-vertex that has a single parent. In positions where there are no children, we
-leave an empty hole $\hole$. In positions where there are multiple children, we
-leave a conflict hole of the form $\conflictHole{e_1,\ldots,e_n}$. Whenever we
-encounter a vertex with multiple parents, we add its corresponding expression to
-the second component $MP$ and leave an indirect reference $\multiVertex{u}$, where $u$ is
-the unique identifier of the referenced vertex
+% We determine $e$ by starting at the root of the graph and including every connected
+% vertex that has a single parent. In positions where there are no children, we
+% leave an empty hole $\hole$. In positions where there are multiple children, we
+% leave a conflict hole of the form $\conflictHole{e_1,\ldots,e_n}$. Whenever we
+% encounter a vertex with multiple parents, we add its corresponding expression to
+% the second component $MP$ and leave an indirect reference $\multiVertex{u}$, where $u$ is
+% the unique identifier of the referenced vertex
 
 % here are some properties that show how to get one from the other, and to/from
 % graph
 
-algorithmic section: if we want to implement these conversions, here are the
-steps (without introducing new concepts):
+% algorithmic section: if we want to implement these conversions, here are the
+% steps (without introducing new concepts):
 
-- linear scan
-- breaking out roots
-- ...
+% - linear scan
+% - breaking out roots
+% - ...
 
-Graph decomposition occurs in three steps.
+% Graph decomposition occurs in three steps.
 
 
 
@@ -93,17 +116,18 @@ Graph decomposition occurs in three steps.
     \end{array}
   \]
   \caption{Syntax of graph decomposition trees as a grammar.}
+  \Description{This figure describes the graph decomposition grammar}
   \label{fig:Syntax of graph decomposition trees}
 \end{figure}
 
 
-lemma: a unicycle is a cycle with trees hanging off of it
+% lemma: a unicycle is a cycle with trees hanging off of it
 
-lemma: unicycle traversal always produces a valid tree
+% lemma: unicycle traversal always produces a valid tree
 
-Unicycular graph traversal occurs in two directions. A vertex is chosen as an arbitrary
-starting point and its parents are traversed and marked as seen. Any vertex that
-has been seen twice must be on the cycle. We take the first one as the root of
-the unicycle and traverse its children to produce a tree that covers the unicycular graph.
-Any remaining single-parented vertices must be parts of other unicycular graphs and are
-unicycle-traversed until there are no more single-parented vertices left.
+% Unicycular graph traversal occurs in two directions. A vertex is chosen as an arbitrary
+% starting point and its parents are traversed and marked as seen. Any vertex that
+% has been seen twice must be on the cycle. We take the first one as the root of
+% the unicycle and traverse its children to produce a tree that covers the unicycular graph.
+% Any remaining single-parented vertices must be parts of other unicycular graphs and are
+% unicycle-traversed until there are no more single-parented vertices left.

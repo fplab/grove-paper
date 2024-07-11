@@ -1,0 +1,916 @@
+\section{The Marked Grove Calculus}
+\label{sec:marked-calculus}
+
+
+\subsection{Syntax}
+\label{sec:marked-syntax}
+
+% \[
+%   \arraycolsep=0pt
+%   \begin{array}{lcllll}
+%     t & {}\in{} & Term & {}::={} &
+%       e
+%       \mid \tau
+%       \mid q
+%     \\
+%     e & {}\in{} & Exp & {}::={} &
+%       \eVar{u}{x}
+%       \mid \eFun{u}{\eVar{}{x}}{\tau}{e}
+%       \mid \eApp{u}{e_1}{e_2}
+%       \mid \eNum{u}{n}
+%       \mid \ePlus{u}{e_1}{e_2}
+%       \mid \eTimes{u}{e_1}{e_2}
+%       \mid \multiVertex{v}
+%       \mid \cycleVertex{v}
+%       \mid \conflictHole[i < n]{e_i}
+%       \mid \emptyHole{v}{p}
+%     \\
+%     q & {}\in{} & Pat{} & {}::={} &
+%       \pVar{u}{x}
+%       \mid \multiVertex{v}
+%       \mid \cycleVertex{v}
+%       \mid \conflictHole[i < n]{q_i}
+%       \mid \emptyHole{v}{p}
+%     \\
+%     \tau & {}\in{} & Typ & {}::={} &
+%       \tArrow{u}{\tau_1}{\tau_2}
+%       \mid \tNum{u}
+%       \mid \multiVertex{v}
+%       \mid \cycleVertex{v}
+%       \mid \conflictHole[i < n]{\tau_i}
+%       \mid \emptyHole{v}{p}
+%     \\
+%     \sigma & {}\in{} & STyp & {}::={} &
+%         \tArrow{u}{\sigma_1}{\sigma_2}
+%         \mid \tNum{}
+%         \mid \TUnknown
+%     \\
+%     \ECMV & {}\in{} & MExp & {}::={} &
+%       \eVar{u}{x}
+%       \mid \eFun{u}{\eVar{}{x}}{\TMV}{\ECMV}
+%       \mid \eApp{u}{\ECMV_1}{\ECMV_2}
+%       \mid \eNum{u}{n}
+%       \mid \ePlus{u}{\ECMV_1}{\ECMV_2}
+%       \mid \eTimes{u}{\ECMV_1}{\ECMV_2}
+%       \mid \multiVertex{v}
+%       \mid \cycleVertex{v}
+%       \mid \conflictHole[i < n]{\ECMV_{i}}
+%       \mid \emptyHole{v}{p} \\
+%       &     &    &    &   \ECFree{\eVar{u}{x}}
+%       \mid \ECInconType{\ECMV}
+%       \mid \ECLamInconAsc{\eVar{u}{x}}{\TMV}{\ECMV}
+%       \mid \ECLamAnaNonMatchedArrow{\eVar{u}{x}}{\TMV}{\ECMV}
+%     \\
+%   \end{array}
+% \]
+
+
+% \subsection{Types}
+% \label{sec:marked-types}
+% \judgbox{\ensuremath{\consistent{\sigma_1}{\sigma_2}}} $\sigma_1$ is consistent with $\sigma_2$
+% %
+% \begin{mathpar}
+%   \inferrule[TCUnknown1]{ }{
+%     \consistent{\TUnknown}{\sigma}
+%   }
+
+%   \inferrule[TCUnknown2]{ }{
+%     \consistent{\sigma}{\TUnknown}
+%   }
+
+%   \inferrule[TCRefl]{ }{
+%     \consistent{\sigma}{\sigma}
+%   }
+
+%   \inferrule[TCArr]{
+%     \consistent{\sigma_1}{\sigma_1'} \\
+%     \consistent{\sigma_2}{\sigma_2'} \\
+%   }{
+%     \consistent{\TArrow{\sigma_1}{\sigma_2}}{\TArrow{\sigma_1'}{\sigma_2'}}
+%   }
+
+% \end{mathpar} \\
+
+
+% \judgbox{\ensuremath{\inconsistent{\sigma_1}{\sigma_2}}} $\sigma_1$ is inconsistent with $\sigma_2$
+% %
+% \begin{mathpar}
+%     \inferrule[TICNumArr]{ }{
+%         \inconsistent{\tNum{}}{\TArrow{\sigma_1}{\sigma_2}}
+%     }
+% \end{mathpar}
+
+
+% \judgbox{\graphErase{\TMV} = \sigma} $\TMV$ graph erases to $\sigma$
+% %
+% \begin{mathpar}
+
+%     \inferrule[GENum]{ }{
+%         \graphErase{\tNum{u}} = \tNum{}
+%     }
+
+%     \inferrule[GEHole]{ }{
+%         \graphErase{\emptyHole{v}{p}} = \TUnknown
+%     }
+
+%     \inferrule[GEArr]{
+%         \graphErase{\TMV_1} = \sigma_1 \\
+%         \graphErase{\TMV_2} = \sigma_2
+%     }{
+%         \graphErase{(\TArrow{\TMV_1}{\TMV_2})} = \TArrow{\sigma_1}{\sigma_1}
+%     }
+
+%     \inferrule[GEMultiParent]{ }{ 
+%         \graphErase{\multiVertex{v}} = \TUnknown
+%     }
+
+%     \inferrule[GEUnicycle]{ }{ 
+%         \graphErase{\cycleVertex{v}} = \TUnknown
+%     }
+
+%     \inferrule[GEConflict]{ }{
+%         \graphErase{\conflictHole[i<n]{\TMV_i}} = \TUnknown
+%     }
+% \end{mathpar}
+
+% \judgbox{\ensuremath{\matchedArrow{\sigma}{\sigma_1}{\sigma_2}}} $\sigma$ has matched arrow type $\TArrow{\sigma_1}{\sigma_2}$
+% %
+% \begin{mathpar}
+%   \inferrule[TMAUnknown]{ }{
+%     \matchedArrow{\TUnknown}{\TUnknown}{\TUnknown}
+%   }
+
+%   \inferrule[TMAArr]{ }{
+%     \matchedArrow{\TArrow{\sigma_1}{\sigma_2}}{\sigma_1}{\sigma_2}
+%   }
+% \end{mathpar} \\
+
+
+
+
+% \subsection{Unmarked expressions}
+% \label{sec:marked-unmarked-expressions}
+% \judgbox{\ctxSynTypeU{\ctx}{\EMV}{\sigma}} $\EMV$ synthesizes type $\sigma$
+% %
+% \begin{mathpar}
+%   \inferrule[USHole]{ }{
+%     \ctxSynTypeU{\ctx}{\emptyHole{v}{p}}{\TUnknown}
+%   }
+
+%   \inferrule[USVar]{
+%     \inCtx{\ctx}{\eVar{}{x}}{\sigma}
+%   }{
+%     \ctxSynTypeU{\ctx}{\eVar{u}{x}}{\sigma}
+%   }
+
+%   \inferrule[USNum]{ }{
+%     \ctxSynTypeU{\ctx}{\eNum{u}{n}}{\tNum{}}
+%   }
+
+%   \inferrule[USLam]{
+%     \erase{\TMV_1} = \sigma_1 \\
+%     \ctxSynTypeU{\extendCtx{\ctx}{x}{\sigma_1}}{\EMV}{\sigma_2}
+%   }{
+%     \ctxSynTypeU{\ctx}{\eFun{u}{\eVar{}{x}}{\tau_1}{e}}{\tArrow{}{\sigma_1}{\sigma_2}}
+%   }
+
+%   \inferrule[USAp]{
+%     \ctxSynTypeU{\ctx}{\EMV_1}{\sigma} \\
+%     \matchedArrow{\sigma}{\sigma_1}{\sigma_2} \\
+%     \ctxAnaTypeU{\ctx}{\EMV_2}{\sigma_1}
+%   }{
+%     \ctxSynTypeU{\ctx}{\eApp{u}{e_1}{e_2}}{\sigma_2}
+%   }  
+
+%   \inferrule[USPlus]{
+%     \ctxAnaTypeU{\ctx}{\EMV_1}{\tNum{}} \\
+%     \ctxAnaTypeU{\ctx}{\EMV_2}{\tNum{}}
+%   }{
+%     \ctxSynTypeU{\ctx}{\ePlus{u}{e_1}{e_2}}{\tNum{}}
+%   }
+
+%   \inferrule[USTimes]{
+%     \ctxAnaTypeU{\ctx}{\EMV_1}{\tNum{}} \\
+%     \ctxAnaTypeU{\ctx}{\EMV_2}{\tNum{}}
+%   }{
+%     \ctxSynTypeU{\ctx}{\eTimes{u}{e_1}{e_2}}{\tNum{}}
+%   }
+
+
+%   \inferrule[USMultiParent]{ }{
+%     \ctxSynTypeU{\ctx}{\multiVertex{v}}{\TUnknown}
+%   }
+
+%   \inferrule[USUnicycle]{ }
+%   {
+%     \ctxSynTypeU{\ctx}{\cycleVertex{v}}{\TUnknown} 
+%   }
+
+%   \inferrule[USConflict]{
+%     \ctxSynTypeU{\ctx}{\EMV_i}{\TMV_i}
+%   }{
+%     \ctxSynTypeU{\ctx}{\conflictHole[i<n]{e_i}}{\TUnknown}
+%   }
+
+% \end{mathpar} \\
+
+% \judgbox{\ctxAnaTypeU{\ctx}{\EMV}{\sigma}} $\EMV$ analyzes against type $\sigma$
+% %
+% \begin{mathpar}
+%   \inferrule[UALam]{
+%     \erase{\TMV} = \sigma \\
+%     \matchedArrow{\sigma_3}{\sigma_1}{\sigma_2} \\
+%     \consistent{\sigma}{\sigma_1} \\
+%     \ctxAnaTypeU{\extendCtx{\ctx}{x}{\sigma}}{\EMV}{\sigma_2}
+%   }{
+%     \ctxAnaTypeU{\ctx}{\eFun{u}{\eVar{}{x}}{\TMV}{e}}{\sigma_3}
+%   }
+
+%   \inferrule[UASubsume]{
+%     \ctxSynTypeU{\ctx}{\EMV}{\sigma'} \\
+%     \consistent{\sigma}{\sigma'} \\
+%     \subsumable{\EMV}
+%   }{
+%     \ctxAnaTypeU{\ctx}{\EMV}{\sigma}
+%   }
+% \end{mathpar} \\
+
+% \judgbox{\subsumable{\EMV}} $\EMV$ is subsumable
+% %
+% \begin{mathpar}
+%   \inferrule[USuHole]{ }{
+%     \subsumable{\emptyHole{v}{p}}
+%   }
+
+%   \inferrule[USuVar]{ }{
+%     \subsumable{\eVar{u}{x}}
+%   }
+
+%   \inferrule[USuAp]{ }{
+%     \subsumable{\eApp{u}{e_1}{e_2}}
+%   }
+
+%   \inferrule[USuNum]{ }{
+%     \subsumable{\eNum{u}{n}}
+%   }
+
+%   \inferrule[USuPlus]{ }{
+%     \subsumable{\ePlus{u}{e_1}{e_2}}
+%   }
+
+%   \inferrule[USuTimes]{ }{
+%     \subsumable{\eTimes{u}{e_1}{e_2}}
+%   }
+
+  % \inferrule[USuMultiParent]{ }{
+  %   \subsumable{\multiVertex{v}}
+  % }
+
+  % \inferrule[USuUnicycle]{ }{
+  %   \subsumable{\cycleVertex{v}}
+  % }
+
+  % \inferrule[USuConflict]{ }{
+  %   \subsumable{\conflictHole[i<n]{e_i}}
+  % }
+
+% \end{mathpar}
+
+% \subsection{Marking}
+% \label{sec:marked-marking}
+% \judgbox{\ctxSynFixedInto{\ctx}{\EMV}{\ECMV}{\sigma}} $\EMV$ is marked into $\ECMV$ and synthesizes type $\sigma$
+% %
+% \begin{mathpar}
+%   \inferrule[MKSHole]{ }{
+%     \ctxSynFixedInto{\ctx}{\emptyHole{v}{p}}{\emptyHole{v}{p}}{\TUnknown}
+%   }
+
+%   \inferrule[MKSVar]{
+%     \inCtx{\ctx}{\eVar{G}{x}}{\sigma}
+%   }{
+%     \ctxSynFixedInto{\ctx}{\eVar{G}{x}}{\eVar{G}{x}}{\sigma}
+%   }
+
+%   \inferrule[MKSFree]{
+%     \notInCtx{\ctx}{x}
+%   }{
+%     \ctxSynFixedInto{\ctx}{\eVar{G}{x}}{\ECFree{\eVar{G}{x}}}{\TUnknown}
+%   }
+
+%   \inferrule[MKSLam]{
+%     \erase{\TMV_1} = \sigma_1 \\
+%     \ctxSynFixedInto{\extendCtx{\ctx}{x}{\sigma_1}}{\EMV}{\ECMV}{\sigma_2}
+%   }{
+%     \ctxSynFixedInto{\ctx}{\eFun{G}{x}{\TMV_1}{e}}{\ELam{\eVar{G}{x}}{\TMV_1}{\ECMV}}{\TArrow{\sigma_1}{\sigma_2}} \mid {u_t \to \ctx}
+%   }
+
+%   \inferrule[MKSAp1]{
+%     \ctxSynFixedInto{\ctx}{\EMV_1}{\ECMV_1}{\sigma} \\
+%     \matchedArrow{\sigma}{\sigma_1}{\sigma_2} \\
+%     \ctxAnaFixedInto{\ctx}{\EMV_2}{\ECMV_2}{\sigma_1} \\
+%   }{
+%     \ctxSynFixedInto{\ctx}{\eApp{G}{e_1}{e_2}}{\eApp{G}{\ECMV_1}{\ECMV_2}}{\sigma_2}
+%   }
+
+%   \inferrule[MKSAp2]{
+%     \ctxSynFixedInto{\ctx}{\EMV_1}{\ECMV_1}{\sigma} \\
+%     \notMatchedArrow{\sigma} \\
+%     \ctxAnaFixedInto{\ctx}{\EMV_2}{\ECMV_2}{\TUnknown}
+%   }{
+%     \ctxSynFixedInto{\ctx}{\eApp{G}{e_1}{e_2}}{\ECApSynNonMatchedArrow{\ECMV_1}{\ECMV_2}}{\TUnknown}
+%   }
+
+%   \inferrule[MKSNum]{ }{
+%     \ctxSynFixedInto{\ctx}{\eNum{G}{n}}{\eNum{G}{n}}{\tNum{}}
+%   }
+
+%   \inferrule[MKSPlus]{
+%     \ctxAnaFixedInto{\ctx}{\EMV_1}{\ECMV_1}{\TNum} \\
+%     \ctxAnaFixedInto{\ctx}{\EMV_2}{\ECMV_2}{\TNum}
+%   }{
+%     \ctxSynFixedInto{\ctx}{\ePlus{G}{e_1}{e_2}}{\ECPlus{\ECMV_1}{\ECMV_2}}{\TNum}
+%   }
+
+%   \inferrule[MKSTimes]{
+%     \ctxAnaFixedInto{\ctx}{\EMV_1}{\ECMV_1}{\TNum} \\
+%     \ctxAnaFixedInto{\ctx}{\EMV_2}{\ECMV_2}{\TNum}
+%   }{
+%     \ctxSynFixedInto{\ctx}{\eTimes{G}{e_1}{e_2}}{\eTimes{}{\ECMV_1}{\ECMV_2}}{\TNum}
+%   }
+
+%   \inferrule[MKSMultiParent]{ }{
+%     \ctxSynFixedInto{\ctx}{\multiVertex{\e}}{\multiVertex{\e}}{\TUnknown}
+%   }
+  
+%   \inferrule[MKUnicycle]{ }{
+%     \ctxSynFixedInto{\ctx}{\cycleVertex{\e}}{\cycleVertex{\e}}{\TUnknown}
+%   }
+
+%   \inferrule[MKSConflict]{ }{
+%     \ctxSynFixedInto{\ctx}{\conflictHole[i<n]{e_i}}{\conflictHole[i<n]{\ECMV_i}}{\TUnknown}
+%   }
+  
+% \end{mathpar} \\
+
+% \judgbox{\ctxAnaFixedInto{\ctx}{\EMV}{\ECMV}{\sigma}} $\EMV$ is marked into $\ECMV$ and analyzes against type $\sigma$
+% %
+% \begin{mathpar}
+%   \inferrule[MKALam1]{
+%     \erase{\TMV} = \sigma \\
+%     \matchedArrow{\sigma_3}{\sigma_1}{\sigma_2} \\
+%     \consistent{\sigma}{\sigma_1} \\
+%     \ctxAnaFixedInto{\extendCtx{\ctx}{x}{\sigma}}{\EMV}{\ECMV}{\sigma_2}
+%   }{
+%     \ctxAnaFixedInto{\ctx}{\eFun{G}{x}{\TMV}{e}}{\ECLam{x}{\TMV}{\ECMV}}{\sigma_3}
+%   }
+
+%   \inferrule[MKALam2]{
+%     \erase{\TMV} = \sigma \\
+%     \notMatchedArrow{\sigma_3} \\
+%     \ctxAnaFixedInto{\extendCtx{\ctx}{x}{\sigma}}{\EMV}{\ECMV}{\TUnknown}
+%   }{
+%     \ctxAnaFixedInto{\ctx}{\eFun{G}{x}{\TMV}{e}}{\ECLamAnaNonMatchedArrow{x}{\TMV}{\ECMV}}{\sigma_3}
+%   }
+
+%   \inferrule[MKALam3]{
+%     \erase{\TMV} = \sigma \\
+%     \matchedArrow{\sigma_3}{\sigma_1}{\sigma_2} \\
+%     \inconsistent{\sigma}{\sigma_1} \\
+%     \ctxAnaFixedInto{\extendCtx{\ctx}{x}{\sigma_1}}{\EMV}{\ECMV}{\sigma_2}
+%   }{
+%     \ctxAnaFixedInto{\ctx}{\eFun{G}{x}{\TMV}{e}}{\ECLamInconAsc{x}{\TMV}{\ECMV}}{\sigma_3}
+%   }
+
+%   \inferrule[MKAInconsistentTypes]{
+%     \ctxSynFixedInto{\ctx}{\EMV}{\ECMV}{\sigma'} \\
+%     \inconsistent{\sigma}{\sigma'} \\
+%     \subsumable{\EMV}
+%   }{
+%     \ctxAnaFixedInto{\ctx}{\EMV}{\ECInconType{\ECMV}}{\sigma}
+%   }
+
+%   \inferrule[MKASubsume]{
+%     \ctxSynFixedInto{\ctx}{\EMV}{\ECMV}{\sigma'} \\
+%     \consistent{\sigma}{\sigma'} \\
+%     \subsumable{\EMV}
+%   }{
+%     \ctxAnaFixedInto{\ctx}{\EMV}{\ECMV}{\sigma}
+%   }
+% \end{mathpar}
+
+% \subsection{Marked expressions}
+% \label{sec:marked-marked-expressions}
+% \judgbox{\ctxSynTypeM{\ctx}{\ECMV}{\TMV}} $\ECMV$ synthesizes type $\TMV$
+% %
+% \begin{mathpar}
+%   \inferrule[MSHole]{ }{
+%     \ctxSynTypeM{\ctx}{\emptyHole{v}{p}}{\TUnknown}
+%   }
+
+%   \inferrule[MSVar]{
+%     \inCtx{\ctx}{x}{\sigma}
+%   }{
+%     \ctxSynTypeM{\ctx}{x}{\sigma}
+%   }
+
+%   \inferrule[MSFree]{
+%     \notInCtx{\ctx}{x}
+%   }{
+%     \ctxSynTypeM{\ctx}{\ECFree{x}}{\TUnknown}
+%   }
+
+%   \inferrule[MSLam]{
+%     \erase{\TMV_1} = \sigma_1 \\
+%     \ctxSynTypeM{\extendCtx{\ctx}{x}{\sigma}}{\ECMV}{\sigma_2}
+%   }{
+%     \ctxSynTypeM{\ctx}{\ECLam{x}{\TMV_1}{\ECMV}}{\TArrow{\sigma_1}{\sigma_2}}
+%   }
+
+%   \inferrule[MSAp1]{
+%     \ctxSynTypeM{\ctx}{\ECMV_1}{\sigma} \\
+%     \matchedArrow{\TMV}{\sigma_1}{\sigma_2} \\
+%     \ctxAnaTypeM{\ctx}{\ECMV_2}{\sigma_1}
+%   }{
+%     \ctxSynTypeM{\ctx}{\ECAp{\ECMV_1}{\ECMV_2}}{\sigma_2}
+%   }
+
+%   \inferrule[MSAp2]{
+%     \ctxSynTypeM{\ctx}{\ECMV_1}{\sigma} \\
+%     \notMatchedArrow{\sigma} \\
+%     \ctxAnaTypeM{\ctx}{\ECMV_2}{\TUnknown}
+%   }{
+%     \ctxSynTypeM{\ctx}{\ECApSynNonMatchedArrow{\ECMV}{\ECMV}}{\TUnknown}
+%   }
+
+ 
+%   \inferrule[MSNum]{ }{
+%     \ctxSynTypeM{\ctx}{\ECNumMV}{\TNum}
+%   }
+
+%   \inferrule[MSPlus]{
+%     \ctxAnaTypeM{\ctx}{\ECMV_1}{\TNum} \\
+%     \ctxAnaTypeM{\ctx}{\ECMV_2}{\TNum}
+%   }{
+%     \ctxSynTypeM{\ctx}{\ECPlus{\ECMV_1}{\ECMV_2}}{\TNum}
+%   }
+
+%   \inferrule[MSTimes]{
+%     \ctxAnaTypeM{\ctx}{\ECMV_1}{\TNum} \\
+%     \ctxAnaTypeM{\ctx}{\ECMV_2}{\TNum}
+%   }{
+%     \ctxSynTypeM{\ctx}{\eTimes{}{\ECMV_1}{\ECMV_2}}{\TNum}
+%   }
+
+%   \inferrule[MSMultiParent]{ }{
+%     \ctxSynTypeM{\ctx}{\multiVertex{\e}}{\TUnknown}
+%   }
+
+%   \inferrule[MSUnicycle]{ }{
+%     \ctxSynTypeM{\ctx}{\cycleVertex{\e}}{\TUnknown}
+%   }
+
+%   \inferrule[MSConflict]{ }{
+%     \ctxSynTypeM{\ctx}{\conflictHole[i<n]{\ECMV_i}}{\TUnknown}
+%   }
+
+
+% \end{mathpar} \\
+
+% \judgbox{\ctxAnaTypeM{\ctx}{\ECMV}{\TMV}} $\ECMV$ analyzes against type $\TMV$
+% %
+% \begin{mathpar}
+%   \inferrule[MALam1]{
+%     \matchedArrow{\sigma_3}{\sigma_1}{\sigma_2} \\
+%     \erase{\TMV} = \sigma \\
+%     \consistent{\sigma}{\sigma_1} \\
+%     \ctxAnaTypeM{\extendCtx{\ctx}{x}{\sigma}}{\ECMV}{\sigma_2}
+%   }{
+%     \ctxAnaTypeM{\ctx}{\ECLam{x}{\TMV}{\ECMV}}{\sigma_3}
+%   }
+
+%   \inferrule[MALam2]{
+%     \notMatchedArrow{\sigma_3} \\
+%     \erase{\TMV} = \sigma \\
+%     \ctxAnaTypeM{\extendCtx{\ctx}{x}{\sigma}}{\ECMV}{\TUnknown}
+%   }{
+%     \ctxAnaTypeM{\ctx}{\ECLamAnaNonMatchedArrow{x}{\TMV}{\ECMV}}{\sigma_3}
+%   }
+
+%   \inferrule[MALam3]{
+%     \matchedArrow{\sigma_3}{\sigma_1}{\sigma_2} \\
+%     \erase{\TMV} = \sigma \\
+%     \inconsistent{\sigma}{\sigma_1} \\
+%     \ctxAnaTypeM{\extendCtx{\ctx}{x}{\sigma_1}}{\ECMV}{\sigma_2}
+%   }{
+%     \ctxAnaTypeM{\ctx}{\ECLamInconAsc{x}{\TMV}{\ECMV}}{\sigma_3}
+%   }
+
+
+%   \inferrule[MAInconsistentTypes]{
+%     \ctxSynTypeM{\ctx}{\ECMV}{\sigma'} \\
+%     \inconsistent{\sigma}{\sigma'} \\
+%     \subsumable{\ECMV}
+%   }{
+%     \ctxAnaTypeM{\ctx}{\ECInconType{\ECMV}}{\sigma}
+%   }
+
+%   \inferrule[MASubsume]{
+%     \ctxSynTypeM{\ctx}{\ECMV}{\sigma'} \\
+%     \consistent{\sigma}{\sigma'} \\
+%     \subsumable{\ECMV}
+%   }{
+%     \ctxAnaTypeM{\ctx}{\ECMV}{\sigma}
+%   }
+% \end{mathpar} \\
+
+% \judgbox{\subsumable{\ECMV}} $\ECMV$ is subsumable
+% %
+% \begin{mathpar}
+
+%   \inferrule[MSuHole]{ }{
+%     \subsumable{\emptyHole{v}{p}}
+%   }
+
+%   \inferrule[MSuVar]{ }{
+%     \subsumable{x}
+%   }
+
+%   \inferrule[MSuFree]{ }{
+%     \subsumable{\ECFree{x}}
+%   }
+
+%   \inferrule[MSuAp1]{ }{
+%     \subsumable{\ECAp{\ECMV_1}{\ECMV_2}}
+%   }
+
+%   \inferrule[MSuAp2]{ }{
+%     \subsumable{\ECApSynNonMatchedArrow{\ECMV_1}{\ECMV_2}}
+%   }
+
+%   \inferrule[MSuNum]{ }{
+%     \subsumable{\ECNumMV}
+%   }
+
+%   \inferrule[MSuPlus]{ }{
+%     \subsumable{\ECPlus{\ECMV_1}{\ECMV_2}}
+%   }
+
+%   \inferrule[MSuTimes]{ }{
+%     \subsumable{\eTimes{}{\ECMV_1}{\ECMV_2}}
+%   }
+
+%   \inferrule[MSuMultiParent]{ }{
+%     \subsumable{\multiVertex{\e}}
+%   }
+
+%   \inferrule[MSuUnicycle]{ }{
+%     \subsumable{\cycleVertex{\e}}
+%   }
+
+%   \inferrule[MSuConflict]{ }{
+%     \subsumable{\conflictHole[i<n]{\ECMV_i}}
+%   }
+
+% \end{mathpar} \\
+
+
+
+
+% First : We need ids for tracking error holes, provenance
+% For the unmarked language : rules stay the same 
+% During the marking procedure, we also gather constraints
+% %%%%%
+
+% What needs to be different for grove ?
+% 1. We need marking rules for multi-child, multi-parent, uni-cycle
+% Multi-child case 
+% -------
+% ctx | {e1,e2,..,en} => ?^p | {?^p ~~ t_1, ...., ?^p ~~ t_2) 
+
+
+\section{Type Checking \& Inference}
+\label{sec:type-inference}
+
+\subsection{Marked Constraint Generation}
+
+\subsubsection{Constrained Marked Arrow}
+
+\judgbox{\ensuremath{\matchedArrowConstraint{\sigma}{\sigma_1}{\sigma_2}{C}}} $\sigma$ has matched arrow type $\TArrow{\sigma_1}{\sigma_2}$ and generates constraints $C$
+\begin{mathpar}
+  \judgment{ }{
+    \matchedArrowConstraint{\TUnknown^p}{\TUnknown^{\rightarrow_L(p)}}{\TUnknown^{\rightarrow_R(p)}}{\{ \TUnknown^p \approx \tarr{\TUnknown^{\rightarrow_L(p)}}{\TUnknown^{\rightarrow_R(p)}} \}}
+  }{TMAHole-C}
+
+  \judgment{ }{
+    \matchedArrowConstraint{\TArrow{\sigma_1}{\sigma_2}}{\sigma_1}{\sigma_2}{\{\}}
+  }{TMAArr-C}
+\end{mathpar}
+
+
+\subsubsection{Provenances}
+
+\[\begin{array}{rrcl}
+    \Prov & \Provp & \Coloneqq & u \mid exp(u) \mid \rightarrow_L(\Provp) \mid \rightarrow_R(\Provp)\\
+    \TMName  & \TMV  & \Coloneqq & \dots \mid \TUnknown^{p}\\
+    % \ECMName & \ECMV & \Coloneqq & \dots \mid \ECFreeId{x}{} \mid \ECInconTypeId{\ECMV}{} \mid \dots \mid \conflictHole[i<n]{\ECMV_i} \mid \multiVertex{v} \mid \cycleVertex{v} \mid \emptyHole{v}{p}
+\end{array}\]
+
+\subsubsection{Local Info Mapping}
+
+\judgbox{vertex \mapsto $\ctx + \ctx \times \sigma$} $M$ is a map from vertices to $\ctx + \ctx \times \sigma$
+
+% \subsubsection{Meet of Types} 
+% \judgbox{\meet{\sigma_1}{\sigma_2}}
+
+% \[\begin{array}{ccr}
+%     \meet{\sigma}{\TUnknown} & = & \sigma \\
+%     \meet{\TUnknown}{\sigma} & = & \sigma \\
+%     \meet{\tNum{}}{\tNum{}} & = & \tNum{} \\
+%     \meet{(\tarr{\sigma_1}{\sigma_2})}{(\tarr{\sigma_1^`}{\sigma_2^`})} & = & \tarr{(\meet{\sigma_1}{\sigma_1^`})}{(\meet{\sigma_2}{\sigma_2^`})} \\
+%     & & \bot otherwise
+% \end{array}\]
+
+
+
+% \subsection{Marking judgments}
+
+% \judgbox{\synMarkConstraint{\ctx}{\EMV}{\ECMV}{\sigma}{C}{M}} $\EMV$ is marked into $\ECMV$ and synthesizes type $\sigma$ and generates constraints $C$ and local info mapping $M$
+% %
+% \begin{mathpar}
+%   \inferrule[MKSCHole]{ }{
+%     \synMarkConstraint{\ctx}{\emptyHole{v}{p}}{\emptyHole{v}{p}}{\TUnknown^{exp(id-of(v)}}{\Setof{\constrain{\TUnknown^{exp(u)}}{\texttt{etc}}}}{\mapNil}
+%   }
+
+%   \inferrule[MKSCVar]{
+%     \inCtx{\ctx}{x}{\sigma}
+%   }{
+%     \synMarkConstraint{\ctx}{\eVar{u}{x}}{\eVar{u}{x}}{\sigma}{\constraintNil{}}{\mapNil}
+%   }
+
+%   \inferrule[MKSCFree]{
+%     \notInCtx{\ctx}{x}
+%   }{
+%     \synMarkConstraint{\ctx}{\eVar{u}{x}}{\ECFree{\eVar{u}{x}}}{\TUnknown^{exp(u)}}{\constraintNil{}}{\mapNil}
+%   }
+
+%   \inferrule[MKSCLam]{
+%     \erase{\TMV_1} = \sigma_1 \\
+%     \synMarkConstraint{\extendCtx{\ctx}{x}{\sigma_1}}{\EMV}{\ECMV}{\sigma_2}{\cConstraint}{\mConstraint}
+%   }{
+%     \synMarkConstraint{\ctx}{\eFun{u}{x}{\TMV_1}{e}}{\ELam{\eVar{u}{x}}{\TMV_1}{\ECMV}}{\TArrow{\sigma_1}{\sigma_2}}{\cConstraint}{\mConstraint}
+%   }
+
+%   \inferrule[MKSCAp1]{
+%     \synMarkConstraint{\ctx}{\EMV_1}{\ECMV_1}{\sigma}{\cConstraint_1}{\mConstraint_1} \\
+%     \matchedArrowConstraint{\sigma}{\sigma_1}{\sigma_2}{\cConstraint_2} \\
+%     \anaMarkConstraint{\ctx}{\EMV_2}{\ECMV_2}{\sigma_1}{\cConstraint_3}{\mConstraint_2} \\
+%   }{
+%     \synMarkConstraint{\ctx}{\eApp{u}{e_1}{e_2}}{\eApp{u}{\ECMV_1}{\ECMV_2}}{\sigma_2}{\cConstraint_1 \cup \cConstraint_2 \cup \cConstraint_3}{\mConstraint_1 \cup \mConstraint_2}
+%   }
+
+%   \inferrule[MKSCAp2]{
+%     \synMarkConstraint{\ctx}{\EMV_1}{\ECMV_1}{\sigma}{\cConstraint_1}{\mConstraint_1} \\
+%     \notMatchedArrow{\sigma} \\
+%     \anaMarkConstraint{\ctx}{\EMV_2}{\ECMV_2}{\TUnknown^{\rightarrow_{L}{(exp(u))}}}{\cConstraint_2}{\mConstraint_2}
+%   }{
+%     \synMarkConstraint{\ctx}{\eApp{u}{e_1}{e_2}}{\ECApSynNonMatchedArrow{\ECMV_1}{\ECMV_2}}{\TUnknown^{\rightarrow_{R}{(exp(u))}}}{\cConstraint_1 \cup \cConstraint_2 \cup \SetOf{\constrain{\TUnknown^{exp(u)}}{\tarr{\TUnknown^{\rightarrow_L(exp(u))}}{\TUnknown^{\rightarrow_R(exp(u))}}}}
+%     }{\mConstraint_1 \cup \mConstraint_2}
+%   }
+
+%   \inferrule[MKSCNum]{ }{
+%     \synMarkConstraint{\ctx}{\eNum{u}{n}}{\eNum{u}{n}}{\tNum{}}{\constraintNil{}}{\mapNil}
+%   }
+
+%   \inferrule[MKSCPlus]{
+%     \anaMarkConstraint{\ctx}{\EMV_1}{\ECMV_1}{\tNum{}}{\cConstraint_1}{\mConstraint_1} \\
+%     \anaMarkConstraint{\ctx}{\EMV_2}{\ECMV_2}{\tNum{}}{\cConstraint_2}{\mConstraint_2}
+%   }{
+%     \synMarkConstraint{\ctx}{\ePlus{u}{e_1}{e_2}}{\ePlus{u}{\ECMV_1}{\ECMV_2}}{\tNum{}}{\cConstraint_1 \cup \cConstraint_2}{\mConstraint_1 \cup \mConstraint_2}
+%   }
+
+%   \inferrule[MKSCTimes]{
+%     \anaMarkConstraint{\ctx}{\EMV_1}{\ECMV_1}{\tNum{}}{\cConstraint_1}{\mConstraint_1} \\
+%     \anaMarkConstraint{\ctx}{\EMV_2}{\ECMV_2}{\tNum{}}{\cConstraint_2}{\mConstraint_2}
+%   }{
+%     \synMarkConstraint{\ctx}{\eTimes{u}{e_1}{e_2}}{\eTimes{u}{\ECMV_1}{\ECMV_2}}{\tNum{}}{\cConstraint_1 \cup \cConstraint_2}{\mConstraint_1 \cup \mConstraint_2}
+%   }
+
+%   \inferrule[MKSCMultiParent]{
+%     % \e = (u, (v,p), (u_t,k_t))
+%     }{
+%     \synMarkConstraint{\ctx}{\multiVertex{v}}{\multiVertex{v}}{\TUnknown^{exp(id-of(v))}}{\constraintNil{}}{\maps{v}{\ctx}}
+%   }
+  
+%   \inferrule[MKSCUnicycle]{ 
+%     % \e = (u, (v,p), (u_t,k_t)
+%     }{
+%     \synMarkConstraint{\ctx}{\cycleVertex{v}}{\cycleVertex{v}}{\TUnknown^{exp(id-of(v)}}{\constraintNil{}}{\maps{v}{\ctx}}
+%   }
+
+%   \inferrule[MKSCConflict]{ 
+%     \Setof{\synMarkConstraint{\ctx}{\EMV}{\ECMV}{\sigma_i}{\cConstraint_i}{\mConstraint_i}}_{i<n}
+%     }{
+%     \synMarkConstraint{\ctx}{\conflictHole[i<n]{e_i}}{\conflictHole[i<n]{\ECMV_i}}{\bigsqcap_{i<n} \sigma_i}{\Setof{\constrain{\TUnknown^{(exp(u))}}{\sigma_i}}_{i<n} \cup \bigcup_{i<n} \cConstraint_i}{\bigcup_{i<n} \mConstraint_1}
+%   }
+  
+% \end{mathpar} \\
+
+% \judgbox{\anaMarkConstraint{\ctx}{\EMV}{\ECMV}{\sigma}{\cConstraint}{\mConstraint}} $\EMV$ is marked into $\ECMV$ and analyzes type $\sigma$ and generates constraints \cConstraint and local-info mapping \mConstraint
+% %
+% \begin{mathpar}
+
+
+% \inferrule[MKACMultiParent]{
+%     % \e = (u, (v,p), (u_t,k_t))
+%     }{
+%     \anaMarkConstraint{\ctx}{\multiVertex{v}}{\multiVertex{v}}{\sigma}{\constraintNil{}}{\maps{v}{(\ctx,\sigma)}}
+%   }
+  
+%   \inferrule[MKACUnicycle]{ 
+%     % \e = (u, (v,p), (u_t,k_t)
+%     }{
+%     \anaMarkConstraint{\ctx}{\cycleVertex{v}}{\cycleVertex{v}}{\sigma}{\constraintNil{}}{\maps{v}{(\ctx, \sigma)}}
+%   }
+
+%   \inferrule[MKAConflict]{ 
+%     \Setof{\anaMarkConstraint{\ctx}{\EMV_i}{\ECMV_i}{\sigma}{\cConstraint_i}{\mapNil}}_{i<n}
+%   }{ 
+%     \anaMarkConstraint{\ctx}{\conflictHole[i<n]{\EMV_i}}{\conflictHole[i<n]{\ECMV_i}}{\sigma}{\bigcup_{i<n} \cConstraint_i}{\mapNil}
+%   }
+
+
+% \inferrule[MKACLam1]{
+%     \erase{\TMV} = \sigma \\
+%     \matchedArrowConstraint{\sigma_3}{\sigma_1}{\sigma_2}{\cConstraint_1} \\
+%     \consistent{\sigma}{\sigma_1} \\
+%     \anaMarkConstraint{\extendCtx{\ctx}{x}{\sigma}}{\EMV}{\ECMV}{\sigma_2}{\cConstraint_2}{\mConstraint_1}
+%   }{
+%     \anaMarkConstraint{\ctx}{\eFun{u}{x}{\TMV}{e}}{\ECLam{\eVar{u}{x}}{\TMV}{\ECMV}}{\sigma_3}{\cConstraint_1 \cup \cConstraint_2 \cup \Setof{\constrain{\sigma}{\sigma_1}}}{\mConstraint_1}
+%   }
+
+%   \inferrule[MKACLam2]{
+%     \erase{\TMV} = \sigma \\
+%     \notMatchedArrow{\sigma_3} \\
+%     \anaMarkConstraint{\extendCtx{\ctx}{x}{\sigma}}{\EMV}{\ECMV}{\TUnknown^{anon}}{\cConstraint}{\mConstraint}
+%   }{
+%     \anaMarkConstraint{\ctx}{\eFun{u}{x}{\TMV}{e}}{\ECLamAnaNonMatchedArrow{\eVar{u}{x}}{\TMV}{\ECMV}}{\sigma_3}{\cConstraint \cup \Setof{\constrain{\TUnknown^{exp(u)}}{\sigma_3}}}{\mConstraint}
+%   }
+
+%   \inferrule[MKACLam3]{
+%     \erase{\TMV} = \sigma \\
+%     \matchedArrowConstraint{\sigma_3}{\sigma_1}{\sigma_2}{\cConstraint_1} \\
+%     \inconsistent{\sigma}{\sigma_1} \\
+%     \anaMarkConstraint{\extendCtx{\ctx}{x}{\sigma_1}}{\EMV}{\ECMV}{\sigma_2}{\cConstraint_2}{\mConstraint}
+%   }{
+%     \anaMarkConstraint{\ctx}{\eFun{u}{x}{\TMV}{e}}{\ECLamInconAsc{\eVar{u}{x}}{\TMV}{\ECMV}}{\sigma_3}{\cConstraint_1 \cup \cConstraint_2 \cup \Setof{\constrain{\TUnknown^{exp(u)}}{\sigma_3}}}{\mConstraint}
+%   }
+
+%   \inferrule[MKACInconsistentTypes]{
+%     \synMarkConstraint{\ctx}{\EMV}{\ECMV}{\sigma'}{\cConstraint}{\mConstraint} \\
+%     \inconsistent{\sigma}{\sigma'} \\
+%     \subsumable{\EMV}
+%   }{
+%     \anaMarkConstraint{\ctx}{\EMV}{\ECInconType{\ECMV}}{\sigma}{\cConstraint}{\mConstraint}
+%   }
+
+%   \inferrule[MKACSubsume]{
+%     \synMarkConstraint{\ctx}{\EMV}{\ECMV}{\sigma'}{\cConstraint}{\mConstraint} \\
+%     \consistent{\sigma}{\sigma'} \\
+%     \subsumable{\EMV}
+%   }{
+%     \anaMarkConstraint{\ctx}{\EMV}{\ECMV}{\sigma}{\cConstraint}{\mConstraint}
+%   }
+    
+% \end{mathpar}
+
+
+% \judgbox{\markless{\ECMV}} $\ECMV$ has no marks
+% %
+% \begin{mathpar}
+%   \inferrule[MLHole]{ }{
+%     \markless{\emptyHole{v}{p}}
+%   }
+
+%   \inferrule[MLVar]{ }{
+%     \markless{x}
+%   }
+
+%   \inferrule[MLLam]{
+%     \markless{\ECMV}
+%   }{
+%     \markless{\ECLam{x}{\TMV}{\ECMV}}
+%   }
+
+%   \inferrule[MLAp]{
+%     \markless{\ECMV_1} \\
+%     \markless{\ECMV_2}
+%   }{
+%     \markless{\ECAp{\ECMV_1}{\ECMV_2}}
+%   }
+
+%   \inferrule[MLNum]{ }{
+%     \markless{\ECNumMV}
+%   }
+
+%   \inferrule[MLPlus]{
+%     \markless{\ECMV_1} \\
+%     \markless{\ECMV_2}
+%   }{
+%     \markless{\ECPlus{\ECMV_1}{\ECMV_2}}
+%   }
+
+%   \inferrule[MLTimes]{
+%     \markless{\ECMV_1} \\
+%     \markless{\ECMV_2}
+%   }{
+%     \markless{\eTimes{}{\ECMV_1}{\ECMV_2}}
+%   }
+
+%   \inferrule[MLMultiParent]{ }{
+%     \markless{\multiVertex{\e}}
+%   }
+
+%   \inferrule[MLUnicycle]{ }{
+%     \markless{\cycleVertex{\e}}
+%   }
+
+%   \inferrule[MLConflict]{ 
+%     \markless{\ECMV_1} \\
+%     \ldots \\
+%     \markless{\ECMV_n}
+%   }{
+%     \markless{\conflictHole[i<n]{\ECMV_i}}
+%   }
+
+  
+% \end{mathpar}
+
+% \subsection{Mark erasure}
+% \label{sec:marked-mark-erasure}
+% $\judgbox{\markErase{\ECMV}}$ is a metafunction defined as follows:
+% %
+% \newcommand{\erasesToRow}[2]{\markErase{#1} & = & #2}
+% \[\begin{array}{rcl}
+%   \erasesToRow{\emptyHole{v}{p}}{\emptyHole{v}{p}} \\
+%   \erasesToRow{\eVar{u}{x}}{\eVar{u}{x}} \\
+%   \erasesToRow{\ECFree{\eVar{u}{x}}}{\eVar{u}{x}} \\
+%   \erasesToRow{(\ECLam{\eVar{u}{x}}{\TMV}{\ECMV})}{\ELam{\eVar{u}{x}}{\TMV}{(\markErase{\ECMV})}} \\
+%   \erasesToRow{\ECLamInconAsc{\eVar{u}{x}}{\TMV}{\ECMV}}{\ELam{\eVar{u}{x}}{\TMV}{(\markErase{\ECMV})}} \\
+%   \erasesToRow{\ECLamAnaNonMatchedArrow{\eVar{u}{x}}{\TMV}{\ECMV}}{\ECLam{\eVar{u}{x}}{\TMV}{(\markErase{\ECMV})}} \\
+%   \erasesToRow{\eApp{u}{\ECMV_1}{\ECMV_2}}{\eApp{u}{\markErase{\ECMV_1}}{\markErase{\ECMV_2}}} \\
+%   \erasesToRow{\eApp{u}{\ECApSynNonMatchedArrow{\ECMV_1}}{\ECMV_2}}{\eApp{u}{\markErase{\ECMV_1}}{\markErase{\ECMV_2}}} \\
+%   \erasesToRow{\eNum{u}{n}}{\eNum{u}{n}} \\
+%   \erasesToRow{\ECInconType{\ECMV}}{\markErase{\ECMV}} \\
+% \end{array}\]
+
+
+
+\subsection{Metatheorems}
+\label{sec:marked-metatheorems}
+\begin{theorem}[name=Marking Totality] \
+  \begin{enumerate}
+    \item For all $\ctx$ and $\EMV$, there exist $\ECMV$ and $\sigma$ such that
+      $\ctxSynFixedInto{\ctx}{\EMV}{\ECMV}{\sigma}$.
+    \item For all $\ctx$, $\EMV$, and $\sigma$, there exists $\ECMV$ such that
+      $\ctxAnaFixedInto{\ctx}{\EMV}{\ECMV}{\sigma}$.
+  \end{enumerate}
+\end{theorem}
+
+\begin{theorem}[name=Marking Well-Formedness] \
+  \begin{enumerate}
+    \item If $\ctxSynFixedInto{\ctx}{\EMV}{\ECMV}{\sigma}$, then $\ctxSynTypeM{\ctx}{\ECMV}{\sigma}$ and
+      $\erasesTo{\ECMV}{\EMV}$.
+    \item If $\ctxAnaFixedInto{\ctx}{\EMV}{\ECMV}{\sigma}$, then $\ctxAnaTypeM{\ctx}{\ECMV}{\sigma}$ and
+      $\erasesTo{\ECMV}{\EMV}$.
+  \end{enumerate}
+\end{theorem}
+
+\begin{theorem}[name=Marking of Well-Typed/Ill-Typed Expressions] \
+  \begin{enumerate}
+    \item \begin{enumerate}
+        \item If $\ctxSynTypeU{\ctx}{\EMV}{\sigma}$ and $\ctxSynFixedInto{\ctx}{\EMV}{\ECMV}{\sigma}$,
+          then $\markless{\ECMV}$.
+        \item If $\ctxAnaTypeU{\ctx}{\EMV}{\sigma}$ and $\ctxAnaFixedInto{\ctx}{\EMV}{\ECMV}{\sigma}$,
+          then $\markless{\ECMV}$.
+      \end{enumerate}
+
+    \item \begin{enumerate}
+        \item If there does not exist $\sigma$ such that $\ctxSynTypeU{\ctx}{\EMV}{\sigma}$, then for
+          all $\ECMV$ and $\sigma'$ such that $\ctxSynFixedInto{\ctx}{\EMV}{\ECMV}{\sigma'}$, it is not
+          the case that $\markless{\ECMV}$.
+        \item If there does not exist $\sigma$ such that $\ctxAnaTypeU{\ctx}{\EMV}{\sigma}$, then for
+          all $\ECMV$ and $\sigma'$ such that $\ctxAnaFixedInto{\ctx}{\EMV}{\ECMV}{\sigma'}$, it is not
+          the case that $\markless{\ECMV}$.
+      \end{enumerate}
+  \end{enumerate}
+\end{theorem}
+
+\begin{theorem}[name=Marking Unicity] \
+  \begin{enumerate}
+    \item If $\ctxSynFixedInto{\ctx}{\EMV}{\ECMV_1}{\sigma_1}$ and
+      $\ctxSynFixedInto{\ctx}{\EMV}{\ECMV_2}{\sigma_2}$, then $\ECMV_1 = \ECMV_2$ and $\sigma_1 =
+      \sigma_2$.
+    \item If $\ctxAnaFixedInto{\ctx}{\EMV}{\ECMV_1}{\sigma}$ and
+      $\ctxAnaFixedInto{\ctx}{\EMV}{\ECMV_2}{\sigma}$, then $\ECMV_1 = \ECMV_2$.
+  \end{enumerate}
+\end{theorem}
