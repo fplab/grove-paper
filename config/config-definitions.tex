@@ -134,25 +134,25 @@
 \newcommand{\hole}{\ensuremath{\square}} %\textcolor{violet}{\llparenthesis}}\textcolor{violet}{\rrparenthesis}}
 \newcommand{\conflictHole}[2][]{%
 {\noexpandarg\StrSubstitute{#2}{,}{\textcolor{red}{\,\textbf{|}\,}}[\myargs]%
-{\textcolor{red}{\textbf{\{}}\myargs\textcolor{red}{\textbf{\}}}_{#1}}}}%
-\newcommand{\emptyHole}[2]{{}^{\id{(#1, #2)}}\square}
+{\textcolor{red}{\{}\myargs\textcolor{red}{\}}_{#1}}}}%
+\newcommand{\emptyHole}[1]{{}^{\id{#1}}\square}
 
 \newcommand{\eVar}[2]{\eid{#1}{#2}}
 \newcommand{\eFun}[4]{\eid{#1}{\lambda} #2 : #3 . #4}
-\newcommand{\eApp}[3]{\eid{#1}{\left(#2~#3\right)}}
+\newcommand{\eApp}[3]{\eid{#1}{(#2~#3)}}
 \newcommand{\eNum}[2]{\eid{#1}{\underline{#2}}}
 \newcommand{\ePlus}[3]{#2~\eid{#1}{\texttt{+}}~#3}
 \newcommand{\eTimes}[3]{#2~\eid{#1}{\texttt{*}}~#3}
 \newcommand{\pVar}[2]{\eid{#1}{#2}}
 \newcommand{\tArrow}[3]{#2 \eid{#1}{\rightarrow} #3}
-\newcommand{\tNum}[1]{\eid{#1}{\mathsf{Num}}}
+\newcommand{\tNum}[1]{\eid{#1}{\mathsf{num}}}
 
 \newcommand{\var}[1]{\eid{u}{#1}}
 \newcommand{\app}[2]{\eApp{u}{#1}{#2}}
 \newcommand{\num}{\eNum{u}{n}}
-\newcommand{\ehole}{\emptyHole{v}{p}}
+\newcommand{\ehole}{\emptyHole{\ell}}
 \newcommand{\lexp}[1]{\eid{w}{}{#1}}
-\newcommand{\conflict}[1]{{}^{\id{(v,p)}}\conflictHole[i<n]{\eid{w_i}{}{#1}_{i}}}
+\newcommand{\conflict}[1]{{}^{\id{\ell}}\conflictHole[i<n]{\eid{w_i}{}{#1}_{i}}}
 \newcommand{\multiref}{\multiVertex{(w,v)}}
 \newcommand{\uniref}{\cycleVertex{(w,v)}}
 \newcommand{\plus}[2]{\ePlus{u}{#1}{#2}}
