@@ -342,6 +342,17 @@ Formally, a grove $\gamma$ is a quadruple $(\subtermMV_r, NP, MP, U)$ where $\su
 \end{align*}
 \end{definition}
 
+\begin{definition}
+    \begin{align*}
+    \text{rootVertexOfTerm}(\genericTerm{u}{\subtermMV_p}) &= (u,k)\\
+    \text{rootVertexOfTerm}(\multiref) &= v\\
+    \text{rootVertexOfTerm}(\uniref) &= v
+    \end{align*}
+\end{definition}    
+
+\begin{definition}
+    $\text{grove}(\ell_r=((u_r,k_r),p_r), \Theta) &= (\text{distinguishedTerm}(\ell_r, \Theta), \SetOf{t\in \Theta \SuchThat{ }}) $
+\end{definition}
 
 
 % % TODO: make sure we're not claiming to invent the term "unicycular graph"
