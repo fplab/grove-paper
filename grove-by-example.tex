@@ -211,37 +211,32 @@ However, heuristically, a system might warn users, perhaps after a period of qui
 \subsection{Conflicts}%
 \label{sub:Merge Conflicts}
 
-Although the collaborative edits discussed so far merge cleanly,
-they can also lead to graphs that do not map cleanly to a syntax tree.
-We call these states \emph{conflicts}
-and consider separate cases for \emph{multi-child}, \emph{multi-parent}, and \emph{unicycle} conflicts.
+The collaborative edits discussed so far merge cleanly,
+but in general, merging patches can lead to graphs that do not map cleanly to a conventional syntax tree. We identify several different motifs that might arise, all of which give rise to different kinds of conflicts in the graph decomposition: \emph{local conflicts}, \emph{multi-location conflicts}, and \emph{cyclic location conflicts}. 
 As with merge conflicts in version-control systems such as git, these all require user intervention to resolve.
-We consider common merge scenarios first, then move onto more unusual scenarios.
- 
+
 \subsubsection{Local Conflicts}%
 \label{sub:Multi-child conflicts}
 
 \figureMultiChild
 
-Suppose Alice and Bob both have the edit state \texttt{w * v + \hole} in \autoref{fig:NestedParts:c}.
+Suppose Alice and Bob both start with the edit state \texttt{w * v + \hole} from \autoref{fig:NestedParts:c}.
 Alice moves the cursor to the hole and constructs~\vMultiChildAlice{} as the~\texttt{R} child of~\vWrapPlus{}.
-At the same time, Bob constructs~\vMultiChildBob{} in the same position.
+At the same time, Bob constructs~\vMultiChildBob{} at the same location.
 Now Alice and Bob have the graphs in \autoref{fig:MultiChild:a} and \autoref{fig:MultiChild:b}, respectively.
-Note that these graphs have two different edges,
-\eMultiChildAlice{} and \eMultiChildBob{}, for the~\texttt{R} position of~\vWrapPlus{}.
 
-We merge these edits by including \emph{both} \eMultiChildAlice{} and \eMultiChildBob{}
-as edges originating from the \texttt{R} position of \vWrapPlus{}.
-This results in a multi-child conflict in the~\texttt{R} position of~\vWrapPlus,
-shown in \autoref{fig:MultiChild:c},
-where there are multiple edges originating from the same position of a vertex.
-In the user interface, we flag this conflict with the notation~$\conflictHole{x,y}$.
+When these patches are merged, \emph{both} \eMultiChildAlice{} and \eMultiChildBob{}
+appear in the merged graph. 
+When decomposing this graph to a syntax tree, 
+we resolve this conflict in the~\texttt{R} position of~\vWrapPlus~by decomposing to a \emph{local conflict}, \figureCode{$\binaryConflictHole{x}{y}$}, as 
+shown in \autoref{fig:MultiChild:c}.
 
 % TODO: "delete both"
 
-Such conflicts can be resolved by deleting one of the conflicting edges
-and editing the remaining term into the correctly merged value.
-For example, Alice could delete \eMultiChildBob{} and then change~\vMultiChildAlice{} into~\texttt{x * y}.
+Such conflicts can be resolved simply by deleting relocating one of the conflicting terms (and editing the remaining term into the correctly merged value, if needed), which would remove the corresponding edge.
+For example, Alice could resolve the problem by wrapping \li{x} and \li{y} with a multiplication, effectively moving them to non-conflicting locations.
+No special edit actions are needed for conflict resolution.
+
 % To ensure users can continue editing while in a conflicted state,
 % all conflicts must be resolved before a program can be run.\footnote{It
 %   may be possible to develop evaluation models that allow these sorts of conflicts,
@@ -249,14 +244,13 @@ For example, Alice could delete \eMultiChildBob{} and then change~\vMultiChildAl
 % % TODO: need example of fully-automatic resolution and semi-automatic resolution.
 % Note that as a convenience to the user, certain simple conflicts might be automatically resolved,
 % but we consider this a higher-level, user-interface consideration.
-Handling conflicts in this way is similar to handling traditional merge conflicts
-in that it presents alternate versions of the conflicted state
-that must be transformed by users into the desired result.
-Our approach is different in that merge conflicts in a line-based model
-may break semantic editor services, such as semantic search or type-preserving refactorings,
-that could continue to work inside and outside the conflict in a graph-based model.
-% It is just the where the multi-child happens that editor services may break down.
-\autoref{sec:Related Work} discusses more differences.
+
+It is worth noting one special situation: if Alice and Bob both independently filled the hole with structurally identical terms, e.g. \li{x}, Grove would \emph{still} formally identify a conflict, because each \li{x} has a distinct UID. In this situation, it would be reasonable for the system to resolve the conflict without further coordination by deterministically choosing one of the two UIDs, e.g. the smallest one.
+
+When the conflicted terms are similar up to UID differences but not identical, it might be helpful  to give the developer the option to ``push down'' the conflicts as deeply as possible, using a tree differencing algorithm. However, this would increase the number of conflicts overall, so it may not always be preferable. Tree differencing is not fundamental to the collaboration model of Grove.
+
+As we will return to in \autoref{sec:Type System}\todo{sec}, 
+a local conflict need not disable type-based editor services (the \textbf{semantic gap problem}). Instead, the system can type check around the conflict (and if the conflicted terms have a common type, the system can infer that type for the location conflict itself).
 
 \subsubsection{Multi-Location Conflicts}%
 \label{sub:Multi-parent conflicts}

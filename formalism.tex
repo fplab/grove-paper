@@ -47,9 +47,7 @@ Let $\K$ be the set of \emph{constructors} of terms in the source language, and 
 %   root vertex $\rootVertex$
 %   and root position $\rootPosition$.
 
-A \emph{vertex} $v = (u, k) \in \V = \U \times \K$ is a constructor instance, where 
-    unique identifiers are drawn from $\U$ and 
-    constructors are drawn from $k \in \K$. 
+A \emph{vertex} $v = (u, k) \in \V = \U \times \K$ is a constructor instance, where unique identifiers are drawn from $\U$ and constructors are drawn from $k \in \K$. 
 The \emph{inedges} of $v$ are the edges that target $v$.
 
 % Vertices represent \emph{constructable terms}, i.e., terms that are not references or holes.
@@ -59,14 +57,11 @@ The \emph{inedges} of $v$ are the edges that target $v$.
 % The \emph{ancestors} of $v$ is defined inductively as the parent vertices of $v$ plus their ancestors.
 % The \emph{least ancestor} of $v$ is the ancestor with the smallest unique identifier.
 
-A \emph{source} is a pair $(v, p) \in \S = \V \times \P$, where
-  vertices are drawn from $\V$,
-  and positions are drawn from $\P$.
-The \emph{outedges} of a source are the edges that have the source.
+A \emph{location} $\ell = (v, p) \in \L = \V \times \P$ represents the origin of an edge, where vertices are drawn from $\V$ and positions are drawn from $\P$.
 
-An \emph{edge} $\e{=}(w, (v, p), v^\prime) \in \E = \W \times \S \times \V$ represents a directed multi-edge 
+An \emph{edge} $\e{=}(w, \ell, v^\prime) \in \E = \W \times \L \times \V$ represents a directed multi-edge 
     identified by $w \in \W$, 
-    originating from source $(v, p) \in \S$, 
+    originating from location $\ell \in \L$, 
     with destination vertex $v' \in \V$.
 
 A \emph{graph} $G : \E \rightarrow \Sigma$ is a function from edges to \emph{edge states} $\Sigma = \SetOf{\bot, \Plus, \Minus}$. Edge states determine which edges are live in a graph. For some $G : \E \rightarrow \Sigma$, $\e \in \E$, $G(\e) = \bot$ if $\e$ has not yet been constructed in the graph. $G(\e) = \Plus$ if $\e$ is \textit{live} in the graph, meaning it is relevant to the user and the type system. $G(\e) = \Minus$ if $\e$ has been deleted. The total ordering $\bot \sqsubset \Plus \sqsubset \Minus$ forms a lattice over $\Sigma$. We assume a graph assigns only finitely many edges to $\Plus$ to ensure the finiteness of the data structure on which further computation is done.
@@ -225,10 +220,10 @@ We present \textit{groves}, a tree-based representation of a live subgraph. A gr
 
 % TODO: check for \hole --> \emptyHole
 
-Given a source language parameterized by a set of constructors $k \in \K$ and an arity function $\K \rightarrow \mathbb{N}$, we define an augmented term language as specified in \autoref{fig:Syntax}. Terms are extended with cases for multi-location references and unicycle references. Additionally, since any position of any constructor may have zero, one, or multiple outgoing edges, we define a secondary sort \textit{SubTerm} to represent these possibilities. A source with no outgoing edges corresponds to an empty hole, a source with one outgoing edge corresponds to an ordinary subterm, and a source with multiple outgoing edges corresponds to a local conflict between multiple terms. 
+Given a source language parameterized by a set of constructors $k \in \K$, each associated with a fintie set of positions $arity(k)\subseteq \P$, we define an augmented term language as specified in \autoref{fig:Syntax}. Terms are extended with cases for multi-location references and unicycle references. Additionally, since any position of any constructor may have zero, one, or multiple outgoing edges, we define a secondary sort \textit{ChildTerm} to represent these possibilities. A location with no outgoing edges corresponds to an empty hole, a location with one outgoing edge corresponds to an ordinary subterm, and a location with multiple outgoing edges corresponds to a local conflict between multiple terms. 
 
 % TODO: Should we be more formal and say "is annotated with" instead of "carries"?
-These terms also carry information to support additional operations. To enable the reconstruction of the original graph, each constructor carries the UID of its original vertex, each reference carries the vertex that it refers to, and each subterm carries the UID of the edge that leads to it. To support type hole inference (discussion in Sec. TODO), each empty hole and local conflict carries its source. Finally, to support user navigation of the grove, each reference also carries the UID of the edge that leads to it. 
+These terms also carry information to support additional operations. To enable the reconstruction of the original graph, each constructor carries the UID of its original vertex, each reference carries the vertex that it refers to, and each subterm carries the UID of the edge that leads to it. To support type hole inference (discussion in Sec. TODO), each empty hole and local conflict carries its location. Finally, to support user navigation of the grove, each reference also carries the UID of the edge that leads to it. 
 
 \todo{example of an instantiation? this could be the same one we use in sec 4}
 
@@ -246,9 +241,10 @@ A live subgraph, which is just a finite set of edges, decomposes into a set of t
 
 Formalizing this reasoning, each vertex in a graph can be classified as either an NP root (if it has no parents), an MP root (if it has multiple parents), a U root (if there is a sequence of unique parents from it to itself, and it has the minimal UID in that sequence), or not a root. 
 
-\begin{align}
-    \text{parents}_{G}(v) &= \SetOf{v' \in \V \SuchThat{(w, (v', p), v) \in G \land w \in \W \land p \in \P}}
-\end{align}
+\begin{align*}
+    \text{parents}_{G}(v) &= \SetOf{v' \in \V \SuchThat{(w, (v', p), v) \in G \land w \in \W \land p \in \P}}\\
+    \text{children}_{G}(\ell) &= \SetOf{(w,v) \in \W\times\V \SuchThat{(w, \ell, v) \in G}}
+\end{align*}
 
 \begin{definition}
     A vertex is an \textit{NP root} in $G$ if $\text{parents}_{G}(v)=\emptyset$
@@ -262,18 +258,91 @@ Formalizing this reasoning, each vertex in a graph can be classified as either a
     A vertex is a \textit{U root} in $G$ if $\exists \{v_i\}_{1 \leq i \leq n}$ such that $v_1 = v_n = v$, $\text{parents}_{G}(v_i)=\{v_{i+1}\}$ for all $1 \leq i < n$, and the UID of $v$ is the minimum of the UIDs of $\{v_i\}_{1 \leq i \leq n}$.
 \end{definition}
 
-The decomposition of a vertex is specified intuitively as the term obtained by traversing the descendants of the vertex until a leaf or a root vertex of some kind is reached, which not further decomposed, but is denoted in the term as the appropriate reference. The decomposition of a graph is simply the set obtained by decomposing each vertex classified as a root.
+\begin{definition}
+    $\text{root}_G(v)$ if $v$ is an NP root, an MP root, or a U root in $G$.
+\end{definition}
+
+The decomposition of a vertex is specified intuitively as the term obtained by traversing the descendants of the vertex until a leaf or a root vertex of some kind is reached, which not further decomposed, but is denoted in the term as the appropriate reference. The decomposition of a graph is simply the set obtained by decomposing each vertex classified as a root, provided the vertex actually appears as the origin of an edge in $G$.
 
 \begin{definition}
-    $\text{decomp}_{G}(v) = $
+\begin{align*}
+    \text{decompChild}_G(w, v)  &= \begin{cases}
+        \multiref  &\quad v\text{ is an MP root in } G\\
+        \uniref  &\quad v\text{ is a U root in} G\\
+        \text{decompVertex}_{G}(v) &\quad v\text{ is not a root in} G
+    \end{cases} 
+\end{align*}
+\end{definition}
+
+\begin{definition}
+\begin{align*}
+    \text{decompLocation}_{G}(\ell) &= \begin{cases}
+        \ehole &\quad \text{children}_{G}(\ell) = \emptyset \\ \eid{w}{}{\text{decompChild}_G(w, v')} &\quad \text{children}_{G}(\ell) = \SetOf{(w,v')}\\ \conflictHoleTerm{\ell}{\eid{w}{}{\text{decompChild}_G(w, v')} \SuchThat{(w,v') \in \text{children}_{G}(\ell)}} &\quad \abs{\text{children}_{G}(\ell)} > 1 \\
+    \end{cases}
+\end{align*}
+\end{definition}
+
+\begin{definition}
+    $\text{decompVertex}_{G}(v = (u,k)) = \genericTerm{u}{\text{decompLocation}_{G}((v,p))}$
+\end{definition}
+
+\begin{definition}
+    \text{vertices}(G) = \SetOf{v \in \V \SuchThat{(w, (v,p), v') \in G \land w \in \W \land v' \in \V \land p \in \P}}
+\end{definition}
+
+\begin{definition}
+    $\text{decomp}(G) = \SetOf{\text{decompVertex}_{G}(v) \SuchThat{\text{root}_G(v)} \land v \in \text{vertices}(G)}$
+\end{definition}
+
+The recomposition of a term is a set of edges, and is specified intuitively as the set of parent-child edges in the term. Terms store vertices on constructors and edge UIDs for each child to enable the completeness of this reconstruction. The recomposition of a set of terms is the union of the recompositions of the terms. 
+
+\begin{definition}
+    \begin{align*}
+    \text{vertexOfTerm}(\genericTerm{u}{\subtermMV_p}) &= (u,k)\\
+    \text{vertexOfTerm}(\multiref) &= v\\
+    \text{vertexOfTerm}(\uniref) &= v
+    \end{align*}
+\end{definition}    
+
+\begin{definition}
+    \begin{align*}
+    \text{recompChildTerm}(\ell, \ehole) &= \emptyset\\
+    \text{recompChildTerm}(\ell, \eid{w}{}\termMV) &= \SetOf{(w, \ell, \text{vertexOfTerm}(\termMV))}\cup \text{recompTerm}(t)\\
+    \text{recompChildTerm}(\ell, \conflictHoleTerm{\ell}{\eid{w_i}{}\termMV_i}_{i<n}) &= \bigcup_{i<n} (\SetOf{(w_i, \ell, \text{vertexOfTerm}(\termMV_i))}\cup \text{recompTerm}(t_i))
+    \end{align*}
+\end{definition}    
+
+\begin{definition}
+    \begin{align*}
+        \text{recompTerm}(\genericTerm{u}{\subtermMV_p}) &= \bigcup_{p\in arity(k)}\text{recompChildTerm}(((u,k),p), \subtermMV_p)\\
+        \text{recompTerm}(\multiref) &= \emptyset\\
+        \text{recompTerm}(\uniref) &= \emptyset
+    \end{align*}
+\end{definition}
+
+\begin{definition}
+    $\text{recomp}(T) = \SetOf{\text{recompTerm}(\termMV) \SuchThat{\termMV \in T}}$
+\end{definition}
+
+\begin{theorem}
+    (Recomposability) For all subgraphs $G$, $\text{recomp}(\text{decomp}(G))=G$.
+\end{theorem}
+
+\subsubsection{Grove Construction}
+
+In order to facilitate user interaction with the term set that results from decomposition, it is refined into a \textit{grove}. A grove is a partition of the term set into three classes, corresponding to the the three kinds of roots: NP, MP, and U. A grove also designates a distinguished child term as the primary component of the program.
+
+Formally, a grove $\gamma$ is a quadruple $(\subtermMV_r, NP, MP, U)$ where $\subtermMV \in ChildTerm$ and $NP, MP, U \subseteq Term$. The construction of a grove from the term set of $G$ requires the designation of a location $(v_r,p_r)$ as the \textit{distinguished root} such that $v_r$ is an NP root in $G$. In that case the grove is defined as follows:
+
+\begin{definition}
+\begin{align*}
+    \text{distinguishedTerm}(\ell_r=((u_r,k_r),p_r), \Theta) &= \subtermMV_r &\quad \text{ if }
+    \genericConstructorTerm{u_r}{k_r}{\subtermMV_r}\in \Theta \\
+    \text{distinguishedTerm}(\ell_r=((u_r,k_r),p_r), \Theta) &= \emptyHole{\ell_r} &\quad \text{ otherwise}
+\end{align*}
 \end{definition}
 
 
-The recomposition of a term is a set of edges, and is specified intuitively as the set of parent-child edges in the term. Terms store vertices on constructors and edge UIDs for each child to enable the completeness of this reconstruction.
-
-\begin{theorem}
-    (Recomposability) TODO
-\end{theorem}
 
 % % TODO: make sure we're not claiming to invent the term "unicycular graph"
 % % TODO: maybe add a forward reference at end here to Implementation section
@@ -393,7 +462,7 @@ $\Construct{k}$ constructs a new edge whose destination is determined by the cur
 
 Depending on the cursor's location, $\Delete$ deletes one or more edges. If the cursor is on a constructable term of reference, its corresponding edge is deleted. If the cursor is on a conflict hole, all the edges of the conflict are deleted. Otherwise, the cursor is on an empty hole in which case the the action is a no-op.
 
-$\Reposition{v}{p}$ combines edge construction and deletion into a single \emph{atomic} operation. If the cursor is not an empty hole, the corresponding edge(s), as indicated above, are simultaneously deleted and then reconstructed as child(ren) with edge source $(v,p)$.
+$\Reposition{v}{p}$ combines edge construction and deletion into a single \emph{atomic} operation. If the cursor is not an empty hole, the corresponding edge(s), as indicated above, are simultaneously deleted and then reconstructed as child(ren) with edge location $(v,p)$.
 
 
 % TODO: define a grammar for user actions --> mapping to sequences of underlying graph edits
