@@ -78,7 +78,7 @@
 \end{tikzpicture}
 }%
 \label{fig:MultiChild:c}
-\figureCode{w * v + $\conflictHole{x,y}$}%
+\figureCode{w * v + $\binaryConflictHole{x}{y}$}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -97,7 +97,7 @@
 \end{subfigure}
 %%%%%%%%
 %\hfill{}
-\caption{Example of Multi-Child Conflicts.}%
+\caption{(a) Alice fills the hole at the \li{R} position of the addition with \li{x}. (b) Bob fills the same hole with \li{y}. (c) When the corresponding patches are merged, there are two edges in the \li{R} position of the addition. Decomposition turns these into a \emph{local conflict}, leaving it to the users to resolve the problem by performing normal edits that eliminate .}%
 \Description{This figure shows an example of multi-child conflicts}
 \label{fig:MultiChild}
 \end{figure}

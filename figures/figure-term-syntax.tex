@@ -6,10 +6,11 @@
 \[
 \begin{array}{lclll}
      \termMV \in & Term & \coloneqq & 
-        \eid{u}{k}\ {\textbf{\{} \subtermMV_i \textbf{\}}}_{i < arity(k)}
+        % \eid{u}{k}\ {\textbf{\{} \subtermMV_p \textbf{\}}}_{p \in arity(k)}
+        \genericTerm{u}{\subtermMV_p}
         \mid \multiref
         \mid \uniref \\
-     \subtermMV \in & SubTerm & \coloneqq & 
+     \subtermMV \in & ChildTerm & \coloneqq & 
         \ehole
         \mid \lexp{\termMV} 
         \mid \conflict{\termMV} \\  
