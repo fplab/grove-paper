@@ -10,7 +10,7 @@ We enrich groves and their underlying syntax of terms by \emph{marking} them, th
 
 In addition to type-checking and marking expressions, we also gather type-inference constraints and \emph{local-info} sets, further augmenting the editor with the ability to inspect and mark \emph{multi-location} and \emph{cycle} conflicts against the different contexts their occurrences can appear in, providing valuable information to the user while resolving these conflicts.
 
-In \autoref{sub:marking-recap}, we revisit the marked lambda calculus and establish all the required machinery to type-check and mark expressions using a conventional bidirectional system \todo{cite TAPL?}. Next, in \autoref{sub:marking-groves}, we introduce the constructs required to handle the various conflicts that can arise from the graph-based setting when type-checking a tree-native surface language. And finally, we describe the mechanization for the marking system in \autoref{sub:marking-agda} done using the Agda \todo{cite} proof assistant.
+Finally, we revisit the marked lambda calculus and establish all the required machinery to type-check and mark expressions using a conventional bidirectional system \todo{cite TAPL?}. Next, in \autoref{sub:marking-groves}, we introduce the constructs required to handle the various conflicts that can arise from the graph-based setting when type-checking a tree-native surface language. And finally, we describe the mechanization for the marking system in \autoref{sub:marking-agda} done using the Agda \todo{cite} proof assistant.
 
 [Recap marking judgments using old lam and ap rules]
 
@@ -24,6 +24,8 @@ We extend the marked lambda calculus to groves. Most of the machinery remains la
 
 [Discuss the unmarked language as an instantiation of the generic term language described in Sec 3.2; probably can't do this properly until all the language for section 3 is figured out]
 
+\subsubsection{The unmarked language}
+\label{sub:unmarked-lang}
 First, we introduce here the syntax of the \emph{unmarked} language which comprises two mutually defined expression sorts: $Exp$ \& $ExpList$, denoted by $\EMV$ and $\ELV$ respectively as displayed in \autoref{fig:unmarked-language}. In addition, this unmarked language is an instantiation of the generic term syntax introduced in \autoref{sub:Groves}, with $\EMV$ \& $\TMV$ being the expression and type sorts along with their mutually defined list counterparts $\ELV$ \& $\TLMV$ that allow us to model holes (empty list), \emph{regular} singleton expressions, and local conflicts. Type-checking this base unmarked language is straightforward using conventional bidirectional type-checking rules and we introduce the sort of semantic types $STyp$, denoted by $\sigma$, which builds on ideas from \todo{cite GTLC} Gradually Typed Lambda Calculus (GTLC). This is achieved using 4 mutual type-checking judgments as displayed in \autoref{fig:unmarked-judgments}. The rules are not very different from most simply typed lambda calculi except for the cases where we treat \emph{conflicts} as holes. For the sake of brevity, we have chosen to omit the rules here, but they are expressed in detail in \autoref{sec:marked-unmarked-expressions}. 
 
 \begin{figure}
@@ -121,6 +123,45 @@ First, we introduce here the syntax of the \emph{unmarked} language which compri
     \label{fig:marking-machinery}
 \end{figure}
 
+
+
+\subsubsection{The marked language}
+\label{sub:marked-lang}
+Next, we introduce the heart of the marking machinery in \autoref{fig:marking-judgments} and \autoref{fig:marked-language}, again in the form of 4 mutually defined judgments along with the marked language denoted by $\ECMV$ \& $\ELMV$. However, here, we add error marks to the expression when one of the premises fails, and type-checking cannot continue further, thereby adding first-class support for error localization. In addition to marking the expressions and type-checking them, at this stage, we also collect inference constraints and \emph{local-info} sets, which come into play when the user has to deal with \emph{multi-location} and \emph{cycle} conflicts.
+
+
+
+
+\begin{figure}
+    \[
+    \begin{array}{lclll}
+    \ECMV \in & MExp & \coloneqq &
+        \var{x}
+        \mid \num
+        \mid \plus{\ELMV_1}{\ELMV_2}
+        \mid \mult{\ELMV_1}{\ELMV_2}
+        \mid \lam{x}{\TLMV}{\ELV}
+        \mid \app{\ELMV_1}{\ELMV_2}
+        \mid \multiref
+        \mid \uniref \\ 
+        & & & \ECFree{\var{x}} 
+        \mid \incontype
+        \mid \lamasc
+        \mid \lamanamarr
+        \mid \apsynmarr \\ 
+        % \mid \lamge \\
+     \ELMV \in & MExpList & \coloneqq &
+        \ehole
+        \mid \lexp{\ECMV}
+        \mid \conflict{\ECMV} \\
+    \end{array}
+    \]
+    \centering
+    \includegraphics[width=0.5\linewidth]{}
+    \caption{Marked Language}
+    \label{fig:marked-language}
+\end{figure}
+
 \begin{figure}
     \judgbox{\synMarkConstraint{\ctx}{\EMV}{\ECMV}{\sigma}{\cConstraint}{\mConstraint}} 
     \judgbox{\synMarkConstraint{\ctx}{\ELV}{\ELMV}{\sigma}{\cConstraint}{\mConstraint}} 
@@ -132,13 +173,13 @@ First, we introduce here the syntax of the \emph{unmarked} language which compri
     \label{fig:marking-judgments}
 \end{figure}
 
-
-Next, we introduce the heart of the marking machinery in \autoref{fig:marking-judgments} \todo{add fig}, again in the form of 4 mutually defined judgments along with the marked language denoted by $\ECMV$ \& $\ELMV$. However, here, we add error marks to the expression when one of the premises fails, and type-checking cannot continue further, thereby adding first-class support for error localization. In addition to marking the expressions and type-checking them, at this stage, we also collect inference constraints and \emph{local-info} sets, which come into play when the user has to deal with \emph{multi-location} and \emph{cycle} conflicts.
-
-Now, we examine the marking rules for lambda abstractions and function applications. 
+\subsubsection{Marking Lambda Abstractions}
+\label{sub:mark-lam}
+Now, we examine the marking rules for lambda abstractions and function applications. In \autoref{inf:lam-ana}, in the first case, we successfully mark the lambda abstraction by first \emph{graph-erasing} its type and then using the matched arrow judgment and consistency relations to recursively mark its body. While performing this marking, we gather inference constraints \& local-info maps from the matched arrow judgment and the recursive analysis of the lambda body. Here, all the premises hold, and the abstraction is analyzed with no issues. What happens when the analyzed type is not a matched arrow type or the erased type is \emph{not} consistent with the expected input type? Conventional type-checkers fail here and cannot proceed. This is where the next rules help in localizing these scenarios to the node where the error occurs. In $MKACLam2$, the expected type is not a matched arrow type. So, we mark the abstraction as such using $\ECLamAnaNonMatchedArrow{\var{x}}{\TLMV}{\ELMV}$ which captures the premise that failed while still analyzing the body against the unknown type and gathering constraints. Similarly, in $MKACLam3$, the consistency check between the erased ascription and input of the expected type fails, and again, we mark the abstraction as such, depicting the inconsistency in the ascription of the lambda in $\ECLamInconAsc{\var{x}}{\TLMV}{\ELMV}$.
 
 \begin{mathpar}
-\label{inf:lam-ana}
+\label{inf:mark-lam-ana}
+\caption{Marking and Analyzing Lambda Abstractions}
 \inferrule[MKACLam1]{
         \graphErase{\TLMV} = \sigma \\
         \matchedArrowConstraint{\sigma_3}{\sigma_1}{\sigma_2}{\cConstraint_1} \\
@@ -166,6 +207,30 @@ Now, we examine the marking rules for lambda abstractions and function applicati
     }
 \end{mathpar}
 
+\subsubsection{Marking Function Applications}
+\label{sub:mark-ap-syn}
+\begin{mathpar}
+\label{inf:ap-syn}
+\label{Marking and Synthesizing Function Applications}
+\inferrule[MKSCAp1]{
+    \synMarkConstraint{\ctx}{\ELV_1}{\ELMV_1}{\sigma}{\cConstraint_1}{\mConstraint_1} \\
+    \matchedArrowConstraint{\sigma}{\sigma_1}{\sigma_2}{\cConstraint_2} \\
+    \anaMarkConstraint{\ctx}{\ELV_2}{\ELMV_2}{\sigma_1}{\cConstraint_3}{\mConstraint_2} \\
+  }{
+    \synMarkConstraint{\ctx}{\eApp{u}{\ELV_1}{\ELV_2}}{\eApp{u}{\ELMV_1}{\ELMV_2}}{\sigma_2}{\cConstraint_1 \cup \cConstraint_2 \cup \cConstraint_3}{\mConstraint_1 \cup \mConstraint_2}
+  }
+
+  \inferrule[MKSCAp2]{
+    \synMarkConstraint{\ctx}{\ELV_1}{\ELMV_1}{\sigma}{\cConstraint_1}{\mConstraint_1} \\
+    \notMatchedArrow{\sigma} \\
+    \anaMarkConstraint{\ctx}{\ELV_2}{\ELMV_2}{\TUnknown^{\rightarrow_{L}{(exp(u))}}}{\cConstraint_2}{\mConstraint_2}
+  }{
+    \synMarkConstraint{\ctx}{\eApp{u}{\ELV_1}{\ELV_2}}{\app{\ECApSynNonMatchedArrow{\ELMV_1}}{\ELMV_2}}{\TUnknown^{\rightarrow_{R}{(exp(u))}}}{\cConstraint_1 \cup \cConstraint_2 \cup \SetOf{\constrain{\TUnknown^{exp(u)}}{\tarr{\TUnknown^{\rightarrow_L(exp(u))}}{\TUnknown^{\rightarrow_R(exp(u))}}}}
+    }{\mConstraint_1 \cup \mConstraint_2}
+  }
+\end{mathpar}
+
+Next, in \autoref{inf:ap-syn}, we look at the case when marking an application succeeds. For this to happen, we first synthesize a type for the first sub-term and then match it with an arrow type before analyzing the argument against the expected input type. What if the synthesized is not a matched arrow type? We insert an error mark again, indicating the failed premise in the synthetic mode in $\app{\ECApSynNonMatchedArrow{\ELMV_1}}{\ELMV_2}$.
 
 - core unmarked language
 - marked language
@@ -202,6 +267,8 @@ To mark local conflicts, we recursively mark all subterms, gather the constraint
     \synMarkConstraint{\ctx}{\uniref}{\uniref}{\TUnknown^{exp(id-of(v)}}{\constraintNil{}}{(id-of(v),w , \ctx, syn)}
 }  
 \]
+
+We observe that \
 
 \subsection{Agda Mechanization}
 \label{sub:marking-agda}

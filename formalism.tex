@@ -69,8 +69,7 @@ An \emph{edge} $\e{=}(w, (v, p), v^\prime) \in \E = \W \times \S \times \V$ repr
     originating from source $(v, p) \in \S$, 
     with destination vertex $v' \in \V$.
 
-A \emph{graph} $G : \E \rightarrow \Sigma$ is a function from edges to \emph{edge states} $\Sigma = \SetOf{\bot, \Plus, \Minus}$. Edge states determine which edges are live in a graph. For example, if $G(\e) = \Plus$ for some $G : \E \rightarrow \Sigma$, $\e \in \E$,
-then we say $\e$ is \emph{live}, i.e., it is part of the live subgraph that is decomposed into a grove, as explained in \autoref{sub:Graph Decomposition}. The total ordering $\bot \sqsubset \Plus \sqsubset \Minus$ forms a lattice over $\Sigma$.
+A \emph{graph} $G : \E \rightarrow \Sigma$ is a function from edges to \emph{edge states} $\Sigma = \SetOf{\bot, \Plus, \Minus}$. Edge states determine which edges are live in a graph. For some $G : \E \rightarrow \Sigma$, $\e \in \E$, $G(\e) = \bot$ if $\e$ has not yet been constructed in the graph. $G(\e) = \Plus$ if $\e$ is \textit{live} in the graph, meaning it is relevant to the user and the type system. $G(\e) = \Minus$ if $\e$ has been deleted. The total ordering $\bot \sqsubset \Plus \sqsubset \Minus$ forms a lattice over $\Sigma$. We assume a graph assigns only finitely many edges to $\Plus$ to ensure the finiteness of the data structure on which further computation is done.
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
@@ -161,7 +160,7 @@ between graphs.
 \]
 Applying patch command $\left(\sigma, \e\right)$ to graph $G$ results in the updated graph $G' = G\left[\e \mapsto \sigma \sqcup G(\e) \right]$, wherein the edge
 state associated with edge $\e$ in $G$ becomes the join of $\sigma$ with the state of
-$\e$ in $G$, and $G'(\e') = G(\e')$ for any $\e' \ne \e$. Essentially, these patch command semantics act as a transition system between graphs, \emph{joining} the new edge state with the corresponding edge state of the graph to which the patch command is being applied. A \textit{graph patch} is a sequence of graph patch commands. The transition relation is extended to patches as the composition of the relations of the constituent patch commands. 
+$\e$ in $G$, and $G'(\e') = G(\e')$ for any $\e' \ne \e$. Essentially, these patch command semantics act as a transition system between graphs, \emph{joining} the new edge state with the corresponding edge state of the graph to which the patch command is being applied. Since a patch command can only change the value of $G$ on one input, applying the patch command preserves the property that $G$ maps only a finite set of edges to $\Plus$. A \textit{graph patch} is a sequence of graph patch commands. The transition relation is extended to patches as the composition of the relations of the constituent patch commands. 
 
 % Intuitively, joining any edge state with $\bot$ is always the non-$\bot$ edge state (once an edge exists, it always exists).
 % Joining anything with $\Minus$ is always $\Minus$ (once an edge is marked as deleted, it is permanently deleted).
@@ -226,10 +225,10 @@ We present \textit{groves}, a tree-based representation of a live subgraph. A gr
 
 % TODO: check for \hole --> \emptyHole
 
-Our source language (\autoref{fig:Syntax}) is based on a simply typed lambda calculus\todo{is there anything here that has to do with the STLC? we just have constructors} with an expression sort and a type sort. Each sort is extended with cases for multi-location references and unicycle references. Additionally, since any position of any constructor may have zero, one, or multiple outgoing edges, we define secondary sorts \textit{ExpList} and \textit{TypList} to represent these possibilities. A source with no outgoing edges corresponds to an empty hole, a source with one outgoing edge corresponds to an ordinary subterm, and a source with multiple outgoing edges corresponds to a local conflict between multiple terms. 
+Given a source language parameterized by a set of constructors $k \in \K$ and an arity function $\K \rightarrow \mathbb{N}$, we define an augmented term language as specified in \autoref{fig:Syntax}. Terms are extended with cases for multi-location references and unicycle references. Additionally, since any position of any constructor may have zero, one, or multiple outgoing edges, we define a secondary sort \textit{SubTerm} to represent these possibilities. A source with no outgoing edges corresponds to an empty hole, a source with one outgoing edge corresponds to an ordinary subterm, and a source with multiple outgoing edges corresponds to a local conflict between multiple terms. 
 
 % TODO: Should we be more formal and say "is annotated with" instead of "carries"?
-These terms also carry information to support additional operations. To enable the reconstruction of the original graph, each constructor carries the UID of its original vertex, each reference carries the vertex that it refers to, and each subterm carries the UID of the edge that leads to it. To support type hole inference (discussion in Sec. TODO), each empty hole and local conflict carries its source. Finally, to support user navigation of the grove, each references also carries the UID of the edge that leads to it. 
+These terms also carry information to support additional operations. To enable the reconstruction of the original graph, each constructor carries the UID of its original vertex, each reference carries the vertex that it refers to, and each subterm carries the UID of the edge that leads to it. To support type hole inference (discussion in Sec. TODO), each empty hole and local conflict carries its source. Finally, to support user navigation of the grove, each reference also carries the UID of the edge that leads to it. 
 
 \todo{example of an instantiation? this could be the same one we use in sec 4}
 
@@ -243,15 +242,32 @@ These terms also carry information to support additional operations. To enable t
 
 \figureDecompExample
 
-A live subgraph (or simply graph), which is just a finite set of edges, decomposes into a grove, which is a set of terms. In a tree, each node except the root as a unique parent, and there are no cycles. There is no guarantee of these properties in a graph. Decomposition operates by allowing each `problematic' vertex, in the sense of having multiple parents or forming a cycle, to be the root of its own entry in the grove, and to use references at special term leaves to encode the original graph structure.
+A live subgraph, which is just a finite set of edges, decomposes into a set of terms. In a tree, each node except the root as a unique parent, and there are no cycles. There is no guarantee of these properties in a graph. Decomposition operates by allowing each `problematic' vertex, in the sense of having multiple parents or forming a cycle, to be the root of its own entry in the grove, and to use references at special term leaves to encode the original graph structure.
 
 Formalizing this reasoning, each vertex in a graph can be classified as either an NP root (if it has no parents), an MP root (if it has multiple parents), a U root (if there is a sequence of unique parents from it to itself, and it has the minimal UID in that sequence), or not a root. 
 
-\begin{theorem}
-    (Classification) TODO
-\end{theorem}
+\begin{align}
+    \text{parents}_{G}(v) &= \SetOf{v' \in \V \SuchThat{(w, (v', p), v) \in G \land w \in \W \land p \in \P}}
+\end{align}
+
+\begin{definition}
+    A vertex is an \textit{NP root} in $G$ if $\text{parents}_{G}(v)=\emptyset$
+\end{definition}
+
+\begin{definition}
+    A vertex is an \textit{MP root} in $G$ if $\abs{\text{parents}_{G}(v)} > 1$
+\end{definition}
+
+\begin{definition}
+    A vertex is a \textit{U root} in $G$ if $\exists \{v_i\}_{1 \leq i \leq n}$ such that $v_1 = v_n = v$, $\text{parents}_{G}(v_i)=\{v_{i+1}\}$ for all $1 \leq i < n$, and the UID of $v$ is the minimum of the UIDs of $\{v_i\}_{1 \leq i \leq n}$.
+\end{definition}
 
 The decomposition of a vertex is specified intuitively as the term obtained by traversing the descendants of the vertex until a leaf or a root vertex of some kind is reached, which not further decomposed, but is denoted in the term as the appropriate reference. The decomposition of a graph is simply the set obtained by decomposing each vertex classified as a root.
+
+\begin{definition}
+    $\text{decomp}_{G}(v) = $
+\end{definition}
+
 
 The recomposition of a term is a set of edges, and is specified intuitively as the set of parent-child edges in the term. Terms store vertices on constructors and edge UIDs for each child to enable the completeness of this reconstruction.
 

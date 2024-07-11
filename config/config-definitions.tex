@@ -78,7 +78,7 @@
 % \newcommand{\Edge}[1]{Edge~#1}
 % \newcommand{\Vertex}[1]{Vertex~#1}
 \newcommand{\multiVertex}[1]{\textcolor{red}{\ensuremath{\curlyveedownarrow_{#1}}}}
-\newcommand{\cycleVertex}[1]{\textcolor{red}{\ensuremath{\circlearrowleft_{#1}}}}
+\newcommand{\cycleVertex}[1]{\textcolor{red}{\ensuremath{\circlearrowright_{#1}}}}
 \newcommand{\orphanVertex}[1]{\textcolor{red}{\ensuremath{\mathbf{\ndownarrow_{#1}}}}}
 \newcommand{\rootVertex}{v_\text{root}}
 \newcommand{\rootPosition}{p_\text{root}}
@@ -145,14 +145,14 @@
 \newcommand{\eTimes}[3]{#2~\eid{#1}{\texttt{*}}~#3}
 \newcommand{\pVar}[2]{\eid{#1}{#2}}
 \newcommand{\tArrow}[3]{#2 \eid{#1}{\rightarrow} #3}
-\newcommand{\tNum}[1]{\eid{#1}{Num}}
+\newcommand{\tNum}[1]{\eid{#1}{\mathsf{Num}}}
 
 \newcommand{\var}[1]{\eid{u}{#1}}
 \newcommand{\app}[2]{\eApp{u}{#1}{#2}}
 \newcommand{\num}{\eNum{u}{n}}
 \newcommand{\ehole}{\emptyHole{v}{p}}
-\newcommand{\lexp}[1]{{}^{w}{#1}}
-\newcommand{\conflict}[1]{{}^{\id{(v,p)}}\conflictHole[i<n]{{}^{w_i}{#1}_{i}}}
+\newcommand{\lexp}[1]{\eid{w}{}{#1}}
+\newcommand{\conflict}[1]{{}^{\id{(v,p)}}\conflictHole[i<n]{\eid{w_i}{}{#1}_{i}}}
 \newcommand{\multiref}{\multiVertex{(w,v)}}
 \newcommand{\uniref}{\cycleVertex{(w,v)}}
 \newcommand{\plus}[2]{\ePlus{u}{#1}{#2}}
