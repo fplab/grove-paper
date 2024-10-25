@@ -1,0 +1,1 @@
+$luatex = "latexdiff grove-paper.tex OriginalSubmissionSource/original-grove-paper.tex > main-d.tex; luatex --lua=FILE main-d"

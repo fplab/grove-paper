@@ -1,0 +1,45 @@
+Review #293A
+===========================================================================
+
+Overall merit
+-------------
+4. Strong accept
+
+Reviewer expertise
+------------------
+2. Some familiarity
+
+Paper summary
+-------------
+This paper proposes a graph-based model of patches on syntax trees (used in version control systems) that are directly derived from user edit operations performed in a structure editor. This model differs drastically from the traditional line-based model for text, and entirely avoids the traditional problems (such as false conflicts arising from editing different places on the same line) and complications (such as three-way merge algorithms). Notably, code relocation (which has been poorly supported in the line-based model) receives proper support in the graph-based model. The paper defines the graph-based model, where the patch commands are commutative and can be merged directly (avoiding three-way merge), and conflicts that can arise in this model, which correspond to graph structures that cannot be mapped to syntax trees. The graphs can nevertheless be represented as ‘groves’, which are collections of syntax trees with mutual references; the paper shows how to convert between graphs and groves, and proves that the grove representation retains all the graphical information. On top of this core theory, the paper continues to describe how user edit operations can be translated to patches; extend Zhao et al’s marked calculus to groves to make it possible to type-check even terms that contain local type errors.
+
+Comments for authors
+--------------------
+I am amazed by the scope, novelty, and completeness of this work, and have no problem recommending acceptance (although I’m not familiar with the relevant literature and less confident in that respect). We all feel the pain of using the traditional line-based version control systems, and the solution offered by this paper is a big step forward from what we’ve been forced to live with. The ideas look novel while being simple and principled, so I imagine that systems based on this paper’s ideas will be easily understood and usable. The presentation is very good, offering sufficient explanations and a lot of illustrative examples. The core grove calculus would have been enough to convince me to support acceptance, but the paper also develops related theories for structure editing and type checking, and there’s even an implementation and a formalisation. These contributions are more than enough to deserve publication at POPL.
+
+# Detailed comments
+
+* L48 ‘an type’ -> a type
+* L107 ‘a parent-child relationships’ -> a parent-child relationship
+* L185 ‘Section 2.3-2.4 then describes’ -> Sections 2.3--2.4 then describe
+* L525 ‘A location $\ell = (v, p) \in \mathcal L$, represents […]’: delete the comma
+* L527 ‘An edge $\varepsilon{=}(w, \ell, v)$ […]’: need some space around the equal sign
+* L541–542 ‘edges can only be created if they do not already exist’: I think we also have ${+} \sqcup {+}  = {+}$, which means already created edges can technically be ‘created’ again (although the effect is a no-op)?
+* L589–590 (and throughout the paper) ‘Term’, ’ChildTerm’, ‘arity’, etc: These should be enclosed in `\mathit` to make the spacing correct.
+* L645 ‘decomposittion’ -> decomposition
+* L669 ‘the function decompVertex a term […]’: probably insert ‘that returns’ after ‘decompVertex’
+* L746 Definition 3.17: probably missing a union operator
+* L797 ‘zippered terms’: probably just ‘zipper terms’ (like in the next sentence)?
+* L831 ‘Section 3.1 or Section 3.2.1’ -> Section 3.1, Section 3.2.1
+* L871 ‘of ??’
+* L881 ‘which is displayed a graph visualization […]’: probably delete ‘displayed’
+* L905–911: Why so many paragraphs?
+* L964 ‘[?]’
+* L1004 (and similarly L1005) ‘child types’ -> child types $\bar\tau$
+* L1051 ‘edge-ID(w)’: insert a space before the left parenthesis
+* L1051 ‘w’, ‘u’ -> `$w$`, `$u$`
+* L1145–1146: This paragraph is too sketchy.
+* L1149 ‘many of different designs’ -> many different designs
+* L1159 ‘low level’ -> low-level
+* L1164 ‘[5, 9, 10, 16, 18, 25]’: This paragraph doesn’t really provide a comparison with the cited works.
+* L1238: Dunfield and Krishnaswami have published their paper in ACM Computing Surveys (https://doi.org/10.1145/3450952).

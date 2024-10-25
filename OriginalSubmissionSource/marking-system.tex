@@ -4,11 +4,15 @@
 
 Resolving conflicts is often a time-consuming process 
 and requires understanding the semantics of the program
-even while it still has conflicts. Traditionally, conflicts are indicated by inserting extra-linguistic conflict markers into files. 
+even while it still has conflicts.
 
+Traditionally, conflicts are indicated by inserting extra-linguistic conflict markers into files. 
 These markers can limit the operation of language services that need a well-formed or well-typed term, 
-e.g., type error reporting. Ignoring the markers is not sufficient because 
-multiple conflicting versions of the code may appear between the markers. This can complicate variable resolution and type checking.
+e.g., type error reporting. 
+
+Ignoring the markers is not sufficient because 
+multiple conflicting versions of the code may appear
+between the markers. This can complicate variable resolution and type checking.
 
 In the previous sections, we developed a system for explicitly representing various forms of syntactic conflict directly in the grove resulting from graph decomposition. We now consider the static semantics of 
 groves.
@@ -23,7 +27,7 @@ type error localization system, i.e. one where every syntactically well-formed t
 In this section, we extend the marked lambda calculus to allow reasoning about conflicted programs, i.e. groves (instantiated with the syntax of the simply typed lambda calculus). 
 The \emph{marked grove calculus} maintains the key totality property, so \emph{every edit state that can arise in the course of a collaboration is statically meaningful}. Downstream language services can, therefore, continue to provide support while users resolve conflicts. This addresses the \textbf{semantic gap problem} described in \autoref{sec:Introduction}.
 
-We follow the marked lambda calculus in basing our \emph{marked grove calculus} in bidirectional type checking~\cite{10.1145/3450952} and deploying gradual typing~\cite{siek2015} when conflicts do not allow a single type to be inferred, then layer on a unification-based type inference system to opportunistically fill holes or suggest partial solutions when there are conflicting types due to conflicting syntax. We give an overview of the key judgments and rules in \autoref{sub:marking-groves} but due to space considerations and because much of the development is based directly on the prior work, we leave the full details to the supplemental material and the mechanized metatheory, which is briefly outlined in \ref{sub:marking-agda}.
+We follow the marked lambda calculus in basing our \emph{marked grove calculus} in bidirectional type checking~\cite{dunfield2019} and deploying gradual typing~\cite{siek2015} when conflicts do not allow a single type to be inferred, then layer on a unification-based type inference system to opportunistically fill holes or suggest partial solutions when there are conflicting types due to conflicting syntax. We give an overview of the key judgments and rules in \autoref{sub:marking-groves} but due to space considerations and because much of the development is based directly on the prior work, we leave the full details to the supplemental material and the mechanized metatheory, which is briefly outlined in \ref{sub:marking-agda}.
 
 \subsection{Background: The Marked Lambda Calculus}
 \label{sec:Background: The Marked Lambda Calculus}
@@ -77,7 +81,7 @@ The rules for marking lambda abstractions when an expected type is provided simi
 
 \end{mathpar}
 
-The first rule invokes the matched arrow judgment (which handles the situation where the expected type is unknown \cite{siek2015}) and performs a type consistency check with the argument type annotation, after which we can analyze the body against the expected output type while recursively marking it.
+The first rule invokes the matched arrow judgment (which handles the situation where the expected type is unknown \cite{snapl15}) and performs a type consistency check with the argument type annotation, after which we can analyze the body against the expected output type while recursively marking it.
 
 If there is not a matched arrow type, the second rule marks the lambda with an error (while recovering recursively into the body at an unknown type).
 If the argument type annotation is inconsistent, the third rule similarly marks the lambda with a different error. 
@@ -96,7 +100,7 @@ We extend the marked lambda calculus to groves. The machinery related to type er
 
 \subsubsection{Syntax}
 \label{sub:unmarked-lang}
-\autoref{fig:marking-syntax} introduces the syntax of the marked grove calculus. We define an \emph{unmarked} language, which comprises unmarked expressions, $\EMV$,  child expressions, $\ELV$, types, $\TMV$, and  child types $\TLMV$.
+\autoref{fig:marking-syntax} introduces the syntax of the marked grove calculus. We define an \emph{unmarked} language, which comprises unmarked expressions, $\EMV$,  child expressions, $\ELV$, types, $\TMV$, and  child types $\TLV$.
 We also define a corresponding \emph{marked} language,  which comprises marked expressions, $\ECMV$, child expressions, $\ELMV$, types, $\TCMV$, and child types, $\TCLV$. This syntax is an instantiation of the generic term syntax introduced in \autoref{sub:Groves}.
 The marked language differs from the unmarked language only by the inclusion of the marks that arise due to type errors taken directly from the prior work. 
 
@@ -237,7 +241,7 @@ These rules differ from the original rules, reproduced in \autoref{sec:Backgroun
 \end{mathpar}
 
 Once marked, the corresponding marked expression typing judgments, $\synConstraint{\ctx}{\ECMV}{\PTMV}{\cConstraint}{\mConstraint}$, $\synConstraint{\ctx}{\ELMV}{\PTMV}{\cConstraint}{\mConstraint}$, 
-$\anaConstraint{\ctx}{\ECMV}{\PTMV}{\cConstraint}{\mConstraint}$, and $\anaConstraint{\ctx}{\ELMV}{\PTMV}{\cConstraint}{\mConstraint}$ emit type inference constraints, $\cConstraint$, as in prior work, and, recursively collect location conflict contexts, $\mConstraint$, discussed further below. When the system generates inference constraints and tries to unify them, it encounters unknown types that need to be distinguished. This motivates the need for $\PTMV$ in \autoref{fig:marking-syntax}, which extends the sort of semantic types to enable linking generated unknown types to their associated provenance denoted by $q$. Provenances help locate the origin of the unknown type by associating them with their location ($\ell$), edge-ID ($w$), or vertex-ID ($u$).
+$\anaConstraint{\ctx}{\ECMV}{\PTMV}{\cConstraint}{\mConstraint}$, and $\anaConstraint{\ctx}{\ELMV}{\PTMV}{\cConstraint}{\mConstraint}$ emit type inference constraints, $\cConstraint$, as in prior work, and, recursively collect location conflict contexts, $\mConstraint$, discussed further below. When the system generates inference constraints and tries to unify them, it encounters unknown types that need to be distinguished. This motivates the need for $\PTMV$ in \autoref{fig:marking-syntax}, which extends the sort of semantic types to enable linking generated unknown types to their associated provenance denoted by $q$. Provenances help locate the origin of the unknown type by associating them with their location $\ell$, edge-ID(w), or vertex-ID (u).
 
 % \todo{mention why we need provenances}
 % \todo{marked expression typing rules for lambdas and marked lambdas}
@@ -299,7 +303,8 @@ After marking, we generate type inference constraints that constrain this hole (
     \inferrule[MALocalConflict]{ 
         \Setof{\anaConstraint{\ctx}{\ECMV_i}{\PTMV}{\cConstraint_i}{\mConstraint_i}}_{i<n}
     }{ 
-      \anaConstraint{\ctx}{\conflict{\ECMV}}{\PTMV}{\bigcup_{i<n} \cConstraint_i}{\bigcup_{i<n} \mConstraint_i}
+      \anaConstraint{\ctx}{\conflict{\ECMV}}{\PTMV}{\bigcup_{i<n} \cConstraint_i \cup
+      \Setof{\constrain{\TUnknown^{\mathsf{exp}(\ell)}}{\PTMV}}}{\bigcup_{i<n} \mConstraint_i}
     }
 \end{mathpar}
 

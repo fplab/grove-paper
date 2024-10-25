@@ -1,0 +1,187 @@
+POPL 2025 Paper #293 Reviews and Comments
+===========================================================================
+Paper #293 Grove: A Bidirectionally Typed Collaborative Structure Editor
+Calculus
+
+
+Review #293A
+===========================================================================
+
+Overall merit
+-------------
+4. Strong accept
+
+Reviewer expertise
+------------------
+2. Some familiarity
+
+Paper summary
+-------------
+This paper proposes a graph-based model of patches on syntax trees (used in version control systems) that are directly derived from user edit operations performed in a structure editor. This model differs drastically from the traditional line-based model for text, and entirely avoids the traditional problems (such as false conflicts arising from editing different places on the same line) and complications (such as three-way merge algorithms). Notably, code relocation (which has been poorly supported in the line-based model) receives proper support in the graph-based model. The paper defines the graph-based model, where the patch commands are commutative and can be merged directly (avoiding three-way merge), and conflicts that can arise in this model, which correspond to graph structures that cannot be mapped to syntax trees. The graphs can nevertheless be represented as ‘groves’, which are collections of syntax trees with mutual references; the paper shows how to convert between graphs and groves, and proves that the grove representation retains all the graphical information. On top of this core theory, the paper continues to describe how user edit operations can be translated to patches; extend Zhao et al’s marked calculus to groves to make it possible to type-check even terms that contain local type errors.
+
+Comments for authors
+--------------------
+I am amazed by the scope, novelty, and completeness of this work, and have no problem recommending acceptance (although I’m not familiar with the relevant literature and less confident in that respect). We all feel the pain of using the traditional line-based version control systems, and the solution offered by this paper is a big step forward from what we’ve been forced to live with. The ideas look novel while being simple and principled, so I imagine that systems based on this paper’s ideas will be easily understood and usable. The presentation is very good, offering sufficient explanations and a lot of illustrative examples. The core grove calculus would have been enough to convince me to support acceptance, but the paper also develops related theories for structure editing and type checking, and there’s even an implementation and a formalisation. These contributions are more than enough to deserve publication at POPL.
+
+# Detailed comments
+
+* L48 ‘an type’ -> a type
+* L107 ‘a parent-child relationships’ -> a parent-child relationship
+* L185 ‘Section 2.3-2.4 then describes’ -> Sections 2.3--2.4 then describe
+* L525 ‘A location $\ell = (v, p) \in \mathcal L$, represents […]’: delete the comma
+* L527 ‘An edge $\varepsilon{=}(w, \ell, v)$ […]’: need some space around the equal sign
+* L541–542 ‘edges can only be created if they do not already exist’: I think we also have ${+} \sqcup {+}  = {+}$, which means already created edges can technically be ‘created’ again (although the effect is a no-op)?
+* L589–590 (and throughout the paper) ‘Term’, ’ChildTerm’, ‘arity’, etc: These should be enclosed in `\mathit` to make the spacing correct.
+* L645 ‘decomposittion’ -> decomposition
+* L669 ‘the function decompVertex a term […]’: probably insert ‘that returns’ after ‘decompVertex’
+* L746 Definition 3.17: probably missing a union operator
+* L797 ‘zippered terms’: probably just ‘zipper terms’ (like in the next sentence)?
+* L831 ‘Section 3.1 or Section 3.2.1’ -> Section 3.1, Section 3.2.1
+* L871 ‘of ??’
+* L881 ‘which is displayed a graph visualization […]’: probably delete ‘displayed’
+* L905–911: Why so many paragraphs?
+* L964 ‘[?]’
+* L1004 (and similarly L1005) ‘child types’ -> child types $\bar\tau$
+* L1051 ‘edge-ID(w)’: insert a space before the left parenthesis
+* L1051 ‘w’, ‘u’ -> `$w$`, `$u$`
+* L1145–1146: This paragraph is too sketchy.
+* L1149 ‘many of different designs’ -> many different designs
+* L1159 ‘low level’ -> low-level
+* L1164 ‘[5, 9, 10, 16, 18, 25]’: This paragraph doesn’t really provide a comparison with the cited works.
+* L1238: Dunfield and Krishnaswami have published their paper in ACM Computing Surveys (https://doi.org/10.1145/3450952).
+
+
+
+Review #293B
+===========================================================================
+
+Overall merit
+-------------
+4. Strong accept
+
+Reviewer expertise
+------------------
+3. Knowledgeable
+
+Paper summary
+-------------
+This paper describes an approach to resolving version control merge conflicts in structure editing contexts.  The work centers on two core ideas: (1) Eliminating standard differencing algorithms by using the history of user edit actions to directly produce graph patches (in part by switching from using unparsed text as the core representation to using representations of multiple syntax trees–groves–as the core representation).  (2)  Building on the marked lambda calculus (and bidirectional type checking more broadly) to handle cases where merge conflicts produce conflicting types; in particular, adding: gradual typing, hole filling, and solution suggestions (with the goal of making the programmer’s editor/tooling useful even during conflict resolution, in contrast to the “<<<<” approach that makes programs unparseable and thus removes tooling support).
+
+Comments for authors
+--------------------
+This was a lovely, lovely read and a beautiful set of ideas.  I appreciated the clear writeup and the extremely useful concrete examples.  The motivation was very strong.  The core ideas of the multi-graph and how to represent conflicts explicitly is very compelling.
+
+This was the first time I’ve seen anything tackling this space–it’s always exciting to see new problem statements!
+
+My only (very minor) complaint is that as somewhat of an outsider to this space, I would have appreciated a longer and more detailed related works section, just to understand more about how the core ideas fit into the broader space.  This is not a demand for a longer Related Works–I think the section is clearly already sufficient for acceptance.  I only mention this because I think the paper could make a stronger case for its core ideas by offering a deeper analysis of the research space, especially for readers who are not already familiar with the relevant areas.
+
+Overall, a very nice contribution!
+
+*Nitpicks*
+Line 48: "renames an type" should be "renames a type."
+Line 879: "editor environment between 2 users" should be "editor environment between two users"
+
+
+
+Review #293C
+===========================================================================
+
+Overall merit
+-------------
+1. Reject
+
+Reviewer expertise
+------------------
+3. Knowledgeable
+
+Paper summary
+-------------
+This paper introduces Grove, a collaborative structure editor. The main goal
+of Grove is to solve the problems with heuristic path synthesize and 
+three-way merge algorithms, which are commonly used in version control systems.
+The main idea of Grove is to explicitly use different syntactic constructs
+to represent different kinds of conflicts, such as local conflicts, relation
+conflicts, and relation modification conflicts. Since all conflicts are 
+encapsulated, Grove enjoys some nice properties, such as commutativity. 
+The paper then, follows the idea of Hazelnut and Hazel, develops a marked
+system that assigns dynamic types to conflicts and static types to other
+language constructs. As a result, Grove enables language services to continue
+functioning even in the presence of conflicts.  
+
+Comments for authors
+--------------------
+Assessment:
+
+While this paper aims to improve the support for collaborative editing, it largely
+fails to achieve its goal. 
+
+For the first 18 pages, the paper develops a graph representation for representing
+edits and various kinds of conflicts. The graph representation is essentially a
+different way of representing textual information by using special nodes and 
+edge/node relations to represent conflicts. 
+
+For the next 5 pages, the paper extends the work of Hazelnut and Hazel of marking 
+conflicts so that even programs in conflicting states may receive tooling support
+such as static analysis and type checking. Compared to Hazelnut and Hazel, the only
+difference is that this paper assigns all conflicts to have the Dyn type from
+gradual typing. Since Dyn type interacts well with any other type, the whole program
+can still be well typed even in the presence of conflicts. The idea of using Dyn
+types were already introduced in Hazel, so there is very little novelty here.
+
+The paper keeps on saying that "Grove does not suffer from problems due to merge conflicts". However, the only reason this is true is that Grove represents/encapsulates these conflicts. It does not solve any of the merging problems. Eventually, Grove 
+assumes each conflict has a dynamic type.
+
+Details:
+
+Section 2.3.2 It is well known that tree-based editors handle the granularity problem
+better than line-based. But the tree-based editor has a much higher complexity, building
+the tree and maintaining the correct tree structure during edits such as cut and paste.
+
+Section 2.3.3 Grove chooses to silently merge changes from relocation modification, 
+which current versioning control systems often yield a merge conflict. However, it
+is hard to say that this behavior is always wanted or preferred. In many scenarios, 
+the involved programmers may want to review before such merges are committed. Also, 
+this example seems to work well because the operations involved, + and *, are 
+commutative. What if we have operations like - and /?
+
+Figure 10(d), why not add an L edge from +8 to *2 and a R edge from +8 to *24?
+Also, why R31 and not R35 and L33 not L37?
+
+What is the connection between Line 367 and Line 531? Earlier it says a disconnected
+term may be connected back after a deletion but later it says deleted edges can't
+connect again. Also, since an edge includes a term, the deletion of the edge also
+causes the deletion of the term if it is connected to by only one edge. 
+
+In Rule MKSLocalConflict, it is possible to synthesize a more precise type than ?.
+A more meaningful choice is the least upper bound of all $\sigma_i$s in terms of
+some subtyping relation. For example, if all branches of a conflict have Int, then
+it is fine to say that the conflict has the type Int.
+
+In rules MALocalConflict, MARelationConflict, and MAUnicycleConflict, why do you
+generate a constraint between a ? and $\sigma$? In gradual typing, such constraints
+are simply dropped. Probably you want to use the location for provenance. However,
+it is unclear how the location associated with each ? is used.
+
+Typos:
+
+Line 48, a type
+
+Line 68, initial and final states
+
+Lines 91-92, Grove can do this because it explicitly carries conflicts
+
+Line 163, what does "this work" refer to? Probably it refers to Hazelnut and Hazel,
+but it is good to be explicit
+
+Line 230, the paper uses odd numbers for edges and even numbers for vertices
+
+Line 334, u*y should be u*v
+
+Lines 431-432, two many "like these" make the sentence hard to understand
+
+Definitions 3.4 and 3.5, a vertex *v* is an ..., otherwise v in the parentheses is unbound
+
+Lemma 3.8, I am not sure if this is actually correct. For example *24 in Figure 9(d)
+is both an MP and a U root.
+
+Line 871, ??, missing reference

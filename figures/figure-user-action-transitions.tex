@@ -1,0 +1,94 @@
+\newcommand{\figureUserActionTransitionsContent}{%
+
+$\judgbox{\applyAction{ \Z{\termMV} }{ \alpha , G }{ \Q{\pi} } }~\judgbox{\applyAction{ \Z{\subtermMV} }{ \alpha , G }{ \Q{\pi} }}$
+%
+\begin{mathpar}
+  % \inferrule{
+  %   \applyAction{ \Z{t} }{ \alpha , G }{ \Q{\pi} }
+  % }{
+  %   \applyAction{ (\Set, \Z{t}) }{ \alpha , G }{ \Q{\pi} }
+  % }
+  
+  \inferrule{
+    \applyAction{ \Z{\subtermMV} }{ \alpha , G }{ \Q{\pi} }
+  }{
+    \applyAction{ (\genericTerm{u}{\subtermMV}_{\setminus\SetOf{\Z{p}}}\ \Z{\subtermMV}) }{ \alpha , G }{ \Q{\pi} }
+  }
+
+  \inferrule{
+    \applyAction{ \Z{\termMV} }{ \alpha , G }{ \Q{\pi} }
+  }{
+    \applyAction{ (\eid{w}{}\Z{\termMV}) }{ \alpha , G }{ \Q{\pi} }
+  }
+
+  \inferrule{
+    \applyAction{ \Z{\termMV} }{ \alpha , G }{ \Q{\pi} }
+  }{
+    \applyAction{ (\eid{\ell}{}\conflictHole{\termMV_i}_{i<n,i\neq j}\ \Z{\termMV}) }{ \alpha , G }{ \Q{\pi} }
+  }
+
+  \inferrule[DeleteTerm]{ }{
+    \applyAction{ \cursor{\termMV} }{ \Delete , G }{
+      \SetOf{\graphAction{\Minus}{\e}\SuchThat{\e \in \mathsf{edges}_G(\termMV)}}
+    }
+  }
+
+  \inferrule[DeleteChildTerm]{  }{
+    \applyAction{ \cursor{\subtermMV} }{ \Delete , G }{
+      \SetOf{\graphAction{\Minus}{\e}\SuchThat{\e \in \mathsf{edges}_G(\subtermMV)}}
+    }
+  }
+
+  \inferrule[RelocateTerm]{  }{
+    \applyAction{ \cursor{\termMV} }{ \Relocate{\ell} , G }{
+      \SetOf{ \graphAction{\Minus}{(w,\ell',v)}, \graphAction{\Plus}{(\fresh{w},\ell,v)} \SuchThat{(w,\ell',v)\in \mathsf{edges}_G(\termMV)}}
+    }
+  }
+
+  \inferrule[RelocateChildTerm]{  }{
+    \applyAction{ \cursor{\subtermMV} }{ \Relocate{\ell} , G }{
+      \SetOf{ \graphAction{\Minus}{(w,\ell',v)}, \graphAction{\Plus}{(\fresh{w},\ell,v)} \SuchThat{(w,\ell',v)\in \mathsf{edges}_G(\subtermMV)}}
+    }
+  }
+
+  \inferrule[ConstructTerm]{
+    \ell' = ((\fresh{u}, k), \mathsf{defaultPos}(k)) \\
+  }{
+    \applyAction{ \cursor{\termMV} }{ \Construct{k} , G }{
+      \SetOf{
+        \graphAction{\Minus}{(w,\ell,v)},
+        \graphAction{\Plus}{(\fresh{w}_{1}, \ell, v')},
+        \graphAction{\Plus}{(\fresh{w}_{2}, (v', \ell', v)}
+      \SuchThat{(w,\ell,v)\in\mathsf{edges}_G(\termMV)}}
+    }
+  }
+
+  \inferrule[ConstructChildTerm]{
+    \subtermMV \neq \ehole \\
+    \ell' = ((\fresh{u}, k), \mathsf{defaultPos}(k)) \\
+  }{
+    \applyAction{ \cursor{\termMV} }{ \Construct{k} , G }{
+      \SetOf{
+        \graphAction{\Minus}{(w,\ell,v)},
+        \graphAction{\Plus}{(\fresh{w}_{1}, \ell, v')},
+        \graphAction{\Plus}{(\fresh{w}_{2}, (v', \ell', v)}
+      \SuchThat{(w,\ell,v)\in\mathsf{edges}_G(\termMV)}}
+    }
+  }
+
+  \inferrule[ConstructHole]{ }{
+    \applyAction{ \cursor{\ehole} }{ \Construct{k} , G }{
+      \SetOf{\graphAction{\Plus}{(\fresh{w}, \ell, (\fresh{u}, k))}}
+    }
+  }
+\end{mathpar}
+}
+
+\newcommand{\figureUserActionTransitions}{%
+\begin{figure}
+  \figureUserActionTransitionsContent
+  \caption{The patch generation judgment}
+  % \Description{This figure describes the grammar for the syntax of user actions}
+  \label{fig:User Action Transitions}
+\end{figure}%
+}

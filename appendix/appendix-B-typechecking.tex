@@ -1,6 +1,5 @@
 \section{Representation of terms}
 \label{sec:marked-calculus}
-\todo{rename all uses of local info mappings}
 \subsection{Syntax}
 \[\begin{array}{lcllll}
     \TMV & \in & \TMName & \Coloneqq & 
@@ -40,7 +39,7 @@
         \mid \lamanamarr
         \mid \apsynmarr
         \mid \incontype \\
-    \ELMV & \in & \ELMName & \Coloneqq &
+    \ELMV & \in & \ELMVName & \Coloneqq &
         \ehole
         \mid \lexp{\ECMV}
         \mid \conflict{\ECMV} \\
@@ -64,46 +63,72 @@
 
 \subsection{Types}
 
-\judgbox{\graphErase{\TMV} = \STMV} $\TMV$ erases to $\STMV$
+\judgbox{\graphErase{\TMV} = \STMV} ~~ $\STMV$ is the graph-erasure of $\TMV$
 %
-\begin{mathpar}
-    \inferrule[GENum]{ }{
-        \graphErase{\tnum} = \tNum{}
-    }
+\[
+\begin{array}{ccc}
+    \graphErase{\tnum} & = & \tNum{} \\
+    \graphErase{\tarrow} & = & \TArrow{\graphErase{\TMV}}{\graphErase{\TMV}} \\
+    \graphErase{\multiref} & = & \TUnknown \\
+    \graphErase{\uniref} & = & \TUnknown \\
+\end{array}
+\]
+% \begin{mathpar}
+%     \inferrule[GENum]{ }{
+%         \graphErase{\tnum} = \tNum{}
+%     }
     
-    \inferrule[GEArr]{
-        \graphErase{\TMV_1} = \STMV_1 \\
-        \graphErase{\TMV_2} = \STMV_2
-    }{
-        \graphErase{\tarrow} = \starrow
-    }
+%     \inferrule[GEArr]{
+%         \graphErase{\TMV_1} = \STMV_1 \\
+%         \graphErase{\TMV_2} = \STMV_2
+%     }{
+%         \graphErase{\tarrow} = \starrow
+%     }
     
-    \inferrule[GEMultiParent]{ }{ 
-        \graphErase{\multiref{v}} = \TUnknown
-    }
+%     \inferrule[GEMultiParent]{ }{ 
+%         \graphErase{\multiref{v}} = \TUnknown
+%     }
 
-    \inferrule[GEUnicycle]{ }{ 
-        \graphErase{\uniref} = \TUnknown
-    }
-\end{mathpar}
+%     \inferrule[GEUnicycle]{ }{ 
+%         \graphErase{\uniref} = \TUnknown
+%     }
+% \end{mathpar}
 
-\judgbox{\graphErase{\TLMV} = \STMV} $\TLMV$ graph erases to $\STMV$
+\judgbox{\graphErase{\TLMV} = \STMV} ~~ $\STMV$ is the graph-erasure of $\TLMV$
 %
-\begin{mathpar}
-    \inferrule[GEHole]{ }{
-        \graphErase{\ehole} = \TUnknown
-    }
+\[
+\begin{array}{ccc}
+    \graphErase{\ehole} & = & \TUnknown \\
+    \graphErase{\lexp{\TMV}} & = & \graphErase{\TMV} \\
+    \graphErase{\conflict{\TMV}} & = & \conflict{\graphErase{\TMV}} \\  
+\end{array}
+\]
+
+
+\judgbox{\provErase{\PTMV} = \STMV} ~~ $\STMV$ is the provenance-erasure of $\TMV$
+%
+\[
+\begin{array}{ccc}
+    \provErase{(\TUnknown^{\Provp})} & = & \TUnknown \\
+    \provErase{\tnum} & = & \tNum{} \\
+    \provErase{(\TArrow{\PTMV_1}{\PTMV_2})} & = & \TArrow{\provErase{\PTMV_1}}{\provErase{\PTMV_2}}
+\end{array}
+\]
+
+    % \inferrule[GEHole]{ }{
+    %     = \TUnknown
+    % }
     
-    \inferrule[GEExp]{
-        \graphErase{\TMV} = \STMV
-    }{ 
-        \graphErase{\lexp{\TMV}} = \STMV
-    }
+    % \inferrule[GEExp]{
+    %     \graphErase{\TMV} = \STMV
+    % }{ 
+    %      = \STMV
+    % }
     
-    \inferrule[GEConflict]{ }{
-        \graphErase{\conflict{\TMV}} = \TUnknown
-    }
-\end{mathpar}
+    % \inferrule[GEConflict]{ }{
+    %     \graphErase{\conflict{\TMV}} = \TUnknown
+    % }
+
 
 \judgbox{\ensuremath{\consistent{\STMV_1}{\STMV_2}}} $\STMV_1$ is consistent with $\STMV_2$
 %
@@ -196,11 +221,11 @@
     \ctxSynTypeU{\ctx}{\mult{\ELV_1}{\ELV_2}}{\tNum{}}
   }
 
-  \inferrule[USMultiLocationConflict]{ }{
+  \inferrule[USRelocationConflict]{ }{
     \ctxSynTypeU{\ctx}{\multiref}{\TUnknown}
   }
 
-  \inferrule[USCycleLocationConflict]{ }
+  \inferrule[USUnicycleConflict]{ }
   {
     \ctxSynTypeU{\ctx}{\uniref}{\TUnknown} 
   }  
@@ -238,11 +263,11 @@
     \ctxAnaTypeU{\ctx}{\reglam}{\STMV_3}
   }
 
-  \inferrule[UAMultiLocationConflict]{ }{
+  \inferrule[UARelocationConflict]{ }{
     \ctxAnaTypeU{\ctx}{\multiref}{\STMV}
   }
 
-  \inferrule[UACycleLocationConflict]{ }
+  \inferrule[UAUnicycleConflict]{ }
   {
     \ctxAnaTypeU{\ctx}{\uniref}{\STMV} 
   }
@@ -377,11 +402,11 @@
     \synMarkConstraint{\ctx}{\eApp{u}{\ELV_1}{\ELV_2}}{\app{\ECApSynNonMatchedArrow{\ELMV_1}}{\ELMV_2}}{\TUnknown}
   }
 
-  \inferrule[MKSMultiLocationConflict]{ }{
+  \inferrule[MKSRelocationConflict]{ }{
     \synMarkConstraint{\ctx}{\multiref}{\multiref}{\TUnknown}
   }
   
-  \inferrule[MKSCycleLocationConflict]{ }{
+  \inferrule[MKSUnicycleConflict]{ }{
     \synMarkConstraint{\ctx}{\uniref}{\uniref}{\TUnknown}
   }  
 \end{mathpar} \\
@@ -435,11 +460,11 @@
         \anaMarkConstraint{\ctx}{\reglam}{\ECLamInconAsc{\var{x}}{\TLMV}{\ELMV}}{\STMV_3}
     }
 
-    \inferrule[MKAMultiLocationConflict]{ }{
+    \inferrule[MKARelocationConflict]{ }{
       \anaMarkConstraint{\ctx}{\multiref}{\multiref}{\STMV}
     }
   
-  \inferrule[MKACycleLocationConflict]{ }{
+  \inferrule[MKAUnicycleConflict]{ }{
     \anaMarkConstraint{\ctx}{\uniref}{\uniref}{\STMV}
   }
 
@@ -463,7 +488,7 @@
 \judgbox{\anaMarkConstraint{\ctx}{\ELV}{\ELMV}{\STMV}} $\ELV$ is marked into $\ELMV$ and analyzes against type $\STMV$
 %
 \begin{mathpar}
-    \inferrule[MKSHole]{ }{
+    \inferrule[MKAHole]{ }{
         \anaMarkConstraint{\ctx}{\emptyHole{\ell}}{\emptyHole{\ell}}{\STMV}
     }
 
@@ -541,11 +566,11 @@ $\ECMV$ synthesizes type $\STMV$, generating constraints $\cConstraint$, locatio
       {\mConstraint_1 \cup \mConstraint_2}
   }
 
-  \inferrule[MSMultiLocationConflict]{ }{
+  \inferrule[MSRelocationConflict]{ }{
     \synConstraint{\ctx}{\multiref}{\TUnknown^{\mathsf{ref}(w)}}{\constraintNil{}}{(v, w, \ctx, \mathsf{syn})}
   }
   
-  \inferrule[MSCycleLocationConflict]{ }{
+  \inferrule[MSUnicycleConflict]{ }{
     \synConstraint{\ctx}{\uniref}{\TUnknown^{\mathsf{ref}(w)}}{\constraintNil{}}{(v ,w, \ctx, \mathsf{syn})}
   }  
 \end{mathpar}
@@ -601,12 +626,12 @@ $\ECMV$ analyzes against type $\PTMV$, generating constraints \cConstraint, loca
         \anaConstraint{\ctx}{\ECLamInconAsc{\var{x}}{\TLMV}{\ELMV}}{\PTMV_3}{\cConstraint_1 \cup \cConstraint_2 \cup \Setof{\constrain{\TUnknown^{\mathsf{mark}(u)}}{\PTMV_3}}}{\mConstraint}
     }
 
-    \inferrule[MAMultiLocationConflict]{
+    \inferrule[MARelocationConflict]{
     }{
       \anaConstraint{\ctx}{\multiref}{\PTMV}{\Setof{\constrain{\TUnknown^{\mathsf{ref}(v)}}{\PTMV}}}{(v, w ,\ctx, \mathsf{ana}(\PTMV))}
     }
   
-    \inferrule[MACycleLocationConflict]{ 
+    \inferrule[MAUnicycleConflict]{ 
     }{
       \anaConstraint{\ctx}{\uniref}{\PTMV}{\Setof{\constrain{\TUnknown^{\mathsf{ref}(v)}}{\PTMV}}}{(v, w ,\ctx, \mathsf{ana}(\PTMV))}
     }
@@ -646,8 +671,7 @@ $\ELMV$ analyzes against type $\PTMV$, generating constraints \cConstraint, loca
     \inferrule[MALocalConflict]{ 
         \Setof{\anaConstraint{\ctx}{\ECMV_i}{\PTMV}{\cConstraint_i}{\mConstraint_i}}_{i<n}
     }{ 
-      \anaConstraint{\ctx}{\conflict{\ECMV}}{\PTMV}{\bigcup_{i<n} \cConstraint_i \cup
-      \Setof{\constrain{\TUnknown^{\mathsf{exp}(\ell)}}{\PTMV}}}{\bigcup_{i<n} \mConstraint_i}
+      \anaConstraint{\ctx}{\conflict{\ECMV}}{\PTMV}{\bigcup_{i<n} \cConstraint_i}{\bigcup_{i<n} \mConstraint_i}
     }
 \end{mathpar}
 
@@ -675,6 +699,18 @@ $\ELMV$ analyzes against type $\PTMV$, generating constraints \cConstraint, loca
     \subsumable{\app{\ELMV_1}{\ELMV_2}}
   }
 \end{mathpar}
+
+\judgbox{idof : \ECMV \mapsto VertexID} $idof$ is a partial meta-function defined as follows:
+%
+\[
+\begin{array}{ccc}
+     idof(\var{x})                 & = &  u \\
+     idof(\num)                    & = & u \\
+     idof(\plus{\ELMV_1}{\ELMV_2}) & = & u \\
+     idof(\mult{\ELMV_1}{\ELMV_2}) & = & u \\
+     idof(\app{\ELMV_1}{\ELMV_2})  & = & u \\
+\end{array}
+\]
 
 \judgbox{\markless{\ECMV}} $\ECMV$ has no marks
 %
@@ -776,26 +812,26 @@ $\judgbox{\markErase{\ELMV}}$ is a metafunction defined as follows:
 \begin{theorem}[name=Marking Totality] \
   \begin{enumerate}
     \item For all $\ctx$ and $\EMV$, there exist $\ECMV$ and $\STMV$ such that
-      $\ctxSynFixedInto{\ctx}{\EMV}{\ECMV}{\STMV}$.
+      $\ctxSynFixedInto{\ctx}{\EMV}{\ECMV}{\STMV}$ and $\synConstraint{\ctx}{\ECMV}{\PTMV}{\cConstraint}{\mConstraint}$ and $\provErase{\PTMV} = \STMV$.
     \item For all $\ctx$ and $\ELV$, there exist $\ELMV$ and $\STMV$ such that
-      $\ctxSynFixedInto{\ctx}{\ELV}{\ELMV}{\STMV}$.
+      $\ctxSynFixedInto{\ctx}{\ELV}{\ELMV}{\STMV}$ and $\synConstraint{\ctx}{\ELMV}{\PTMV}{\cConstraint}{\mConstraint}$ and $\provErase{\PTMV} = \STMV$.
     \item For all $\ctx$, $\EMV$, and $\STMV$, there exists $\ECMV$ such that
-      $\ctxAnaFixedInto{\ctx}{\EMV}{\ECMV}{\STMV}$.
+      $\ctxAnaFixedInto{\ctx}{\EMV}{\ECMV}{\STMV}$ and $\anaConstraint{\ctx}{\ECMV}{\PTMV}{\cConstraint}{\mConstraint}$ and $\provErase{\PTMV} = \STMV$.
     \item For all $\ctx$, $\ELV$, and $\STMV$, there exists $\ELMV$ such that
-      $\ctxAnaFixedInto{\ctx}{\ELV}{\ELMV}{\STMV}$.
+      $\ctxAnaFixedInto{\ctx}{\ELV}{\ELMV}{\STMV}$ and $\anaConstraint{\ctx}{\ELMV}{\PTMV}{\cConstraint}{\mConstraint}$ and $\provErase{\PTMV} = \STMV$.
   \end{enumerate}
 \end{theorem}
 
 \begin{theorem}[name=Marking Well-Formedness] \
   \begin{enumerate}
-    \item If $\ctxSynFixedInto{\ctx}{\EMV}{\ECMV}{\STMV}$, then $\ctxSynTypeM{\ctx}{\ECMV}{\STMV}$ and
-      $\erasesTo{\ECMV}{\EMV}$.
-    \item If $\ctxSynFixedInto{\ctx}{\ELV}{\ELMV}{\STMV}$, then $\ctxSynTypeM{\ctx}{\ELMV}{\STMV}$ and
-      $\erasesTo{\ELMV}{\ELV}$.
-    \item If $\ctxAnaFixedInto{\ctx}{\EMV}{\ECMV}{\STMV}$, then $\ctxAnaTypeM{\ctx}{\ECMV}{\STMV}$ and
-      $\erasesTo{\ECMV}{\EMV}$.
-    \item If $\ctxAnaFixedInto{\ctx}{\ELV}{\ELMV}{\STMV}$, then $\ctxAnaTypeM{\ctx}{\ELMV}{\STMV}$ and
-      $\erasesTo{\ELMV}{\ELV}$.
+    \item If $\ctxSynFixedInto{\ctx}{\EMV}{\ECMV}{\STMV}$, then $\ctxSynTypeM{\ctx}{\ECMV}{\PTMV}$ and
+      $\erasesTo{\ECMV}{\EMV}$ and $\provErase{\PTMV} = \STMV$.
+    \item If $\ctxSynFixedInto{\ctx}{\ELV}{\ELMV}{\STMV}$, then $\ctxSynTypeM{\ctx}{\ELMV}{\PTMV}$ and
+      $\erasesTo{\ELMV}{\ELV}$ and $\provErase{\PTMV} = \STMV$.
+    \item If $\ctxAnaFixedInto{\ctx}{\EMV}{\ECMV}{\STMV}$, then $\ctxAnaTypeM{\ctx}{\ECMV}{\PTMV}$ and
+      $\erasesTo{\ECMV}{\EMV}$ and $\provErase{\PTMV} = \STMV$.
+    \item If $\ctxAnaFixedInto{\ctx}{\ELV}{\ELMV}{\PTMV}$, then $\ctxAnaTypeM{\ctx}{\ELMV}{\STMV}$ and
+      $\erasesTo{\ELMV}{\ELV}$ and $\provErase{\PTMV} = \STMV$.
   \end{enumerate}
 \end{theorem}
 

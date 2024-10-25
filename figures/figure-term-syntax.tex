@@ -5,12 +5,12 @@
 
 \[
 \begin{array}{lclll}
-     \termMV \in & Term & \coloneqq & 
+     \termMV \in & \textit{Term} & \coloneqq & 
         % \eid{u}{k}\ {\textbf{\{} \subtermMV_p \textbf{\}}}_{p \in arity(k)}
         \genericTerm{u}{\subtermMV_p}
         \mid \multiref
         \mid \uniref \\
-     \subtermMV \in & ChildTerm & \coloneqq & 
+     \subtermMV \in & \textit{ChildTerm} & \coloneqq & 
         \ehole
         \mid \lexp{\termMV} 
         \mid \conflict{\termMV} \\  

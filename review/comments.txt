@@ -1,0 +1,90 @@
+Review A
+
+* L48 ‘an type’ -> a type
+* L107 ‘a parent-child relationships’ -> a parent-child relationship
+* L185 ‘Section 2.3-2.4 then describes’ -> Sections 2.3--2.4 then describe
+* L525 ‘A location $\ell = (v, p) \in \mathcal L$, represents […]’: delete the comma
+* L527 ‘An edge $\varepsilon{=}(w, \ell, v)$ […]’: need some space around the equal sign
+* L541–542 ‘edges can only be created if they do not already exist’: I think we also have ${+} \sqcup {+}  = {+}$, which means already created edges can technically be ‘created’ again (although the effect is a no-op)?
+* L589–590 (and throughout the paper) ‘Term’, ’ChildTerm’, ‘arity’, etc: These should be enclosed in `\mathit` to make the spacing correct.
+* L645 ‘decomposittion’ -> decomposition
+* L669 ‘the function decompVertex a term […]’: probably insert ‘that returns’ after ‘decompVertex’
+* L746 Definition 3.17: probably missing a union operator
+* L797 ‘zippered terms’: probably just ‘zipper terms’ (like in the next sentence)?
+* L831 ‘Section 3.1 or Section 3.2.1’ -> Section 3.1, Section 3.2.1
+* L871 ‘of ??’
+* L881 ‘which is displayed a graph visualization […]’: probably delete ‘displayed’
+* L905–911: Why so many paragraphs?
+* L964 ‘[?]’
+* L1004 (and similarly L1005) ‘child types’ -> child types $\bar\tau$
+* L1051 ‘edge-ID(w)’: insert a space before the left parenthesis
+* L1051 ‘w’, ‘u’ -> `$w$`, `$u$`
+* L1145–1146: This paragraph is too sketchy.
+* L1149 ‘many of different designs’ -> many different designs
+* L1159 ‘low level’ -> low-level
+* L1164 ‘[5, 9, 10, 16, 18, 25]’: This paragraph doesn’t really provide a comparison with the cited works.
+* L1238: Dunfield and Krishnaswami have published their paper in ACM Computing Surveys (https://doi.org/10.1145/3450952).
+
+Review B
+
+*Nitpicks*
+Line 48: "renames an type" should be "renames a type."
+Line 879: "editor environment between 2 users" should be "editor environment between two users"
+
+
+Review C
+
+Details:
+
+Section 2.3.2 It is well known that tree-based editors handle the granularity problem
+better than line-based. But the tree-based editor has a much higher complexity, building
+the tree and maintaining the correct tree structure during edits such as cut and paste.
+
+Section 2.3.3 Grove chooses to silently merge changes from relocation modification, 
+which current versioning control systems often yield a merge conflict. However, it
+is hard to say that this behavior is always wanted or preferred. In many scenarios, 
+the involved programmers may want to review before such merges are committed. Also, 
+this example seems to work well because the operations involved, + and *, are 
+commutative. What if we have operations like - and /?
+
+Figure 10(d), why not add an L edge from +8 to *2 and a R edge from +8 to *24?
+Also, why R31 and not R35 and L33 not L37?
+
+What is the connection between Line 367 and Line 531? Earlier it says a disconnected
+term may be connected back after a deletion but later it says deleted edges can't
+connect again. Also, since an edge includes a term, the deletion of the edge also
+causes the deletion of the term if it is connected to by only one edge. 
+
+In Rule MKSLocalConflict, it is possible to synthesize a more precise type than ?.
+A more meaningful choice is the least upper bound of all $\sigma_i$s in terms of
+some subtyping relation. For example, if all branches of a conflict have Int, then
+it is fine to say that the conflict has the type Int.
+
+In rules MALocalConflict, MARelationConflict, and MAUnicycleConflict, why do you
+generate a constraint between a ? and $\sigma$? In gradual typing, such constraints
+are simply dropped. Probably you want to use the location for provenance. However,
+it is unclear how the location associated with each ? is used.
+
+Typos:
+
+Line 48, a type
+
+Line 68, initial and final states
+
+Lines 91-92, Grove can do this because it explicitly carries conflicts
+
+Line 163, what does "this work" refer to? Probably it refers to Hazelnut and Hazel,
+but it is good to be explicit
+
+Line 230, the paper uses odd numbers for edges and even numbers for vertices
+
+Line 334, u*y should be u*v
+
+Lines 431-432, two many "like these" make the sentence hard to understand
+
+Definitions 3.4 and 3.5, a vertex *v* is an ..., otherwise v in the parentheses is unbound
+
+Lemma 3.8, I am not sure if this is actually correct. For example *24 in Figure 9(d)
+is both an MP and a U root.
+
+Line 871, ??, missing reference

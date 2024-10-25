@@ -9,14 +9,14 @@
 \newcommand{\figureDifferentPartsNestedParts}{
 \begin{figure}
 \begin{minipage}[t]{0.45\linewidth}
-%\hfill
-\hskip0.12\columnwidth
+\hfill
+% \hskip0.12\columnwidth
 %%%%%%%%
 \begin{subfigure}[t]{0.28\linewidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (-7.5em,0cm) node (node/Move/bx) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:Move:b}}}};
+\path (-6.5em,0cm) node (node/Move/bx) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:Move:b}}}};
 \path (0cm,0cm) node (node/DifferentParts/a) [anchor=base] {\strut};
 \path [draw,->,alice step] (node/Move/bx) to (-2em, 0cm |- node/DifferentParts/a);
 \end{tikzpicture}
@@ -133,11 +133,11 @@
 \newedge{NestedPartsBob}{L}
 % \newcommand{\figureNestedParts}{
 % \begin{figure}
-\begin{minipage}[t]{0.45\linewidth}
+\begin{minipage}[t]{0.48\linewidth}
 \hfill
 %\hskip0.12\columnwidth
 %%%%%%%%
-\begin{subfigure}[t]{0.25\linewidth}
+\begin{subfigure}[t]{0.3\linewidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -164,7 +164,7 @@
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.25\linewidth}
+\begin{subfigure}[t]{0.3\linewidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -191,7 +191,7 @@
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.25\linewidth}
+\begin{subfigure}[t]{0.3\linewidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -201,7 +201,7 @@
 \end{tikzpicture}
 }%
 \label{fig:NestedParts:c}
-\figureCode{w * v + \hole{}}%
+{\small \figureCode{w * v + \hole{}}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {

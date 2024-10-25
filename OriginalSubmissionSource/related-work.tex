@@ -2,21 +2,14 @@
 \section{Related Work}%
 \label{sec:Related Work}
 
-The core components of a version control system are a patch language, a method for synthesizing patches from user actions, and an approach for merging patches. 
-
-% Grove stands out from existing systems in the precision of its patch language and the simplicity of its patch synthesis and merge processes, as well as its intrinsic guarantee of commutativity by employing a graph CmRDT as its repository data structure. 
-
-% Patch languages vary in their native data structure and level of precision, with Grove's patch language being exceptionally fine-grained and molded to the language. Traditional patch synthesis algorithms reconstruct patches from version differences, while Grove uniquely synthesizes patches directly from edit actions. Traditional merge algorithms, such as those used by Git, employ operational transforms to 
-
-% Traditional patch synthesis and merge algorithms, such as those used by Git, are complex and indirect, while Grove joins a family of new systems employing 
-
+Collaboration requires defining a patch language, a method for synthesizing patches from user actions, and an approach for merging patches.
 
 \subsection{Patch Languages}
-There have been many different designs for patch languages and indeed many imperative data structures and their associated operations can be construed as patch languages in the most general sense. In the context of collaborative coding, patch languages can differ in the data structures they operate on (e.g. line-based text, character-based text, tree-structured data). 
+There have been many of different designs for patch languages and indeed many imperative data structures and their associated operations can be construed as patch languages in the most general sense. In the context of collaborative coding, patch languages can differ in the data structures they operate on (e.g. line-based text, character-based text, tree-structured data). 
 They can also differ in how they identify locations within the data (e.g. by using numeric offsets, unique identifiers, or paths through a tree).
 Finally, patch languages differ in which specific actions are supported explicitly. Insertion and deletion are common, while code relocation, copying, undo, and other operations are variously also included.
 
-In this paper, our focus was on syntax trees with holes (i.e. program sketches~\cite{DBLP:conf/aplas/Solar-Lezama09, DBLP:conf/popl/OmarVHAH17}) and explicit conflicts, which we represented as directed graphs. We identify locations using unique IDs. We have a two-level patch language, with a low-level graph patch language supporting only edge insertion and deletion and a higher-level user edit action language focused on insertion, deletion, and relocation, with some additional narrative consideration of copying and undo (a fuller account of which we leave to future work).  Our user edit language therefore forms a structure editor calculus, inspired closely by recent work on the Hazelnut structure editor calculus (which did not support relocation)~\cite{DBLP:conf/popl/OmarVHAH17} and patch languages for other tree-based data structures~\cite{DBLP:conf/sigmod/ChawatheG97, DBLP:journals/tse/FluriWPG07,DBLP:conf/kbse/FalleriMBMM14,DBLP:conf/doceng/Lindholm04,DBLP:conf/fase/NguyenNPN10,DBLP:journals/scp/SchwagerlUW15}.
+In this paper, our focus was on syntax trees with holes (i.e. program sketches~\cite{DBLP:conf/aplas/Solar-Lezama09, DBLP:conf/popl/OmarVHAH17}) and explicit conflicts, which we represented as directed graphs. We identify locations using unique IDs. We have a two-level patch language, with a low level graph patch language supporting only edge insertion and deletion and a higher-level user edit action language focused on insertion, deletion, and relocation, with some additional narrative consideration of copying and undo (a fuller account of which we leave to future work).  Our user edit language therefore forms a structure editor calculus, inspired closely by recent work on the Hazelnut structure editor calculus (which did not support relocation)~\cite{DBLP:conf/popl/OmarVHAH17} and patch languages for other tree-based data structures~\cite{DBLP:conf/sigmod/ChawatheG97, DBLP:journals/tse/FluriWPG07,DBLP:conf/kbse/FalleriMBMM14,DBLP:conf/doceng/Lindholm04,DBLP:conf/fase/NguyenNPN10,DBLP:journals/scp/SchwagerlUW15}.
 
 \subsection{Patch Synthesis}
 The most common approach to patch synthesis is to use a differencing algorithm to compare two states, e.g. from the file system, to generate a patch. 
@@ -36,12 +29,9 @@ For example, the Darcs~\cite{DBLP:conf/haskell/Roundy05} and Pijul version contr
 \subsubsection{CRDTs}
 
 The observation that commutativity is a particularly helpful property when dealing with concurrent systems, including version control systems, has led to the development of a number of data structures centered on commutativity. These are known as CRDTs, which stands variously for \emph{conflict-free}, \emph{convergent} (CvRDT), or \emph{commutative replicated datatypes} (CmRDT) depending on particular details about the operations and the state representation~\cite{shapiro2011conflict}.
-Our approach draws directly from this line of work: the Grove patch language forms a CmRDT on directed graphs, from which we observe that we can derive a CmRDT for trees with explicit conflicts.
+Our approach draws directly from this line of work: the Hazel patch language forms a CmRDT on directed graphs, from which we observe that we can derive a CmRDT for trees with explicit conflicts.
 
 There have been other recent efforts to develop CmRDTs for tree data structures~\cite{DBLP:conf/icdcs/PreguicaMSL09, Highly-Available}. However, the focus in this work has been on avoiding conflicts and cycles entirely by applying \emph{ad hoc} heuristics for conflict resolution at merge-time, e.g. using reported timestamps or favoring particular directions in the tree. Our approach instead embraces manual conflict resolution, as is common practice in software projects where arbitrarily losing code is not acceptable.
-
-% Pijul iterates on the patch based system of Darcs, but obtains commutativity in the case of conflicts using a CRDT graph data structure, which treats edges very similarly to Grove. Pijul, however, does not reach the full commutativity enjoyed by Grove because vertices must be created by insertion patches before they can be referred to by other patches, imposing a dependency relation on patches and disallowing some orderings. Darcs and Pijul are also language agnostic and model only the linear structure of text. However, Pijul goes beyond this version of Grove by extending the data structure to support history and branches, and Grove may be similarly extended in future work.
-
 
 
 

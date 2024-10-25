@@ -1,25 +1,32 @@
 \newcommand{\figureUserActionContent}{%
-  \[
+
+\[
   \arraycolsep=0pt
   \begin{array}{lcllll}
     \alpha & {}\in{} & Act & {}::={} &
       \Construct{k}
       \mid \Delete
-      \mid \Reposition{v}{p}
+      \mid \Relocate{\ell}
     \\
-    c & {}\in{} & Cur & {}::={} &
-      \CVertex{v}
-      \mid \CEdge{\e}
-      \mid \CSource{v}{p}
+    \Z{\termMV} & {}\in{} & ZTerm & {}::={} &
+      \cursor{\termMV}
+      \mid \genericTerm{u}{\subtermMV}_{\setminus\SetOf{\Z{p}}}\ \Z{\subtermMV}
+    \\
+    \Z{\subtermMV} & {}\in{} & ZChildTerm & {}::={} &
+      \cursor{\ehole}
+      \mid \cursor{\conflict{\termMV}}
+      \mid \eid{w}{}\Z{\termMV}
+      \mid \eid{\ell}{}\conflictHole{\termMV_i}_{i<n,i\neq j}\ \Z{\termMV}
     \\
   \end{array}
 \]
+
 }
 
 \newcommand{\figureUserActionSyntax}{%
 \begin{figure}
   \figureUserActionContent
-  \caption{The syntax of user actions}
+  \caption{The syntax of zippered terms and user actions}
   \Description{This figure describes the grammar for the syntax of user actions}
   \label{fig:User Action Syntax}
 \end{figure}%

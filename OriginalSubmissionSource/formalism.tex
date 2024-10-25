@@ -2,7 +2,7 @@
 \section{The Grove Calculus}%
 \label{sec:Formalism}
 
-We now formalize the ideas presented informally above by defining the Grove Calculus. The calculus consists of a commutative patch language on graphs, defined in \autoref{sub:Convergent Graphs}, a decomposition procedure to go from graphs to groves (i.e. sets of terms with conflicts) in \autoref{sub:Groves}, and a user action language that operates on groves and is defined by translation to the patch language in \autoref{sub:User Actions}.
+We now formally consider the ideas presented informally above by defining the Grove Calculus. The calculus consists of a commutative patch language on graphs, defined in \autoref{sub:Convergent Graphs}, a decomposition procedure to go from graphs to groves (i.e. sets of terms with conflicts) in \autoref{sub:Groves}, and a user action language that operates on groves and is defined by translation to the patch language in \autoref{sub:User Actions}.
 
 \subsection{A Commutative Graph Patch Language}%
 \label{sub:Convergent Graphs}
@@ -12,26 +12,24 @@ Let $\U$ and $\W$ be separate sets of \emph{unique identifiers} (UIDs) for verti
 
 Let $\K$ be the set of \emph{constructors} of terms in the source language, and let $\P$ be the set of \emph{positions} of subterms in the source language. Assume each constructor $k\in\K$ is associated with a finite set of positions $\mathsf{arity}(k)\subseteq \P$, representing the set of positions that children of $k$ can inhabit.
 
-For example, if the language is the simply typed lambda calculus, $\K$ will include constructors for function abstractions ($\textsc{Lambda}_x$), function applications ($\textsc{Ap}$), variables ($\textsc{Var}_x$), and constants ($\textsc{Const}_c$), as well as function type constructors ($\textsc{Arrow}$) and base types ($\textsc{Base}_b$). The arity of each constructor will reflect the child positions of these constructors, e.g. $\mathsf{arity}(\textsc{Ap}) = \{\textsc{Function} , \textsc{Argument}\}$, $\mathsf{arity}(\textsc{Lambda}_x) = \{\textsc{Annotation} , \textsc{Body}\}$, and $\mathsf{arity}(\textsc{Var}_x) = \emptyset$.
-
 A \emph{vertex} $v = (u, k) \in \V = \U \times \K$ is labeled with a UID, $u$, and a constructor, $k$. 
 
-A \emph{location} $\ell = (v, p) \in \L$ represents the origin of an edge, where $v=(u,k)$ is drawn from $\V$ and position $p$ is drawn from $\mathsf{arity}(k)$.
+A \emph{location} $\ell = (v, p) \in \L$, represents the origin of an edge, where $v=(u,k)$ is drawn from $\V$ and position $p$ is drawn from $\mathsf{arity}(k)$.
 
-An \emph{edge} $\e = (w, \ell, v) \in \E = \W \times \L \times \V$ represents a directed multi-edge 
+An \emph{edge} $\e{=}(w, \ell, v) \in \E = \W \times \L \times \V$ represents a directed multi-edge 
     identified by $w$, 
     originating from location $\ell$, 
     with destination vertex $v$.
 
-A \emph{graph} $g : \E \rightarrow \Sigma$ is a function from edges to \emph{edge states} $s \in \Sigma = \SetOf{\bot, \Plus, \Minus}$. If $g(\e) = \bot$, then $\e$ has not yet been constructed in the graph. If $g(\e) = \Plus$ then $\e$ is live in the graph. If $g(\e) = \Minus$, then $\e$ has been deleted and cannot be constructed again. The total ordering $\bot \sqsubset \Plus \sqsubset \Minus$ forms a lattice over $\Sigma$. The state of each edge can only progress along this ordering over time, from not yet constructed, to live, to deleted. The \textit{realized} edges in a graph are those assigned to $\Plus$ or $\Minus$. We assume that there are finitely many realized edges in a graph. 
+A \emph{graph} $g : \E \rightarrow \Sigma$ is a function from edges to \emph{edge states} $\Sigma = \SetOf{\bot, \Plus, \Minus}$. If $g(\e) = \bot$, then $\e$ has not yet been constructed in the graph. If $g(\e) = \Plus$ then $\e$ is \textit{live} in the graph, meaning it is relevant to the user and the type system. If $g(\e) = \Minus$, then $\e$ has been deleted and cannot be constructed again. The total ordering $\bot \sqsubset \Plus \sqsubset \Minus$ forms a lattice over $\Sigma$. We assume a graph assigns only finitely many edges to $\Plus$ to ensure the finiteness of the data structure on which further computation is done.
 
 \subsubsection{Graph Patch Commands}
 \label{subsub:Graph Patches}
 
 We define a graph patch command $\pi = (s,\e) \in \left\{\Plus, \Minus\right\} \times \E$
-as a pair of an edge state (excluding $\bot$) and an edge. As a shorthand, we use $+\e$ to denote the construction command $(\Plus, \e)$ and $-\e$ to denote the destruction command $(\Minus, \e)$.
+as a pair of an edge state (excluding $\bot$) and an edge. As a shorthand, we define $+\e$ to be $(\Plus, \e)$ and $-\e$ to be $(\Minus, \e)$.
 
-For $s_1$, $s_2 \in \Sigma$, we define the join operation $s_1 \sqcup s_2$ to be the least upper bound of $s_1$ and $s_2$ with respect to the $\sqsubset$ ordering. Accordingly, $\Plus \sqcup \bot = \Plus$ means that an edge can be created if it has never existed, and $\Plus \sqcup \Minus = \Minus$ means that once an edge is deleted it can never be restored.
+For $s_1$, $s_2 \in \Sigma$, we define the join operation $s_1 \sqcup s_2$ to be the least upper bound of $s_1$ and $s_2$ with respect to the $\sqsubset$ ordering. Accordingly, $\Plus \sqcup \bot = \Plus$ means that edges can only be created if they do not already exist, and $\Plus \sqcup \Minus = \Minus = \Minus \sqcup \Minus$ means that once an edge is deleted it can never be restored, and hence deletion is idempotent.
 
 We define the semantics of patch commands via the following transition relation
 between graphs.
@@ -39,7 +37,7 @@ between graphs.
   g \overset{(s,\e)}{\longrightarrow} g\left[ \e \mapsto s \sqcup g(\e) \right]
 \]
 Applying patch command $\pi = \left(s, \e\right)$ to graph $g$ results in the updated graph $g' = g\left[\e \mapsto s \sqcup g(\e) \right]$, wherein the edge
-state associated with edge $\e$ in $g$ becomes the join of $s$ with the state of $\e$ in $g$, and $g'(\e') = g(\e')$ for any $\e' \ne \e$. Essentially, these patch command semantics act as a transition system between graphs, \emph{joining} the new edge state with the corresponding edge state of the graph to which the patch command is being applied. Since a patch command can only change the value of $g$ on one input, applying the patch command preserves the property that $g$ maps all but finitely many edges to $\bot$.  
+state associated with edge $\e$ in $g$ becomes the join of $s$ with the state of $\e$ in $g$, and $g'(\e') = g(\e')$ for any $\e' \ne \e$. Essentially, these patch command semantics act as a transition system between graphs, \emph{joining} the new edge state with the corresponding edge state of the graph to which the patch command is being applied. Since a patch command can only change the value of $g$ on one input, applying the patch command preserves the property that $g$ maps only a finite set of edges to $\Plus$.  
 
 A \textit{graph patch} $\Q{\pi}$ is a sequence of graph patch commands, and the transition relation is extended to patches as the composition of the transitions of the constituent patch commands. 
 
@@ -53,8 +51,7 @@ Using these definitions, commutativity of patch commands can be established usin
   $(\Sigma, \sqsubset)$ with $\sqcup$ forms a join semilattice. That is, $\sqcup$ is associative, commutative, and idempotent. 
 \end{lemma}
 \begin{proof}
-    % Since $\Sigma$ is finite, 
-    Follows directly from the total ordering $(\Sigma, \sqsubset)$. 
+    Follows directly from the total ordering $(\Sigma, \sqsubset)$
 \end{proof}
 
 \begin{theorem}[Commutativity]
@@ -72,7 +69,7 @@ The commutativity of patch commands generalizes directly to the commutativity of
 
 \subsubsection{Interpretation as a CmRDT}
 
-The definition above can be understood operationally as a CmRDT. In particular, the edges can be understood as forming a two-phase set (2P-Set), because deletion is permanent~\cite{shapiro2011conflict}. The set of realized edges forms a grow-only set, as does the set of realized vertices (those included in a realized edge).
+The definition above can be understood operationally as a CmRDT. In particular, the vertices can be understood as forming a Grow-Only Set (G-Set). The edges can be understood as forming a two-phase set (2P-Set), because deletion is permanent~\cite{shapiro2011conflict}.
 
 \subsection{Groves}%
 \label{sub:Groves}
@@ -106,18 +103,18 @@ Formally, the parents of a vertex $v$ in a graph is defined as the set of origin
 \end{align*}
 \end{definition}
 
-To help define decomposition, each vertex in a graph can be classified as either an NP root (if it has no parents), an MP root (if it has multiple parents), a U root (if there is a sequence of unique parents from it to itself, and it has the minimal UID in that sequence), or not a root. These classes are mutually exclusive.
+To help define decomposittion, each vertex in a graph can be classified as either an NP root (if it has no parents), an MP root (if it has multiple parents), a U root (if there is a sequence of unique parents from it to itself, and it has the minimal UID in that sequence), or not a root. These classes are mutually exclusive.
 
 \begin{definition}
-    A vertex $v$ is an \textit{NP root} in $G$ if $\mathsf{parents}_{G}(v)=\emptyset$
+    A vertex is an \textit{NP root} in $G$ if $\mathsf{parents}_{G}(v)=\emptyset$
 \end{definition}
 
 \begin{definition}
-    A vertex $v$ is an \textit{MP root} in $G$ if $\abs{\mathsf{parents}_{G}(v)} > 1$
+    A vertex is an \textit{MP root} in $G$ if $\abs{\mathsf{parents}_{G}(v)} > 1$
 \end{definition}
 
 \begin{definition}
-    A vertex $v$ is a \textit{U root} in $G$ if $\exists \{v_i\}_{1 \leq i \leq n}$ such that $v_1 = v_n = v$, $\mathsf{parents}_{G}(v_i)=\{v_{i+1}\}$ for all $1 \leq i < n$, and the UID of $v$ is the minimum of the UIDs of $\{v_i\}_{1 \leq i \leq n}$.
+    A vertex is a \textit{U root} in $G$ if $\exists \{v_i\}_{1 \leq i \leq n}$ such that $v_1 = v_n = v$, $\mathsf{parents}_{G}(v_i)=\{v_{i+1}\}$ for all $1 \leq i < n$, and the UID of $v$ is the minimum of the UIDs of $\{v_i\}_{1 \leq i \leq n}$.
 \end{definition}
 
 \begin{definition}
@@ -137,7 +134,7 @@ To help define decomposition, each vertex in a graph can be classified as either
 
 The decomposition of a vertex is specified intuitively as the term obtained by traversing the descendants of the vertex until a leaf or a root vertex of some kind is reached, which is not further decomposed, but is denoted in the term as the appropriate reference. The decomposition of a graph is simply the set obtained by decomposing each vertex classified as a root, provided the vertex actually appears as the origin of an edge in $G$.
 
-Formally, the decomposition of a vertex is given by the function $\mathsf{decompVertex}$, which returns a term with the same UID and constructor as the vertex. At each position in the arity of the constructor, we obtain a child term from the function $\mathsf{decompLoc}$, which decomposes a location in the graph to a corresponding child term. Consider the multiplication constructor with id 40 in \autoref{fig:Decomposition example}. It decomposes to a multiplication term with left and right child terms, the result of $\mathsf{decompLoc}$ applied to its left and right locations. 
+Formally, the decomposition of a vertex is given by the function $\mathsf{decompVertex}$ a term with the same UID and constructor as the vertex. At each position in the arity of the constructor, we obtain a child term from the function $\mathsf{decompLoc}$, which decomposes a location in the graph to a corresponding child term. Consider the multiplication constructor with id 40 in \autoref{fig:Decomposition example}. It decomposes to a multiplication term with left and right child terms, the result of $\mathsf{decompLoc}$ applied to its left and right locations. 
 
 \begin{definition}
     $\mathsf{decompVertex}_{G}(v = (u,k)) = \genericTerm{u}{\mathsf{decompLoc}_{G}((v,p))}$
@@ -211,7 +208,7 @@ The vertex of a term is used as the destination of edges from the term's parent 
 The recomposition of a grove is simply the union of the recompositions of its terms.
 
 \begin{definition}
-    $\mathsf{recomp}(T) = \bigcup_{\termMV \in T}\mathsf{recompTerm}(\termMV)$
+    $\mathsf{recomp}(T) = \bigup{\termMV \in T}\mathsf{recompTerm}(\termMV)$
 \end{definition}
 
 The \autoref{thm:Recomposability} states that recomposition recovers the entirety of the original live subgraph, and therefore that groves faithfully represent the underlying data structure.
@@ -225,7 +222,7 @@ The \autoref{thm:Recomposability} states that recomposition recovers the entiret
 
 In order to facilitate user interaction with groves, we defined a presentation of a grove called a \textit{partitioned grove}. A partitioned grove contains three classes, corresponding to the the three kinds of roots: NP, MP, and U. A partitioned grove also designates a distinguished child term as the primary component of the program.
 
-Formally, a partitioned grove $\gamma$ is a quadruple $(\subtermMV_r, NP, MP, U)$ where $\subtermMV_r \in \textit{ChildTerm}$ and $NP, MP, U$ are finite sets of terms. The construction of a partitioned grove from the grove $\mathsf{decomp}(G)$ requires the designation of a \textit{distinguished root} location $\ell_r=(v_r=(u_r,k_r),p_r)$ such that $v_r$ is an NP root in $G$ and $\mathsf{arity}(k_r)=\SetOf{p_r}$. The distinguished child term can be thought of as the decomposition of the distinguished root location. The NP, MP, and U partitions are delineated by the class of the root vertex of each term. The root vertex of a term is like the vertex of a term, except that the root vertex of a reference is the \textit{source} of the corresponding edge, rather than the destination. A term rooted at the distinguished root is excluded from the NP class, since its contents are already identified as the distinguished child term. \autoref{fig:Decomposition example partitioned grove} provides an example of a partitioned grove, where the position $\mathsf{Root}$ of vertex 0 is the distinguished root location.  
+Formally, a partitioned grove $\gamma$ is a quadruple $(\subtermMV_r, NP, MP, U)$ where $\subtermMV_r \in ChildTerm$ and $NP, MP, U$ are finite sets of terms. The construction of a partitioned grove from the grove $\mathsf{decomp}(G)$ requires the designation of a \textit{distinguished root} location $\ell_r=(v_r=(u_r,k_r),p_r)$ such that $v_r$ is an NP root in $G$ and $\mathsf{arity}(k_r)=\SetOf{p_r}$. The distinguished child term can be thought of as the decomposition of the distinguished root location. The NP, MP, and U partitions are delineated by the class of the root vertex of each term. The root vertex of a term is like the vertex of a term, except that the root vertex of a reference is the \textit{source} of the corresponding edge, rather than the destination. A term rooted at the distinguished root is excluded from the NP class, since its contents are already identified as the distinguished child term. \autoref{fig:Decomposition example partitioned grove} provides an example of a partitioned grove, where the position $\mathsf{Root}$ of vertex 0 is the distinguished root location.  
 
 \begin{definition}
 \begin{align*}
@@ -258,7 +255,7 @@ Formally, a partitioned grove $\gamma$ is a quadruple $(\subtermMV_r, NP, MP, U)
 
 We have defined a patch language directly in terms of graph edges and edge states. Since the user interacts with the more intuitive, tree-based grove representation of the program, we require an equally intuitive system of \textit{user edit actions} (edits) that can be translated into the patch language. The new sorts are defined in \autoref{fig:User Action Syntax}.
 
-Edit actions operate on zipper terms~\cite{DBLP:journals/jfp/Huet97,DBLP:conf/popl/OmarVHAH17}. The definitions of zipper terms and child terms are standard, except that the cursor cannot select a child term of the form $\eid{w}{}\termMV$, but is forced to select the term $\termMV$ directly. While inspecting a grove, the user may select an edit action $\alpha$ while the cursor is represented by $\Z{\termMV}$ or $\Z{\subtermMV}$, and this will result in a graph patch $\Q{\pi}$ to be applied directly to the  graph.
+Edit actions operate on zippered terms~\cite{DBLP:journals/jfp/Huet97,DBLP:conf/popl/OmarVHAH17}. The definitions of zipper terms and child terms are standard, except that the cursor cannot select a child term of the form $\eid{w}{}\termMV$, but is forced to select the term $\termMV$ directly. While inspecting a grove, the user may select an edit action $\alpha$ while the cursor is represented by $\Z{\termMV}$ or $\Z{\subtermMV}$, and this will result in a graph patch $\Q{\pi}$ to be applied directly to the  graph.
 
 $\Construct{k}$ constructs a new edge whose destination is determined by the cursor's location. If the cursor is on an empty hole, the hole is filled by constructing a fresh vertex with constructor $k$. If the cursor is on an existing term or child term, we \emph{wrap} the existing term or child term by deleting it from its parent, constructing the new term in its place, then re-connecting the original term as a child of the new term.
 
@@ -287,6 +284,6 @@ For the purpose of the construction action, it is assumed that each constructor 
 
 \subsection{Mechanized Metatheory}
 
-The definitions and theorems in \autoref{sub:Convergent Graphs} and \autoref{subsub:Graph Decomposition} have been mechanized in the Agda proof assistant, with the exception that termination is justified separately for some definitions and proofs. In particular, \autoref{thm:Commutativity} and \autoref{thm:Recomposability} are formalized and proven. \autoref{lem:uniq-classification} follows from the more powerful theorem of classification correctness and completeness, which is mechanized and used to prove \autoref{thm:Recomposability}.
+The definitions and theorems in \autoref{sub:Convergent Graphs} or \autoref{subsub:Terms}, and \autoref{subsub:Graph Decomposition} have been mechanized in the Agda proof assistant, with the exception that termination is justified separately for some definitions and proofs. In particular, \autoref{thm:Commutativity} and \autoref{thm:Recomposability} are formalized and proven. \autoref{lem:uniq-classification} follows from the more powerful theorem of classification correctness and completeness, which is mechanized and used to prove \autoref{thm:Recomposability}.
 
 

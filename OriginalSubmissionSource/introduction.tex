@@ -20,7 +20,7 @@ standard three-way merge algorithms for line-based patch languages commonly iden
 
 The \textbf{granularity problem} 
 arises when both commits make edits to different locations within a single line of code. For example, one patch might rename a function argument while the other adds a new argument. 
-Similarly, if one patch renames a type while another 
+Similarly, if one patch renames an type while another 
 makes unrelated changes to code that references that type,
 there will be conflicts at every line of code shared between the two patches. 
 % A notable special case is the \textbf{wrapping problem}, which arises when one patch changes the nesting of code structures, e.g. by wrapping a code block within a new control flow construct, thereby changing the indentation of every line in the block. These changes can cause conflicts.
@@ -38,7 +38,7 @@ address the granularity problem.
 
 Addressing the relocation-related problems is more difficult.
 A common approach is to enrich the patch language to make code relocation a primitive command.
-However, correctly synthesizing code relocation commands given only the initial and final states of the repository requires heuristics. 
+However, correctly synthesizing code relocation commands given only the initial and final state of the repository requires heuristics. 
 The typical approach is to assume that a matching deletion and insertion is due to code relocation. However, relocated code is often also modified. 
 In these cases, it is difficult to determine whether a deletion and a similar but not identical insertion are related by relocation, rather than coincidental code similarity. 
 Developers often intentionally copy and then modify code, so there may be multiple partially matching insertions for a given deletion and there is no clear way to decide which, if any, are related by relocation. 
@@ -67,11 +67,11 @@ Relocation is particularly challenging because of the potential for relocation c
 including the potential for cyclic relocation (when one commit relocates node $A$ beneath node $B$, and the other \emph{vice versa}). 
 
 This need to represent conflicting states means that we cannot use a single syntax tree as Grove's 
-core data structure. Instead, we use a directed labeled multi-graph. A vertex corresponds to a syntax tree node and is labeled with a \emph{unique identifier (UID)} and a \emph{constructor}, e.g. \li{Plus}. An edge is also labeled with a UID and establishes a parent-child relationship at a labeled \emph{position} for the parent vertex's constructor, e.g. at the \li{L} or \li{R} position of the \li{Plus} constructor. We refer to a parent vertex and position collectively as a \emph{location}.
+core data structure. Instead, we use a directed labeled multi-graph. A vertex corresponds to a syntax tree node and is labeled with a \emph{unique identifier (UID)} and a \emph{constructor}, e.g. \li{Plus}. An edge is also labeled with a UID and establishes a parent-child relationships at a labeled \emph{position} for the parent vertex's constructor, e.g. at the \li{L} or \li{R} position of the \li{Plus} constructor. We refer to a parent vertex and position collectively as a \emph{location}.
 
 The \emph{Grove patch language} is quite simple: a patch can insert or delete an edge (which might cause the creation of a mentioned vertex if it did not already exist). 
 To ensure commutativity, deletion of an edge is permanent, i.e.
-the edges form a two-phase set (2P-Set) CmRDT~\cite{shapiro2011conflict}. The edit actions that users perform are given meaning by a straightforward translation to a graph patch. 
+the edges form a two-phase set (2P-Set) CmRDT. The edit actions that users perform are given meaning by a straightforward translation to a graph patch. 
 Relocation simply translates to 
 edge deletion and insertion. Critically, vertices are \emph{not} deleted during relocation,
 so we do not need to deploy heuristics to identify relocated nodes.

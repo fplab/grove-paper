@@ -1,963 +1,184 @@
 \section{Grove Formalism}
 \label{sec:Grove Formalism}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
 \subsection{Graphs}
-\label{sec:Formalism:Graphs}
 
-\begin{align*}
-  \sources{G} &= \SetOf{(v, p) \in \S \SuchThat{
-    (u, (v, p), v') \in \inedges{G} \land u \in \U \land v' \in \V}} \\
-  \inedges{G} &= \SetOf{\e \in \E \SuchThat{G(\e) = \Plus}} \\
-  \outedges{v}{p} &= \SetOf{(u, (v, p), v') \in \inedges{G} \SuchThat{u \in \U \land v' \in \V }} \\
-  \inedges{v} &= \SetOf{\e{=}(u, (v', p), v) \in \inedges{G} \SuchThat{u \in \U \land (v', p) \in \S}} \\
-  G_v(\e{=}(u, (v', p), v'')) &= \begin{cases}
-    G(\e) & v = v'' \\
-    \bot  & v \neq v'' \\
-  \end{cases} \\
-  \parents{v} &= \SetOf{v' \in \V \SuchThat{(u, (v', p), v) \in \inedges{G} \land u \in \U \land p \in \P}} \\
-  \ancestors{v} &= \mathopen{}\left( \lfp{\ancestorsPrimeOp} \right)\mathclose{}(v) \\
-  \min{\Q{v}} &= \argmin{(u, k) \in \Q{v}}{u}
-\end{align*}
+$\U$ and $\W$ are separate sets of \emph{unique identifiers} (UIDs) for vertices and edges, respectively. Assume each is equipped with a total ordering $\leq$. 
 
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+$\K$ is the set of \emph{constructors} of terms in the source language, and $\P$ is the set of \emph{positions} of subterms in the source language. Each constructor $k\in\K$ is associated with a finite set of positions $\mathsf{arity}(k)\subseteq \P$, representing the set of positions that children of $k$ can inhabit.
 
-\subsubsection{Well-sortedness}
+A \emph{vertex} $v = (u, k) \in \V = \U \times \K$ is labeled with a UID, $u$, and a constructor, $k$. 
 
-\begin{definition}
-  A \emph{well sorted graph} is a graph $G : \E \rightarrow \Sigma$
-  such that for all $\e \in \E$,
-  if $G(\e) \in \SetOf{\Plus, \Minus}$,
-  then $\e$ is a well sorted edge. 
-\end{definition}
+A \emph{location} $\ell = (v, p) \in \L$, represents the origin of an edge, where $v=(u,k)$ is drawn from $\V$ and position $p$ is drawn from $\mathsf{arity}(k)$.
 
-\begin{definition}
-  A \emph{well sorted edge} is an edge $(u_0, v{=}(u, k), p, (u', k')) \in \E$
-  such that $(v, p)$ is a well sorted source
-  and $(p, \sort{k'}) \in \arity{k}$.
-\end{definition}
+An \emph{edge} $\e{=}(w, \ell, v) \in \E = \W \times \L \times \V$ represents a directed multi-edge 
+    identified by $w$, 
+    originating from location $\ell$, 
+    with destination vertex $v$.
 
-\begin{definition}
-  A \emph{well sorted source} is a source $(v{=}(u, k), p) \in \V \times \P$
-  for which there exists a sort $S \in \SetOf{Exp, Pat, Var}$
-  such that $(p, S) \in \arity{k}$.
-\end{definition}
+A \emph{graph} $g : \E \rightarrow \Sigma$ is a function from edges to \emph{edge states} $\Sigma = \SetOf{\bot, \Plus, \Minus}$. A graph assigns only finitely many edges to $\Plus$. The total ordering $\bot \sqsubset \Plus \sqsubset \Minus$ forms a lattice over $\Sigma$. For $s_1$, $s_2 \in \Sigma$, $s_1 \sqcup s_2$ is defined to be the least upper bound of $s_1$ and $s_2$ with respect to the $\sqsubset$ ordering. 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+A graph patch command $\pi = (s,\e) \in \left\{\Plus, \Minus\right\} \times \E$ is a pair of an edge state (excluding $\bot$) and an edge. Each patch command corresponds to a transition relation between graphs:
+\[
+  g \overset{(s,\e)}{\longrightarrow} g\left[ \e \mapsto s \sqcup g(\e) \right]
+\]
+
+A \textit{graph patch} $\Q{\pi}$ is a sequence of graph patch commands, and the transition relation is extended to patches as the composition of the transitions of the constituent patch commands. 
+
+\begin{lemma}[Join Semilattice]
+  \label{lem:Join Semilattice}
+  $(\Sigma, \sqsubset)$ with $\sqcup$ forms a join semilattice. That is, $\sqcup$ is associative, commutative, and idempotent. 
+\end{lemma}
+
+\begin{theorem}[Commutativity]
+  \label{thm:Commutativity}
+  For all graphs $g$ and $g'$ and all graph patch commands $\pi_1 = (s_1, \e_1)$ and  $\pi_2 = (s_2, \e_2)$, 
+  if $g \overset{\pi_1 \pi_2}{\longrightarrow} g'$,
+  then $g \overset{\pi_2 \pi_1}{\longrightarrow} g'$
+\end{theorem}
+
+The commutativity of patch commands generalizes directly to the commutativity of patches. 
 
 \subsection{Groves}
-\label{sec:Formalism:Groves}
 
 \figureTermSyntaxContent
 
-For conflict hole forms $\conflictHole[i < n]{t_i}$,
-it must be the case that $n \geq 2$.
-We identify conflict holes up to reordering.
+A live subgraph $G$, which is a finite set of edges, decomposes into a grove $\Theta$, which is a finite set of terms.
 
-Let $\Set$ denote a set of terms.
 
-\begin{definition}
-  A \emph{grove} $\Grove = (\Set[NP], \Set[MP], \Set[U])$
-  is three sets of terms $\Set[NP], \Set[MP], \Set[U] \in Term$.
-\end{definition}
+\begin{align*}
+    \mathsf{parents}_{G}(v) &= \SetOf{v' \in \V \SuchThat{(w, (v', p), v) \in G \land w \in \W \land p \in \P}}\\
+    \mathsf{children}_{G}(\ell) &= \SetOf{(w,v) \in \W\times\V \SuchThat{(w, \ell, v) \in G}}
+\end{align*}
 
-\begin{definition}
-  The \emph{vertex corresponding to} term $t \in Term$,
-  when $t$ is not an empty hole or a conflict hole,
-  is the unique vertex $v \in \V$ for which there exists an edge $\e{=}(u, v', p, v)$
-  such that $\decomp{\e} = t$.
-  We write $v_t$ to denote the vertex corresponding to $t$.
-\end{definition}
 
-\begin{definition}
-  The \emph{ingraph of a term} $t \in Term$ is a graph $G_t : \E \rightarrow \Sigma$ such that
-  \[
-    G_t =
-    \begin{cases}
-      \bigcup_{t_i} G_{t_i} & t = \conflictHole[i < n]{t_i}, \\
-      \varnothing & t = \emptyHole{v}{p}, \text{ and} \\
-      G_{v_t} & \text{otherwise.} \\
+A vertex is an \textit{NP root} in $G$ if $\mathsf{parents}_{G}(v)=\emptyset$.\\
+
+A vertex is an \textit{MP root} in $G$ if $\abs{\mathsf{parents}_{G}(v)} > 1$.\\
+
+A vertex is a \textit{U root} in $G$ if $\exists \{v_i\}_{1 \leq i \leq n}$ such that $v_1 = v_n = v$, $\mathsf{parents}_{G}(v_i)=\{v_{i+1}\}$ for all $1 \leq i < n$, and the UID of $v$ is the minimum of the UIDs of $\{v_i\}_{1 \leq i \leq n}$.\\ 
+
+$\mathsf{root}_G(v)$ if $v$ is an NP root, an MP root, or a U root in $G$.
+
+
+\begin{lemma}
+\label{lem:uniq-classification}
+    (Unique Classification) For any live subgraph $G\subseteq \E$ and vertex $v\in V$, exactly one of the following holds: 
+    \begin{itemize}
+        \item $v$ is an NP root in $G$
+        \item $v$ is an MP root in $G$
+        \item $v$ is an U root in $G$
+        \item $v$ is not a root in $G$
+    \end{itemize}
+\end{lemma}
+
+
+    $\mathsf{decompVertex}_{G}(v = (u,k)) = \genericTerm{u}{\mathsf{decompLoc}_{G}((v,p))}$
+
+
+
+\begin{align*}
+    \mathsf{decompLoc}_{G}(\ell) &= \begin{cases}
+        \ehole &\quad \mathsf{children}_{G}(\ell) = \emptyset \\ \eid{w}{}{\mathsf{decompChild}_G(w, v')} &\quad \mathsf{children}_{G}(\ell) = \SetOf{(w,v')}\\ \conflictHoleTerm{\ell}{\eid{w}{}{\mathsf{decompChild}_G(w, v')} \SuchThat{(w,v') \in \mathsf{children}_{G}(\ell)}} &\quad \abs{\mathsf{children}_{G}(\ell)} > 1 \\
     \end{cases}
-  \]
-\end{definition}
-
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
-
-\subsubsection{Well-sortedness}
-
-\begin{definition}
-  A \emph{well sorted grove} is a grove $\gamma = (\Set[NP], \Set[MP], \Set[U])$ for which all of the following hold:
-  \begin{enumerate}
-    % All terms are well sorted.
-    \item For each term $t \in \Set[NP] \cup \Set[MP] \cup \Set[U]$, we have $t$ is a well sorted term.
-    % Any terms corresponding to edges originating from $\rootVertex$ are in $\Set[NP]$.
-    \item For each term $t \in \Set[MP] \cup \Set[U]$, we have $(\rootVertex, \Root) \notin \sources{G_t}$.
-    % The terms in $\Set[NP]$ correspond to edges with target vertices that have no parents.
-    \item For each term $t \in \Set[NP]$, we have $\SizeOf{\inedges{G_t}} = 0$.
-    % The terms in $\Set[MP]$ correspond to edges with target vertices that have multiple parents.
-    \item For each term $t \in \Set[MP]$, we have $\SizeOf{\inedges{G_t}} > 1$.
-    % The terms in $\Set[U]$ correspond to edges with target vertices that are unicycle roots.
-    \item For each term $t \in \Set[U]$, we have $\inedges{G_t} = \SetOf{(u, v, p, v')}$ and $v' = \min{\ancestors{v'}}$.
-  \end{enumerate}
-\end{definition}
-
-\begin{definition}
-  A \emph{well sorted term} is a term $t \in Term$ such that one of the following holds:
-  \begin{itemize}
-
-    % An empty hole is well sorted if its source vertex can have children at the source position.
-    \item $t = \emptyHole{v}{p}$ and $(v, p)$ is a well sorted source.
-
-    \item $t = \conflictHole[i < n]{t_i}$ and all of the following hold:
-      \begin{enumerate}
-        % The terms are well sorted.
-        \item For each term $t_i$, we have $t_i$ is a well sorted term.
-        % The inedges of the terms have the same source.
-        \item $\SizeOf{\sources{G_t}} = 1$.
-      \end{enumerate}
-
-    \item $t = \multiVertex{\e{=}(u, v, p, v')}$ and all of the following hold:
-      \begin{enumerate}
-        % The corresponding edge is well sorted ...
-        \item $\e$ is a well sorted edge.
-        % ... and its target vertex has multiple parents.
-        \item $\SizeOf{\inedges{v'}} > 1$.
-      \end{enumerate}
-
-    \item $t = \cycleVertex{\e{=}(u, v, p, v')}$ and all of the following hold:
-      \begin{enumerate}
-        % The corresponding edge is well sorted ...
-        \item $\e$ is a well sorted edge.
-        % ... and its target vertex is the root ...
-        \item $v' = \min{\ancestors{v'}}$
-        % ... of a unicycle.
-        \item For each vertex $v'' \in \ancestors{v'}$, we have $\SizeOf{\inedges{v''}} = 1$.
-      \end{enumerate}
-
-    \item All of the following hold:
-      \begin{enumerate}
-        % All incoming edges are well sorted.
-        \item $G_t$ is a well sorted graph.
-        % The in-graph of t is not empty.
-        \item $\SizeOf{\inedges{G_t}} \geq 1$.
-        % All incoming edges target the vertex corresponding to t.
-        \item For each edge $(u, v, p, v') \in \inedges{G_t}$, we have $v' = v_t$.
-        % The destination vertices of all incoming edges have the same id and constructor.
-        % The constructor matches the term.
-        \item There exists a unique identifier $u_0 \in \U$ such that,
-          for each edge $(u, v, p, v') \in \inedges{G_t}$,
-          we have $v' = (u_0, \constructor{t})$.
-      \end{enumerate}
-  \end{itemize}
-\end{definition}
-
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
-
-\subsubsection{Constructors}
-
-\[
-  \arraycolsep=0pt
-  \begin{array}{ll}
-    \multicolumn{2}{l}{\sortOp : \K \to \SetOf{Exp, Pat, Typ}} \\
-    \hline
-    \sort{\Root}={} & Exp \\
-    \sort{\ExpVar(x)}={} & Exp \\
-    \sort{\ExpLam}={} & Exp \\
-    \sort{\ExpApp}={} & Exp \\
-    \sort{\ExpPlus}={} & Exp \\
-    \sort{\ExpTimes}={} & Exp \\
-    \sort{\ExpNum(n)}={} & Exp \\
-    \sort{\PatVar(x)}={} & Pat \\
-    \sort{\TypArrow}={} & Typ \\
-    \sort{\TypNum}={} & Typ \\
-  \end{array}
-\]
-%
-% \figureArityContent
-%
-\[
-  \arraycolsep=0pt
-  \begin{array}{ll}
-    \multicolumn{2}{l}{\defaultposOp : \K \to \P \times \P} \\
-    \hline
-    \defaultpos{\Root}={} & (\Root, \Root) \\
-    \defaultpos{\ExpLam}={} & (\LamBody, \LamBody) \\
-    \defaultpos{\ExpApp}={} & (\AppFun, \AppArg) \\
-    \defaultpos{\ExpPlus}={} & (\PlusLeft, \PlusRight) \\
-    \defaultpos{\ExpTimes}={} & (\TimesLeft, \TimesRight) \\
-    \defaultpos{\TypArrow}={} & (\ArrowArg, \ArrowResult) \\
-  \end{array}
-\]
-%
-% We write $\defaultpos{k}$ undefined when there does not exist a $p$ such that $\defaultpos{k} = p$.
-
-\noindent $\boxed{\constructor{t} = k}$
-%
-\begin{align*}
-  \constructor{e} &= \econstructor{e} \\
-  \constructor{p} &= \pconstructor{p} \\
-  \constructor{\tau} &= \tconstructor{\tau}
 \end{align*}
 
-\noindent $\boxed{\econstructor{e} = k}$
-%
+
+
 \begin{align*}
-  \econstructor{\eVar{G}{x}} &= \ExpVar(x) \\
-  \econstructor{\eFun{G}{q}{\tau}{e}} &= \ExpLam \\
-  \econstructor{\eApp{G}{e_1}{e_2}} &= \ExpApp \\
-  \econstructor{\eNum{G}{n}} &= \ExpNum(n) \\
-  \econstructor{\ePlus{G}{e_1}{e_2}} &= \ExpPlus \\
-  \econstructor{\eTimes{G}{e_1}{e_2}} &= \ExpTimes
+    \mathsf{decompChild}_G(w, v)  &= \begin{cases}
+        \multiref  &\quad v\text{ is an MP root in } G\\
+        \uniref  &\quad v\text{ is a U root in} G\\
+        \mathsf{decompVertex}_{G}(v) &\quad v\text{ is not a root in} G
+    \end{cases} 
 \end{align*}
 
-\noindent $\boxed{\pconstructor{q} = k}$
-%
-\begin{align*}
-  \pconstructor{\pVar{G}{x}} &= \PatVar(x)
-\end{align*}
 
-\noindent $\boxed{\tconstructor{\tau} = k}$
-%
-\begin{align*}
-  \tconstructor{\tArrow{G}{\tau_1}{\tau_2}} &= \TypArrow \\
-  \tconstructor{\tNum{G}} &= \TypNum
-\end{align*}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    $\mathsf{vertices}(G) = \SetOf{v \in \V \SuchThat{(w, (v,p), v') \in G \land w \in \W \land v' \in \V \land p \in \P}}$
 
-\subsection{Decomposition and Recomposition}
-\label{sec:Formalism:Decomposition and Recomposition}
 
-Let $G : \E \rightarrow \Sigma$ be a well sorted graph.
+
+    $\mathsf{decomp}(G) = \SetOf{\mathsf{decompVertex}_{G}(v) \SuchThat{\mathsf{root}_G(v)} \land v \in \mathsf{vertices}(G)}$
+
+
+
+    \begin{align*}
+        \mathsf{recompTerm}(\genericTerm{u}{\subtermMV_p}) &= \bigcup_{p\in \mathsf{arity}(k)}\mathsf{recompChildTerm}(((u,k),p), \subtermMV_p)\\
+        \mathsf{recompTerm}(\multiref) &= \emptyset\\
+        \mathsf{recompTerm}(\uniref) &= \emptyset
+    \end{align*}
+
+
+
+    \begin{align*}
+    \mathsf{recompChildTerm}(\ell, \ehole) &= \emptyset\\
+    \mathsf{recompChildTerm}(\ell, \eid{w}{}\termMV) &= \SetOf{(w, \ell, \mathsf{vertexOfTerm}(\termMV))}\cup \mathsf{recompTerm}(t)\\
+    \mathsf{recompChildTerm}(\ell, \conflictHoleTerm{\ell}{\eid{w_i}{}\termMV_i}_{i<n}) &= \bigcup_{i<n} (\SetOf{(w_i, \ell, \mathsf{vertexOfTerm}(\termMV_i))}\cup \mathsf{recompTerm}(t_i))
+    \end{align*}
+    
+
+
+    \begin{align*}
+    \mathsf{vertexOfTerm}(\genericTerm{u}{\subtermMV_p}) &= (u,k)\\
+    \mathsf{vertexOfTerm}(\multiref) &= v\\
+    \mathsf{vertexOfTerm}(\uniref) &= v
+    \end{align*}
+    
+
+
+    $\mathsf{recomp}(T) = \bigup{\termMV \in T}\mathsf{recompTerm}(\termMV)$
+
 
 \begin{theorem}
-  There exists a well sorted grove $\Grove$ such that $\decomp{G} = \Grove$ and $\recomp{\Grove} = G$.
+\label{thm:Recomposability}
+    (Recomposability) For all subgraphs $G$, $\mathsf{recomp}(\mathsf{decomp}(G))=G$.
 \end{theorem}
 
-% \begin{theorem}
-%   There exists a well sorted grove $\Grove$ such that $\decomp{G} = \Grove$.
-% \end{theorem}
+\subsection{Partitioned Groves}
 
-% Proof: provide a witness that demonstrates the conclusion.
+A partitioned grove $\gamma$ is a quadruple $(\subtermMV_r, NP, MP, U)$ where $\subtermMV_r \in ChildTerm$ and $NP, MP, U$ are finite sets of terms. A grove $\mathsf{decomp}(G)$ is partitioned with respect to a \textit{distinguished root} location $\ell_r=(v_r=(u_r,k_r),p_r)$ such that $v_r$ is an NP root in $G$ and $\mathsf{arity}(k_r)=\SetOf{p_r}$.
 
-Let $\Grove = (\Set[NP], \Set[MP], \Set[U]) = \decomp{G}$.
-
-\begin{lemma}
-  $\Grove$ is a well sorted grove.
-\end{lemma}
-
-\begin{lemma}
-  For each edge $\e \in \inedges{G}$,
-  there exists a term $t \in \Set[NP] \cup \Set[MP] \cup \Set[U]$
-  such that $\decomp{\e} = t$.
-\end{lemma}
-
-\begin{lemma}
-  For each term $t \in \Set[NP] \cup \Set[MP] \cup \Set[U]$,
-  there exists a subgraph $G' \subseteq G$ such that $\decomp{G'} = t$.
-\end{lemma}
-
-\begin{lemma}
-  Let $G|_t$ denote the subgraph of $G$ such that $\decomp{G|_t} = t$.
-  Then
-  \[
-    \bigcup_{t \in \Set[NP] \cup \Set[MP] \cup \Set[U]} G|_t = G.
-  \]
-\end{lemma}
-
-% --
-
-Let $\Grove = (\Set[NP], \Set[MP], \Set[U])$ be a well sorted grove,
-and let $G : \E \rightarrow \Sigma = \recomp{\Grove}$.
-
-\begin{lemma}
-  $G$ is a well sorted graph.
-\end{lemma}
-
-\begin{lemma}
-  For each term $t \in \Set[NP] \cup \Set[MP] \cup \Set[U]$,
-  there exists a subgraph $G' \subseteq G$ such that $\recomp{t} = G'$.
-\end{lemma}
-
-\begin{lemma}
-  Let $G|_t$ denote the subgraph of $G$ such that $\recomp{t} = G|_t$.
-  Then
-  \[
-    \bigcup_{t \in \Set[NP] \cup \Set[MP] \cup \Set[U]} G|_t = G.
-  \]
-\end{lemma}
-
-% \begin{theorem}
-%   For any well sorted graph $G$,
-%   if $\decomp{G} = \Grove$ then $\recomp{\Grove} = G$.
-% \end{theorem}
-
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
-
-\subsubsection{Decomposition}
-
-\noindent $\boxed{\decomp{G} = \Grove}$
-%
-\figureDecompositionDefDecomp
-
-\noindent $\boxed{\decomp{\e} = t}$
-%
-\figureDecompositionDefDecompTerm
-
-\noindent $\boxed{\edecomp{\e} = e}$
-%
-\figureDecompositionDefEdecomp
-
-\noindent $\boxed{\edecompPrime{\e}{p} = e}$
-%
-\figureDecompositionDefEdecompPrime
-
-\noindent $\boxed{\pdecomp{\e} = q}$
-%
-\figureDecompositionDefPdecomp
-
-\noindent $\boxed{\pdecompPrime{\e}{p} = q}$
-%
-\figureDecompositionDefPdecompPrime
-
-\noindent $\boxed{\tdecomp{\e} = \tau}$
-%
-\figureDecompositionDefTdecomp
-
-\noindent $\boxed{\tdecompPrime{\e}{p} = \tau}$
-%
-\figureDecompositionDefTdecompPrime%
-
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
-
-\subsubsection{Recomposition}\hspace*{\fill} \\
-
-\noindent $\boxed{\recomp{\Grove} = G}$
-%
 \begin{align*}
-  \recomp{(\Set[NP], \Set[MP], \Set[U])} &= \bigcup_{t \in \Set[NP] \cup \Set[MP] \cup \Set[U]} \recomp{t}
+    \mathsf{distinguishedChildTerm}(\ell_r=((u_r,k_r),p_r), \Theta) &= \subtermMV_r &\quad \text{ if }
+    \eid{u_r}{k_r}\ {\subtermMV_r}\in \Theta \\
+    \mathsf{distinguishedChildTerm}(\ell_r=((u_r,k_r),p_r), \Theta) &= \emptyHole{\ell_r} &\quad \text{ otherwise}
 \end{align*}
 
-\noindent $\boxed{\recomp{t} = G}$
-%
-\begin{align*}
-  \recomp{e} &= \erecomp{e} \\
-  \recomp{q} &= \precomp{q} \\
-  \recomp{\tau} &= \trecomp{\tau}
-\end{align*}
 
-\noindent $\boxed{\erecomp{e} = G}$
-%
-\begin{align*}
-  \erecomp{\eVar{G}{x}} &= G
-  \\
-  \erecomp{\eFun{G}{q}{\tau}{e}}
-    &= G \cup \precomp{q} \cup \trecomp{\tau} \cup \erecomp{e}
-  \\
-  \erecomp{\eApp{G}{e_1}{e_2}}
-    &= G \cup \erecomp{e_1} \cup \erecomp{e_2}
-  \\
-  \erecomp{\eNum{G}{n}} &= G
-  \\
-  \erecomp{\ePlus{G}{e_1}{e_2}}
-    &= G \cup \erecomp{e_1} \cup \erecomp{e_2}
-  \\
-  \erecomp{\eTimes{G}{e_1}{e_2}}
-    &= G \cup \erecomp{e_1} \cup \erecomp{e_2}
-  \\
-  \erecomp{\conflictHole[i < n]{e_i}}
-  &= \bigcup_{i=1}^n \erecomp{e_i}
-  \\
-  \erecomp{\multiVertex{\e}} &= \SetOf{\e \mapsto \Plus}
-  \\
-  \erecomp{\cycleVertex{\e}} &= \SetOf{\e \mapsto \Plus}
-  \\
-  \erecomp{\emptyHole{v}{p}} &= \SetOf{}
-\end{align*}
 
-\noindent $\boxed{\precomp{q} = G}$
-%
-\begin{align*}
-  \precomp{\pVar{G}{x}} &= G
-  \\
-  \precomp{\conflictHole[i < n]{q_i}} &= \bigcup_{i=1}^n \precomp{q_i}
-  \\
-  \precomp{\multiVertex{\e}} &= \SetOf{\e \mapsto \Plus}
-  \\
-  \precomp{\cycleVertex{\e}} &= \SetOf{\e \mapsto \Plus}
-  \\
-  \precomp{\emptyHole{v}{p}} &= \SetOf{}
-\end{align*}
+    \begin{align*}
+    \mathsf{rootVertexOfTerm}_{G}(\genericTerm{u}{\subtermMV_p}) &= (u,k)\\
+    \mathsf{rootVertexOfTerm}_{G}(\multiref) &= v'\mathsf{ where }(w, (v',p), v)\in G\\
+    \mathsf{rootVertexOfTerm}_{G}(\uniref) &=  v'\mathsf{ where }(w, (v',p), v)\in G
+    \end{align*}
+    
 
-\noindent $\boxed{\trecomp{\tau} = G}$
-%
-\begin{align*}
-  \trecomp{\tArrow{G}{\tau_1}{\tau_2}}
-    &= G \cup \trecomp{\tau_1} \cup \trecomp{\tau_2}
-  \\
-  \trecomp{\tNum{G}} &= G
-  \\
-  \trecomp{\conflictHole[i < n]{\tau_i}} &= \bigcup_{i=1}^n \trecomp{\tau_i}
-  \\
-  \trecomp{\multiVertex{\e}} &= \SetOf{\e \mapsto \Plus}
-  \\
-  \trecomp{\cycleVertex{\e}} &= \SetOf{\e \mapsto \Plus}
-  \\
-  \trecomp{\emptyHole{v}{p}} &= \SetOf{}
-\end{align*}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \begin{align*}
+    \mathsf{grove}(\ell_r=(v_r,p_r), \Theta, G) = (&\mathsf{distinguishedChildTerm}(\ell_r, \Theta),\\ &\SetOf{t\in \Theta \SuchThat{ \mathsf{rootVertexOfTerm}_{G}(t)\neq v_r\text{ and is an NP root in }G}},\\
+    &\SetOf{t\in \Theta \SuchThat{ \mathsf{rootVertexOfTerm}_{G}(t)\text{ is an MP root in }G}},\\ 
+    &\SetOf{t\in \Theta \SuchThat{ \mathsf{rootVertexOfTerm}_{G}(t)\text{ is a U root in }G}}) 
+    \end{align*}
 
-\subsection{Cursors}
+\subsection{User Edit Actions}
 
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+\figureUserActionSyntax
 
-\subsubsection{Zippered Terms}
 
-\[
-  \arraycolsep=0pt
-  \begin{array}{lcllll}
-    \Z{t} & {}\in{} & ZTerm & {}::={} &
-      \Z{e}
-      \mid \Z{q}
-      \mid \Z{\tau}
-    \\
-    \Z{e} & {}\in{} & ZExp & {}::={} &
-      \cursor{e}
-      \mid \eFun{G}{\Z{q}}{\tau}{e}
-      \mid \eFun{G}{q}{\Z{\tau}}{e}
-      \mid \eFun{G}{q}{\tau}{\Z{e}}
-      \mid \eApp{G}{\Z{e}}{e}
-      \mid \eApp{G}{e}{\Z{e}}
-      \mid \ePlus{G}{\Z{e}}{e}
-      \mid \ePlus{G}{e}{\Z{e}}
-      \mid \eTimes{G}{\Z{e}}{e}
-      \\
-    &&&&
-      \mid \eTimes{G}{e}{\Z{e}}
-      \mid \conflictHole{\Z{e}, \SetOf{e_i}_{i < n}}
-    \\
-    \Z{q} & {}\in{} & ZPat & {}::={} &
-      \cursor{q}
-      \mid \conflictHole{\Z{q}, \SetOf{q_i}_{i < n}}
-    \\
-    \Z{\tau} & {}\in{} & ZTyp & {}::={} &
-      \cursor{\tau}
-      \mid \tArrow{G}{\Z{\tau}}{\tau}
-      \mid \tArrow{G}{\tau}{\Z{\tau}}
-      \mid \conflictHole{\Z{\tau}, \SetOf{\tau_i}_{i < n}}
-    \\
-  \end{array}
+\label{def:edges}
+    \[
+    \begin{array}{ccc}
+    \mathsf{edges}_G(\ehole) & = & \emptyset\\
+    \mathsf{edges}_G(\conflict{\termMV}) & = & \SetOf{(w_i,\ell,v)\SuchThat{(w_i,\ell,v)\in G\land i<n\land \ell\in\L\land v\in\V}}\\
+    \mathsf{edges}_G(\genericTerm{u}{\subtermMV_p}) & = & \SetOf{(w,\ell,(u,k))\SuchThat{(w,\ell,(u,k))\in G\land w\in\W\land \ell\in\L}}\\
+    \mathsf{edges}_G(\multiref) & = & \SetOf{(w,\ell,v)\SuchThat{(w,\ell,v)\in G\land\ell\in\L}}\\
+    \mathsf{edges}_G(\uniref) & = & \SetOf{(w,\ell,v)\SuchThat{(w,\ell,v)\in G\land\ell\in\L}}\\
+    \end{array}
 \]
 
-Let $\Z{\Set} = (\Set, \Z{t})$ denote a set of terms paired with a zippered term.
 
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+Each $k\in\K$ in the language is equipped with a designated position $\mathsf{defaultPos}(k)\in \mathsf{arity}(k)$. 
 
-\subsubsection{Zippered Groves}
+\figureUserActionTransitionsContent
 
-\begin{gather*}
-  \arraycolsep=0pt
-  \begin{array}{lll}
-    \Z{\gamma} & {}::={} &
-      (\Z{\Set}_{NP}, \Set[MP], \Set[U])
-      \mid (\Set[NP], \Z{\Set}_{MP}, \Set[U])
-      \mid (\Set[NP], \Set[MP], \Z{\Set}_U)
-  \end{array}
-\end{gather*}
-
-
-
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
-
-\subsubsection{Cursor Erasure}
-\hspace*{\fill} \\
-
-
-\noindent $\boxed{\erase{\Z{G}} = G}$
-
-\noindent $\boxed{\erase{\Z{\gamma}} = \gamma}$
-%
-\begin{align*}
-  \erase{(\Z{\Set}_{NP}, \Set[MP], \Set[U])} &= (\erase{\Z{\Set}_{NP}}, \Set[MP], \Set[U]) \\
-  \erase{(\Set[NP], \Z{\Set}_{MP}, \Set[U])} &= (\Set[NP], \erase{\Z{\Set}_{MP}}, \Set[U]) \\
-  \erase{(\Set[NP], \Set[MP], \Z{\Set}_U)} &= (\Set[NP], \Set[MP], \erase{\Z{\Set}_U})
-\end{align*}
-
-\noindent $\boxed{\erase{\Z{\Set}} = \Set}$
-%
-\begin{align*}
-  \erase{(\Set, \Z{t})} &= \Set \cup \SetOf{t}
-\end{align*}
-
-\noindent $\boxed{\erase{\Z{e}} = e}$
-%
-\begin{align*}
-  \erase{\cursor{e}} &= e \\
-  \erase{\left(\eFun{G}{\Z{q}}{\tau}{e}\right)} &= \eFun{G}{\erase{\Z{q}}}{\tau}{e} \\
-  \erase{\left(\eFun{G}{q}{\Z{\tau}}{e}\right)} &= \eFun{G}{q}{\erase{\Z{\tau}}}{e} \\
-  \erase{\left(\eFun{G}{q}{\tau}{\Z{e}}\right)} &= \eFun{G}{q}{\tau}{\erase{\Z{e}}} \\
-  \erase{\eApp{G}{\Z{e}_1}{e_2}} &= \eApp{G}{\erase{\Z{e}_1}}{e_2} \\
-  \erase{\eApp{G}{e_1}{\Z{e}_2}} &= \eApp{G}{e_1}{\erase{\Z{e}_2}} \\
-  \erase{\ePlus{G}{\Z{e}_1}{e_2}} &= \ePlus{G}{\erase{\Z{e}_1}}{e_2} \\
-  \erase{\ePlus{G}{e_1}{\Z{e}_2}} &= \ePlus{G}{e_1}{\erase{\Z{e}_2}} \\
-  \erase{\eTimes{G}{\Z{e}_1}{e_2}} &= \eTimes{G}{\erase{\Z{e}_1}}{e_2} \\
-  \erase{\eTimes{G}{e_1}{\Z{e}_2}} &= \eTimes{G}{e_1}{\erase{\Z{e}_2}} \\
-  \erase{\conflictHole{\Z{e}, \SetOf{e_i}_{i < n}}} &= \conflictHole{\erase{\Z{e}}, \SetOf{e_i}_{i < n}}
-\end{align*}
-
-\noindent $\boxed{\erase{\Z{q}} = q}$
-%
-\begin{align*}
-  \erase{\cursor{q}} &= q \\
-  \erase{\conflictHole{\Z{q}, \SetOf{q_i}_{i < n}}} &= \conflictHole{\erase{\Z{q}}, \SetOf{q_i}_{i < n}}
-\end{align*}
-
-\noindent $\boxed{\erase{\Z{\tau}} = \tau}$
-%
-\begin{align*}
-  \erase{\cursor{\tau}} &= \tau \\
-  \erase{\left(\tArrow{G}{\Z{\tau}_1}{\tau_2}\right)} &= \tArrow{G}{\erase{\Z{\tau}_1}}{\tau_2} \\
-  \erase{\left(\tArrow{G}{\tau_1}{\Z{\tau}_2}\right)} &= \tArrow{G}{\tau_1}{\erase{\Z{\tau}_2}} \\
-  \erase{\conflictHole{\Z{\tau}, \SetOf{\tau_i}_{i < n}}} &= \conflictHole{\erase{\Z{\tau}}, \SetOf{\tau_i}_{i < n}}
-\end{align*}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{User Actions and Graph Cursors}
-
-\[
-  \arraycolsep=0pt
-  \begin{array}{lcllll}
-    \alpha & {}\in{} & Act & {}::={} &
-      \Construct{k}
-      \mid \Delete
-      \mid \Reposition{v}{p}
-    \\
-    c & {}\in{} & Cur & {}::={} &
-      \CVertex{v}
-      \mid \CEdge{\e}
-      \mid \CSource{v}{p}
-    \\
-  \end{array}
-\]
-
-Let $\A = \SetOf{\Plus, \Minus} \times \E$ the set of all \emph{graph actions}.
-We write $a$ to denote a graph action and $\Q{a}$ to denote a set of graph actions.
-
-\begin{definition}
-  A \emph{graph cursor} is an element of $Cur$.
-\end{definition}
-
-\begin{definition}
-  A \emph{well sorted graph cursor} is a graph cursor $c \in Cur$
-  such that one of the following holds:
-  \begin{itemize}
-    \item $c = \CVertex{v}$ and $v \neq v_{root}$.
-    \item $c = \CEdge{\e}$ and $\e$ is a well sorted edge.
-    \item $c = \CSource{v}{p}$ and $(v, p)$ is a well sorted source.
-  \end{itemize}
-\end{definition}
-
-\begin{definition}
-  An \emph{almost valid graph cursor} is a well-sorted graph cursor $c \in Cur$
-  such that one of the following holds:
-  \begin{itemize}
-    \item $c = \CVertex{v}$.
-    \item $c = \CEdge{\e}$ and $\e \in \inedges{G}$.
-    \item $c = \CSource{v}{p}$
-      and there exists an edge $\e{=}(u, v', p', v) \in \E$
-      such that $G(\e) \in \SetOf{\Plus, \Minus}$.
-  \end{itemize}
-\end{definition}
-
-\begin{definition}
-  A \emph{valid graph cursor} is an almost valid graph cursor $c \in Cur$
-  such that one of the following holds:
-  \begin{itemize}
-    \item $c = \CVertex{v}$.
-    \item $c = \CEdge{(u, v, p, v')}$ and one of the following holds:
-    \begin{itemize}
-      \item $\SizeOf{\inedges{G_{v'}}} > 1$.
-      \item $\SizeOf{\inedges{G_{v'}}} = 1$ and $v' = \min{\ancestors{v'}}$.
-    \end{itemize}
-    \item $c = \CSource{v}{p}$ and $\SizeOf{\outedges{v}{p}} \neq 1$.
-  \end{itemize}
-\end{definition}
-
-Let $\Z{\Grove}$ be a zippered grove such that $\erase{\Z{\Grove}}$ is a well sorted grove,
-and let $G = \recomp{\erase{\Z{\Grove}}}$ a graph,
-and let $\alpha \in Act$ a user action.
-
-% \noindent $\boxed{\uparrow{\recomp{\Z{\Grove}}}} = \Z{G}$
-
-% $\recomp{\erase{\Z{\Grove}}} = \erase{\Z{G}}$
-
-% \noindent $\boxed{\downarrow{\decomp{\Z{G}}}} = \Z{\Grove}$
-% 
-$\decomp{\erase{\Z{G}}} = \erase{\Z{\Grove}}$
-
-
-% \begin{theorem}[Graph-Grove Equivalence]
-%     If $\applyUserAction{\Z{\Grove}}{\alpha}{\Z{\Grove'}}$ where 
-%     $\applyAction{\Z{\Grove}}{\alpha}{\Q{a}}{c}$ and $\Z{G} = {\uparrow{\recomp{\Z{\Grove}}}}$ such that $\applyUserAction{G}{ \Q{a} }{G'}$ then $\downarrow{\decomp{\Z{ G'}}}$ = $\Z{\Grove'}$
-% \end{theorem}
-
-\begin{theorem}[Sensibility]
-  If $\applyAction{\Z{\Grove}}{\alpha}{\Q{a}}{c}$,
-  then $G \action{\Q{a}} G'$ and $G'$ is well sorted.
-\end{theorem}
-
-% \noindent $\boxed{\applyUserAction{\Z{\Grove}}{\alpha}{\Z{\Grove'}}}$
-
-% \begin{mathpar}
-%     \inferrule{
-%     \applyUserAction{ \Z{\Set}_{NP} }{ \alpha }{ \Z{\Set'}_{NP} }
-%   }{
-%     \applyUserAction{ (\Z{\Set}_{NP}, \Set[MP], \Set[U]) }{ \alpha }{ (\Z{\Set'}_{NP}, \Set[MP], \Set[U]) }
-%   }
-
-%   \inferrule{
-%     \applyUserAction{ \Z{\Set}_{MP} }{ \alpha }{ \Z{\Set'}_{MP} }
-%   }{
-%     \applyUserAction{ (\Set[NP], \Z{\Set}_{MP}, \Set[U]) }{ \alpha }{ (\Set[NP], \Z{\Set'}_{MP}, \Set[U]) }
-%   }
-
-%   \inferrule{
-%     \applyUserAction{ \Z{\Set}_{U} }{ \alpha }{ \Z{\Set'}_{U} }
-%   }{
-%     \applyUserAction{ (\Set[NP], \Set[MP], \Set[U]) }{ \alpha }{ (\Set[NP], \Set[MP], \Z{\Set'}_{U}) }
-%   }
-% \end{mathpar}
-
-% \noindent $\boxed{\applyUserAction{\Z{\Set}}{\alpha}{\Z{\Set'}}}$
-
-% \begin{mathpar}
-%     \inferrule{
-%         \applyUserAction{\Z{t}}{\alpha}{\Z{t'}}
-%     }{ 
-%         \applyUserAction{(\Set, \Z{t})}{\alpha}{\Set' \cup \Z{t'}} 
-%     }
-% \end{mathpar}
-
-% \noindent $\boxed{\applyUserAction{\Z{t}}{\alpha}{\Z{t'}}}$
-
-% \begin{mathpar}
-%     \inferrule[Construct]{
-%     (p_s, \sort{k}) \in \arity{k_s} \\
-%     \defaultpos{k} \text{ undefined} \\
-%     v_k = (u_k, k) \\  % For the new term 
-%     \decomp{G_{v_k}} = t
-%   }{
-%     \applyUserAction{ \cursor{\emptyHole{v_s{=}(u_s, k_s)}{p_s}} }{ \Construct{k, u_k, u_{\e}} }{\Z{t}}
-%   }
-
-%   \inferrule[ConstructWrap]{
-%     G[\inedges{G_t} = \SetOf{\e_i{=}(u_i, v_i, p_i, v_i'{=}(u_i', k_i'))}_{i < n}] = \SetOf{\Minus{}}_{i < n} \\ % edges pointing to term are deleted
-%     v_k = (u_k, k) \\ % new term
-%     \decomp{G_{v_k}} = t' \\ % where cursor will go? 
-%     \defaultpos{k} = (\pWrap, \pPost) \\ 
-%     \SetOf{\sort{k_i} = \sort{k}}_{i < n} \\
-%     (\pWrap, \sort{k}) \in \arity{k} \\
-%     G[\SetOf{(u_i, (v_i, p_i), v_k}] = \SetOf{\Plus}_{i < n} \\ % edges from old terms parents to fresh term
-%     G[\SetOf{(u_i, (v_k, \pWrap), v_{i'})}] = \SetOf{\Plus}_{n \leq i < 2n} \\ 
-%     % edges from new term to now orphaned term
-%   }{
-%     \applyUserAction{\cursor{t}}{\Construct{k, u_k, \Q{u}_{i < 2n}}}{\Z{t'}}
-%   }
-
-
-%   \inferrule[Delete]{
-%     \sources{G_{t_{victim}}} = {(v,p)}\\ % Victim's source
-%     \decomp{G_v} = t' \\ % Parent term
-%     G[\inedges{G_{t_{victim}}} = \SetOf{\e_{i}}_{i < n}] = \SetOf{\Minus} % edges pointing to this term are deleted
-%     % check notation
-%     }{
-%     \applyUserAction{\cursor{t}}{\Delete}{\Z{t'};t_{victim}}
-%   }
-
-%   \inferrule[DeleteMultiparent]{
-%     \decomp{G_v} = t' \\
-%     | \sources{G_t} | > 1
-%   }
-%   {
-%     \applyUserAction{\cursor{t}}{\Delete}{\Z{t'}}
-%   }
-
-%   \inferrule[Reposition]{
-%     G[\inedges{G_t} = \SetOf{\e_{i}}_{i < n}] = \SetOf{\Minus} \\ % edges pointing to t are deleted
-%     % G(v) = \varnothing \\ % is this really the same thing?
-%     | \outedges{v}{p} | = 0 \\ % new spot must be empty hole
-%     \SetOf{(p, \sort{k_i'}) \in \arity{k}}_{i < n} 
-%     G[\inedges{G_{v_i}} = \SetOf{(u_{\e_i}, (v,p), v_i)}_{i < n}] = \SetOf{\Plus} \\
-%     \decomp{G_v} = t'
-%   }{
-%     \applyUserAction{\cursor{t}}{\Reposition{(v=(u, k),p)}{\Q{u_{\e}}}}{\Z{t'}}
-%   }
-
-% \end{mathpar}
-
-\noindent $\boxed{\applyAction{ \Z{\Grove} }{ \alpha }{ \Q{a} }{ c }}$
-%
-\begin{mathpar}
-  \inferrule{
-    \applyAction{ \Z{\Set}_{NP} }{ \alpha }{ \Q{a} }{ c }
-  }{
-    \applyAction{ (\Z{\Set}_{NP}, \Set[MP], \Set[U]) }{ \alpha }{ \Q{a} }{ c }
-  }
-
-  \inferrule{
-    \applyAction{ \Z{\Set}_{MP} }{ \alpha }{ \Q{a} }{ v' }{ p' }
-  }{
-    \applyAction{ (\Set[NP], \Z{\Set}_{MP}, \Set[U]) }{ \alpha }{ \Q{a} }{ c }
-  }
-
-  \inferrule{
-    \applyAction{ \Z{\Set}_U }{ \alpha }{ \Q{a} }{ c }
-  }{
-    \applyAction{ (\Set[NP], \Set[MP], \Z{\Set}_U) }{ \alpha }{ \Q{a} }{ c }
-  }
-\end{mathpar}
-
-\noindent $\boxed{\applyAction{ \Z{\Set} }{ \alpha }{ \Q{a} }{ c }}$
-%
-\begin{mathpar}
-  \inferrule{
-    \applyAction{ \Z{t} }{ \alpha }{ \Q{a} }{ c }
-  }{
-    \applyAction{ (\Set, \Z{t}) }{ \alpha }{ \Q{a} }{ c }
-  }
-\end{mathpar}
-\noindent $\boxed{\applyAction{ \Z{t} }{ \alpha }{ \Q{a} }{ c }}$
-%
-\begin{mathpar}
-  \inferrule{
-    \applyAction{ \Z{q} }{ \alpha }{ \Q{a} }{ c }
-  }{
-    \applyAction{ (\eFun{G}{\Z{q}}{\tau}{e}) }{ \alpha }{ \Q{a} }{ c }
-  }
-
-  \inferrule{
-    \applyAction{ \Z{\tau} }{ \alpha }{ \Q{a} }{ c }
-  }{
-    \applyAction{ (\eFun{G}{q}{\Z{\tau}}{e}) }{ \alpha }{ \Q{a} }{ c }
-  }
-
-  \inferrule{
-    \applyAction{ \Z{e} }{ \alpha }{ \Q{a} }{ c }
-  }{
-    \applyAction{ (\eFun{G}{q}{\tau}{\Z{e}}) }{ \alpha }{ \Q{a} }{ c }
-  }
-
-  \inferrule{
-    \applyAction{ \Z{e}_1 }{ \alpha }{ \Q{a} }{ c }
-  }{
-    \applyAction{ \eApp{G}{\Z{e}_1}{e_2} }{ \alpha }{ \Q{a} }{ c }
-  }
-
-  \inferrule{
-    \applyAction{ \Z{e}_2 }{ \alpha }{ \Q{a} }{ c }
-  }{
-    \applyAction{ \eApp{G}{e_1}{\Z{e}_2} }{ \alpha }{ \Q{a} }{ c }
-  }
-
-  \inferrule{
-    \applyAction{ \Z{e}_1 }{ \alpha }{ \Q{a} }{ c }
-  }{
-    \applyAction{ (\ePlus{G}{\Z{e}_1}{e_2}) }{ \alpha }{ \Q{a} }{ c }
-  }
-
-  \inferrule{
-    \applyAction{ \Z{e}_2 }{ \alpha }{ \Q{a} }{ c }
-  }{
-    \applyAction{ (\ePlus{G}{e_1}{\Z{e}_2}) }{ \alpha }{ \Q{a} }{ c }
-  }
-
-  \inferrule{
-    \applyAction{ \Z{e}_1 }{ \alpha }{ \Q{a} }{ c }
-  }{
-    \applyAction{ (\eTimes{G}{\Z{e}_1}{e_2}) }{ \alpha }{ \Q{a} }{ c }
-  }
-
-  \inferrule{
-    \applyAction{ \Z{e}_2 }{ \alpha }{ \Q{a} }{ c }
-  }{
-    \applyAction{ (\eTimes{G}{e_1}{\Z{e}_2}) }{ \alpha }{ \Q{a} }{ c }
-  }
-
-  \inferrule{
-    \applyAction{ \Z{\tau}_1 }{ \alpha }{ \Q{a} }{ c }
-  }{
-    \applyAction{ (\tArrow{G}{\Z{\tau}_1}{\tau_2}) }{ \alpha }{ \Q{a} }{ c }
-  }
-
-  \inferrule{
-    \applyAction{ \Z{\tau}_2 }{ \alpha }{ \Q{a} }{ c }
-  }{
-    \applyAction{ (\tArrow{G}{\tau_1}{\Z{\tau}_2}) }{ \alpha }{ \Q{a} }{ c }
-  }
-
-  \inferrule{
-    \applyAction{ \Z{t} }{ \alpha }{ \Q{a} }{ c }
-  }{
-    \applyAction{ \conflictHole{\Z{t}, \SetOf{t_i}_{i < n}} }{ \alpha }{
-      \Q{a}
-    }{ c }
-  }
-\end{mathpar}
-%
-\begin{mathpar}
-  \inferrule[Construct]{
-    % If:
-    % 
-    % 1. The term under the cursor is a hole
-    % 
-    % 2. The user action is well sorted
-    (p_s, \sort{k}) \in \arity{k_s} \\
-    % 
-    % 3. The new constructor does not have default positions
-    \defaultpos{k} \text{ undefined} \\
-    % 
-    % And we let:
-    % 
-    % v_k = a new vertex with the new constructor
-  }{
-    % Then we get the following graph actions:
-    \applyAction{ \cursor{\emptyHole{v_s{=}(u_s, k_s)}{p_s}} }{ \Construct{k} }{
-      % 
-      % attach the new vertex to the cursor source
-      \SetOf{\graphAction{\Plus}{(\fresh{u}_1, v_s, p_s, v{=}(\fresh{u}_2, k))}}
-    }{ \CVertex{v} }
-  }
-
-  \inferrule[ConstructWrap]{
-    % If:
-    % 
-    % 1. The term under the cursor is not a hole, i.e., it has an ingraph
-    \inedges{G_t} = \SetOf{\e_i{=}(u_i, v_i, p_i, v_i'{=}(u_i', k_i'))}_{i < n} \\
-    % 
-    % 2. The new constructor has default positions
-    \defaultpos{k} = (\pWrap, \pPost) \\
-    % 
-    % The term under the cursor has the same sort as the new constructor
-    \SetOf{\sort{k_i} = \sort{k}}_{i < n} \\
-    % 
-    % 4. The term under the cursor is well sorted w.r.t. the wrap position
-    (\pWrap, \sort{k}) \in \arity{k} \\
-    % 
-    % And we let:
-    % 
-    % v_k = a new vertex with the new constructor
-    v = (\fresh{u}, k) \\
-  }{
-    % Then we get the following graph actions:
-    \applyAction{ \cursor{t} }{ \Construct{k} }{
-      \SetOf{
-        % 
-        % delete the vertices under the cursor
-        \graphAction{\Minus}{\e_i},
-        % 
-        % attach the new vertex to the sources of the vertices under the cursor
-        \graphAction{\Plus}{(\fresh{u}_{1i}, v_i, p_i, v)},
-        % 
-        % reattach the old invertex to the default position of the new vertex
-        \graphAction{\Plus}{(\fresh{u}_{2i}, v, \pWrap, v_i')}
-      }_{i < n}
-    }{ \CSource{v}{\pPost} }
-  }
-
-  \inferrule[Delete]{
-    % If:
-    % 
-    % 1. The term under the cursor is not a hole, i.e., it has an ingraph
-    \inedges{G_t} = \SetOf{\e_i}_{i < n} \\
-    % 
-    % 2. The term under the cursor is not a deleted root or a multiparent root
-    \sources{G_t} = \SetOf{(v, p)}
-  }{
-    % Then we get the following graph actions:
-    \applyAction{ \cursor{t} }{ \Delete }{
-      % 
-      % delete the vertices under the cursor
-      \SetOf{\graphAction{\Minus}{\e_i}}_{i < n}
-    }{ \CSource{v}{p} }
-  }
-
-  \inferrule[DeleteMultiparent]{
-    % If:
-    % 
-    % 1. The term under the cursor is not a hole, i.e., it has an ingraph
-    \inedges{G_t} = \SetOf{\e_i{=}(u_i, v_i, p_i, v)}_{i < n} \\
-    % 
-    % 2. The term under the cursor is a multiparent root
-    \SizeOf{\sources{G_t}} > 1
-  }{
-    % Then we get the following graph actions:
-    \applyAction{ \cursor{t} }{ \Delete }{
-      % 
-      % delete the vertices under the cursor
-      \SetOf{\graphAction{\Minus}{\e_i}}_{i < n}
-    }{ \CVertex{v} }
-  }
-
-  \inferrule[Reposition]{
-    % If:
-    % 
-    % 1. The term under the cursor is not a hole, i.e., it has an ingraph
-    \inedges{G_t} = \SetOf{\e_i{=}(u_i, v_i, p_i, v_i'{=}(u_i', k_i'))}_{i < n} \\
-    % 
-    % 2. The destination is an empty hole
-    \SizeOf{\outedges{v}{p}} = 0 \\
-    % 
-    % 3. The constructors under the cursor are well sorted w.r.t. the destination
-    \SetOf{(p, \sort{k_i'}) \in \arity{k}}_{i < n}
-  }{
-    % Thenwe get the following graph actions:
-    \applyAction{ \cursor{t} }{ \Reposition{v{=}(u, k)}{p} }{
-      \SetOf{
-        % 
-        % delete the vertices under the cursor
-        \graphAction{\Minus}{\e_i}
-        % 
-        % reattach them to the destination
-        \graphAction{\Plus}{(\fresh{u}, v, p, v_i)}
-      }_{i < n}
-    }{ \CSource{v}{p} }
-  }
-\end{mathpar}
-
-% TODO: point out in the narrative that leaving out |children|=0 on Reposition allows locally produced conflicts
-
-\noindent
-$\boxed{\fix{c} = c'}$
-%
-\begin{mathpar}
-  \inferrule[FCVertex]{
-  }{
-    \fix{c{=}\CVertex{v}} = c
-  }
-
-  \inferrule[FCSource]{
-    \SizeOf{\outedges{v}{p}} \neq 1
-  }{
-    \fix{c{=}\CSource{v}{p}} = c
-  }
-
-  \inferrule[FCSourceVertex]{
-    \outedges{v}{p} = \SetOf{(u, v, p, v')} \\
-    \SizeOf{\parents{v'}} = 1 \\
-    v' \neq \min{\ancestors{v'}}
-  }{
-    \fix{c{=}\CSource{v}{p}} = \CVertex{v'}
-  }
-
-  \inferrule[FCSourceEdge]{
-    \outedges{v}{p} = \SetOf{(u, v, p, v')} \\
-    \SizeOf{\parents{v'}} > 1 \lor v' = \min{\ancestors{v'}}
-  }{
-    \fix{c{=}\CSource{v}{p}} = \CEdge{(\fresh{u}, v, p, v')}
-  }
-\end{mathpar}

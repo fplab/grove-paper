@@ -5,21 +5,21 @@
 \newedge{MultiParentBob}{R}
 \newcommand{\figureMultiParent}{
 \begin{figure*}
-%\hfill
-\hskip0.12\columnwidth
+\hfill
+% \hskip0.1\columnwidth
 %%%%%%%%
-\begin{subfigure}[t]{0.14\linewidth}
+\begin{subfigure}[t]{0.12\linewidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (-7.5em,0cm) node (node/MultiChild/cx) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:MultiChild:c}}}};
+% \path (-7.5em,0cm) node (node/MultiChild/cx) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:MultiChild:c}}}};
 %%%%
 \path (0cm,0cm) node (node/MultiParent/a) [anchor=base] {\strut};
-\path [draw,->,alice step] (node/MultiChild/cx) to[star] (-2em, 0cm |- node/MultiParent/a);
+% \path [draw,->,alice step] (node/MultiChild/cx) to[star] (-2em, 0cm |- node/MultiParent/a);
 \end{tikzpicture}
 }%
 \label{fig:MultiParent:a}
-\figureCode{w * \hole{} + \hole{}\otherVertexVskip\phantom{\multiVertex{18} = w}}%
+\figureCode{w * \hole{} + \hole{}\otherVertexVskip\phantom{\multiVertex{58} = w}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -46,7 +46,7 @@
 \end{tikzpicture}
 }%
 \label{fig:MultiParent:b}
-\figureCode{\hole{} * w + \hole{}\otherVertexVskip\phantom{\multiVertex{18} = w}}%
+\figureCode{\hole{} * w + \hole{}\otherVertexVskip\phantom{\multiVertex{58} = w}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -73,7 +73,7 @@
 \end{tikzpicture}
 }%
 \label{fig:MultiParent:c}
-\figureCode{\hole{} * \hole{} + w\otherVertexVskip\phantom{\multiVertex{18} = w}}%
+\figureCode{\hole{} * \hole{} + w\otherVertexVskip\phantom{\multiVertex{58} = w}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -88,7 +88,7 @@
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.14\linewidth}
+\begin{subfigure}[t]{0.18\linewidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -98,7 +98,7 @@
 \end{tikzpicture}
 }%
 \label{fig:MultiParent:d}
-\figureCode{\hole{} * \multiVertex{18} + \multiVertex{18}\otherVertexVskip\multiVertex{18} = w}%
+\figureCode{\hole{} * \multiVertex{58} + \multiVertex{58}\otherVertexVskip\multiVertex{58} = w}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -117,7 +117,7 @@
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.14\linewidth}
+\begin{subfigure}[t]{0.13\linewidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -126,7 +126,7 @@
 \end{tikzpicture}
 }%
 \label{fig:MultiParent:e}
-\figureCode{\hole{} * w + \hole{}\otherVertexVskip\phantom{\multiVertex{18} = w}}%
+\figureCode{\hole{} * w + \hole{}\otherVertexVskip\phantom{\multiVertex{58} = w}}%
 \begin{tikzpicture}
 \path (0cm,0cm) graph[graph style] {
  root[root style] -> {
@@ -143,8 +143,8 @@
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Example of Multi-Parent Conflicts.}%
-\Description{This figure depicts an example of multi-parent conflicts}
+\caption{(a) We start in a state with a variable, \li{w}, and two holes. (b) Alice relocates \li{w} to the left hole. (c) Bob relocates \li{w} to the right hole. (d) After merging, vertex \vNestedPartsAlice{} has two incoming edges, i.e. it has a \emph{relocation conflict}. The corresponding decomposition leaves a \emph{relocation conflict reference} at both locations, partially addressing the \textbf{relocation conflict problem}. Terms that have a relocation conflict are tracked separately by decomposition. (e) The relocation conflict can be resolved by deleting all but one reference.}%
+\Description{This figure depicts an example of relocation conflicts}
 \label{fig:MultiParent}
 \end{figure*}
 }

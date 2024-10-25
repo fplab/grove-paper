@@ -1,0 +1,102 @@
+Review #293C
+===========================================================================
+
+Overall merit
+-------------
+1. Reject
+
+Reviewer expertise
+------------------
+3. Knowledgeable
+
+Paper summary
+-------------
+This paper introduces Grove, a collaborative structure editor. The main goal
+of Grove is to solve the problems with heuristic path synthesize and 
+three-way merge algorithms, which are commonly used in version control systems.
+The main idea of Grove is to explicitly use different syntactic constructs
+to represent different kinds of conflicts, such as local conflicts, relation
+conflicts, and relation modification conflicts. Since all conflicts are 
+encapsulated, Grove enjoys some nice properties, such as commutativity. 
+The paper then, follows the idea of Hazelnut and Hazel, develops a marked
+system that assigns dynamic types to conflicts and static types to other
+language constructs. As a result, Grove enables language services to continue
+functioning even in the presence of conflicts.  
+
+Comments for authors
+--------------------
+Assessment:
+
+While this paper aims to improve the support for collaborative editing, it largely
+fails to achieve its goal. 
+
+For the first 18 pages, the paper develops a graph representation for representing
+edits and various kinds of conflicts. The graph representation is essentially a
+different way of representing textual information by using special nodes and 
+edge/node relations to represent conflicts. 
+
+For the next 5 pages, the paper extends the work of Hazelnut and Hazel of marking 
+conflicts so that even programs in conflicting states may receive tooling support
+such as static analysis and type checking. Compared to Hazelnut and Hazel, the only
+difference is that this paper assigns all conflicts to have the Dyn type from
+gradual typing. Since Dyn type interacts well with any other type, the whole program
+can still be well typed even in the presence of conflicts. The idea of using Dyn
+types were already introduced in Hazel, so there is very little novelty here.
+
+The paper keeps on saying that "Grove does not suffer from problems due to merge conflicts". However, the only reason this is true is that Grove represents/encapsulates these conflicts. It does not solve any of the merging problems. Eventually, Grove 
+assumes each conflict has a dynamic type.
+
+Details:
+
+Section 2.3.2 It is well known that tree-based editors handle the granularity problem
+better than line-based. But the tree-based editor has a much higher complexity, building
+the tree and maintaining the correct tree structure during edits such as cut and paste.
+
+Section 2.3.3 Grove chooses to silently merge changes from relocation modification, 
+which current versioning control systems often yield a merge conflict. However, it
+is hard to say that this behavior is always wanted or preferred. In many scenarios, 
+the involved programmers may want to review before such merges are committed. Also, 
+this example seems to work well because the operations involved, + and *, are 
+commutative. What if we have operations like - and /?
+
+Figure 10(d), why not add an L edge from +8 to *2 and a R edge from +8 to *24?
+Also, why R31 and not R35 and L33 not L37?
+
+What is the connection between Line 367 and Line 531? Earlier it says a disconnected
+term may be connected back after a deletion but later it says deleted edges can't
+connect again. Also, since an edge includes a term, the deletion of the edge also
+causes the deletion of the term if it is connected to by only one edge. 
+
+In Rule MKSLocalConflict, it is possible to synthesize a more precise type than ?.
+A more meaningful choice is the least upper bound of all $\sigma_i$s in terms of
+some subtyping relation. For example, if all branches of a conflict have Int, then
+it is fine to say that the conflict has the type Int.
+
+In rules MALocalConflict, MARelationConflict, and MAUnicycleConflict, why do you
+generate a constraint between a ? and $\sigma$? In gradual typing, such constraints
+are simply dropped. Probably you want to use the location for provenance. However,
+it is unclear how the location associated with each ? is used.
+
+Typos:
+
+Line 48, a type
+
+Line 68, initial and final states
+
+Lines 91-92, Grove can do this because it explicitly carries conflicts
+
+Line 163, what does "this work" refer to? Probably it refers to Hazelnut and Hazel,
+but it is good to be explicit
+
+Line 230, the paper uses odd numbers for edges and even numbers for vertices
+
+Line 334, u*y should be u*v
+
+Lines 431-432, two many "like these" make the sentence hard to understand
+
+Definitions 3.4 and 3.5, a vertex *v* is an ..., otherwise v in the parentheses is unbound
+
+Lemma 3.8, I am not sure if this is actually correct. For example *24 in Figure 9(d)
+is both an MP and a U root.
+
+Line 871, ??, missing reference

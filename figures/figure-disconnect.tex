@@ -5,17 +5,17 @@
 \newedge{DisconnectBob}{L}
 \newcommand{\figureDisconnect}{
 \begin{figure*}
-%\hfill
-\hskip0.12\columnwidth
+\hfill
+% \hskip0.1\columnwidth
 %%%%%%%%
-\begin{subfigure}[t]{0.21\textwidth}
+\begin{subfigure}[t]{0.20\textwidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
-\path (-7.5em,0cm) node (node/Cycle/dx) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:Cycle:d}}}};
+% \path (-7.5em,0cm) node (node/Cycle/dx) [gray,anchor=base west] {{\textbf{\small Fig.~\ref*{fig:Cycle:d}}}};
 %%%%
 \path (0cm,0cm) node (node/Disconnect/a) [anchor=base] {\strut};
-\path [draw,->,alice step] (node/Cycle/dx) to[star] (-2em, 0cm |- node/Disconnect/a);
+% \path [draw,->,alice step] (node/Cycle/dx) to[star] (-2em, 0cm |- node/Disconnect/a);
 \end{tikzpicture}
 }%
 \label{fig:Disconnect:a}
@@ -34,7 +34,7 @@
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.21\textwidth}
+\begin{subfigure}[t]{0.22\textwidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -61,7 +61,7 @@
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.21\textwidth}
+\begin{subfigure}[t]{0.22\textwidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -88,7 +88,7 @@
 %%%%%%%%
 \hfill
 %%%%%%%%
-\begin{subfigure}[t]{0.21\textwidth}
+\begin{subfigure}[t]{0.24\textwidth}
 \centering
 \caption{
 \begin{tikzpicture}[remember picture, overlay]
@@ -113,7 +113,7 @@
 \end{subfigure}
 %%%%%%%%
 \hfill{}
-\caption{Example of Disconnection.}%
+\caption{(a) We start with a tree containing \vSimpleTimes{} and \vMultiCycleTimes{}. (b) Alice relocates \vMultiCycleTimes{} to a child position of \vSimpleTimes{}. (c) Bob relocates \vSimpleTimes{} to a child position of \vMultiCycleTimes{}. (d) When merged, the resulting cycle becomes disconnected from the rest of the graph, forming a \emph{unicycle}. During decomposition, we break unicycles by leaving a \emph{unicycle conflict reference} at an arbitrarily chosen edge.}%
 \Description{This figure shows an example of a disconnected component}
 \label{fig:Disconnection}
 \end{figure*}

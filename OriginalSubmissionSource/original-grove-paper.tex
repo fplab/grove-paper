@@ -1,8 +1,6 @@
 % !TEX program = lualatex
 
-\documentclass[acmsmall,dvipsnames,10pt,review]{acmart}\settopmatter{printfolios=true}
-% Need to tweak for camera-ready submission
-% \documentclass[acmsmall,dvipsnames,10pt]{acmart}\settopmatter{printfolios=true}
+\documentclass[acmsmall,dvipsnames,10pt,review,anonymous,nonacm]{acmart}\settopmatter{printfolios=true}
 
 
 \acmJournal{PACMPL}
@@ -85,40 +83,34 @@ classoffset=0,belowskip=\smallskipamount, aboveskip=\smallskipamount
 %% Author information
 \author{Michael D. Adams}
 \orcid{0000-0003-3160-6972}
-\affiliation{
-\department{National University of Singapore}
-}
 
 \author{Eric Griffis}
 \orcid{0000-0003-1693-6172}
 
-\author{Thomas J. Porter}
-\orcid{0009-0000-1809-8382}
-
 \author{Sundara Vishnu Satish}
-\orcid{0009-0002-8685-1342}
+\orcid{TODO}
 
-\author{Eric Zhao}
-\orcid{0009-0000-4969-2376}
+\author{Thomas J. Porter}
+\orcid{TODO}
 
 \author{Cyrus Omar}
 \orcid{0000-0003-4502-7971}
 \affiliation{
   %\position{Assistant Research Scientist}
-  % \department[0]{Computer Science and Engineering}
-  % \department[1]{Electrical Engineering and Computer Science}
-  % \department[2]{College of Engineering}
+  \department[0]{Computer Science and Engineering}
+  \department[1]{Electrical Engineering and Computer Science}
+  \department[2]{College of Engineering}
   \institution{University of Michigan}
-  % \streetaddress{Bob and Betty Beyster Building, 2260 Hayward Street}
+  \streetaddress{Bob and Betty Beyster Building, 2260 Hayward Street}
   \city{Ann Arbor}
   \state{MI}
-  % \postcode{48109-2121}
+  \postcode{48109-2121}
   \country{USA}
 }
 
 
 % Abstract
-\input{abstract}
+\input{OriginalSubmissionSource/abstract}
 
 
 % 2012 ACM Computing Classification System (CSS) concepts
@@ -148,14 +140,13 @@ classoffset=0,belowskip=\smallskipamount, aboveskip=\smallskipamount
 
 \maketitle
 
-\input{introduction}
-\input{grove-by-example}
-\input{formalism}
-\input{implementation}
-\input{marking-system}
-\input{related-work}
-\input{discussion-and-conclusion}
-
+\input{OriginalSubmissionSource/introduction}
+\input{OriginalSubmissionSource/grove-by-example}
+\input{OriginalSubmissionSource/formalism}
+\input{OriginalSubmissionSource/implementation}
+\input{OriginalSubmissionSource/marking-system}
+\input{OriginalSubmissionSource/related-work}
+\input{OriginalSubmissionSource/discussion-and-conclusion}
 
 %% Acknowledgments
 \begin{acks}                            %% acks environment is optional
@@ -180,6 +171,6 @@ classoffset=0,belowskip=\smallskipamount, aboveskip=\smallskipamount
 %% Appendixes that will be published  go **BEFORE** the bibliography and count towards the page count
 
 %% Bibliography
-\bibliography{grove-paper}
+\bibliography{OriginalSubmissionSource/grove-paper}
 
 \end{document}

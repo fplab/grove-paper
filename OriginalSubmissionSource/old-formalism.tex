@@ -1,0 +1,443 @@
+
+\section{Formalism}%
+\label{sec:Formalism}
+
+% TODO: try to introduce groves in section 2?
+% TODO: use key phrases in section 2, e.g.: "unresolved parentage"
+
+We will now make the intuitions developed in the previous section precise by defining a collaborative structure editor calculus called Grove.
+This section introduces
+  graphs (\autoref{sub:Convergent Graphs})
+  and commutative graph updates (\autoref{sub:Graph Updates}).
+Users do not edit graphs directly.
+Instead, they work with the decomposition of graphs into groves (\autoref{sub:Groves})%
+---collections of terms with empty holes, conflict holes, and references to terms with unresolved parentage.
+User actions on groves translate to corresponding graph edits (\autoref{sub:User Actions}). 
+
+
+% TODO: point of this section is commutativity theorem
+
+% TODO: (though as we show in \autoref{sec:Formalism} creating a vertex is implicit in edge creation)
+
+The formalism is rather simple, \autoref{sec:Grove By Example} shows
+that it is sufficient to handle many common situations,
+and this simplicity aids in the predictability.
+
+\figureArity
+
+\subsection{Convergent Graphs}%
+\label{sub:Convergent Graphs}
+
+Let $\U$ be a set of \emph{unique identifiers} equipped with a total ordering $\leq$,
+and $\K$ the \emph{constructors} of terms in the source language,
+and $\P$ the \emph{positions} of subterms in the source language,
+and $\Sigma = \SetOf{\bot, \Plus, \Minus}$ the
+  \emph{edge states} equipped with a total ordering $\bot \sqsubset \Plus \sqsubset \Minus$ that forms a lattice over $\Sigma$.
+Now, let $\V = \U \times \K$ all possible \emph{vertices},
+and $\S = \V \times \P$ all possible \emph{sources},
+and $\E = \U \times \S \times \V$ all possible \emph{edges}.
+
+A \emph{graph} $G : \E \rightarrow \Sigma$ is a function from edges to edge states,
+  where $\E = \U \times \S \times \V$,
+  unique identifiers are drawn from some suitable set $\U$ equipped with a total ordering $\leq$,
+  sources are drawn from $\S$,
+  vertices are drawn from $\V$,
+  and edge states are drawn from $\Sigma$,
+  all defined below.
+Graphs that represent a complete edit state have a distinguished
+  root vertex $\rootVertex$
+  and root position $\rootPosition$.
+The \emph{inedges} of $G$ are the edges on which $G$ returns $\Plus$.
+The \emph{outedges} of a source are the inedges that have the source.
+
+An \emph{edge} $\e{=}(u, (v, p), v^\prime) \in \E$ represents a directed multi-edge
+identified by $u \in \U$, originating from source $(v, p) \in \S$, with destination vertex $v' \in \V$.
+
+The \emph{edge states} $\Sigma = \SetOf{\bot, \Plus, \Minus}$ determine which edges are live in a graph.
+For example, if $G(\e) = \Plus$ for some $G : \E \rightarrow \Sigma, \e \in \E$,
+then we say $\e$ is \emph{live}, i.e., it corresponds to a term in the graph decomposition, as explained in \autoref{sub:Graph Decomposition}.
+The total ordering $\bot \sqsubset \Plus \sqsubset \Minus$ forms a lattice over $\Sigma$.
+
+A \emph{source} is a pair $(v, p) \in \S$,
+  where $\S = \V \times \P$,
+  vertices are drawn from $\V$,
+  and positions are drawn from $\P$.
+
+A \emph{vertex} $v = (u, k) \in \V = \U \times \K$ is a constructor instance,
+  where unique identifiers are drawn from $\U$
+  and constructors are drawn from $k \in \K$.
+Vertices represent \emph{constructable terms}, i.e., terms that are not references or holes.
+The \emph{inedges} of $v$ are the inedges that target $v$.
+The \emph{ingraph} of $v$ is the subgraph on inedges that target $v$.
+We write $G_v$ to denote the ingraph of $v$.
+The \emph{parents} of $v$ are the source vertices of the inedges of $v$.
+The \emph{ancestors} of $v$ is defined inductively as the parent vertices of $v$ plus their ancestors.
+The \emph{least ancestor} of $v$ is the ancestor with the smallest unique identifier.
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+
+\subsubsection{Constructors, Positions, Arities}
+\label{sub:Constructors, Positions, and Arities}
+
+A constructor $k \in \K$ represents a distinct syntactic form belonging to the term language. For each $k \in \K$ we define its arity \autoref{fig:Constructors, Indexes and Arity} to be its set of valid positions—labels representing potential subterms of terms constructed by $k$—each paired with a corresponding sort indicating which terms may be constructed at that position.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\subsubsection{Well sorted graphs}
+\label{sub:Well sorted graphs}
+
+% TODO: where does this go?
+% 
+% Each contructor has an arity, which we define as a set of position-sort pairs. A position $p
+% \in \P$ identifies a location at some originating vertex from which edges to
+% destination vertices may originate. The $\arityOp$ function in
+% \autoref{fig:Constructors, Indexes and Arity} gives the complete mapping from
+% constructors to potential edge positions with their corresponding sorts.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TODO: put this in a definition box
+
+A graph $G$ is well sorted if
+for all $\e = (u, (u_1, k_1), p, (u_2, k_2))$
+such that $G(\e) \neq \bot$,
+we have $(p, \sort{k_2}) \in \arity{k_1}$.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% In decomp section:
+% - If a graph is well sorted, then there exists a grove. (i.e., exhaustiveness check for expr)
+%   - want to show that expr is a total function on Exps
+% - If decomp(G) = Grove, then vertices(Grove) = vertices(edges(G))
+%   - every vertex should be part of the decomposition
+% - correctness of grove components:
+%   - $e_r$: rootVertex($e_r) = v_r$
+%   - MP: for every expression in MP, |parents(the root vertex)| > 1
+%   - NP: for every expression in NP, |parents(the root vertex)| = 0
+%   - U: for every expression in U, |parents(the root vertex)| = 1 and the root vertex = min(ancestors(the root vertex))
+%     - every other vertex notin U has exactly 1 parent and is not its own min-ancestor
+%   - we've accounted for every edge:
+%     - want to say edges(Grove) = edges(G), but we don't have a clean way to say that
+%     - there is a choice from (an infinite family of graphs) recomposition(Grove) (which are all structurally equivalent to G, modulo edge ids)
+
+
+
+% correctness covers:
+% - invertibility (w/ some identity assignment)
+% - parentage (things are multiparented correctly)
+
+\vspace*{\baselineskip}
+
+% TODO: should graph "recomposition" have an algorithm, too?
+% TODO: update this to match our current understanding
+A graph can be derived from an expression in the calculus by starting with an
+empty graph, selecting unique ids $u, u_k$ and constructor $k$ for the outermost
+expression, and creating edge $\e = (u, v_0, p_0, (u_k, k))$. Then, for each
+sub-term at some position $p \in \arity k$, select unique id $u'$ and
+constructor $k'$ and create edge $e' = (u', v, p, v')$ with $v = (u_k, k)$, $v'
+= (u', k')$. Continuing in this manner, treat each sub-term as if it were the
+outermost, starting with the ones at positions in $\arity k'$, and create edges
+to the vertices representing their immediate sub-terms until only empty holes
+remain. Note that empty holes are not modeled explicitly in the graph. Wherever
+an empty hole appears in an expression, the corresponding graph position has no
+edges originating from it.
+
+% You can map from syntax to graph by selecting
+% unique IDs $u$ (for both edges and vertexes).
+% - holes are not explicit in the graph
+
+\subsection{Graph Updates}
+\label{sub:Graph Updates}
+
+We define a graph update $s = (\alpha,\e) \in \left\{\Plus, \Minus\right\} \times \E$
+as a pair of an edge state (excluding $\bot$) and an edge. As a shorthand, we
+define $+\e$ to be $(\Plus, \e)$ and $-\e$ to be $(\Minus, \e)$.
+
+We define the join operation $\alpha_1 \sqcup \alpha_2$ to be the least upper bound of
+$\alpha_1$ and $\alpha_2$ with respect to the $\sqsubset$ ordering. Accordingly, $\Plus
+\sqcup \bot = \Plus$ means that edges can only be created if they do not already
+exist, and $\Plus \sqcup \Minus = \Minus = \Minus \sqcup \Minus$ means that once
+an edge is deleted it can never be restored, and hence deletion is idempotent.
+
+We define the semantics of graph actions via the following transition relation
+between graphs.
+\[
+  G \overset{(\alpha,\e)}{\longrightarrow} G\left[ \e \mapsto \alpha \sqcup G(\e) \right]
+\]
+Applying graph action $\left(\alpha, \e\right)$ to graph $G$ results in the
+updated graph $G' = G\left[\e \mapsto \alpha \sqcup G(\e) \right]$, wherein the edge
+state associated with edge $\e$ in $G$ becomes the join of $\alpha$ with the state of
+$\e$ in $G$, and $G'(\e') = G(\e')$ for any $\e' \ne \e$. Essentially, these graph update semantics act as a transition system between graphs, \emph{joining} the new edge state with the corresponding edge state of the graph to which the update is being applied.
+
+
+% Intuitively, joining any edge state with $\bot$ is always the non-$\bot$ edge state (once an edge exists, it always exists).
+% Joining anything with $\Minus$ is always $\Minus$ (once an edge is marked as deleted, it is permanently deleted).
+
+\subsection{Commutativity}%
+\label{sub:Commutativity:formal}
+
+In order to define commutativity, we first define a lattice over $G$.
+Then we show that for any graphs $G$ and $G'$ and graph action $\alpha$,
+$G \overset{\alpha}\rightarrow G'$
+iff $G \sqcup \llbracket\alpha\rrbracket = G'$.
+This established the commutativity of graph actions
+by the commutativity of the join operations defining those graph actions.
+
+% Discuss uniqueness of uuid
+
+\begin{lemma}[Join Commutativity]
+  \label{lem:Join Commutativity}
+  For all graphs G and G' and all graph updates $s_1$ and $s_2$, we have $s_1 \sqcup s_2 = s_2 \sqcup s_1$
+\end{lemma}
+\begin{proof}
+    Follows directly from the total ordering $(\Sigma, \sqsubset)$
+\end{proof}
+
+\begin{lemma}[Joining]
+  \label{lem:Joining}
+  For all graphs $G$ and $G'$ and all graph updates $s_1 = (\alpha_1, \e_1)$ and  $s_2 = (\alpha_2, \e_2)$, we have
+  $G \overset{s_1 s_2}{\longrightarrow} G'$
+  iff $G[\e_1 \mapsto \alpha_1 \sqcup G(\e_1)][\e_2 \mapsto \alpha_2 G(\e_2)] = G'$
+\end{lemma}
+\begin{proof}
+  If $G \overset{\alpha_1\alpha_2}{\longrightarrow} G'$
+  There is a graph $G''$ such that $G[\e_1 \mapsto \alpha_1 \sqcup G(\e_1)]= G''$ and $G''[\e_2 \mapsto \alpha_2 \sqcup G(\e_2)] = G'$. For any edge \e, if $\e = \e_1$, then $G'(\e)$ = $\alpha_1 \sqcup G''(\e_1)$, and if $\e = \e_2$, then $G'(\e)$ = $\alpha_2 \sqcup G''(\e_2)$ = $\alpha_2 \sqcup G(\e_2)$, and otherwise $G'(\e) = G(\e)$.
+\end{proof}
+
+
+\begin{theorem}[Commutativity]
+  \label{thm:Commutativity}
+  For all graphs $G$ and $G'$ and all graph updates $s_1$ and $s_2$, 
+  if $G \overset{s_1 s_2}{\longrightarrow} G'$,
+  then $G \overset{s_2 s_1}{\longrightarrow} G'$
+\end{theorem}
+\begin{proof}
+  By \autoref{lem:Joining}, if $\e_1 \ne \e_2$, we have $G'(\e_1) = \alpha_1 \sqcup G'(\e_1)$ and $G'(\e_2) = \alpha_2 \sqcup G(\e_2)$, and if $\e_1 = \e_2 = \e$, we have $G'(\e) = \alpha_1 \sqcup \alpha_2 \sqcup G(\e)$. Hence, for any edge \e, $\e_1$ and $\e_2$ are not equal we have $G'(\e) = G[\e_1 \mapsto \alpha_1 \sqcup G(\e_1)][\e_2 \mapsto \alpha \sqcup G(\e_2)](\e) = G[\e_2 \mapsto \alpha \sqcup G(\e_2)][\e_1 \mapsto \alpha_1 \sqcup G(\e_1)](\e)$ and otherwise by \autoref{lem:Join Commutativity}, we have $G'(\e) = \alpha_1 \sqcup \alpha_2 \sqcup G(\e) = \alpha_2 \sqcup \alpha_1 \sqcup G(\e)$
+\end{proof}
+
+\subsubsection{Agda Mechanization}%
+\label{sub:Agda Mechanization}
+
+\textbf{TODO}
+
+\subsection{Groves}%
+\label{sub:Groves}
+
+\figureTermSyntax
+
+% TODO: check for \hole --> \emptyHole
+
+Our source language (\autoref{fig:Syntax}) is a simply typed lambda calculus with references, empty holes, and conflict holes.
+The syntax of terms is sorted into
+  expressions $e$,
+  types $\tau$,
+  and patterns $q$.
+% These can include
+%   graph annotations $G$,
+%   edge annotations $\e$,
+%   or source annotations $(v, p)$,
+%   which we introduce in \autoref{sub:Convergent Graphs}.
+Expressions include
+  variables $\eVar{G}{x}$,
+  lambda abstractions with pattern arguments $\eFun{G}{q}{\tau}{e}$,
+  applications $\eApp{G}{e_1}{e_2}$,
+  and numbers $\eNum{G}{n}$ with addition $\ePlus{G}{e_1}{e_2}$ and multiplication $\eTimes{G}{e_1}{e_2}$.
+Types include
+  arrows $\tArrow{G}{\tau_1}{\tau_2}$
+  and the type of numbers $\tNum{G}$.
+Patterns include variables $\pVar{G}{x}$.
+
+We also extend each sort with 
+empty holes $\hole_{(v, p)}$,
+multiparent references $\multiVertex{\e}$,
+unicycle references $\cycleVertex{\e}$,
+and conflict holes $\conflictHole{t_i}_{i < n}$.
+For conflict holes, it must be the case that $n \geq 2$.
+We identify conflict holes up to reordering.
+
+Multiparent references correspond to edges that target
+  \emph{multiparent roots}---vertices targeted by multiple edges.
+Unicycle references correspond to edges that target
+  \emph{unicycle roots}---vertices that are their own least ancestor.
+  Empty holes, which denote the absence of any corresponding structure,
+are annotated with the source needed to construct terms in their place.
+
+% Each term is annotated with a graph $G$, an edge $\e$, or a source $(\v,\p)$, 
+
+Each term is annotated with a graph $G$, an edge $\e$, or a source ($v$,$p$), which we introduced in \autoref{sub:Convergent Graphs}. Each term that is not a conflict hole carries an annotation.
+For terms that are not holes, the annotation corresponds to the graph or edge it recomposes to. For constructable terms, the annotation corresponds to the graph it \emph{recomposes} to, as we explain in \autoref{sub:Graph Decomposition}. Multiparent and unicycle references are annotated with the edge whose destination is the referenced vertex. Empty holes are annotated with the source of their local parents. Since a conflict hole corresponds to all of the edges with a particular common source, they cannot be nested or contain empty holes.
+
+% and the combined annotations correspond to the graph the entire conflict hole recomposes to.
+
+\subsection{Graph Decomposition}%
+\label{sub:Graph Decomposition}
+
+% NOTE base grammar has holes. rooted expression grammar has refs, conflicts,
+% and multiparents
+
+% NOTE: this whole section is for describing the 4-tuple
+
+Trees are often easier to work with than arbitrary graphs directly, for example to present the graph to users or for type checking.
+A graph can be \emph{decomposed} into a collection of terms governed by the grammar in \autoref{fig:Syntax}, which we organize into a structure called a grove that readily \emph{recomposes} into the original graph.
+
+\figureDecompExample
+
+% TODO: make sure we're not claiming to invent the term "unicycular graph"
+% TODO: maybe add a forward reference at end here to Implementation section
+% TODO: make ID of y lower than the unicycle root, to show what we're minimizing
+
+A grove is a 3-tuple of the following form:
+    \figureDecompositionDefSets
+where
+\begin{align*}
+  \figureDecompositionDefDecompComponents
+\end{align*}
+For example, the grove corresponding to the graph in \autoref{fig:Decomposition example graph} is
+given in \autoref{fig:Decomposition example grove}.
+
+Let us now examine each of the three components in more detail.
+%
+The first component $\Set[NP]$ is the set of expressions rooted at a vertex with no parents, including the main root vertex.
+% TODO: change vRoot to dot w/ subscript
+In the example, $e_r$ is the expression corresponding to the graph root, $\vRoot$ / $._{\id{0}}$.
+% TODO: change z_... to macro use w/ same appearance as in the graph
+Expression, $z_{\id{52}}$ has been deleted and has no parents, so it also appears in $\Set[NP]$.
+
+The first component $e_r$ is the expression derived from the root vertex $v_0$.
+% \autoref{fig:Decomposition expr} defines $\expr(v)$ which determines the expression derived from $v$.
+There is one rule for each term constructor.
+For example, the expression derived from ${+}_{\id{38}} = (38, \ExpPlus)$ is $\expr({+}_{\id{38}}, \PlusLeft) \text{+}^ {\id{38}} \expr({+}_{\id{38}}, \PlusRight)$.
+In each child position, $\expr'(v, p)$ determines the subterm for the children of $v$ at position $p$.
+An empty hole $\hole$ appears if there are no children at the given position.
+A conflict hole $\conflictHole{e_1,\ldots,e_n}$ appears if there are multiple children.
+If there is one child, the expression is determined recursively unless that child appears in $MP$ or $U$, discussed below, in which case we leave a reference, $\multiVertex{u}$ or $\cycleVertex{u}$, respectively.
+For the $\ExpLam$ case, we define $\patt(q)$ and $\type(\tau)$ similarly.
+
+The second component, $\Set[MP]$, is the set of expressions derived from a vertex with multiple parents. Wherever an edge to such a vertex appears, we place a reference to it $\multiVertex{u}$.
+In the example, $x_{\id{42}}$ is referenced twice in $e_r$.
+
+The third component $\Set[U]$ is the set of expressions derived from the remaining vertices, which necessarily have exactly one parent.
+These vertices form structures formally called unicycular graphs~\citep{DBLP:journals/algorithmica/KruskalRS90}, or \emph{unicycles} for short.
+Every unicycle consists of a single cycle, and each vertex may have additional children that are not part of the cycle. Breaking the cycle turns a unicyclic graph into a tree.
+% TODO: try clearing up "the root" as e.g., "the component root" or "the root of this components of the grove"
+% TODO: make sure we say "the graph root" when talking about the actual root, and "the component root" everywhere else.
+To break the cycle, we arbitrarily choose the vertex on the cycle with the smallest id, $u$, as the root of that tree.
+Formally, we choose the vertex $v$ such that $v = \min{\ancestors{v}}$ because
+only a vertex on the cycle can be its own ancestor.
+An edge to this unicycle root decomposes into a unicycle reference $\cycleVertex{u}$.
+In our example, ${+}_{\id{46}}$ is referenced by the $LEFT$ edge of ${*}_{\id{48}}$.
+
+Finally, we discover the unicycles of $\Set[U]$ by traversing any remaining edges, which necessarily constitute the elements of unicycular graph or another. Unicycular graph traversal occurs in two directions. We begin by choosing a a vertex as an arbitrary starting point, traverse its parents, and marking all of its vertices as seen. Since a vertex that has been seen twice must be on the cycle, we take the first such vertex as the root of the unicycle. We then traverse its children to produce a tree that covers the entire unicycular graph. Any remaining single-parented vertices must be parts of other unicycular graphs and are subsequently \emph{unicycle}-traversed until there are no more single-parented vertices left.
+
+
+\begin{lemma}
+    Unicycular graph traversal of a well-sorted graph produces a well-sorted tree
+\end{lemma}
+
+We say a term is \emph{well-sorted} when it recomposes into a well-sorted graph. The following theorem makes this intuition precise.
+
+\begin{theorem}
+    If $G$ is a well-sorted graph which decomposes into a grove $\Grove = (\Set[NP], \Set[MP], \Set[U])$, then any term $t \in \Set[NP] \cup \Set[MP] \cup \Set[U]$ recomposes into a well-sorted graph, and the composite of all such recompositions $\bigcup_{t\in \Set[NP] \cup \Set[MP] \cup \Set[U]}$ $\recomp{t}$ (viewed as sets of mappings from edges to edge states) is a graph $G'$ isomorphic to $G$.
+\end{theorem}
+
+\begin{proof}
+    By rule induction on the derivations of $\Grove$ and $G'$
+\end{proof}
+
+That is, a well-sorted graph decomposes into a collection of terms that, when recomposed, produce the original graph. We give detailed information on decomposition and recomposition in \autoref{sec:Grove Formalism}.
+
+% XXX
+
+% decomposition produces sets of trees. As long as everything is well sorted, we
+% can use them to produce expressions in the main grammar. (alt: define wrt the
+% graph instead, once we establish the graph can be turned into expressions)
+
+% *** well-sortedness judgment on trees: the tree only has valid positions for the
+% constructors, and the child at each position has the sort corresponding to its
+% position, and edges in position maps all start at the given constructor.
+
+% Theorem: well-sorted graphs produce decompositions of well-sorted trees
+
+% ``A graph has this property iff these conditions hold''
+
+% then we can define a total mapping from well-sorted trees to expressions
+% (because the tree structure is very generic, so this ties them back to the
+% earlier grammar.)
+
+
+% forest = 4-tuple
+
+% forest validity: each of the trees in the forest are well sorted, and all Refs
+% point to roots of other trees of the correct sort.
+
+% every valid forest corresponds to a well behaved grove (i.e., ``expression
+% forest'')
+
+% soundness: if you start with a valid graph, you get a well behaved grove that
+% connects every vertex (and only those vertices) in the graph. (i.e., if you turn
+% it back into a graph, it's the same graph (modulo edge IDs unless we add $\e$ to
+% Refs??? OR make Ref nullary and pull edge/vertex info from the position map and
+% add Root sort
+
+% OR:
+
+% use edge IDs instead of edges and build a mapping from vertices to
+% sorts---change the $\e$s to $u$s)
+
+% % TODO: maybe add a forward reference here to Implementation section
+
+\figureUserActionSyntax
+
+\subsection{User Actions}%
+\label{sub:User Actions}
+
+
+Given the grammar for user actions in \autoref{fig:User Action Syntax}, we want to show that user actions on terms correspond to equivalent graph updates. This can be done in either of two directions: from graph to grove or vice versa. Showing that operating on a grove is equivalent to operating on the underlying graph enables a more efficient implementation than the other way around, as then the editor is free to leverage term annotations to avoid a full decomposition pass after each user action, but ensuring the soundness of the resulting graph requires proving an additional theorem. For simplicity, we chose to translate all user edits directly to graph updates and then perform a decomposition pass over the entire graph after each user action.
+
+Here, we give intuitive explanations for the user actions of \autoref{fig:User Action Syntax}. For a more formal treatment, see \autoref{sec:Grove Formalism}.
+
+$\Construct{k}$ constructs a new edge whose destination is determined by the cursor's location. If the cursor is on an empty hole, the hole is filled by constructing a fresh vertex with constructor $k$. If the cursor is on an existing term and the constructor $k$ has a child position of the same sort, we \emph{wrap} the existing term by deleting it from its parent, constructing the new term in its place, then re-connecting the original term as a child of the new term. Otherwise, the editor may choose whether to apply updates that would produce conflicts.
+
+Depending on the cursor's location, $\Delete$ deletes one or more edges. If the cursor is on a constructable term of reference, its corresponding edge is deleted. If the cursor is on a conflict hole, all the edges of the conflict are deleted. Otherwise, the cursor is on an empty hole in which case the the action is a no-op.
+
+$\Reposition{v}{p}$ combines edge construction and deletion into a single \emph{atomic} operation. If the cursor is not an empty hole, the corresponding edge(s), as indicated above, are simultaneously deleted and then reconstructed as child(ren) with edge source $(v,p)$.
+
+
+% TODO: define a grammar for user actions --> mapping to sequences of underlying graph edits
+% TODO: define well-sorted graph & theorem: graph is well sorted => exists a decomposition
+
+% move = delete + add
+
+% other composite edits
+
+% remember commutativity diagram: we want edits on trees to be equivalent to edits on graphs
+
+% given a semantics for user actions, we can show that operating on the grove is equivalent to operating on the graph.
+% This way is more efficient (less annoying?) because then we don't have to deal with decomposition for every edit.
+% (we probably want to do it this way in Hazel)
+
+% OR
+
+% We could go the indirect route and avoid having to prove the theorem.
+% (this way is easier to start with, and it's how GRV works)
+
+% Mapping to b actions
+
+% \[
+%   \begin{array}{l}
+%     \textrm{User Actions}: \grave{e} \in Act ::= e \mid \#u \mid \conflict{\grave{e}}{\grave{e}}                                                       \\
+%     \s : \G \to Act \times \V^{\ast{}} \times \V^{\ast{}} \times \V^{\ast{}}                                                                                          \\
+%     \s(G) = (\grave{e}, \MP(G), \CC(G), \D(G))                                                                                                         \\
+%     \MP(G) = \left\{ v \in \vertexes(G) \mid \exists e_1,e_2 \in \liveEdges(G), e_1= \right.                                                           \\
+%     \qquad \left. (v,p_1,v_1), e_2=(v,p_2,v_2), e_1 \ne e_2 \right\}                                                                                   \\
+%     \CC(G) = \ldots                                                                                                                                    \\
+%     \D(G) = \orphans(G) \setminus \left\{ v_0 \right\}                                                                                                 \\
+%     \orphans(G) = \left\{ v \in \vertexes(G) \mid \forall e=(v^\prime,p,v^{\prime\prime}) \in \right.                                                  \\
+%     \qquad \left. \liveEdges(G), v^{\prime\prime} \ne v \right\}                                                                                       \\
+%     \vertexes(G) = \left\{ v \mid \exists e = (v^\prime, p, v^{\prime\prime}) \in \edges(G), v \in \left\{ v^\prime, v^{\prime\prime}\right\} \right\} \\
+%     \edges(G) = \left\{ e \mid G(e) \ne \bot \right\}                                                                                                  \\
+%     \liveEdges(G) = \left\{ e \mid G(e) = + \right\}                                                                                                   \\
+%   \end{array}
+% \]

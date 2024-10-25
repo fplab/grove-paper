@@ -23,7 +23,8 @@
     \centering
     \begin{tikzpicture}
       \path (0cm,0cm) graph[graph style] {
-        root[root style] -> {
+        root[root style] -> 
+        {
         a/{\vDecompPlusA} [> "\eSimpleTimes"] -> {
           "\vDecompTimesA" [> "\eDecompTimesA"'] -> {
           {},
@@ -50,13 +51,23 @@
   \begin{subfigure}{.5\textwidth}
     \centering
     \begin{align*}
-      e_r &= \hole~\texttt{*}^{\id{40}}~\multiVertex{42}~\texttt{+}^{\id{38}}~\multiVertex{42} \\
-      NP &= \{e_r, z^{\id{52}}\} \\
-      MP &= \{x^{\id{42}}\} \\
-      U &= \{\hole~\texttt{+}^{\id{46}}~\cycleVertex{46}~\texttt{*}^{\id{48}}~y^{\id{50}}\} \\
+      \Theta = 
+      \{ & (\emptyHole{(40,\texttt{*},L)}~\texttt{*}^{\id{40}}~(\eid{43}{}\multiVertex{43,(42,x)}))~\texttt{+}^{\id{38}}~(\eid{41}{}\multiVertex{41,(42,x)}), \\
+      & \eid{52}{z}, \eid{42}{x}, \emptyHole{(46,\texttt{+},L)}~\texttt{+}^{\id{46}}~(\eid{45}{}\cycleVertex{45,(46,\texttt{+})}~\texttt{*}^{\id{48}}~(\eid{49}{}y^{\id{50}}))\} \\
     \end{align*}
-    \caption{A grove corresponding to the graph}%
+    \caption{The grove corresponding to the graph}%
     \label{fig:Decomposition example grove}
+  \end{subfigure}
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \begin{align*}
+      \text{t}_r & = \eid{1}{}  (\emptyHole{(40,\texttt{*},L)}~\texttt{*}^{\id{40}}~(\eid{43}{}\multiVertex{43,(42,x)}))~\texttt{+}^{\id{38}}~(\eid{41}{}\multiVertex{41,(42,x)})\\
+      \text{NP} & = \{ \eid{52}{z} \} \\
+      \text{MP} & = \{ \eid{42}{x} \} \\
+      \text{U} & = \{ \emptyHole{(46,\texttt{+},L)}~\texttt{+}^{\id{46}}~(\eid{45}{}\cycleVertex{45,(46,\texttt{+})}~\texttt{*}^{\id{48}}~(\eid{49}{}y^{\id{50}})) \}
+    \end{align*}
+    \caption{The partitioned grove corresponding to the graph}%
+    \label{fig:Decomposition example partitioned grove}
   \end{subfigure}
   \caption{Example of graph decomposition}%
   \Description{This figure describes the decomposition of a graph to its corresponding grove}
