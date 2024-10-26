@@ -12,7 +12,7 @@ The core components of a version control system are a patch language, a method f
 % Traditional patch synthesis and merge algorithms, such as those used by Git, are complex and indirect, while Grove joins a family of new systems employing 
 
 \subsection{Patch Languages}
-There have been many different designs for patch languages and indeed many imperative data structures and their associated operations can be construed as patch languages in the most general sense. In the context of collaborative coding, patch languages can differ in the data structures they operate on (e.g. line-based text~\cite{DBLP:conf/haskell/Roundy05}, character-based text~\cite{DBLP:conf/sigmod/EllisG89,DBLP:journals/pacmhci/LittLKH22}, tree-structured data). 
+There have been many different designs for patch languages and indeed many imperative data structures and their associated operations can be construed as patch languages in the most general sense. In the context of collaborative coding, patch languages can differ in the data structures they operate on (e.g. line-based text~\cite{DBLP:conf/haskell/Roundy05}, character-based text~\cite{DBLP:conf/sigmod/EllisG89,DBLP:journals/pacmhci/LittLKH22}, tree-structured data~\cite{DBLP:conf/esa/Klein98}). 
 They can also differ in how they identify locations within the data (e.g. by using numeric offsets~\cite{DBLP:conf/sigmod/EllisG89}, unique identifiers, or paths through a tree).
 Finally, patch languages differ in which specific actions are supported explicitly. Insertion and deletion are common, while code relocation, copying, undo, and other operations are variously also included.
 
@@ -29,23 +29,33 @@ The approach we explore in this paper is far simpler: we directly translate from
 
 \subsection{Merging}
 \subsubsection{Operational Transforms}
-The most common approach to merging concurrently developed patches is to deploy an operational transform~\cite{DBLP:conf/sigmod/EllisG89} whereby locations in a remote patch are modified based on the action of a local patch. Standard three-way merge algorithms in version control systems deploy this approach, as do real-time collaborative editors. There have been a number of papers studying the algebraic properties of merging patches in this style. 
+The most common approach to merging concurrently developed patches is to deploy an operational transform~\cite{DBLP:conf/sigmod/EllisG89} whereby locations in a remote patch are modified based on the action of a local patch. Standard three-way merge algorithms in version control systems deploy this approach, as do real-time collaborative rich text editors~\cite{DBLP:journals/concurrency/IgnatAO21}. 
 
-For example, the Darcs~\cite{DBLP:conf/haskell/Roundy05} version control system, like Grove, represents repositories using sets of patches. Using operational transforms, Darcs achieves commutativity in many cases, but not between conflicting patches. The theory of Darcs defines and algebraically characterizes when operational transforms do satisfy the properties of associativity and commutativity. Recent work on homotopical patch theory \cite{DBLP:journals/jfp/AngiuliMLH16} has similarly developed an abstract algebraic framework for distinguishing sensible merges. 
+There have been a number of papers studying the algebraic properties of merging patches in this style. For example, the Darcs~\cite{DBLP:conf/haskell/Roundy05} version control system, like Grove, represents repositories using sets of patches. Using operational transforms, Darcs achieves commutativity in many cases, but not between conflicting patches. The theory of Darcs defines and algebraically characterizes when operational transforms do satisfy the properties of associativity and commutativity. Recent work on homotopical patch theory \cite{DBLP:journals/jfp/AngiuliMLH16} has similarly developed an abstract algebraic framework for distinguishing sensible merges. 
 
 \subsubsection{CRDTs}
 
 The observation that commutativity is a particularly helpful property when dealing with concurrent systems, including version control systems, has led to the development of a number of data structures centered on commutativity. These are known as CRDTs, which stands variously for \emph{conflict-free}, \emph{convergent} (CvRDT), or \emph{commutative replicated datatypes} (CmRDT) depending on particular details about the operations and the state representation~\cite{shapiro2011conflict}.
 Our approach draws directly from this line of work: the Grove patch language forms a CmRDT on directed graphs, from which we observe that we can derive a CmRDT for trees with explicit conflicts.
 
-Other examples of CRDT-based editors include and Peritext~\cite{DBLP:journals/pacmhci/LittLKH22} and Zed~\cite{zed-blog}. These systems differ from Grove by targeting synchronous editing rather than version control and by operating on sequential text rather than tree structures.
+Much of the prior work on CRDT-based collaborative editing has focused on text editing 
+\cite{DBLP:conf/icdcs/PreguicaMSL09, 
+DBLP:conf/cscw/OsterUMI06,
+DBLP:journals/jpdc/RohJKL11,
+DBLP:conf/wikis/Grishchenko10,
+DBLP:conf/icdcs/WeissUM09,
+DBLP:conf/doceng/NedelecMMD13,
+DBLP:conf/group/NicolaescuJDK16,ahmed2011evaluating,kleppmann2020moving}, typically with text tagged with unique IDs. These techniques have been used to develop collaborative text editors, e.g. Zed~\cite{zed-blog}.
 
-There have been other recent efforts to develop CmRDTs for tree data structures~\cite{DBLP:conf/icdcs/PreguicaMSL09, Highly-Available}. However, the focus in this work has been on avoiding conflicts and cycles entirely by applying \emph{ad hoc} heuristics for conflict resolution at merge-time, e.g. using reported timestamps or favoring particular directions in the tree. Our approach instead embraces manual conflict resolution, as is common practice in software projects where arbitrarily losing code is not acceptable. 
+Peritext develops a CRDT-based approach for collaboratively editing rich text, which is structured as text with hierarchically marked regions~\cite{DBLP:journals/pacmhci/LittLKH22}. 
+
+There have been other recent efforts to develop CmRDTs for richer tree data structures~\cite{DBLP:conf/icdcs/PreguicaMSL09, Highly-Available}. However, the focus in this work has been on avoiding conflicts and cycles entirely by applying \emph{ad hoc} heuristics for conflict resolution at merge-time, e.g. using reported timestamps or favoring particular directions in the tree. Our approach instead embraces manual conflict resolution, as is common practice in software projects where arbitrarily losing code is not acceptable. 
 
 % Zed is a Integrated Development Environment (IDE) that reasons text edits using CRDTs and differs in approach by using Lamport timestamps to order events across replicas. Peritext, on the other hand, is a character based CRDT editor but is limited to the realm of rich-text editing.
 
 Pijul iterates on the patch based system of Darcs, obtaining commutativity between conflicting patches using a CRDT graph data structure~\cite{pijul-talk}. Pijul's graph data structure is very similar to that of Grove in its treatment of edges, but, unlike Grove, requires vertices to be created before they can be referred to. This imposes a dependency relation between patches, causing Pijul to fall short of the full commutativity enjoyed by Grove.
 Pijul is also language agnostic and models only the linear structure of text. However, Pijul goes beyond this version of Grove by extending the data structure to support history and branches, and Grove may be similarly extended in future work.
+
 
 % \url{https://www.waitingforcode.com/big-data-algorithms/conflict-free-replicated-data-types-flags-graphs-maps/read}
 
