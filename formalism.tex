@@ -124,9 +124,9 @@ To help define decomposition, each vertex in a graph can be classified as either
     $\mathsf{root}_G(v)$ if $v$ is an NP root, an MP root, or a U root in $G$.
 \end{definition}
 
-\begin{lemma}
+\begin{lemma}[Unique Classification]
 \label{lem:uniq-classification}
-    (Unique Classification) For any live subgraph $G\subseteq \E$ and vertex $v\in V$, exactly one of the following holds: 
+    For any live subgraph $G\subseteq \E$ and vertex $v\in V$, exactly one of the following holds: 
     \begin{itemize}
         \item $v$ is an NP root in $G$
         \item $v$ is an MP root in $G$
@@ -148,7 +148,7 @@ The decomposition $\mathsf{decompLoc}(\ell)$ proceeds by inspecting the children
 \begin{definition}
 \begin{align*}
     \mathsf{decompLoc}_{G}(\ell) &= \begin{cases}
-        \ehole &\quad \mathsf{children}_{G}(\ell) = \emptyset \\ \eid{w}{}{\mathsf{decompChild}_G(w, v')} &\quad \mathsf{children}_{G}(\ell) = \SetOf{(w,v')}\\ \conflictHoleTerm{\ell}{\eid{w}{}{\mathsf{decompChild}_G(w, v')} \SuchThat{(w,v') \in \mathsf{children}_{G}(\ell)}} &\quad \abs{\mathsf{children}_{G}(\ell)} > 1 \\
+        \ehole &\quad \mathsf{children}_{G}(\ell) = \emptyset \\ \eid{w}{}{\mathsf{decompChild}_G(w, v')} &\quad abs{\mathsf{children}_{G}(\ell)} = 1\\ \conflictHoleTerm{\ell}{\eid{w}{}{\mathsf{decompChild}_G(w, v')} \SuchThat{(w,v') \in \mathsf{children}_{G}(\ell)}} &\quad \abs{\mathsf{children}_{G}(\ell)} > 1 \\
     \end{cases}
 \end{align*}
 \end{definition}
@@ -168,7 +168,7 @@ A call to $\mathsf{decompChild}$ is like a call to $\mathsf{decompVertex}$, exce
 Be decomposing each root vertex that appears in $G$, we obtain the whole grove. 
 
 \begin{definition}
-    \mathsf{vertices}(G) = \SetOf{v \in \V \SuchThat{(w, (v,p), v') \in G \land w \in \W \land v' \in \V \land p \in \P}}
+    $\mathsf{vertices}(G) = \SetOf{v \in \V \SuchThat{(w, (v,p), v') \in G \land w \in \W \land v' \in \V \land p \in \P}}$
 \end{definition}
 
 \begin{definition}
@@ -216,9 +216,9 @@ The recomposition of a grove is simply the union of the recompositions of its te
 
 The \autoref{thm:Recomposability} states that recomposition recovers the entirety of the original live subgraph, and therefore that groves faithfully represent the underlying data structure.
 
-\begin{theorem}
+\begin{theorem}[Recomposability]
 \label{thm:Recomposability}
-    (Recomposability) For all subgraphs $G$, $\mathsf{recomp}(\mathsf{decomp}(G))=G$.
+    For all subgraphs $G$, $\mathsf{recomp}(\mathsf{decomp}(G))=G$.
 \end{theorem}
 
 \subsubsection{Partitioned Groves}

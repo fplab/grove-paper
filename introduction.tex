@@ -15,7 +15,7 @@ Character-level operational transforms are similarly used for real-time collabor
 
 \paragraph{Problem 1: Merging Sensibly} 
 When merging patches, conflicts (e.g. due to different modifications to the same location) are unavoidable. However, 
-standard three-way merge algorithms for line-based patch languages commonly identify spurious conflicts, fail to identify legitimate conflicts, or silently duplicate or misplace code. Let us briefly review some classic problems with these systems. 
+standard three-way merge algorithms for line-based patch languages commonly identify spurious conflicts, fail to identify legitimate conflicts, or silently duplicate or misplace code. Let us briefly review some classic problems with these systems. The supplemental material includes Git repositories that demonstrate each of these problems.
 %Appendix~\ref{appendix:merge-problems} shows examples of the problematic default behavior of Git in each of these scenarios.\todo{write this, can move to supplement if needed}
 
 The \textbf{granularity problem} 
@@ -23,7 +23,7 @@ arises when both commits make edits to different locations within a single line 
 Similarly, if one patch renames a type while another 
 makes unrelated changes to code that references that type,
 there will be conflicts at every line of code shared between the two patches. 
-% A notable special case is the \textbf{wrapping problem}, which arises when one patch changes the nesting of code structures, e.g. by wrapping a code block within a new control flow construct, thereby changing the indentation of every line in the block. These changes can cause conflicts.
+A notable special case is the \textbf{nesting problem}, which arises when one patch changes the nesting of code structures, e.g. by wrapping a code block within a new control flow construct, thereby changing the indentation of every line in the block. These changes can cause conflicts.
  
 The \textbf{relocation conflict problem} arises when two patches relocate a code block to different locations. 
 Standard patch languages operationalize code relocation as simply a deletion paired with an insertion. The merge will therefore fail to identify this legitimate location conflict and instead silently duplicate the code block at both locations.
@@ -48,7 +48,7 @@ The developer's actual actions, e.g. cuts, copies, and pastes, are not persisted
 This paper considers the problem of collaborative editing for \emph{structure editors},
 which eschew text editing. Instead, developers code by applying tree edit actions directly to a continuously evolving \emph{program sketch}, i.e. a syntax tree with holes, shown projected visually in various ways to the developer. 
 Structure editing has been studied since the 1980s with the Cornell Program Synthesizer~\cite{DBLP:journals/cacm/TeitelbaumR81}
-and research continues to this day, with numerous active projects including Scratch~\cite{maloney2010scratch}, Snap!, and other block-based editors (which are widely used in educational and end-user programming settings), Jetbrains MPS (which has been deployed in industry)~\cite{voelter2011language}, and Hazel (a live functional programming environment rooted in a structure editor calculus called Hazelnut, which serves as 
+and research continues to this day, with numerous active projects including Scratch~\cite{maloney2010scratch} and other block-based editors (which are widely used in educational and end-user programming settings), Jetbrains MPS (which has been deployed in industry)~\cite{voelter2011language}, and Hazel (a live functional programming environment rooted in a structure editor calculus called Hazelnut, which serves as 
 an active research platform)~\cite{DBLP:conf/popl/OmarVHAH17}. 
 
 Inspired by Hazelnut, this paper introduces Grove, a \emph{collaborative structure editor calculus} for arbitrary syntax trees that does not suffer from the problems just outlined. 
@@ -103,7 +103,7 @@ data from a compile prior to the merge attempt. Developers are left to reason wi
 
 The previous work on the Hazelnut structure editor calculus addresses the semantic gap problem in the single-user setting by 
 defining a type system and type error localization system (the \emph{marked lambda calculus}) for incomplete programs, i.e. programs with holes~\cite{DBLP:journals/pacmpl/ZhaoMDBPO24}. 
-Notably, type error localization is proven to be \emph{total}, i.e. the system is able to assign static meaning to \emph{every} syntactically well-formed expression by inserting \emph{marks} to localize errors. Marking employs local type inference as codified by a \emph{bidirectional type system}~\cite{dunfield2019} as well as \emph{gradual typing}~\cite{siek2015}, i.e. the theory of \emph{type holes}, to recover from situations where type errors make it impossible to 
+Notably, type error localization is proven to be \emph{total}, i.e. the system is able to assign static meaning to \emph{every} syntactically well-formed expression by inserting \emph{marks} to localize errors. Marking employs local type inference as codified by a \emph{bidirectional type system}~\cite{10.1145/3450952} as well as \emph{gradual typing}~\cite{siek2015}, i.e. the theory of \emph{type holes}, to recover from situations where type errors make it impossible to 
 determine a known type. 
 A separate type hole filling phase deploys unification-based (i.e. non-local) type inference to fill type holes when possible, 
 or allows the user to interactively select from hole fillings that partially satisfy generated constraints when there are type conflicts.
@@ -111,7 +111,7 @@ or allows the user to interactively select from hole fillings that partially sat
 
 \paragraph{Contribution 2: Total Type Error Localization and Recovery for Groves}
 
-This paper extends this work to develop a total type error localization system for groves, introduced in Contribution 1 above as the result of decomposing a commutatively edited graph into a set of terms with empty holes, local conflicts, relocation conflict references, and unicycle conflict references. This paper develops a type (and type error localization) discipline for handling these novel constructs. We follow the marked lambda calculus in rooting our \emph{marked grove calculus} in bidirectional type checking, deploying gradual typing when conflicts do not allow a single type to be inferred, and then layering on a unification-based type inference system to opportunistically fill holes or suggest partial solutions when there are conflicting types due to conflicting syntax.
+This paper extends this prior work on the marked lambda calculus to develop a total type error localization system for groves, introduced in Contribution 1 above as the result of decomposing a commutatively edited graph into a set of terms with empty holes, local conflicts, relocation conflict references, and unicycle conflict references. This paper develops a type (and type error localization) discipline for handling these novel constructs. We follow the marked lambda calculus in rooting our \emph{marked grove calculus} in bidirectional type checking, deploying gradual typing when conflicts do not allow a single type to be inferred, and then layering on a unification-based type inference system to opportunistically fill holes or suggest partial solutions when there are conflicting types due to conflicting syntax.
 
 \paragraph{Paper Outline}
 

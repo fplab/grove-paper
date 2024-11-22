@@ -255,12 +255,12 @@ When the conflicted terms are similar up to UID differences but not identical, i
 
 \figureMultiParent
 
-Grove's support for repositioning creates the possibility for \emph{relocation conflicts}. These occur when a merge causes a vertex to have multiple incoming edges, indicating that it does not have a uniquely determined location (as opposed to local conflicts, which occur when there are multiple outgoing edges at a specified location). 
+Grove's support for code relocation creates the possibility for \emph{relocation conflicts}. These occur when a merge causes a vertex to have multiple incoming edges, indicating that it does not have a uniquely determined location (as opposed to local conflicts, which occur when there are multiple outgoing edges at a specified location). 
 
 For example, \autoref{fig:MultiParent} shows an example where Alice and Bob relocate a term, \li{w}, to two different locations (the two holes in \autoref{fig:MultiParent:a}). In both cases, the edits are modeled as one edge deletion followed by one edge addition.
 Alice deletes~\eNestedPartsAlice{} and adds~\eMultiParentAlice{} in \autoref{fig:MultiParent:b}.
 At the same time, Bob deletes~\eNestedPartsAlice{} and adds~\eMultiParentBob{} in \autoref{fig:MultiParent:c}.
-Edge deletions is idempotent,
+Edge deletion is idempotent,
 so the fact that Alice and Bob both deleted~\eNestedPartsAlice{} will not lead to a conflict. 
 However, both~\eMultiParentAlice{} (added by Alice) and~\eMultiParentBob{} (added by Bob)
 point to the same vertex.
@@ -333,7 +333,7 @@ If the cycle is connected to a larger term, then there will necessarily be at le
 It is also possible to merge patches such that a \emph{disconnected unicycle} emerges in the graph, even when neither patch disconnects any vertex from the root. \autoref{fig:Disconnection} shows a simple example of when this could occur: Alice relocates~\vMultiCycleTimes{} under~\vSimpleTimes{},
 while Bob relocates~\vSimpleTimes{} under~\vMultiCycleTimes{}. 
 This results in \autoref{fig:Disconnect:b} and \autoref{fig:Disconnect:c}, respectively.
-Merging these causes both vertices to become disconnected, because they were both relocated. The inserted edges form a \emph{unicycle}, meaning a cycle where every vertex has in-degree $1$. In this case, we cannot rely on relocation references to break the cycle. Instead, we break the cycle by arbitrarily but deterministically choosing an edge along the unicycle, e.g. the edge with the smallest UID, and leaving a \emph{unicycle conflict reference} at that location, as shown in \autoref{fig:Disconnect:d}. A user can be notified of this situation when merging and resolve these conflicts again by relocating or deleting terms until the cycle no longer exists in the graph.
+Merging these causes both vertices to become disconnected, because they were both relocated. The inserted edges form a \emph{unicycle}, meaning a cycle where every vertex has in-degree $1$. In this case, we cannot rely on relocation conflict references to break the cycle. Instead, we break the cycle by arbitrarily but deterministically choosing an edge along the unicycle, e.g. the edge with the smallest UID, and leaving a \emph{unicycle conflict reference} at that location, as shown in \autoref{fig:Disconnect:d}. A user can be notified of this situation when merging and resolve these conflicts again by relocating or deleting terms until the cycle no longer exists in the graph.
 
 Relocation conflict references and unicycle conflict references together fully address the \textbf{relocation conflict problem} from \autoref{sec:Introduction}.
 
