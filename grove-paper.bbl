@@ -1,0 +1,693 @@
+%%% -*-BibTeX-*-
+%%% Do NOT edit. File created by BibTeX with style
+%%% ACM-Reference-Format-Journals [18-Jan-2012].
+
+\begin{thebibliography}{43}
+
+%%% ====================================================================
+%%% NOTE TO THE USER: you can override these defaults by providing
+%%% customized versions of any of these macros before the \bibliography
+%%% command.  Each of them MUST provide its own final punctuation,
+%%% except for \shownote{}, \showDOI{}, and \showURL{}.  The latter two
+%%% do not use final punctuation, in order to avoid confusing it with
+%%% the Web address.
+%%%
+%%% To suppress output of a particular field, define its macro to expand
+%%% to an empty string, or better, \unskip, like this:
+%%%
+%%% \newcommand{\showDOI}[1]{\unskip}   % LaTeX syntax
+%%%
+%%% \def \showDOI #1{\unskip}           % plain TeX syntax
+%%%
+%%% ====================================================================
+
+\ifx \showCODEN    \undefined \def \showCODEN     #1{\unskip}     \fi
+\ifx \showDOI      \undefined \def \showDOI       #1{#1}\fi
+\ifx \showISBNx    \undefined \def \showISBNx     #1{\unskip}     \fi
+\ifx \showISBNxiii \undefined \def \showISBNxiii  #1{\unskip}     \fi
+\ifx \showISSN     \undefined \def \showISSN      #1{\unskip}     \fi
+\ifx \showLCCN     \undefined \def \showLCCN      #1{\unskip}     \fi
+\ifx \shownote     \undefined \def \shownote      #1{#1}          \fi
+\ifx \showarticletitle \undefined \def \showarticletitle #1{#1}   \fi
+\ifx \showURL      \undefined \def \showURL       {\relax}        \fi
+% The following commands are used for tagged output and should be
+% invisible to TeX
+\providecommand\bibfield[2]{#2}
+\providecommand\bibinfo[2]{#2}
+\providecommand\natexlab[1]{#1}
+\providecommand\showeprint[2][]{arXiv:#2}
+
+\bibitem[Ahmed-Nacer et~al\mbox{.}(2011)]%
+        {ahmed2011evaluating}
+\bibfield{author}{\bibinfo{person}{Mehdi Ahmed-Nacer},
+  \bibinfo{person}{Claudia-Lavinia Ignat}, \bibinfo{person}{G{\'e}rald Oster},
+  \bibinfo{person}{Hyun-Gul Roh}, {and} \bibinfo{person}{Pascal Urso}.}
+  \bibinfo{year}{2011}\natexlab{}.
+\newblock \showarticletitle{Evaluating crdts for real-time document editing}.
+  In \bibinfo{booktitle}{\emph{Proceedings of the 11th ACM symposium on
+  Document engineering}}. \bibinfo{pages}{103--112}.
+\newblock
+
+
+\bibitem[Angiuli et~al\mbox{.}(2016)]%
+        {DBLP:journals/jfp/AngiuliMLH16}
+\bibfield{author}{\bibinfo{person}{Carlo Angiuli}, \bibinfo{person}{Edward
+  Morehouse}, \bibinfo{person}{Daniel~R. Licata}, {and} \bibinfo{person}{Robert
+  Harper}.} \bibinfo{year}{2016}\natexlab{}.
+\newblock \showarticletitle{Homotopical patch theory}.
+\newblock \bibinfo{journal}{\emph{J. Funct. Program.}}  \bibinfo{volume}{26}
+  (\bibinfo{year}{2016}), \bibinfo{pages}{e18}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1017/S0956796816000198}
+\showDOI{\tempurl}
+
+
+\bibitem[Aratsu et~al\mbox{.}(2010)]%
+        {DBLP:journals/fuin/AratsuHK10}
+\bibfield{author}{\bibinfo{person}{Taku Aratsu}, \bibinfo{person}{Kouichi
+  Hirata}, {and} \bibinfo{person}{Tetsuji Kuboyama}.}
+  \bibinfo{year}{2010}\natexlab{}.
+\newblock \showarticletitle{Approximating Tree Edit Distance through String
+  Edit Distance for Binary Tree Codes}.
+\newblock \bibinfo{journal}{\emph{Fundam. Informaticae}} \bibinfo{volume}{101},
+  \bibinfo{number}{3} (\bibinfo{year}{2010}), \bibinfo{pages}{157--171}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.3233/FI-2010-282}
+\showDOI{\tempurl}
+
+
+\bibitem[Bille(2005)]%
+        {DBLP:journals/tcs/Bille05}
+\bibfield{author}{\bibinfo{person}{Philip Bille}.}
+  \bibinfo{year}{2005}\natexlab{}.
+\newblock \showarticletitle{A survey on tree edit distance and related
+  problems}.
+\newblock \bibinfo{journal}{\emph{Theor. Comput. Sci.}} \bibinfo{volume}{337},
+  \bibinfo{number}{1-3} (\bibinfo{year}{2005}), \bibinfo{pages}{217--239}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1016/J.TCS.2004.12.030}
+\showDOI{\tempurl}
+
+
+\bibitem[Chawathe and Garcia{-}Molina(1997)]%
+        {DBLP:conf/sigmod/ChawatheG97}
+\bibfield{author}{\bibinfo{person}{Sudarshan~S. Chawathe} {and}
+  \bibinfo{person}{Hector Garcia{-}Molina}.} \bibinfo{year}{1997}\natexlab{}.
+\newblock \showarticletitle{Meaningful Change Detection in Structured Data}. In
+  \bibinfo{booktitle}{\emph{{SIGMOD} 1997, Proceedings {ACM} {SIGMOD}
+  International Conference on Management of Data, May 13-15, 1997, Tucson,
+  Arizona, {USA}}}, \bibfield{editor}{\bibinfo{person}{Joan Peckham}} (Ed.).
+  \bibinfo{publisher}{{ACM} Press}, \bibinfo{pages}{26--37}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/253260.253266}
+\showDOI{\tempurl}
+
+
+\bibitem[Demaine et~al\mbox{.}(2009)]%
+        {DBLP:journals/talg/DemaineMRW09}
+\bibfield{author}{\bibinfo{person}{Erik~D. Demaine}, \bibinfo{person}{Shay
+  Mozes}, \bibinfo{person}{Benjamin Rossman}, {and} \bibinfo{person}{Oren
+  Weimann}.} \bibinfo{year}{2009}\natexlab{}.
+\newblock \showarticletitle{An optimal decomposition algorithm for tree edit
+  distance}.
+\newblock \bibinfo{journal}{\emph{{ACM} Trans. Algorithms}}
+  \bibinfo{volume}{6}, \bibinfo{number}{1} (\bibinfo{year}{2009}),
+  \bibinfo{pages}{2:1--2:19}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/1644015.1644017}
+\showDOI{\tempurl}
+
+
+\bibitem[Dunfield and Krishnaswami(2021)]%
+        {10.1145/3450952}
+\bibfield{author}{\bibinfo{person}{Jana Dunfield} {and} \bibinfo{person}{Neel
+  Krishnaswami}.} \bibinfo{year}{2021}\natexlab{}.
+\newblock \showarticletitle{Bidirectional Typing}.
+\newblock \bibinfo{journal}{\emph{ACM Comput. Surv.}} \bibinfo{volume}{54},
+  \bibinfo{number}{5}, Article \bibinfo{articleno}{98} (\bibinfo{date}{May}
+  \bibinfo{year}{2021}), \bibinfo{numpages}{38}~pages.
+\newblock
+\showISSN{0360-0300}
+\urldef\tempurl%
+\url{https://doi.org/10.1145/3450952}
+\showDOI{\tempurl}
+
+
+\bibitem[Ellis and Gibbs(1989)]%
+        {DBLP:conf/sigmod/EllisG89}
+\bibfield{author}{\bibinfo{person}{Clarence~A. Ellis} {and}
+  \bibinfo{person}{Simon~J. Gibbs}.} \bibinfo{year}{1989}\natexlab{}.
+\newblock \showarticletitle{Concurrency Control in Groupware Systems}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 1989 {ACM} {SIGMOD}
+  International Conference on Management of Data, Portland, Oregon, USA, May 31
+  - June 2, 1989}}, \bibfield{editor}{\bibinfo{person}{James Clifford},
+  \bibinfo{person}{Bruce~G. Lindsay}, {and} \bibinfo{person}{David Maier}}
+  (Eds.). \bibinfo{publisher}{{ACM} Press}, \bibinfo{pages}{399--407}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/67544.66963}
+\showDOI{\tempurl}
+
+
+\bibitem[Falleri et~al\mbox{.}(2014)]%
+        {DBLP:conf/kbse/FalleriMBMM14}
+\bibfield{author}{\bibinfo{person}{Jean{-}R{\'{e}}my Falleri},
+  \bibinfo{person}{Flor{\'{e}}al Morandat}, \bibinfo{person}{Xavier Blanc},
+  \bibinfo{person}{Matias Martinez}, {and} \bibinfo{person}{Martin Monperrus}.}
+  \bibinfo{year}{2014}\natexlab{}.
+\newblock \showarticletitle{Fine-grained and accurate source code
+  differencing}. In \bibinfo{booktitle}{\emph{{ACM/IEEE} International
+  Conference on Automated Software Engineering, {ASE} '14, Vasteras, Sweden -
+  September 15 - 19, 2014}}, \bibfield{editor}{\bibinfo{person}{Ivica
+  Crnkovic}, \bibinfo{person}{Marsha Chechik}, {and} \bibinfo{person}{Paul
+  Gr{\"{u}}nbacher}} (Eds.). \bibinfo{publisher}{{ACM}},
+  \bibinfo{pages}{313--324}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/2642937.2642982}
+\showDOI{\tempurl}
+
+
+\bibitem[Fluri et~al\mbox{.}(2007)]%
+        {DBLP:journals/tse/FluriWPG07}
+\bibfield{author}{\bibinfo{person}{Beat Fluri}, \bibinfo{person}{Michael
+  W{\"{u}}rsch}, \bibinfo{person}{Martin Pinzger}, {and}
+  \bibinfo{person}{Harald~C. Gall}.} \bibinfo{year}{2007}\natexlab{}.
+\newblock \showarticletitle{Change Distilling: Tree Differencing for
+  Fine-Grained Source Code Change Extraction}.
+\newblock \bibinfo{journal}{\emph{{IEEE} Trans. Software Eng.}}
+  \bibinfo{volume}{33}, \bibinfo{number}{11} (\bibinfo{year}{2007}),
+  \bibinfo{pages}{725--743}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1109/TSE.2007.70731}
+\showDOI{\tempurl}
+
+
+\bibitem[Grishchenko(2010)]%
+        {DBLP:conf/wikis/Grishchenko10}
+\bibfield{author}{\bibinfo{person}{Victor~S. Grishchenko}.}
+  \bibinfo{year}{2010}\natexlab{}.
+\newblock \showarticletitle{Deep hypertext with embedded revision control
+  implemented in regular expressions}. In \bibinfo{booktitle}{\emph{Proceedings
+  of the 6th International Symposium on Wikis and Open Collaboration, 2010,
+  Gdansk, Poland, July 7-9, 2010}}, \bibfield{editor}{\bibinfo{person}{Phoebe
+  Ayers} {and} \bibinfo{person}{Felipe Ortega}} (Eds.).
+  \bibinfo{publisher}{{ACM}}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/1832772.1832777}
+\showDOI{\tempurl}
+
+
+\bibitem[Huet(1997)]%
+        {DBLP:journals/jfp/Huet97}
+\bibfield{author}{\bibinfo{person}{G{\'{e}}rard~P. Huet}.}
+  \bibinfo{year}{1997}\natexlab{}.
+\newblock \showarticletitle{The Zipper}.
+\newblock \bibinfo{journal}{\emph{J. Funct. Program.}} \bibinfo{volume}{7},
+  \bibinfo{number}{5} (\bibinfo{year}{1997}), \bibinfo{pages}{549--554}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1017/S0956796897002864}
+\showDOI{\tempurl}
+
+
+\bibitem[Hunt and McIlroy(1976)]%
+        {DiffAlgorithm}
+\bibfield{author}{\bibinfo{person}{James~W. Hunt} {and}
+  \bibinfo{person}{M.~Douglas McIlroy}.} \bibinfo{year}{1976}\natexlab{}.
+\newblock \showarticletitle{An Algorithm for Differential File Comparison}.
+\newblock  (\bibinfo{year}{1976}).
+\newblock
+\urldef\tempurl%
+\url{https://www.cs.dartmouth.edu/%7Edoug/diff.pdf}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Ignat et~al\mbox{.}(2021)]%
+        {DBLP:journals/concurrency/IgnatAO21}
+\bibfield{author}{\bibinfo{person}{Claudia{-}Lavinia Ignat},
+  \bibinfo{person}{Luc Andr{\'{e}}}, {and} \bibinfo{person}{G{\'{e}}rald
+  Oster}.} \bibinfo{year}{2021}\natexlab{}.
+\newblock \showarticletitle{Enhancing rich content wikis with real-time
+  collaboration}.
+\newblock \bibinfo{journal}{\emph{Concurr. Comput. Pract. Exp.}}
+  \bibinfo{volume}{33}, \bibinfo{number}{8} (\bibinfo{year}{2021}).
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1002/CPE.4110}
+\showDOI{\tempurl}
+
+
+\bibitem[Klein(1998)]%
+        {DBLP:conf/esa/Klein98}
+\bibfield{author}{\bibinfo{person}{Philip~N. Klein}.}
+  \bibinfo{year}{1998}\natexlab{}.
+\newblock \showarticletitle{Computing the Edit-Distance between Unrooted
+  Ordered Trees}. In \bibinfo{booktitle}{\emph{Algorithms - {ESA} '98, 6th
+  Annual European Symposium, Venice, Italy, August 24-26, 1998, Proceedings}}
+  \emph{(\bibinfo{series}{Lecture Notes in Computer Science},
+  Vol.~\bibinfo{volume}{1461})}, \bibfield{editor}{\bibinfo{person}{Gianfranco
+  Bilardi}, \bibinfo{person}{Giuseppe~F. Italiano}, \bibinfo{person}{Andrea
+  Pietracaprina}, {and} \bibinfo{person}{Geppino Pucci}} (Eds.).
+  \bibinfo{publisher}{Springer}, \bibinfo{pages}{91--102}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1007/3-540-68530-8\_8}
+\showDOI{\tempurl}
+
+
+\bibitem[Kleppmann(2020)]%
+        {kleppmann2020moving}
+\bibfield{author}{\bibinfo{person}{Martin Kleppmann}.}
+  \bibinfo{year}{2020}\natexlab{}.
+\newblock \showarticletitle{Moving elements in list CRDTs}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 7th Workshop on Principles and
+  Practice of Consistency for Distributed Data}}. \bibinfo{pages}{1--6}.
+\newblock
+
+
+\bibitem[Kleppmann et~al\mbox{.}(2022)]%
+        {Highly-Available}
+\bibfield{author}{\bibinfo{person}{Martin Kleppmann},
+  \bibinfo{person}{Dominic~P. Mulligan}, \bibinfo{person}{Victor B.~F. Gomes},
+  {and} \bibinfo{person}{Alastair~R. Beresford}.}
+  \bibinfo{year}{2022}\natexlab{}.
+\newblock \showarticletitle{A Highly-Available Move Operation for Replicated
+  Trees}.
+\newblock \bibinfo{journal}{\emph{IEEE Transactions on Parallel and Distributed
+  Systems}} \bibinfo{volume}{33}, \bibinfo{number}{7} (\bibinfo{year}{2022}),
+  \bibinfo{pages}{1711--1724}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1109/TPDS.2021.3118603}
+\showDOI{\tempurl}
+
+
+\bibitem[Lindholm(2004)]%
+        {DBLP:conf/doceng/Lindholm04}
+\bibfield{author}{\bibinfo{person}{Tancred Lindholm}.}
+  \bibinfo{year}{2004}\natexlab{}.
+\newblock \showarticletitle{A three-way merge for {XML} documents}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 2004 {ACM} Symposium on Document
+  Engineering, Milwaukee, Wisconsin, USA, October 28-30, 2004}},
+  \bibfield{editor}{\bibinfo{person}{Ethan~V. Munson} {and}
+  \bibinfo{person}{Jean{-}Yves Vion{-}Dury}} (Eds.).
+  \bibinfo{publisher}{{ACM}}, \bibinfo{pages}{1--10}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/1030397.1030399}
+\showDOI{\tempurl}
+
+
+\bibitem[Litt et~al\mbox{.}(2022)]%
+        {DBLP:journals/pacmhci/LittLKH22}
+\bibfield{author}{\bibinfo{person}{Geoffrey Litt}, \bibinfo{person}{Sarah Lim},
+  \bibinfo{person}{Martin Kleppmann}, {and} \bibinfo{person}{Peter van
+  Hardenberg}.} \bibinfo{year}{2022}\natexlab{}.
+\newblock \showarticletitle{Peritext: {A} {CRDT} for Collaborative Rich Text
+  Editing}.
+\newblock \bibinfo{journal}{\emph{Proc. {ACM} Hum. Comput. Interact.}}
+  \bibinfo{volume}{6}, \bibinfo{number}{{CSCW2}} (\bibinfo{year}{2022}),
+  \bibinfo{pages}{1--36}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/3555644}
+\showDOI{\tempurl}
+
+
+\bibitem[Maloney et~al\mbox{.}(2010)]%
+        {maloney2010scratch}
+\bibfield{author}{\bibinfo{person}{John Maloney}, \bibinfo{person}{Mitchel
+  Resnick}, \bibinfo{person}{Natalie Rusk}, \bibinfo{person}{Brian Silverman},
+  {and} \bibinfo{person}{Evelyn Eastmond}.} \bibinfo{year}{2010}\natexlab{}.
+\newblock \showarticletitle{The scratch programming language and environment}.
+\newblock \bibinfo{journal}{\emph{ACM Transactions on Computing Education
+  (TOCE)}} \bibinfo{volume}{10}, \bibinfo{number}{4} (\bibinfo{year}{2010}),
+  \bibinfo{pages}{1--15}.
+\newblock
+
+
+\bibitem[N{\'{e}}delec et~al\mbox{.}(2013)]%
+        {DBLP:conf/doceng/NedelecMMD13}
+\bibfield{author}{\bibinfo{person}{Brice N{\'{e}}delec},
+  \bibinfo{person}{Pascal Molli}, \bibinfo{person}{Achour Most{\'{e}}faoui},
+  {and} \bibinfo{person}{Emmanuel Desmontils}.}
+  \bibinfo{year}{2013}\natexlab{}.
+\newblock \showarticletitle{{LSEQ:} an adaptive structure for sequences in
+  distributed collaborative editing}. In \bibinfo{booktitle}{\emph{{ACM}
+  Symposium on Document Engineering 2013, DocEng '13, Florence, Italy,
+  September 10-13, 2013}}, \bibfield{editor}{\bibinfo{person}{Simone Marinai}
+  {and} \bibinfo{person}{Kim Marriott}} (Eds.). \bibinfo{publisher}{{ACM}},
+  \bibinfo{pages}{37--46}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/2494266.2494278}
+\showDOI{\tempurl}
+
+
+\bibitem[Nguyen et~al\mbox{.}(2010)]%
+        {DBLP:conf/fase/NguyenNPN10}
+\bibfield{author}{\bibinfo{person}{Tung~Thanh Nguyen},
+  \bibinfo{person}{Hoan~Anh Nguyen}, \bibinfo{person}{Nam~H. Pham}, {and}
+  \bibinfo{person}{Tien~N. Nguyen}.} \bibinfo{year}{2010}\natexlab{}.
+\newblock \showarticletitle{Operation-Based, Fine-Grained Version Control Model
+  for Tree-Based Representation}. In \bibinfo{booktitle}{\emph{Fundamental
+  Approaches to Software Engineering, 13th International Conference, {FASE}
+  2010, Held as Part of the Joint European Conferences on Theory and Practice
+  of Software, {ETAPS} 2010, Paphos, Cyprus, March 20-28, 2010. Proceedings}}
+  \emph{(\bibinfo{series}{Lecture Notes in Computer Science},
+  Vol.~\bibinfo{volume}{6013})}, \bibfield{editor}{\bibinfo{person}{David~S.
+  Rosenblum} {and} \bibinfo{person}{Gabriele Taentzer}} (Eds.).
+  \bibinfo{publisher}{Springer}, \bibinfo{pages}{74--90}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1007/978-3-642-12029-9\_6}
+\showDOI{\tempurl}
+
+
+\bibitem[Nicolaescu et~al\mbox{.}(2016)]%
+        {DBLP:conf/group/NicolaescuJDK16}
+\bibfield{author}{\bibinfo{person}{Petru Nicolaescu}, \bibinfo{person}{Kevin
+  Jahns}, \bibinfo{person}{Michael Derntl}, {and} \bibinfo{person}{Ralf
+  Klamma}.} \bibinfo{year}{2016}\natexlab{}.
+\newblock \showarticletitle{Near Real-Time Peer-to-Peer Shared Editing on
+  Extensible Data Types}. In \bibinfo{booktitle}{\emph{Proceedings of the 19th
+  International Conference on Supporting Group Work, Sanibel Island, FL, USA,
+  November 13 - 16, 2016}}, \bibfield{editor}{\bibinfo{person}{Stephan~G.
+  Lukosch}, \bibinfo{person}{Aleksandra Sarcevic}, \bibinfo{person}{Myriam
+  Lewkowicz}, {and} \bibinfo{person}{Michael~J. Muller}} (Eds.).
+  \bibinfo{publisher}{{ACM}}, \bibinfo{pages}{39--49}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/2957276.2957310}
+\showDOI{\tempurl}
+
+
+\bibitem[Omar et~al\mbox{.}(2017a)]%
+        {DBLP:conf/popl/OmarVHAH17}
+\bibfield{author}{\bibinfo{person}{Cyrus Omar}, \bibinfo{person}{Ian Voysey},
+  \bibinfo{person}{Michael Hilton}, \bibinfo{person}{Jonathan Aldrich}, {and}
+  \bibinfo{person}{Matthew~A. Hammer}.} \bibinfo{year}{2017}\natexlab{a}.
+\newblock \showarticletitle{Hazelnut: a bidirectionally typed structure editor
+  calculus}. In \bibinfo{booktitle}{\emph{Proceedings of the 44th {ACM}
+  {SIGPLAN} Symposium on Principles of Programming Languages, {POPL} 2017,
+  Paris, France, January 18-20, 2017}},
+  \bibfield{editor}{\bibinfo{person}{Giuseppe Castagna} {and}
+  \bibinfo{person}{Andrew~D. Gordon}} (Eds.). \bibinfo{publisher}{{ACM}},
+  \bibinfo{pages}{86--99}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/3009837.3009900}
+\showDOI{\tempurl}
+
+
+\bibitem[Omar et~al\mbox{.}(2017b)]%
+        {DBLP:conf/snapl/OmarVHSGAH17}
+\bibfield{author}{\bibinfo{person}{Cyrus Omar}, \bibinfo{person}{Ian Voysey},
+  \bibinfo{person}{Michael Hilton}, \bibinfo{person}{Joshua Sunshine},
+  \bibinfo{person}{Claire {Le Goues}}, \bibinfo{person}{Jonathan Aldrich},
+  {and} \bibinfo{person}{Matthew~A. Hammer}.} \bibinfo{year}{2017}\natexlab{b}.
+\newblock \showarticletitle{Toward Semantic Foundations for Program Editors}.
+  In \bibinfo{booktitle}{\emph{2nd Summit on Advances in Programming Languages,
+  {SNAPL} 2017, May 7-10, 2017, Asilomar, CA, {USA}}}
+  \emph{(\bibinfo{series}{LIPIcs}, Vol.~\bibinfo{volume}{71})},
+  \bibfield{editor}{\bibinfo{person}{Benjamin~S. Lerner},
+  \bibinfo{person}{Rastislav Bod{\'{\i}}k}, {and} \bibinfo{person}{Shriram
+  Krishnamurthi}} (Eds.). \bibinfo{publisher}{Schloss Dagstuhl -
+  Leibniz-Zentrum f{\"{u}}r Informatik}, \bibinfo{pages}{11:1--11:12}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.4230/LIPICS.SNAPL.2017.11}
+\showDOI{\tempurl}
+
+
+\bibitem[Oster et~al\mbox{.}(2006)]%
+        {DBLP:conf/cscw/OsterUMI06}
+\bibfield{author}{\bibinfo{person}{G{\'{e}}rald Oster}, \bibinfo{person}{Pascal
+  Urso}, \bibinfo{person}{Pascal Molli}, {and} \bibinfo{person}{Abdessamad
+  Imine}.} \bibinfo{year}{2006}\natexlab{}.
+\newblock \showarticletitle{Data consistency for {P2P} collaborative editing}.
+  In \bibinfo{booktitle}{\emph{Proceedings of the 2006 {ACM} Conference on
+  Computer Supported Cooperative Work, {CSCW} 2006, Banff, Alberta, Canada,
+  November 4-8, 2006}}, \bibfield{editor}{\bibinfo{person}{Pamela~J. Hinds}
+  {and} \bibinfo{person}{David Martin}} (Eds.). \bibinfo{publisher}{{ACM}},
+  \bibinfo{pages}{259--268}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/1180875.1180916}
+\showDOI{\tempurl}
+
+
+\bibitem[Paskin(1999)]%
+        {paskin1999toward}
+\bibfield{author}{\bibinfo{person}{Norman Paskin}.}
+  \bibinfo{year}{1999}\natexlab{}.
+\newblock \showarticletitle{Toward unique identifiers}.
+\newblock \bibinfo{journal}{\emph{Proc. IEEE}} \bibinfo{volume}{87},
+  \bibinfo{number}{7} (\bibinfo{year}{1999}), \bibinfo{pages}{1208--1227}.
+\newblock
+
+
+\bibitem[Pregui{\c{c}}a et~al\mbox{.}(2018)]%
+        {preguicca2018conflict}
+\bibfield{author}{\bibinfo{person}{Nuno Pregui{\c{c}}a},
+  \bibinfo{person}{Carlos Baquero}, {and} \bibinfo{person}{Marc Shapiro}.}
+  \bibinfo{year}{2018}\natexlab{}.
+\newblock \showarticletitle{Conflict-free replicated data types (CRDTs)}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:1805.06358}}
+  (\bibinfo{year}{2018}).
+\newblock
+
+
+\bibitem[Pregui{\c{c}}a et~al\mbox{.}(2009)]%
+        {DBLP:conf/icdcs/PreguicaMSL09}
+\bibfield{author}{\bibinfo{person}{Nuno~M. Pregui{\c{c}}a},
+  \bibinfo{person}{Joan~Manuel Marqu{\`{e}}s}, \bibinfo{person}{Marc Shapiro},
+  {and} \bibinfo{person}{Mihai Letia}.} \bibinfo{year}{2009}\natexlab{}.
+\newblock \showarticletitle{A Commutative Replicated Data Type for Cooperative
+  Editing}. In \bibinfo{booktitle}{\emph{29th {IEEE} International Conference
+  on Distributed Computing Systems {(ICDCS} 2009), 22-26 June 2009, Montreal,
+  Qu{\'{e}}bec, Canada}}. \bibinfo{publisher}{{IEEE} Computer Society},
+  \bibinfo{pages}{395--403}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1109/ICDCS.2009.20}
+\showDOI{\tempurl}
+
+
+\bibitem[Roh et~al\mbox{.}(2011)]%
+        {DBLP:journals/jpdc/RohJKL11}
+\bibfield{author}{\bibinfo{person}{Hyun{-}Gul Roh}, \bibinfo{person}{Myeongjae
+  Jeon}, \bibinfo{person}{Jinsoo Kim}, {and} \bibinfo{person}{Joonwon Lee}.}
+  \bibinfo{year}{2011}\natexlab{}.
+\newblock \showarticletitle{Replicated abstract data types: Building blocks for
+  collaborative applications}.
+\newblock \bibinfo{journal}{\emph{J. Parallel Distributed Comput.}}
+  \bibinfo{volume}{71}, \bibinfo{number}{3} (\bibinfo{year}{2011}),
+  \bibinfo{pages}{354--368}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1016/J.JPDC.2010.12.006}
+\showDOI{\tempurl}
+
+
+\bibitem[Roundy(2005)]%
+        {DBLP:conf/haskell/Roundy05}
+\bibfield{author}{\bibinfo{person}{David Roundy}.}
+  \bibinfo{year}{2005}\natexlab{}.
+\newblock \showarticletitle{Darcs: distributed version management in haskell}.
+  In \bibinfo{booktitle}{\emph{Proceedings of the {ACM} {SIGPLAN} Workshop on
+  Haskell, Haskell 2005, Tallinn, Estonia, September 30, 2005}},
+  \bibfield{editor}{\bibinfo{person}{Daan Leijen}} (Ed.).
+  \bibinfo{publisher}{{ACM}}, \bibinfo{pages}{1--4}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/1088348.1088349}
+\showDOI{\tempurl}
+
+
+\bibitem[Roundy(2009)]%
+        {old-darcs-manual}
+\bibfield{author}{\bibinfo{person}{David Roundy}.}
+  \bibinfo{year}{2009}\natexlab{}.
+\newblock \bibinfo{booktitle}{\emph{Darcs 2.1.0.1, Appendix A: Theory of
+  patches}}.
+\newblock
+\urldef\tempurl%
+\url{https://www.cs.tufts.edu/comp/150GIT/archive/david-roundy/theory-patches-2009.pdf}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Schw{\"{a}}gerl et~al\mbox{.}(2015)]%
+        {DBLP:journals/scp/SchwagerlUW15}
+\bibfield{author}{\bibinfo{person}{Felix Schw{\"{a}}gerl},
+  \bibinfo{person}{Sabrina Uhrig}, {and} \bibinfo{person}{Bernhard
+  Westfechtel}.} \bibinfo{year}{2015}\natexlab{}.
+\newblock \showarticletitle{A graph-based algorithm for three-way merging of
+  ordered collections in {EMF} models}.
+\newblock \bibinfo{journal}{\emph{Sci. Comput. Program.}}
+  \bibinfo{volume}{113} (\bibinfo{year}{2015}), \bibinfo{pages}{51--81}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1016/J.SCICO.2015.02.008}
+\showDOI{\tempurl}
+
+
+\bibitem[Shapiro et~al\mbox{.}(2011)]%
+        {shapiro2011conflict}
+\bibfield{author}{\bibinfo{person}{Marc Shapiro}, \bibinfo{person}{Nuno
+  Pregui{\c{c}}a}, \bibinfo{person}{Carlos Baquero}, {and}
+  \bibinfo{person}{Marek Zawirski}.} \bibinfo{year}{2011}\natexlab{}.
+\newblock \showarticletitle{Conflict-free replicated data types}. In
+  \bibinfo{booktitle}{\emph{Stabilization, Safety, and Security of Distributed
+  Systems: 13th International Symposium, SSS 2011, Grenoble, France, October
+  10-12, 2011. Proceedings 13}}. Springer, \bibinfo{pages}{386--400}.
+\newblock
+
+
+\bibitem[Siek et~al\mbox{.}(2015)]%
+        {siek2015}
+\bibfield{author}{\bibinfo{person}{Jeremy~G. Siek}, \bibinfo{person}{Michael~M.
+  Vitousek}, \bibinfo{person}{Matteo Cimini}, {and} \bibinfo{person}{John~Tang
+  Boyland}.} \bibinfo{year}{2015}\natexlab{}.
+\newblock \showarticletitle{Refined Criteria for Gradual Typing}. In
+  \bibinfo{booktitle}{\emph{1st Summit on Advances in Programming Languages,
+  {SNAPL} 2015, May 3-6, 2015, Asilomar, California, {USA}}}
+  \emph{(\bibinfo{series}{LIPIcs}, Vol.~\bibinfo{volume}{32})},
+  \bibfield{editor}{\bibinfo{person}{Thomas Ball}, \bibinfo{person}{Rastislav
+  Bodik}, \bibinfo{person}{Shriram Krishnamurthi}, \bibinfo{person}{Benjamin~S.
+  Lerner}, {and} \bibinfo{person}{Greg Morrisett}} (Eds.).
+  \bibinfo{publisher}{Schloss Dagstuhl - Leibniz-Zentrum f{\"{u}}r Informatik},
+  \bibinfo{pages}{274--293}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.4230/LIPICS.SNAPL.2015.274}
+\showDOI{\tempurl}
+
+
+\bibitem[Sobo(2022)]%
+        {zed-blog}
+\bibfield{author}{\bibinfo{person}{Nathan Sobo}.}
+  \bibinfo{year}{2022}\natexlab{}.
+\newblock \bibinfo{booktitle}{\emph{How CRDTs make multiplayer text editing
+  part of Zed's DNA}}.
+\newblock
+\urldef\tempurl%
+\url{https://zed.dev/blog/crdts}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Solar{-}Lezama(2009)]%
+        {DBLP:conf/aplas/Solar-Lezama09}
+\bibfield{author}{\bibinfo{person}{Armando Solar{-}Lezama}.}
+  \bibinfo{year}{2009}\natexlab{}.
+\newblock \showarticletitle{The Sketching Approach to Program Synthesis}. In
+  \bibinfo{booktitle}{\emph{Programming Languages and Systems, 7th Asian
+  Symposium, {APLAS} 2009, Seoul, Korea, December 14-16, 2009. Proceedings}}
+  \emph{(\bibinfo{series}{Lecture Notes in Computer Science},
+  Vol.~\bibinfo{volume}{5904})}, \bibfield{editor}{\bibinfo{person}{Zhenjiang
+  Hu}} (Ed.). \bibinfo{publisher}{Springer}, \bibinfo{pages}{4--13}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1007/978-3-642-10672-9\_3}
+\showDOI{\tempurl}
+
+
+\bibitem[Teitelbaum and Reps(1981)]%
+        {DBLP:journals/cacm/TeitelbaumR81}
+\bibfield{author}{\bibinfo{person}{Tim Teitelbaum} {and}
+  \bibinfo{person}{Thomas~W. Reps}.} \bibinfo{year}{1981}\natexlab{}.
+\newblock \showarticletitle{The Cornell Program Synthesizer: {A}
+  Syntax-Directed Programming Environment}.
+\newblock \bibinfo{journal}{\emph{Commun. {ACM}}} \bibinfo{volume}{24},
+  \bibinfo{number}{9} (\bibinfo{year}{1981}), \bibinfo{pages}{563--573}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/358746.358755}
+\showDOI{\tempurl}
+
+
+\bibitem[Voelter(2011)]%
+        {voelter2011language}
+\bibfield{author}{\bibinfo{person}{Markus Voelter}.}
+  \bibinfo{year}{2011}\natexlab{}.
+\newblock \showarticletitle{Language and IDE Modularization and Composition
+  with MPS}.
+\newblock In \bibinfo{booktitle}{\emph{International Summer School on
+  Generative and Transformational Techniques in Software Engineering}}.
+  \bibinfo{publisher}{Springer}, \bibinfo{pages}{383--430}.
+\newblock
+
+
+\bibitem[Vouillon and Balat(2014)]%
+        {DBLP:journals/spe/VouillonB14}
+\bibfield{author}{\bibinfo{person}{J{\'{e}}r{\^{o}}me Vouillon} {and}
+  \bibinfo{person}{Vincent Balat}.} \bibinfo{year}{2014}\natexlab{}.
+\newblock \showarticletitle{From bytecode to JavaScript: the Js{\_}of{\_}ocaml
+  compiler}.
+\newblock \bibinfo{journal}{\emph{Softw. Pract. Exp.}} \bibinfo{volume}{44},
+  \bibinfo{number}{8} (\bibinfo{year}{2014}), \bibinfo{pages}{951--972}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1002/SPE.2187}
+\showDOI{\tempurl}
+
+
+\bibitem[Weiss et~al\mbox{.}(2009)]%
+        {DBLP:conf/icdcs/WeissUM09}
+\bibfield{author}{\bibinfo{person}{St{\'{e}}phane Weiss},
+  \bibinfo{person}{Pascal Urso}, {and} \bibinfo{person}{Pascal Molli}.}
+  \bibinfo{year}{2009}\natexlab{}.
+\newblock \showarticletitle{Logoot: {A} Scalable Optimistic Replication
+  Algorithm for Collaborative Editing on {P2P} Networks}. In
+  \bibinfo{booktitle}{\emph{29th {IEEE} International Conference on Distributed
+  Computing Systems {(ICDCS} 2009), 22-26 June 2009, Montreal, Qu{\'{e}}bec,
+  Canada}}. \bibinfo{publisher}{{IEEE} Computer Society},
+  \bibinfo{pages}{404--412}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1109/ICDCS.2009.75}
+\showDOI{\tempurl}
+
+
+\bibitem[Zhao et~al\mbox{.}(2024)]%
+        {DBLP:journals/pacmpl/ZhaoMDBPO24}
+\bibfield{author}{\bibinfo{person}{Eric Zhao}, \bibinfo{person}{Raef Maroof},
+  \bibinfo{person}{Anand Dukkipati}, \bibinfo{person}{Andrew Blinn},
+  \bibinfo{person}{Zhiyi Pan}, {and} \bibinfo{person}{Cyrus Omar}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{Total Type Error Localization and Recovery with
+  Holes}.
+\newblock \bibinfo{journal}{\emph{Proc. {ACM} Program. Lang.}}
+  \bibinfo{volume}{8}, \bibinfo{number}{{POPL}} (\bibinfo{year}{2024}),
+  \bibinfo{pages}{2041--2068}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/3632910}
+\showDOI{\tempurl}
+
+
+\bibitem[Étienne Meunier(2024)]%
+        {pijul-talk}
+\bibfield{author}{\bibinfo{person}{Pierre Étienne Meunier}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \bibinfo{booktitle}{\emph{Version control post-Git}}.
+\newblock FOSDEM 2024.
+\newblock
+\urldef\tempurl%
+\url{https://archive.fosdem.org/2024/schedule/event/fosdem-2024-3423-version-control-post-git/}
+\showURL{%
+\tempurl}
+
+
+\end{thebibliography}
